@@ -6,2345 +6,5084 @@
 <title>Supermarket Tycoon</title>
 
 <style>
-*{box-sizing:border-box}
-body{
-    margin:0;
-    background:#10131a;
-    color:#fff;
-    font-family:Arial,Helvetica,sans-serif;
-    overflow:hidden;
+*{
+    box-sizing:border-box;
+    user-select:none;
 }
-button{
-    border:0;
-    border-radius:8px;
-    padding:11px 15px;
-    font-weight:bold;
-    cursor:pointer;
-    background:#242a36;
-    color:white;
-}
-button:hover{background:#343c4c}
-button.green{background:#22a55b}
-button.green:hover{background:#2fc76f}
-button.red{background:#c43d45}
-button.blue{background:#287bd6}
 
-#menu{
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#10151b;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    color:#fff;
+}
+
+button{
+    font:inherit;
+    border:0;
+    cursor:pointer;
+}
+
+#app{
+    width:100vw;
+    height:100vh;
+    position:relative;
+}
+
+.screen{
     position:absolute;
     inset:0;
+    display:none;
+}
+
+.screen.active{
     display:flex;
+}
+
+/* ================= MENU ================= */
+
+#menu{
     align-items:center;
     justify-content:center;
     background:
-        radial-gradient(circle at center,#26354c,#10131a 70%);
-}
-.menuBox{
-    width:480px;
-    padding:45px;
-    border-radius:20px;
-    background:#181d27;
-    box-shadow:0 20px 70px #0008;
-    text-align:center;
-}
-.menuBox h1{
-    margin:0 0 8px;
-    font-size:48px;
-}
-.menuBox p{color:#9da7b7}
-.menuButtons{
-    display:grid;
-    gap:12px;
-    margin-top:30px;
-}
-.menuButtons button{
-    font-size:18px;
-    padding:16px;
+        radial-gradient(circle at 50% 35%,#31536a 0%,#17232c 38%,#0c1116 100%);
 }
 
+.menu-card{
+    width:min(520px,90vw);
+    padding:48px;
+    border-radius:24px;
+    background:rgba(16,23,29,.94);
+    border:2px solid #536976;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);
+    text-align:center;
+}
+
+.logo{
+    font-size:52px;
+    font-weight:1000;
+    letter-spacing:-4px;
+    color:#f5d76e;
+    text-shadow:5px 5px 0 #6d5722;
+    margin-bottom:4px;
+}
+
+.subtitle{
+    color:#aebbc3;
+    margin-bottom:34px;
+    letter-spacing:2px;
+    font-size:13px;
+}
+
+.menu-btn{
+    width:100%;
+    margin:8px 0;
+    padding:16px;
+    border-radius:12px;
+    background:#263640;
+    color:white;
+    font-weight:800;
+    border:2px solid #40515b;
+    transition:.15s;
+}
+
+.menu-btn:hover{
+    transform:translateY(-2px);
+    background:#334954;
+    border-color:#6e8490;
+}
+
+.menu-btn.primary{
+    background:#e0b83f;
+    color:#17130a;
+    border-color:#f4d56a;
+}
+
+.menu-btn.primary:hover{
+    background:#f1cc55;
+}
+
+/* ================= GAME ================= */
+
 #game{
-    display:none;
-    width:100vw;
-    height:100vh;
+    background:#182027;
+}
+
+#canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    image-rendering:auto;
 }
 
 #topbar{
-    height:65px;
-    background:#171c25;
+    position:absolute;
+    left:14px;
+    right:14px;
+    top:12px;
+    height:66px;
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:8px 12px;
-    border-bottom:2px solid #303744;
+    gap:10px;
+    pointer-events:none;
+    z-index:5;
 }
+
 .stat{
-    background:#222936;
-    border-radius:8px;
-    padding:9px 13px;
-    min-width:115px;
+    min-width:110px;
+    height:52px;
+    padding:8px 13px;
+    background:rgba(12,18,23,.92);
+    border:1px solid #465963;
+    border-radius:12px;
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
 }
-.stat small{
-    display:block;
-    color:#8993a3;
-    font-size:11px;
+
+.stat-label{
+    font-size:10px;
+    color:#91a1aa;
+    text-transform:uppercase;
+    letter-spacing:1px;
 }
-.stat strong{
-    font-size:16px;
+
+.stat-value{
+    font-size:18px;
+    font-weight:900;
+    margin-top:3px;
 }
+
 #objective{
     flex:1;
+    min-width:180px;
+    max-width:500px;
 }
+
 #objectiveText{
-    color:#8fd8ff;
+    color:#f5d76e;
 }
 
-#main{
-    display:flex;
-    height:calc(100vh - 65px);
+/* ================= COLLAPSIBLE PANELS ================= */
+
+#buildPanel,
+#sidePanel{
+    position:absolute;
+    bottom:15px;
+    width:285px;
+    background:rgba(12,18,23,.96);
+    border:1px solid #4a5d67;
+    border-radius:15px;
+    box-shadow:0 8px 30px rgba(0,0,0,.45);
+    z-index:10;
+    overflow:hidden;
 }
 
-#toolbar{
-    width:125px;
-    background:#171c25;
-    border-right:2px solid #303744;
-    padding:10px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
+#buildPanel{
+    left:15px;
 }
-.toolTitle{
-    color:#8993a3;
-    font-size:12px;
-    margin:4px;
+
+#sidePanel{
+    right:15px;
 }
-.tool{
+
+.panel-tab{
     width:100%;
-    font-size:12px;
-}
-.tool.active{
-    outline:2px solid #61b5ff;
-    background:#263c55;
-}
-
-#canvasWrap{
-    position:relative;
-    flex:1;
-    background:#111;
-}
-canvas{
-    display:block;
-    width:100%;
-    height:100%;
-}
-
-#side{
-    width:270px;
-    background:#171c25;
-    border-left:2px solid #303744;
-    padding:12px;
-    overflow-y:auto;
-}
-.panelTitle{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:10px;
-}
-.sideButton{
-    width:100%;
-    margin-bottom:8px;
+    padding:13px 15px;
+    background:#202d34;
+    color:#fff;
     text-align:left;
+    font-weight:900;
+    letter-spacing:1px;
+    border-bottom:1px solid #40515a;
 }
+
+.panel-tab:hover{
+    background:#2b3b43;
+}
+
+.panel-content{
+    padding:13px;
+}
+
+.panel-content.hidden{
+    display:none;
+}
+
+.build-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+}
+
+.build-btn{
+    padding:9px 6px;
+    border-radius:8px;
+    background:#26353d;
+    color:#fff;
+    border:1px solid #41535d;
+    font-size:12px;
+    font-weight:700;
+}
+
+.build-btn:hover{
+    background:#344954;
+}
+
+.build-btn.selected{
+    background:#d7ae3a;
+    color:#15120b;
+}
+
+.build-hint{
+    font-size:10px;
+    color:#81919a;
+    margin-top:9px;
+    line-height:1.4;
+}
+
+.side-btn{
+    width:100%;
+    margin:4px 0;
+    padding:10px;
+    text-align:left;
+    background:#26353d;
+    color:white;
+    border-radius:8px;
+    border:1px solid #40525c;
+    font-weight:700;
+}
+
+.side-btn:hover{
+    background:#344954;
+}
+
+/* STORE STATUS */
+
+#storeStatus{
+    position:absolute;
+    left:50%;
+    bottom:15px;
+    transform:translateX(-50%);
+    z-index:11;
+}
+
+#openBtn{
+    padding:13px 24px;
+    border-radius:12px;
+    background:#dcb640;
+    color:#17130a;
+    font-weight:1000;
+    border:2px solid #f2d362;
+    box-shadow:0 6px 20px rgba(0,0,0,.4);
+}
+
+#openBtn:hover{
+    transform:translateY(-2px);
+    background:#efd05c;
+}
+
+/* MESSAGE */
+
+#message{
+    position:absolute;
+    left:50%;
+    top:90px;
+    transform:translateX(-50%);
+    padding:10px 18px;
+    background:rgba(13,19,24,.95);
+    border:1px solid #637680;
+    border-radius:20px;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+    font-weight:700;
+    z-index:30;
+}
+
+#message.show{
+    opacity:1;
+}
+
+/* TOAST */
 
 #toast{
     position:absolute;
     left:50%;
-    bottom:25px;
+    bottom:100px;
     transform:translateX(-50%);
-    background:#151a22;
-    padding:13px 20px;
-    border-radius:10px;
+    background:#f1d061;
+    color:#19150a;
+    font-weight:900;
+    padding:12px 20px;
+    border-radius:20px;
     opacity:0;
-    pointer-events:none;
     transition:.2s;
-    box-shadow:0 5px 25px #0008;
-    z-index:20;
+    z-index:50;
 }
-#toast.show{opacity:1}
+
+#toast.show{
+    opacity:1;
+}
+
+/* ================= MODALS ================= */
 
 .modal{
     position:absolute;
     inset:0;
-    background:#0009;
     display:none;
     align-items:center;
     justify-content:center;
-    z-index:30;
+    background:rgba(0,0,0,.62);
+    z-index:100;
 }
-.modalBox{
-    width:600px;
-    max-height:80vh;
-    overflow:auto;
-    background:#181d27;
-    border:1px solid #3a4352;
-    border-radius:15px;
-    padding:25px;
-    box-shadow:0 20px 80px #000;
-}
-.modalBox h2{margin-top:0}
-.row{
+
+.modal.active{
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:12px;
-    background:#222936;
-    border-radius:8px;
-    margin-bottom:8px;
 }
-.rowInfo{flex:1}
-.rowInfo small{
-    display:block;
-    color:#909aaa;
+
+.modal-card{
+    width:min(900px,92vw);
+    max-height:85vh;
+    overflow:auto;
+    padding:25px;
+    border-radius:18px;
+    background:#151e24;
+    border:2px solid #4b606b;
+    box-shadow:0 25px 80px rgba(0,0,0,.7);
 }
-input{
-    width:90px;
-    padding:9px;
-    border:0;
-    border-radius:6px;
-    background:#0e1218;
-    color:white;
+
+.modal-card h2{
+    margin:0 0 18px;
+    color:#f1ce63;
 }
+
 .close{
     float:right;
-}
-.good{color:#57d98a}
-.bad{color:#ff6868}
-.gold{color:#ffd75e}
-
-#employeePanel{
-    margin-top:12px;
-    padding-top:12px;
-    border-top:1px solid #333b49;
-}
-.employee{
-    background:#222936;
-    padding:9px;
-    border-radius:7px;
-    margin-bottom:6px;
-    font-size:12px;
-}
-.employee small{color:#8f99aa}
-
-#hint{
-    position:absolute;
-    left:12px;
-    bottom:12px;
-    background:#111822dd;
-    border:1px solid #344052;
+    background:#344650;
+    color:white;
     border-radius:8px;
     padding:8px 12px;
-    color:#b6c0cf;
-    font-size:12px;
+}
+
+.close:hover{
+    background:#4a5d68;
+}
+
+.product-row{
+    display:grid;
+    grid-template-columns:1.5fr .8fr .8fr .9fr .8fr;
+    gap:8px;
+    align-items:center;
+    padding:9px;
+    border-bottom:1px solid #29363e;
+}
+
+.product-row.header{
+    color:#81929c;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+.small-input{
+    width:90px;
+    padding:7px;
+    border-radius:7px;
+    border:1px solid #566a75;
+    background:#202c33;
+    color:white;
+}
+
+.action{
+    padding:7px 10px;
+    border-radius:7px;
+    background:#d3ad3d;
+    color:#16130a;
+    font-weight:800;
+}
+
+.action:hover{
+    background:#efd15f;
+}
+
+.report{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.report-box{
+    padding:15px;
+    background:#202b32;
+    border:1px solid #394b55;
+    border-radius:12px;
+}
+
+.report-big{
+    font-size:28px;
+    font-weight:900;
+    margin-top:5px;
+}
+
+@media(max-width:850px){
+
+    #sidePanel{
+        width:220px;
+    }
+
+    #buildPanel{
+        width:220px;
+    }
+
+    .stat{
+        min-width:80px;
+    }
+
+    .stat:nth-child(4){
+        display:none;
+    }
+
+    .logo{
+        font-size:42px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="menu">
-    <div class="menuBox">
-        <h1>🛒 Supermarket Tycoon</h1>
-        <p>Build it. Stock it. Open it. Get RICH.</p>
+<div id="app">
 
-        <div class="menuButtons">
-            <button class="green" onclick="newGame()">NEW GAME</button>
-            <button onclick="continueGame()">CONTINUE</button>
-            <button onclick="showSettings()">SETTINGS</button>
-            <button class="red" onclick="resetSave()">RESET SAVE</button>
+<!-- ================= MENU ================= -->
+
+<div id="menu" class="screen active">
+
+    <div class="menu-card">
+
+        <div class="logo">SUPERMARKET</div>
+        <div class="subtitle">TYCOON</div>
+
+        <button id="newGameBtn" class="menu-btn primary">
+            🛒 NEW GAME
+        </button>
+
+        <button id="continueBtn" class="menu-btn">
+            ▶ CONTINUE
+        </button>
+
+        <button id="settingsBtn" class="menu-btn">
+            ⚙ SETTINGS
+        </button>
+
+        <button id="wipeBtn" class="menu-btn">
+            🗑 RESET SAVE
+        </button>
+
+        <div style="margin-top:20px;color:#687982;font-size:11px;">
+            Build your store. Stock the shelves. Make money.
         </div>
+
     </div>
 </div>
 
-<div id="game">
+<!-- ================= GAME ================= -->
+
+<div id="game" class="screen">
+
+    <canvas id="canvas"></canvas>
 
     <div id="topbar">
 
         <div class="stat">
-            <small>CASH</small>
-            <strong id="cash">$10,000</strong>
+            <div class="stat-label">Cash</div>
+            <div id="cashText" class="stat-value">$10,000</div>
         </div>
 
         <div class="stat">
-            <small>RATING</small>
-            <strong id="rating">3.5 ⭐</strong>
+            <div class="stat-label">Rating</div>
+            <div id="ratingText" class="stat-value">3.5 ⭐</div>
         </div>
 
         <div class="stat">
-            <small>DAY</small>
-            <strong id="day">1</strong>
+            <div class="stat-label">Day</div>
+            <div id="dayText" class="stat-value">1</div>
         </div>
 
         <div class="stat">
-            <small>LEVEL</small>
-            <strong id="level">1</strong>
+            <div class="stat-label">Level</div>
+            <div id="levelText" class="stat-value">1</div>
+        </div>
+
+        <div id="objective" class="stat">
+            <div class="stat-label">Objective</div>
+            <div id="objectiveText" class="stat-value">
+                STOCK YOUR STORE
+            </div>
         </div>
 
         <div class="stat">
-            <small>TIME</small>
-            <strong id="clock">8:00 AM</strong>
-        </div>
-
-        <div class="stat">
-            <small>CUSTOMERS</small>
-            <strong id="customerCount">0</strong>
-        </div>
-
-        <div class="stat" id="objective">
-            <small>OBJECTIVE</small>
-            <strong id="objectiveText">Open your supermarket</strong>
+            <div class="stat-label">Customers</div>
+            <div id="customersText" class="stat-value">0</div>
         </div>
 
     </div>
 
-    <div id="main">
+    <!-- BUILD -->
 
-        <div id="toolbar">
+    <div id="buildPanel">
 
-            <div class="toolTitle">BUILD</div>
+        <button class="panel-tab" id="buildTab">
+            🔨 BUILD ▼
+        </button>
 
-            <button class="tool" data-build="shelf">Shelf<br>$150</button>
-            <button class="tool" data-build="fridge">Fridge<br>$450</button>
-            <button class="tool" data-build="checkout">Checkout<br>$500</button>
-            <button class="tool" data-build="storage">Storage<br>$200</button>
-            <button class="tool" data-build="cart">Cart Station<br>$250</button>
-            <button class="tool" data-build="light">Light<br>$75</button>
-            <button class="tool" data-build="decor">Decor<br>$100</button>
-            <button class="tool red" data-build="delete">Delete</button>
+        <div class="panel-content" id="buildContent">
 
-            <div class="toolTitle">PLAYER</div>
-            <button onclick="centerPlayer()">Center</button>
+            <div class="build-grid">
+
+                <button class="build-btn" data-build="shelf">
+                    📦 Shelf<br>$150
+                </button>
+
+                <button class="build-btn" data-build="fridge">
+                    🧊 Fridge<br>$450
+                </button>
+
+                <button class="build-btn" data-build="checkout">
+                    🧾 Checkout<br>$500
+                </button>
+
+                <button class="build-btn" data-build="storage">
+                    📚 Storage<br>$200
+                </button>
+
+                <button class="build-btn" data-build="cart">
+                    🛒 Carts<br>$250
+                </button>
+
+                <button class="build-btn" data-build="light">
+                    💡 Light<br>$75
+                </button>
+
+                <button class="build-btn" data-build="decor">
+                    🌿 Decor<br>$100
+                </button>
+
+                <button class="build-btn" data-build="delete">
+                    ❌ Delete
+                </button>
+
+            </div>
+
+            <div class="build-hint">
+                Click an item, then click a grid tile to place it.
+                <br>
+                Green = valid. Red = blocked.
+                <br>
+                Press ESC to cancel.
+            </div>
 
         </div>
 
-        <div id="canvasWrap">
+    </div>
 
-            <canvas id="canvas"></canvas>
+    <!-- MANAGEMENT -->
 
-            <div id="hint">
-                WASD / Arrow Keys = Move • Click = Build
-            </div>
+    <div id="sidePanel">
 
-            <div id="toast"></div>
+        <button class="panel-tab" id="managementTab">
+            📊 MANAGEMENT ▼
+        </button>
 
-            <div class="modal" id="modal">
-                <div class="modalBox" id="modalContent"></div>
-            </div>
+        <div class="panel-content" id="managementContent">
 
-        </div>
-
-        <div id="side">
-
-            <div class="panelTitle">🏪 Store</div>
-
-            <button class="sideButton green" onclick="openStore()">
-                ▶ Open Store
+            <button class="side-btn" id="productsBtn">
+                📦 Products & Pricing
             </button>
 
-            <button class="sideButton" onclick="productsModal()">
-                💵 Products & Pricing
+            <button class="side-btn" id="inventoryBtn">
+                📋 Inventory
             </button>
 
-            <button class="sideButton" onclick="inventoryModal()">
-                📦 Inventory
-            </button>
-
-            <button class="sideButton" onclick="employeesModal()">
-                👷 Employees
-            </button>
-
-            <button class="sideButton" onclick="expansionModal()">
+            <button class="side-btn" id="expandBtn">
                 🏗️ Expand Store
             </button>
 
-            <button class="sideButton" onclick="reportModal()">
+            <button class="side-btn" id="reportBtn">
                 📊 Daily Report
             </button>
 
-            <button class="sideButton" onclick="saveGame()">
+            <button class="side-btn" id="saveBtn">
                 💾 Save Game
             </button>
 
-            <button class="sideButton" onclick="mainMenu()">
+            <button class="side-btn" id="menuBtn">
                 🏠 Main Menu
             </button>
 
-            <div id="employeePanel"></div>
+        </div>
 
+    </div>
+
+    <!-- OPEN / CLOSE -->
+
+    <div id="storeStatus">
+        <button id="openBtn">
+            🔓 OPEN STORE
+        </button>
+    </div>
+
+    <div id="message"></div>
+    <div id="toast"></div>
+
+</div>
+
+<!-- ================= PRODUCTS ================= -->
+
+<div id="productsModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="productsModal">X</button>
+
+        <h2>📦 Products & Pricing</h2>
+
+        <div class="product-row header">
+            <div>Product</div>
+            <div>Cost</div>
+            <div>Price</div>
+            <div>Profit</div>
+            <div>Stock</div>
+        </div>
+
+        <div id="productList"></div>
+
+    </div>
+
+</div>
+
+<!-- ================= INVENTORY ================= -->
+
+<div id="inventoryModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="inventoryModal">X</button>
+
+        <h2>📋 Inventory Orders</h2>
+
+        <div id="inventoryList"></div>
+
+    </div>
+
+</div>
+
+<!-- ================= EXPANSION ================= -->
+
+<div id="expandModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="expandModal">X</button>
+
+        <h2>🏗️ Expand Your Store</h2>
+
+        <p id="expandDescription"></p>
+
+        <button id="confirmExpand" class="action">
+            PURCHASE EXPANSION
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= REPORT ================= -->
+
+<div id="reportModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="reportModal">X</button>
+
+        <h2>📊 Daily Report</h2>
+
+        <div class="report">
+
+            <div class="report-box">
+                Revenue
+                <div id="reportRevenue" class="report-big">$0</div>
+            </div>
+
+            <div class="report-box">
+                Product Costs
+                <div id="reportCosts" class="report-big">$0</div>
+            </div>
+
+            <div class="report-box">
+                Customer Count
+                <div id="reportCustomers" class="report-big">0</div>
+            </div>
+
+            <div class="report-box">
+                Net Profit
+                <div id="reportProfit" class="report-big">$0</div>
+            </div>
+
+        </div>
+
+        <div style="margin-top:18px;color:#9baab2;">
+            Store rating:
+            <strong id="reportRating">3.5 ⭐</strong>
         </div>
 
     </div>
 
 </div>
 
+</div>
+
 <script>
+"use strict";
+
 /* =========================================================
-   SUPERMARKET TYCOON V2
-   ========================================================= */
+   SUPERMARKET TYCOON
+   REAL TILE MAP VERSION
+========================================================= */
 
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const TILE=32;
+let W = 1400;
+let H = 800;
 
-let state={
-    cash:10000,
-    debt:0,
-    xp:0,
-    level:1,
-    rating:3.5,
-    day:1,
+function resizeCanvas(){
 
-    storeW:20,
-    storeH:15,
+    const rect = canvas.getBoundingClientRect();
 
-    open:false,
-    minutes:480,
+    W = Math.max(800,Math.floor(rect.width));
+    H = Math.max(500,Math.floor(rect.height));
 
-    revenueToday:0,
-    costsToday:0,
-    wagesToday:0,
-    customersToday:0,
+    const dpr = window.devicePixelRatio || 1;
 
-    customers:[],
-    employees:[],
-    buildings:[],
+    canvas.width = W*dpr;
+    canvas.height = H*dpr;
 
-    player:{
-        x:10,
-        y:12,
-        speed:4
-    },
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+}
 
-    selectedBuild:null,
-    mouseX:0,
-    mouseY:0,
+resizeCanvas();
 
-    objective:0,
+window.addEventListener("resize",resizeCanvas);
 
-    products:{
-        Bread:{cost:1.20,price:2.49,stock:20,max:40},
-        Cereal:{cost:2.40,price:4.49,stock:15,max:30},
-        Chips:{cost:1.10,price:2.29,stock:20,max:40},
-        Cookies:{cost:1.30,price:2.79,stock:15,max:30},
-        Pasta:{cost:.90,price:1.99,stock:20,max:40},
-        Water:{cost:.30,price:.99,stock:30,max:60},
-        Soda:{cost:.70,price:1.79,stock:25,max:50},
-        Juice:{cost:1.10,price:2.49,stock:15,max:30},
-        Apples:{cost:.45,price:.99,stock:25,max:50},
-        Bananas:{cost:.35,price:.89,stock:25,max:50}
-    }
+/* ================= CONSTANTS ================= */
+
+const TILE = 32;
+
+const COLORS = {
+
+    floor:"#d9c8a4",
+    floorAlt:"#d2be96",
+
+    grid:"rgba(82,69,49,.28)",
+
+    wall:"#555f64",
+    wallTop:"#7d878c",
+
+    outside:"#55765c",
+    outsideDark:"#47674f",
+
+    road:"#42484b",
+    parking:"#707579",
+
+    yellow:"#e3bd43",
+
+    shelf:"#875b36",
+    shelfTop:"#b77d47",
+
+    fridge:"#548ca1",
+
+    checkout:"#6b7074",
+
+    wood:"#754c2e",
+
+    white:"#f4f0df",
+
+    black:"#182027",
+
+    red:"#c84e45",
+    green:"#5db36c"
 };
 
-const productNames=Object.keys(state.products);
+/* ================= PRODUCTS ================= */
 
-const employeeTypes={
-    cashier:{
-        name:"Cashier",
-        hire:100,
-        wage:18,
-        color:"#55aaff"
-    },
-    stocker:{
-        name:"Stocker",
-        hire:150,
-        wage:17,
-        color:"#55dd88"
-    },
-    cleaner:{
-        name:"Cleaner",
-        hire:125,
-        wage:16,
-        color:"#dddd66"
-    },
-    security:{
-        name:"Security",
-        hire:200,
-        wage:20,
-        color:"#dd6688"
-    },
-    manager:{
-        name:"Manager",
-        hire:500,
-        wage:30,
-        color:"#cc77ff"
-    }
-};
+const DEFAULT_PRODUCTS = [
+    ["bread","Bread","Food",1.20,2.49,20,60],
+    ["cereal","Cereal","Food",2.40,4.49,15,60],
+    ["chips","Chips","Food",1.10,2.29,20,60],
+    ["cookies","Cookies","Food",1.30,2.79,15,60],
+    ["pasta","Pasta","Food",.90,1.99,20,60],
 
-const objectives=[
-    {text:"Open your supermarket",reward:500},
-    {text:"Sell 10 products",reward:250},
-    {text:"Make $500 profit",reward:500},
-    {text:"Serve 10 customers",reward:300},
-    {text:"Stock 100 products",reward:400},
-    {text:"Hire your first employee",reward:750},
-    {text:"Reach 4.0 stars",reward:1000},
-    {text:"Make $1,000 daily profit",reward:1500},
-    {text:"Expand your store",reward:2000},
-    {text:"Reach Level 3",reward:3000}
+    ["water","Water","Drinks",.30,.99,30,80],
+    ["soda","Soda","Drinks",.70,1.79,25,80],
+    ["juice","Juice","Drinks",1.10,2.49,15,60],
+
+    ["apples","Apples","Produce",.45,.99,25,80],
+    ["bananas","Bananas","Produce",.35,.89,25,80]
 ];
 
-/* =========================
-   BASIC FUNCTIONS
-   ========================= */
+const PRODUCTS = DEFAULT_PRODUCTS.map(p=>({
 
-function money(n){
-    return "$"+Math.round(n).toLocaleString();
-}
+    id:p[0],
+    name:p[1],
+    category:p[2],
+    cost:p[3],
+    price:p[4],
+    stock:p[5],
+    max:p[6]
 
-function clamp(v,a,b){
-    return Math.max(a,Math.min(b,v));
-}
+}));
 
-function toast(text){
-    const t=document.getElementById("toast");
-    t.textContent=text;
-    t.classList.add("show");
-    clearTimeout(window.toastTimer);
-    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
-}
+/* ================= BUILDINGS ================= */
 
-function updateUI(){
-    document.getElementById("cash").textContent=money(state.cash);
-    document.getElementById("rating").textContent=state.rating.toFixed(1)+" ⭐";
-    document.getElementById("day").textContent=state.day;
-    document.getElementById("level").textContent=state.level;
+const BUILD_PRICES = {
 
-    let h=Math.floor(state.minutes/60);
-    let m=Math.floor(state.minutes%60);
-    let am=h<12;
-    let displayH=h%12;
-    if(displayH===0)displayH=12;
+    shelf:150,
+    fridge:450,
+    checkout:500,
+    storage:200,
+    cart:250,
+    light:75,
+    decor:100
 
-    document.getElementById("clock").textContent=
-        displayH+":"+String(m).padStart(2,"0")+" "+(am?"AM":"PM");
-
-    document.getElementById("customerCount").textContent=
-        state.customers.length;
-
-    document.getElementById("objectiveText").textContent=
-        objectives[Math.min(state.objective,objectives.length-1)].text;
-
-    renderEmployees();
-}
-
-/* =========================
-   MENU / SAVE
-   ========================= */
-
-function newGame(){
-    localStorage.removeItem("supermarket_tycoon_v2");
-
-    state={
-        cash:10000,
-        debt:0,
-        xp:0,
-        level:1,
-        rating:3.5,
-        day:1,
-        storeW:20,
-        storeH:15,
-        open:false,
-        minutes:480,
-        revenueToday:0,
-        costsToday:0,
-        wagesToday:0,
-        customersToday:0,
-        customers:[],
-        employees:[],
-        buildings:[],
-        player:{x:10,y:12,speed:4},
-        selectedBuild:null,
-        mouseX:0,
-        mouseY:0,
-        objective:0,
-        products:{
-            Bread:{cost:1.20,price:2.49,stock:20,max:40},
-            Cereal:{cost:2.40,price:4.49,stock:15,max:30},
-            Chips:{cost:1.10,price:2.29,stock:20,max:40},
-            Cookies:{cost:1.30,price:2.79,stock:15,max:30},
-            Pasta:{cost:.90,price:1.99,stock:20,max:40},
-            Water:{cost:.30,price:.99,stock:30,max:60},
-            Soda:{cost:.70,price:1.79,stock:25,max:50},
-            Juice:{cost:1.10,price:2.49,stock:15,max:30},
-            Apples:{cost:.45,price:.99,stock:25,max:50},
-            Bananas:{cost:.35,price:.89,stock:25,max:50}
-        }
-    };
-
-    startingBuildings();
-
-    document.getElementById("menu").style.display="none";
-    document.getElementById("game").style.display="block";
-
-    updateUI();
-    saveGame();
-    toast("New supermarket created! 🛒");
-}
-
-function continueGame(){
-    let saved=localStorage.getItem("supermarket_tycoon_v2");
-
-    if(!saved){
-        toast("No save found!");
-        return;
-    }
-
-    try{
-        state=JSON.parse(saved);
-        state.customers ||= [];
-        state.employees ||= [];
-        state.buildings ||= [];
-        state.products ||= {};
-        state.player ||= {x:10,y:12,speed:4};
-
-        document.getElementById("menu").style.display="none";
-        document.getElementById("game").style.display="block";
-
-        updateUI();
-        toast("Save loaded!");
-    }catch(e){
-        toast("Save file is corrupted.");
-    }
-}
-
-function saveGame(){
-    localStorage.setItem(
-        "supermarket_tycoon_v2",
-        JSON.stringify(state)
-    );
-    toast("Game saved 💾");
-}
-
-function resetSave(){
-    if(confirm("Delete your supermarket save?")){
-        localStorage.removeItem("supermarket_tycoon_v2");
-        toast("Save deleted.");
-    }
-}
-
-function mainMenu(){
-    saveGame();
-    state.open=false;
-    document.getElementById("game").style.display="none";
-    document.getElementById("menu").style.display="flex";
-}
-
-function showSettings(){
-    alert(
-        "SETTINGS\n\n"+
-        "V2\n"+
-        "Autosave: ON\n"+
-        "Controls: WASD / Arrow Keys\n"+
-        "More settings coming later!"
-    );
-}
-
-/* =========================
-   STARTING BUILDINGS
-   ========================= */
-
-function startingBuildings(){
-    state.buildings=[
-        {type:"shelf",x:6,y:5},
-        {type:"shelf",x:10,y:5},
-        {type:"shelf",x:14,y:5},
-        {type:"fridge",x:6,y:9},
-        {type:"checkout",x:15,y:12},
-        {type:"storage",x:3,y:11},
-        {type:"storage",x:3,y:13},
-        {type:"cart",x:16,y:13},
-        {type:"light",x:5,y:3},
-        {type:"light",x:10,y:3},
-        {type:"light",x:15,y:3},
-        {type:"light",x:18,y:7},
-        {type:"decor",x:18,y:3}
-    ];
-}
-
-/* =========================
-   BUILDING
-   ========================= */
-
-const buildInfo={
-    shelf:{price:150,w:1,h:2},
-    fridge:{price:450,w:2,h:1},
-    checkout:{price:500,w:2,h:1},
-    storage:{price:200,w:2,h:1},
-    cart:{price:250,w:1,h:1},
-    light:{price:75,w:1,h:1},
-    decor:{price:100,w:1,h:1}
 };
 
-document.querySelectorAll(".tool").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-        const type=btn.dataset.build;
+const BUILD_INFO = {
 
-        document.querySelectorAll(".tool")
-            .forEach(b=>b.classList.remove("active"));
+    shelf:{
+        w:1,
+        h:1,
+        price:150
+    },
 
-        btn.classList.add("active");
+    fridge:{
+        w:1,
+        h:1,
+        price:450
+    },
 
-        state.selectedBuild=type;
+    checkout:{
+        w:1,
+        h:1,
+        price:500
+    },
 
-        if(type==="delete"){
-            toast("Click a building to delete it.");
-        }else{
-            toast("Click inside the store to place it.");
+    storage:{
+        w:1,
+        h:1,
+        price:200
+    },
+
+    cart:{
+        w:1,
+        h:1,
+        price:250
+    },
+
+    light:{
+        w:1,
+        h:1,
+        price:75
+    },
+
+    decor:{
+        w:1,
+        h:1,
+        price:100
+    }
+
+};
+
+/* ================= STATE ================= */
+
+let state = {
+
+    cash:10000,
+
+    day:1,
+
+    level:1,
+
+    xp:0,
+
+    rating:3.5,
+
+    storeOpen:false,
+
+    width:20,
+
+    height:15,
+
+    revenueToday:0,
+
+    costsToday:0,
+
+    customersToday:0,
+
+    totalCustomers:0,
+
+    totalSales:0,
+
+    buildings:[],
+
+    customers:[],
+
+    particles:[],
+
+    selectedBuild:null,
+
+    clock:8*60,
+
+    lastTime:performance.now(),
+
+    expansionLevel:0,
+
+    settings:{
+        speed:1
+    }
+
+};
+
+/* ================= PLAYER ================= */
+
+let player = {
+
+    x:10.5,
+    y:12.5,
+
+    speed:4.5,
+
+    moving:false
+
+};
+
+/* ================= CAMERA ================= */
+
+let camera = {
+
+    x:0,
+    y:0
+
+};
+
+/*
+    The store lives in WORLD coordinates.
+
+    0,0 = top-left store tile.
+*/
+
+function updateCamera(){
+
+    const worldWidth = state.width*TILE;
+    const worldHeight = state.height*TILE;
+
+    camera.x =
+        player.x*TILE -
+        W/2;
+
+    camera.y =
+        player.y*TILE -
+        H/2;
+
+    /*
+        Keep the camera from drifting infinitely
+        outside the map.
+    */
+
+    const margin = 350;
+
+    camera.x = Math.max(
+        -margin,
+        Math.min(
+            worldWidth+margin-W,
+            camera.x
+        )
+    );
+
+    camera.y = Math.max(
+        -margin,
+        Math.min(
+            worldHeight+margin-H,
+            camera.y
+        )
+    );
+}
+
+/* ================= SAVE ================= */
+
+const SAVE_KEY = "supermarket_tycoon_v3";
+
+function saveGame(){
+
+    try{
+
+        localStorage.setItem(
+            SAVE_KEY,
+            JSON.stringify({
+
+                state:{
+                    ...state,
+
+                    customers:[],
+                    particles:[]
+                },
+
+                products:PRODUCTS,
+
+                player:{
+                    x:player.x,
+                    y:player.y
+                }
+
+            })
+        );
+
+        toast("Game saved!");
+
+    }catch(e){
+
+        console.error(e);
+
+        toast("Could not save game.");
+
+    }
+
+}
+
+function loadGame(){
+
+    try{
+
+        let raw =
+            localStorage.getItem(SAVE_KEY);
+
+        /*
+            Also check the previous save.
+        */
+
+        if(!raw){
+
+            raw =
+                localStorage.getItem(
+                    "supermarket_tycoon_v1"
+                );
+
         }
-    });
-});
 
-function canPlace(type,x,y){
-    const info=buildInfo[type];
+        if(!raw){
 
-    if(
-        x<1 ||
-        y<1 ||
-        x+info.w>state.storeW-1 ||
-        y+info.h>state.storeH-1
-    ) return false;
+            toast("No save found.");
 
-    for(const b of state.buildings){
-        const bi=buildInfo[b.type];
-
-        if(
-            x < b.x+bi.w &&
-            x+info.w > b.x &&
-            y < b.y+bi.h &&
-            y+info.h > b.y
-        ){
             return false;
+
         }
+
+        const data =
+            JSON.parse(raw);
+
+        state = {
+
+            ...state,
+
+            ...data.state,
+
+            customers:[],
+            particles:[]
+
+        };
+
+        if(data.products){
+
+            for(const saved of data.products){
+
+                const p =
+                    PRODUCTS.find(
+                        x=>x.id===saved.id
+                    );
+
+                if(p){
+
+                    p.price =
+                        saved.price;
+
+                    p.stock =
+                        saved.stock;
+
+                }
+
+            }
+
+        }
+
+        if(data.player){
+
+            player.x =
+                data.player.x;
+
+            player.y =
+                data.player.y;
+
+        }else{
+
+            player.x =
+                state.width/2;
+
+            player.y =
+                state.height-2;
+
+        }
+
+        return true;
+
+    }catch(e){
+
+        console.error(e);
+
+        toast("Save file is corrupted.");
+
+        return false;
+
     }
 
-    return true;
 }
 
-function placeBuilding(type,x,y){
-    const info=buildInfo[type];
+/* ================= UI ================= */
 
-    if(state.cash<info.price){
-        toast("Not enough money!");
-        return;
-    }
+function showScreen(name){
 
-    if(!canPlace(type,x,y)){
-        toast("That space is occupied!");
-        return;
-    }
+    document
+        .querySelectorAll(".screen")
+        .forEach(x=>{
+            x.classList.remove("active");
+        });
 
-    state.cash-=info.price;
+    document
+        .getElementById(name)
+        .classList.add("active");
 
-    state.buildings.push({
-        type,
-        x,
-        y
+}
+
+function openModal(id){
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+}
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("active");
+
+}
+
+document
+    .querySelectorAll("[data-close]")
+    .forEach(btn=>{
+
+        btn.addEventListener(
+            "click",
+            ()=>{
+                closeModal(
+                    btn.dataset.close
+                );
+            }
+        );
+
     });
 
-    state.costsToday+=info.price;
+/* ================= TOAST ================= */
 
-    toast("Built "+type+"!");
-    updateUI();
-    saveGame();
+let toastTimer = 0;
+
+function toast(text){
+
+    const el =
+        document.getElementById("toast");
+
+    el.textContent = text;
+
+    el.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(()=>{
+            el.classList.remove("show");
+        },1800);
+
 }
 
-function deleteBuilding(x,y){
-    for(let i=state.buildings.length-1;i>=0;i--){
-        const b=state.buildings[i];
-        const bi=buildInfo[b.type];
+/* ================= NEW GAME ================= */
+
+function newGame(){
+
+    localStorage.removeItem(SAVE_KEY);
+
+    localStorage.removeItem(
+        "supermarket_tycoon_v1"
+    );
+
+    state.cash=10000;
+
+    state.day=1;
+
+    state.level=1;
+
+    state.xp=0;
+
+    state.rating=3.5;
+
+    state.storeOpen=false;
+
+    state.width=20;
+
+    state.height=15;
+
+    state.revenueToday=0;
+
+    state.costsToday=0;
+
+    state.customersToday=0;
+
+    state.totalCustomers=0;
+
+    state.totalSales=0;
+
+    state.customers=[];
+
+    state.particles=[];
+
+    state.expansionLevel=0;
+
+    state.selectedBuild=null;
+
+    state.clock=8*60;
+
+    PRODUCTS.forEach((p,i)=>{
+
+        const d=DEFAULT_PRODUCTS[i];
+
+        p.cost=d[3];
+
+        p.price=d[4];
+
+        p.stock=d[5];
+
+    });
+
+    /*
+        STARTING STORE
+
+        All buildings sit directly on the
+        20 x 15 tile grid.
+    */
+
+    state.buildings=[
+
+        {type:"shelf",x:3,y:3},
+        {type:"shelf",x:6,y:3},
+        {type:"shelf",x:9,y:3},
+
+        {type:"shelf",x:3,y:7},
+        {type:"shelf",x:6,y:7},
+        {type:"shelf",x:9,y:7},
+
+        {type:"fridge",x:13,y:3},
+
+        {type:"checkout",x:14,y:11},
+
+        {type:"storage",x:3,y:11},
+        {type:"storage",x:5,y:11},
+
+        {type:"cart",x:2,y:13},
+
+        {type:"light",x:2,y:1},
+        {type:"light",x:6,y:1},
+        {type:"light",x:10,y:1},
+        {type:"light",x:14,y:1},
+
+        {type:"decor",x:17,y:2}
+
+    ];
+
+    player.x=10.5;
+
+    player.y=13.2;
+
+    showScreen("game");
+
+    updateUI();
+
+    updateCamera();
+
+    toast(
+        "Welcome! Build, stock, then open your store."
+    );
+
+    saveGame();
+
+}
+
+/* ================= CONTINUE ================= */
+
+function continueGame(){
+
+    if(loadGame()){
+
+        showScreen("game");
+
+        updateUI();
+
+        updateCamera();
+
+        toast("Welcome back!");
+
+    }
+
+}
+
+/* ================= MENU BUTTONS ================= */
+
+document
+    .getElementById("newGameBtn")
+    .addEventListener(
+        "click",
+        newGame
+    );
+
+document
+    .getElementById("continueBtn")
+    .addEventListener(
+        "click",
+        continueGame
+    );
+
+document
+    .getElementById("settingsBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+            toast(
+                "Settings coming later!"
+            );
+        }
+    );
+
+document
+    .getElementById("wipeBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            if(
+                confirm(
+                    "Delete your supermarket save?"
+                )
+            ){
+
+                localStorage.removeItem(
+                    SAVE_KEY
+                );
+
+                localStorage.removeItem(
+                    "supermarket_tycoon_v1"
+                );
+
+                toast("Save deleted.");
+
+            }
+
+        }
+    );
+
+/* ================= PANEL TABS ================= */
+
+document
+    .getElementById("buildTab")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const content =
+                document.getElementById(
+                    "buildContent"
+                );
+
+            content.classList.toggle("hidden");
+
+            document
+                .getElementById("buildTab")
+                .textContent =
+                content.classList.contains("hidden")
+                ? "🔨 BUILD ▶"
+                : "🔨 BUILD ▼";
+
+        }
+    );
+
+document
+    .getElementById("managementTab")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const content =
+                document.getElementById(
+                    "managementContent"
+                );
+
+            content.classList.toggle("hidden");
+
+            document
+                .getElementById("managementTab")
+                .textContent =
+                content.classList.contains("hidden")
+                ? "📊 MANAGEMENT ▶"
+                : "📊 MANAGEMENT ▼";
+
+        }
+    );
+
+/* ================= BUILD SELECT ================= */
+
+document
+    .querySelectorAll("[data-build]")
+    .forEach(btn=>{
+
+        btn.addEventListener(
+            "click",
+            ()=>{
+
+                const type =
+                    btn.dataset.build;
+
+                state.selectedBuild=type;
+
+                document
+                    .querySelectorAll(".build-btn")
+                    .forEach(b=>{
+                        b.classList.remove(
+                            "selected"
+                        );
+                    });
+
+                btn.classList.add(
+                    "selected"
+                );
+
+                toast(
+                    type==="delete"
+                    ? "Click something to delete it."
+                    : "Click a grid tile to place it."
+                );
+
+            }
+        );
+
+    });
+
+/* ================= GRID ================= */
+
+function insideStore(x,y){
+
+    return (
+
+        x>=0 &&
+        y>=0 &&
+        x<state.width &&
+        y<state.height
+
+    );
+
+}
+
+/*
+    Lights don't count as occupied.
+*/
+
+function buildingAt(x,y){
+
+    for(
+        let i=state.buildings.length-1;
+        i>=0;
+        i--
+    ){
+
+        const b =
+            state.buildings[i];
+
+        const info =
+            BUILD_INFO[b.type];
+
+        if(!info) continue;
 
         if(
             x>=b.x &&
-            x<b.x+bi.w &&
+            x<b.x+info.w &&
             y>=b.y &&
-            y<b.y+bi.h
+            y<b.y+info.h
         ){
-            if(["shelf","fridge","checkout"].includes(b.type)){
-                if(!confirm("Delete this "+b.type+"?")){
-                    return;
-                }
+
+            return b;
+
+        }
+
+    }
+
+    return null;
+
+}
+
+function occupied(x,y){
+
+    const b =
+        buildingAt(x,y);
+
+    if(!b){
+
+        return false;
+
+    }
+
+    /*
+        Lights are decorations and do NOT
+        block movement or placement.
+    */
+
+    return b.type!=="light";
+
+}
+
+function canPlace(type,x,y){
+
+    const info =
+        BUILD_INFO[type];
+
+    if(!info){
+
+        return false;
+
+    }
+
+    for(
+        let yy=0;
+        yy<info.h;
+        yy++
+    ){
+
+        for(
+            let xx=0;
+            xx<info.w;
+            xx++
+        ){
+
+            const tx=x+xx;
+            const ty=y+yy;
+
+            if(!insideStore(tx,ty)){
+
+                return false;
+
             }
 
-            state.buildings.splice(i,1);
-            toast("Building removed.");
-            saveGame();
+            if(occupied(tx,ty)){
+
+                return false;
+
+            }
+
+            /*
+                Keep the entrance clear.
+            */
+
+            const entranceX =
+                Math.floor(
+                    state.width/2
+                );
+
+            const entranceY =
+                state.height-1;
+
+            if(
+                tx===entranceX &&
+                ty===entranceY
+            ){
+
+                return false;
+
+            }
+
+        }
+
+    }
+
+    return true;
+
+}
+
+function buildAt(x,y){
+
+    if(!state.selectedBuild){
+
+        return;
+
+    }
+
+    if(
+        state.selectedBuild==="delete"
+    ){
+
+        const b =
+            buildingAt(x,y);
+
+        if(!b){
+
+            toast("Nothing there.");
+
             return;
+
         }
-    }
 
-    toast("Nothing there.");
-}
+        const index =
+            state.buildings.indexOf(b);
 
-/* =========================
-   CANVAS
-   ========================= */
+        if(index>=0){
 
-function resizeCanvas(){
-    canvas.width=canvas.clientWidth;
-    canvas.height=canvas.clientHeight;
-}
-window.addEventListener("resize",resizeCanvas);
-resizeCanvas();
+            state.buildings.splice(
+                index,
+                1
+            );
 
-canvas.addEventListener("mousemove",e=>{
-    const rect=canvas.getBoundingClientRect();
+            toast("Object removed.");
 
-    state.mouseX=e.clientX-rect.left;
-    state.mouseY=e.clientY-rect.top;
-});
+            updateUI();
 
-canvas.addEventListener("click",e=>{
-    if(!state.selectedBuild)return;
-
-    const rect=canvas.getBoundingClientRect();
-
-    const x=Math.floor(
-        (e.clientX-rect.left)/TILE
-    );
-
-    const y=Math.floor(
-        (e.clientY-rect.top)/TILE
-    );
-
-    if(state.selectedBuild==="delete"){
-        deleteBuilding(x,y);
-    }else{
-        placeBuilding(state.selectedBuild,x,y);
-    }
-});
-
-function draw(){
-    const scale=Math.min(
-        canvas.width/(state.storeW*TILE+400),
-        canvas.height/(state.storeH*TILE+150)
-    );
-
-    ctx.save();
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    const ox=70;
-    const oy=70;
-
-    drawOutside(ox,oy);
-
-    drawStore(ox,oy);
-
-    drawBuildings(ox,oy);
-
-    drawCustomers(ox,oy);
-
-    drawEmployees(ox,oy);
-
-    drawPlayer(ox,oy);
-
-    if(state.selectedBuild){
-        drawBuildPreview(ox,oy);
-    }
-
-    ctx.restore();
-}
-
-function drawOutside(ox,oy){
-    ctx.fillStyle="#18351f";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // road
-    ctx.fillStyle="#30343b";
-    ctx.fillRect(
-        0,
-        oy+state.storeH*TILE+80,
-        canvas.width,
-        120
-    );
-
-    // parking
-    ctx.fillStyle="#4a4e55";
-    ctx.fillRect(
-        0,
-        oy+state.storeH*TILE,
-        canvas.width,
-        80
-    );
-
-    ctx.strokeStyle="#ddd";
-    ctx.globalAlpha=.4;
-
-    for(let x=0;x<canvas.width;x+=55){
-        ctx.beginPath();
-        ctx.moveTo(x,oy+state.storeH*TILE+10);
-        ctx.lineTo(x+35,oy+state.storeH*TILE+10);
-        ctx.stroke();
-    }
-
-    ctx.globalAlpha=1;
-
-    // trees
-    for(let x=20;x<canvas.width;x+=150){
-        ctx.fillStyle="#704b31";
-        ctx.fillRect(x,oy+30,10,20);
-
-        ctx.fillStyle="#29763c";
-        ctx.beginPath();
-        ctx.arc(x+5,oy+25,22,0,Math.PI*2);
-        ctx.fill();
-    }
-}
-
-function drawStore(ox,oy){
-    const w=state.storeW*TILE;
-    const h=state.storeH*TILE;
-
-    ctx.fillStyle="#d4c7a2";
-    ctx.fillRect(ox,oy,w,h);
-
-    // floor grid
-    ctx.strokeStyle="#c3b694";
-    ctx.lineWidth=1;
-
-    for(let x=0;x<=w;x+=TILE){
-        ctx.beginPath();
-        ctx.moveTo(ox+x,oy);
-        ctx.lineTo(ox+x,oy+h);
-        ctx.stroke();
-    }
-
-    for(let y=0;y<=h;y+=TILE){
-        ctx.beginPath();
-        ctx.moveTo(ox,oy+y);
-        ctx.lineTo(ox+w,oy+y);
-        ctx.stroke();
-    }
-
-    // walls
-    ctx.fillStyle="#26313e";
-    ctx.fillRect(ox,oy,w,8);
-    ctx.fillRect(ox,oy,8,h);
-    ctx.fillRect(ox+w-8,oy,8,h);
-    ctx.fillRect(ox,oy+h-8,w,8);
-
-    // entrance
-    ctx.fillStyle="#5ed2ff";
-    ctx.fillRect(
-        ox+w/2-35,
-        oy+h-10,
-        70,
-        14
-    );
-
-    ctx.fillStyle="#fff";
-    ctx.font="bold 18px Arial";
-    ctx.textAlign="center";
-    ctx.fillText(
-        "SUPERMARKET",
-        ox+w/2,
-        oy-20
-    );
-}
-
-function drawBuildings(ox,oy){
-
-    for(const b of state.buildings){
-
-        const x=ox+b.x*TILE;
-        const y=oy+b.y*TILE;
-        const info=buildInfo[b.type];
-
-        let color="#777";
-
-        if(b.type==="shelf")color="#8b5a32";
-        if(b.type==="fridge")color="#57a8c8";
-        if(b.type==="checkout")color="#ad7043";
-        if(b.type==="storage")color="#655a4d";
-        if(b.type==="cart")color="#b5b9bf";
-        if(b.type==="light")color="#fff3a3";
-        if(b.type==="decor")color="#b27de2";
-
-        ctx.fillStyle=color;
-
-        ctx.fillRect(
-            x+2,
-            y+2,
-            info.w*TILE-4,
-            info.h*TILE-4
-        );
-
-        ctx.strokeStyle="#222";
-        ctx.lineWidth=2;
-        ctx.strokeRect(
-            x+2,
-            y+2,
-            info.w*TILE-4,
-            info.h*TILE-4
-        );
-
-        ctx.fillStyle="#fff";
-        ctx.font="bold 11px Arial";
-        ctx.textAlign="center";
-
-        let symbol={
-            shelf:"SHELF",
-            fridge:"FRIDGE",
-            checkout:"REGISTER",
-            storage:"STORAGE",
-            cart:"CARTS",
-            light:"💡",
-            decor:"★"
-        }[b.type];
-
-        ctx.fillText(
-            symbol,
-            x+info.w*TILE/2,
-            y+info.h*TILE/2+4
-        );
-    }
-}
-
-function drawPlayer(ox,oy){
-    const x=ox+state.player.x*TILE+TILE/2;
-    const y=oy+state.player.y*TILE+TILE/2;
-
-    ctx.fillStyle="#ffce55";
-    ctx.beginPath();
-    ctx.arc(x,y,10,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="#1c2530";
-    ctx.beginPath();
-    ctx.arc(x,y-3,4,0,Math.PI*2);
-    ctx.fill();
-}
-
-function drawCustomers(ox,oy){
-
-    for(const c of state.customers){
-
-        const x=ox+c.x*TILE+TILE/2;
-        const y=oy+c.y*TILE+TILE/2;
-
-        ctx.fillStyle=c.color;
-        ctx.beginPath();
-        ctx.arc(x,y,8,0,Math.PI*2);
-        ctx.fill();
-
-        if(c.state==="queue"){
-            ctx.strokeStyle="#fff";
-            ctx.strokeRect(x-10,y-10,20,20);
         }
+
+        return;
+
     }
+
+    const type =
+        state.selectedBuild;
+
+    if(!canPlace(type,x,y)){
+
+        toast("That tile is blocked.");
+
+        return;
+
+    }
+
+    const price =
+        BUILD_PRICES[type];
+
+    if(state.cash<price){
+
+        toast("Not enough money.");
+
+        return;
+
+    }
+
+    state.cash-=price;
+
+    state.buildings.push({
+
+        type:type,
+
+        x:x,
+
+        y:y
+
+    });
+
+    addXP(10);
+
+    toast(
+        type.charAt(0).toUpperCase()+
+        type.slice(1)+
+        " built!"
+    );
+
+    updateUI();
+
 }
 
-function drawEmployees(ox,oy){
+/* ================= MOUSE ================= */
 
-    for(const e of state.employees){
+let lastMouse={
 
-        const x=ox+e.x*TILE+TILE/2;
-        const y=oy+e.y*TILE+TILE/2;
+    x:0,
+    y:0,
 
-        ctx.fillStyle=employeeTypes[e.type].color;
+    tileX:null,
+    tileY:null
 
-        ctx.beginPath();
-        ctx.arc(x,y,9,0,Math.PI*2);
-        ctx.fill();
+};
 
-        ctx.fillStyle="#111";
-        ctx.font="bold 9px Arial";
-        ctx.textAlign="center";
+function mousePosition(e){
 
-        ctx.fillText(
-            e.type[0].toUpperCase(),
-            x,
-            y+3
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const mx =
+        e.clientX-rect.left;
+
+    const my =
+        e.clientY-rect.top;
+
+    /*
+        Convert screen position into
+        WORLD tile coordinates.
+    */
+
+    const worldX =
+        mx+camera.x;
+
+    const worldY =
+        my+camera.y;
+
+    const tx =
+        Math.floor(
+            worldX/TILE
         );
+
+    const ty =
+        Math.floor(
+            worldY/TILE
+        );
+
+    return {
+
+        mx,
+        my,
+
+        tileX:tx,
+        tileY:ty
+
+    };
+
+}
+
+canvas.addEventListener(
+    "mousemove",
+    e=>{
+
+        const p =
+            mousePosition(e);
+
+        lastMouse=p;
+
     }
+);
+
+canvas.addEventListener(
+    "mouseleave",
+    ()=>{
+
+        lastMouse.tileX=null;
+        lastMouse.tileY=null;
+
+    }
+);
+
+canvas.addEventListener(
+    "click",
+    e=>{
+
+        const p =
+            mousePosition(e);
+
+        if(
+            insideStore(
+                p.tileX,
+                p.tileY
+            )
+        ){
+
+            buildAt(
+                p.tileX,
+                p.tileY
+            );
+
+        }
+
+    }
+);
+
+/* ================= KEYBOARD ================= */
+
+const keys={};
+
+window.addEventListener(
+    "keydown",
+    e=>{
+
+        keys[
+            e.key.toLowerCase()
+        ]=true;
+
+        if(e.key==="Escape"){
+
+            state.selectedBuild=null;
+
+            document
+                .querySelectorAll(".build-btn")
+                .forEach(b=>{
+                    b.classList.remove(
+                        "selected"
+                    );
+                });
+
+            toast("Build mode cancelled.");
+
+        }
+
+    }
+);
+
+window.addEventListener(
+    "keyup",
+    e=>{
+
+        keys[
+            e.key.toLowerCase()
+        ]=false;
+
+    }
+);
+
+/* ================= PLAYER ================= */
+
+function playerBlocked(x,y){
+
+    /*
+        Small collision circle.
+    */
+
+    const radius=.22;
+
+    const points=[
+
+        [x-radius,y-radius],
+        [x+radius,y-radius],
+        [x-radius,y+radius],
+        [x+radius,y+radius]
+
+    ];
+
+    for(const p of points){
+
+        const tx =
+            Math.floor(p[0]);
+
+        const ty =
+            Math.floor(p[1]);
+
+        if(
+            !insideStore(
+                tx,
+                ty
+            )
+        ){
+
+            continue;
+
+        }
+
+        if(
+            occupied(
+                tx,
+                ty
+            )
+        ){
+
+            return true;
+
+        }
+
+    }
+
+    return false;
+
 }
 
-function drawBuildPreview(ox,oy){
-
-    if(!buildInfo[state.selectedBuild])return;
-
-    const info=buildInfo[state.selectedBuild];
-
-    const x=Math.floor(
-        (state.mouseX-ox)/TILE
-    );
-
-    const y=Math.floor(
-        (state.mouseY-oy)/TILE
-    );
-
-    if(x<0||y<0)return;
-
-    ctx.fillStyle=
-        canPlace(state.selectedBuild,x,y)
-        ? "#4cff8866"
-        : "#ff444466";
-
-    ctx.fillRect(
-        ox+x*TILE,
-        oy+y*TILE,
-        info.w*TILE,
-        info.h*TILE
-    );
-}
-
-/* =========================
-   PLAYER
-   ========================= */
-
-let keys={};
-
-window.addEventListener("keydown",e=>{
-    keys[e.key.toLowerCase()]=true;
-});
-
-window.addEventListener("keyup",e=>{
-    keys[e.key.toLowerCase()]=false;
-});
-
-function movePlayer(dt){
+function updatePlayer(dt){
 
     let dx=0;
     let dy=0;
 
-    if(keys["w"]||keys["arrowup"])dy--;
-    if(keys["s"]||keys["arrowdown"])dy++;
-    if(keys["a"]||keys["arrowleft"])dx--;
-    if(keys["d"]||keys["arrowright"])dx++;
-
-    if(dx||dy){
-        const len=Math.hypot(dx,dy);
-        dx/=len;
-        dy/=len;
-
-        state.player.x+=dx*state.player.speed*dt;
-        state.player.y+=dy*state.player.speed*dt;
+    if(
+        keys.w ||
+        keys.arrowup
+    ){
+        dy--;
     }
 
-    state.player.x=clamp(
-        state.player.x,
-        1,
-        state.storeW-2
-    );
-
-    state.player.y=clamp(
-        state.player.y,
-        1,
-        state.storeH-2
-    );
-}
-
-function centerPlayer(){
-    state.player.x=state.storeW/2;
-    state.player.y=state.storeH-2;
-}
-
-/* =========================
-   PRODUCTS
-   ========================= */
-
-function productsModal(){
-
-    let html=`
-        <button class="close" onclick="closeModal()">✕</button>
-        <h2>💵 Products & Pricing</h2>
-        <p>Set the selling price for every product.</p>
-    `;
-
-    for(const name of productNames){
-
-        const p=state.products[name];
-
-        html+=`
-        <div class="row">
-            <div class="rowInfo">
-                <strong>${name}</strong>
-                <small>
-                    Wholesale: ${money(p.cost)}
-                    • Profit: ${money(p.price-p.cost)}
-                </small>
-            </div>
-
-            <input
-                type="number"
-                min="${p.cost}"
-                step=".01"
-                value="${p.price.toFixed(2)}"
-                onchange="changePrice('${name}',this.value)"
-            >
-        </div>`;
+    if(
+        keys.s ||
+        keys.arrowdown
+    ){
+        dy++;
     }
 
-    openModal(html);
-}
-
-function changePrice(name,value){
-
-    let price=parseFloat(value);
-
-    if(!Number.isFinite(price))return;
-
-    price=Math.max(
-        state.products[name].cost,
-        price
-    );
-
-    state.products[name].price=price;
-
-    toast(
-        name+" price set to "+money(price)
-    );
-
-    saveGame();
-}
-
-/* =========================
-   INVENTORY
-   ========================= */
-
-function inventoryModal(){
-
-    let html=`
-        <button class="close" onclick="closeModal()">✕</button>
-        <h2>📦 Inventory</h2>
-        <p>Buy stock from your suppliers.</p>
-    `;
-
-    for(const name of productNames){
-
-        const p=state.products[name];
-
-        html+=`
-        <div class="row">
-            <div class="rowInfo">
-                <strong>${name}</strong>
-                <small>
-                    ${p.stock}/${p.max} in stock
-                    • ${money(p.cost)} each
-                </small>
-            </div>
-
-            <button onclick="orderProduct('${name}',10)">
-                +10
-            </button>
-        </div>`;
+    if(
+        keys.a ||
+        keys.arrowleft
+    ){
+        dx--;
     }
 
-    openModal(html);
-}
+    if(
+        keys.d ||
+        keys.arrowright
+    ){
+        dx++;
+    }
 
-function orderProduct(name,amount){
+    if(!dx && !dy){
 
-    const p=state.products[name];
+        player.moving=false;
 
-    const actual=Math.min(
-        amount,
-        p.max-p.stock
-    );
-
-    if(actual<=0){
-        toast("Storage is full for "+name+"!");
         return;
+
     }
 
-    const cost=actual*p.cost;
+    const len =
+        Math.hypot(dx,dy);
 
-    if(state.cash<cost){
-        toast("Not enough money!");
-        return;
+    dx/=len;
+    dy/=len;
+
+    const speed =
+        player.speed*state.settings.speed*dt;
+
+    const nx =
+        player.x+
+        dx*speed;
+
+    const ny =
+        player.y+
+        dy*speed;
+
+    /*
+        Collision is checked separately
+        for X and Y so you can slide around
+        objects.
+    */
+
+    if(
+        !playerBlocked(
+            nx,
+            player.y
+        )
+    ){
+
+        player.x=nx;
+
     }
 
-    state.cash-=cost;
-    p.stock+=actual;
+    if(
+        !playerBlocked(
+            player.x,
+            ny
+        )
+    ){
 
-    state.costsToday+=cost;
+        player.y=ny;
 
-    toast(
-        "Ordered "+actual+" "+name
-    );
+    }
 
-    inventoryModal();
-    updateUI();
-    saveGame();
+    player.x =
+        Math.max(
+            .35,
+            Math.min(
+                state.width-.35,
+                player.x
+            )
+        );
+
+    player.y =
+        Math.max(
+            .35,
+            Math.min(
+                state.height-.35,
+                player.y
+            )
+        );
+
+    player.moving=true;
+
 }
 
-/* =========================
-   EMPLOYEES
-   ========================= */
+/* ================= CUSTOMERS ================= */
 
-function employeesModal(){
+function randomCustomerColor(){
 
-    let html=`
-        <button class="close" onclick="closeModal()">✕</button>
-        <h2>👷 Employees</h2>
-        <p>
-            Employees automatically work while the store is open.
-        </p>
-    `;
+    const colors=[
 
-    for(const type of Object.keys(employeeTypes)){
+        "#e87d72",
+        "#72a7e8",
+        "#e8c772",
+        "#9c72e8",
+        "#72d69a",
+        "#d77ac1"
 
-        const info=employeeTypes[type];
+    ];
 
-        html+=`
-        <div class="row">
-            <div class="rowInfo">
-                <strong>${info.name}</strong>
-                <small>
-                    Hire: ${money(info.hire)}
-                    • Wage: ${money(info.wage)}/hour
-                </small>
-            </div>
+    return colors[
+        Math.floor(
+            Math.random()*colors.length
+        )
+    ];
 
-            <button onclick="hireEmployee('${type}')">
-                Hire
-            </button>
-        </div>`;
-    }
-
-    html+=`
-        <hr>
-        <h3>Current Employees</h3>
-    `;
-
-    if(state.employees.length===0){
-        html+=`<p>No employees hired yet.</p>`;
-    }
-
-    for(const e of state.employees){
-
-        html+=`
-        <div class="employee">
-            <strong>${employeeTypes[e.type].name}</strong>
-            <br>
-            <small>
-                Level ${e.level}
-                • ${money(employeeTypes[e.type].wage)}/hour
-            </small>
-        </div>`;
-    }
-
-    openModal(html);
 }
-
-function hireEmployee(type){
-
-    const info=employeeTypes[type];
-
-    if(state.cash<info.hire){
-        toast("Not enough money to hire!");
-        return;
-    }
-
-    state.cash-=info.hire;
-
-    state.employees.push({
-        type,
-        level:1,
-        x:state.storeW/2,
-        y:state.storeH/2,
-        targetX:state.storeW/2,
-        targetY:state.storeH/2,
-        workTimer:0
-    });
-
-    state.costsToday+=info.hire;
-
-    toast(
-        info.name+" hired! 👷"
-    );
-
-    updateUI();
-    employeesModal();
-    saveGame();
-}
-
-function renderEmployees(){
-
-    const panel=document.getElementById("employeePanel");
-
-    if(!state.employees.length){
-        panel.innerHTML=`
-            <div class="toolTitle">EMPLOYEES</div>
-            <div style="color:#7f8999;font-size:12px">
-                No employees hired.
-            </div>
-        `;
-        return;
-    }
-
-    let html=`
-        <div class="toolTitle">EMPLOYEES</div>
-    `;
-
-    for(const e of state.employees){
-
-        html+=`
-        <div class="employee">
-            <strong>${employeeTypes[e.type].name}</strong>
-            <br>
-            <small>Level ${e.level}</small>
-        </div>
-        `;
-    }
-
-    panel.innerHTML=html;
-}
-
-/* =========================
-   EMPLOYEE AI
-   ========================= */
-
-function updateEmployees(dt){
-
-    if(!state.open)return;
-
-    for(const e of state.employees){
-
-        e.workTimer-=dt;
-
-        if(e.workTimer<=0){
-
-            e.targetX=
-                2+
-                Math.random()*
-                (state.storeW-4);
-
-            e.targetY=
-                2+
-                Math.random()*
-                (state.storeH-4);
-
-            e.workTimer=
-                3+
-                Math.random()*5;
-        }
-
-        const dx=e.targetX-e.x;
-        const dy=e.targetY-e.y;
-        const distance=Math.hypot(dx,dy);
-
-        if(distance>.1){
-
-            const speed=
-                .9+
-                e.level*.1;
-
-            e.x+=dx/distance*speed*dt;
-            e.y+=dy/distance*speed*dt;
-        }
-
-        // Stocker
-        if(e.type==="stocker"){
-            restockNearby(e);
-        }
-
-        // Cleaner
-        if(e.type==="cleaner"){
-            cleanNearby(e);
-        }
-
-        // Cashier
-        if(e.type==="cashier"){
-            cashierWork(e);
-        }
-    }
-}
-
-function restockNearby(e){
-
-    for(const name of productNames){
-
-        const p=state.products[name];
-
-        if(p.stock<=0){
-            p.stock++;
-            return;
-        }
-    }
-}
-
-function cleanNearby(e){
-    // V2 groundwork for physical dirt/messes.
-}
-
-function cashierWork(e){
-
-    for(const c of state.customers){
-
-        if(c.state==="queue"){
-            c.queueTime-=.1;
-
-            if(c.queueTime<=0){
-                completePurchase(c);
-                return;
-            }
-        }
-    }
-}
-
-/* =========================
-   CUSTOMER AI
-   ========================= */
-
-const customerColors=[
-    "#ff7373",
-    "#72b7ff",
-    "#b978ff",
-    "#65d58b",
-    "#ffb65e",
-    "#f17dc1"
-];
-
-const personalities=[
-    "budget",
-    "impatient",
-    "rich",
-    "family",
-    "health",
-    "snack"
-];
 
 function spawnCustomer(){
 
-    if(!state.open)return;
+    if(!state.storeOpen){
+
+        return;
+
+    }
+
+    if(
+        state.customers.length>=25
+    ){
+
+        return;
+
+    }
+
+    const entranceX =
+        state.width/2+.5;
+
+    const entranceY =
+        state.height-.5;
+
+    const personalities=[
+
+        "budget",
+        "impatient",
+        "rich",
+        "family",
+        "health",
+        "snack",
+        "oneItem",
+        "bigShopper"
+
+    ];
+
+    const type =
+        personalities[
+            Math.floor(
+                Math.random()*
+                personalities.length
+            )
+        ];
 
     const c={
-        id:Math.random(),
-        x:state.storeW/2,
-        y:0.3,
 
-        targetX:state.storeW/2,
-        targetY:3,
+        x:entranceX,
+        y:entranceY,
+
+        targetX:entranceX,
+        targetY:entranceY,
+
+        speed:1.2+
+            Math.random()*.5,
+
+        type:type,
 
         state:"shopping",
 
-        personality:
-            personalities[
-                Math.floor(
-                    Math.random()*personalities.length
-                )
-            ],
+        shoppingTime:0,
+
+        products:[],
+
+        money:
+            5+
+            Math.random()*55,
 
         color:
-            customerColors[
-                Math.floor(
-                    Math.random()*customerColors.length
-                )
-            ],
+            randomCustomerColor(),
 
-        shoppingList:[],
-        currentItem:0,
+        satisfaction:1,
 
-        queueTime:Math.random()*8+3,
-        patience:20+Math.random()*20,
+        queueTime:0,
 
-        spending:5+Math.random()*55,
+        queueOrder:
+            Date.now()+
+            Math.random()*10000
 
-        satisfaction:3.5
     };
 
-    let count=
-        4+
-        Math.floor(Math.random()*4);
-
-    if(c.personality==="family")count+=3;
-    if(c.personality==="one")count=1;
-    if(c.personality==="snack")count+=2;
-
-    for(let i=0;i<count;i++){
-
-        c.shoppingList.push(
-            productNames[
-                Math.floor(
-                    Math.random()*productNames.length
-                )
-            ]
-        );
-    }
+    createShoppingList(c);
 
     state.customers.push(c);
+
+    state.customersToday++;
+
+    state.totalCustomers++;
+
+    updateUI();
+
+}
+
+function createShoppingList(c){
+
+    let count;
+
+    switch(c.type){
+
+        case"oneItem":
+            count=1;
+            break;
+
+        case"bigShopper":
+            count=
+                7+
+                Math.floor(
+                    Math.random()*4
+                );
+            break;
+
+        case"family":
+            count=
+                6+
+                Math.floor(
+                    Math.random()*4
+                );
+            break;
+
+        case"snack":
+            count=
+                3+
+                Math.floor(
+                    Math.random()*3
+                );
+            break;
+
+        default:
+            count=
+                3+
+                Math.floor(
+                    Math.random()*4
+                );
+
+    }
+
+    const shuffled =
+        [...PRODUCTS]
+        .sort(
+            ()=>Math.random()-.5
+        );
+
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        const p =
+            shuffled[
+                i%shuffled.length
+            ];
+
+        c.products.push({
+
+            id:p.id,
+
+            bought:false
+
+        });
+
+    }
+
+}
+
+function chooseShelfTarget(c){
+
+    const desired =
+        c.products.find(
+            x=>!x.bought
+        );
+
+    if(!desired){
+
+        c.state="checkout";
+
+        return;
+
+    }
+
+    const shelves =
+        state.buildings.filter(
+            b=>
+                b.type==="shelf" ||
+                b.type==="fridge"
+        );
+
+    if(!shelves.length){
+
+        c.satisfaction-=.25;
+
+        c.state="leave";
+
+        return;
+
+    }
+
+    /*
+        Pick a random shelf so customers
+        visibly move around the store.
+    */
+
+    const target =
+        shelves[
+            Math.floor(
+                Math.random()*shelves.length
+            )
+        ];
+
+    c.targetX =
+        target.x+.5;
+
+    c.targetY =
+        target.y+.5;
+
+    c.state="shopping";
+
+}
+
+function getCheckout(){
+
+    return state.buildings.find(
+        b=>b.type==="checkout"
+    );
+
+}
+
+function getQueueCustomers(){
+
+    return state.customers
+        .filter(
+            c=>c.state==="queue"
+        )
+        .sort(
+            (a,b)=>
+                a.queueOrder-
+                b.queueOrder
+        );
+
+}
+
+function updateQueueTarget(c){
+
+    const checkout =
+        getCheckout();
+
+    if(!checkout){
+
+        return;
+
+    }
+
+    const queue =
+        getQueueCustomers();
+
+    const index =
+        queue.indexOf(c);
+
+    if(index===-1){
+
+        return;
+
+    }
+
+    /*
+        Customers line up behind the checkout
+        in a visible queue.
+    */
+
+    c.targetX =
+        checkout.x+.5;
+
+    c.targetY =
+        checkout.y+
+        1.3+
+        index*.8;
+
+}
+
+function moveCustomer(c,dt){
+
+    const dx =
+        c.targetX-c.x;
+
+    const dy =
+        c.targetY-c.y;
+
+    const d =
+        Math.hypot(dx,dy);
+
+    if(d<.03){
+
+        return;
+
+    }
+
+    c.x +=
+        (dx/d)*
+        c.speed*
+        dt;
+
+    c.y +=
+        (dy/d)*
+        c.speed*
+        dt;
+
 }
 
 function updateCustomers(dt){
 
-    if(!state.open)return;
+    if(!state.storeOpen){
 
-    for(let i=state.customers.length-1;i>=0;i--){
+        return;
 
-        const c=state.customers[i];
+    }
+
+    for(
+        let i=state.customers.length-1;
+        i>=0;
+        i--
+    ){
+
+        const c =
+            state.customers[i];
+
+        c.shoppingTime+=dt;
 
         if(c.state==="shopping"){
 
-            if(c.currentItem>=c.shoppingList.length){
+            if(
+                !c.targetX &&
+                !c.targetY
+            ){
 
-                c.state="checkout";
+                chooseShelfTarget(c);
 
-                c.targetX=
-                    state.storeW-4;
-
-                c.targetY=
-                    state.storeH-3;
-
-                continue;
             }
-
-            const item=c.shoppingList[c.currentItem];
-
-            const p=state.products[item];
-
-            if(!p || p.stock<=0){
-
-                c.satisfaction-=.35;
-
-                c.currentItem++;
-                continue;
-            }
-
-            const shelf=findRandomShelf();
-
-            if(shelf){
-
-                c.targetX=shelf.x;
-                c.targetY=shelf.y;
-
-                moveCustomer(c,dt);
-
-                if(distance(c.x,c.y,c.targetX,c.targetY)<.5){
-
-                    if(Math.random()<.85){
-
-                        p.stock--;
-
-                        c.currentItem++;
-
-                        c.satisfaction+=.08;
-                    }
-                }
-            }else{
-
-                c.currentItem++;
-            }
-        }
-
-        else if(c.state==="checkout"){
 
             moveCustomer(c,dt);
 
             if(
                 distance(
-                    c.x,c.y,
-                    c.targetX,c.targetY
-                )<.6
+                    c.x,
+                    c.y,
+                    c.targetX,
+                    c.targetY
+                )<.55
             ){
+
+                const desired =
+                    c.products.find(
+                        x=>!x.bought
+                    );
+
+                if(desired){
+
+                    const product =
+                        PRODUCTS.find(
+                            p=>
+                                p.id===desired.id
+                        );
+
+                    if(
+                        product &&
+                        product.stock>0
+                    ){
+
+                        let chance=.72;
+
+                        if(
+                            c.type==="rich"
+                        ){
+
+                            chance+=.15;
+
+                        }
+
+                        if(
+                            c.type==="budget"
+                        ){
+
+                            const markup =
+                                product.price/
+                                product.cost;
+
+                            if(markup>2){
+
+                                chance-=.18;
+
+                            }
+
+                        }
+
+                        if(
+                            c.type==="snack" &&
+                            product.category==="Food"
+                        ){
+
+                            chance+=.15;
+
+                        }
+
+                        if(
+                            Math.random()<
+                            chance
+                        ){
+
+                            product.stock--;
+
+                            desired.bought=true;
+
+                            c.money-=
+                                product.price;
+
+                            state.totalSales++;
+
+                            createMoneyParticle(
+                                c.x,
+                                c.y,
+                                product.price
+                            );
+
+                            addXP(2);
+
+                        }else{
+
+                            c.satisfaction-=.05;
+
+                            desired.bought=true;
+
+                        }
+
+                    }else{
+
+                        c.satisfaction-=.18;
+
+                        desired.bought=true;
+
+                    }
+
+                }
+
+                chooseShelfTarget(c);
+
+            }
+
+            if(
+                c.shoppingTime>45
+            ){
+
+                c.state="checkout";
+
+            }
+
+        }
+
+        if(c.state==="checkout"){
+
+            const checkout =
+                getCheckout();
+
+            if(!checkout){
+
+                c.satisfaction-=.4;
+
+                c.state="leave";
+
+            }else{
 
                 c.state="queue";
+
+                c.queueOrder =
+                    Date.now()+
+                    Math.random()*10000;
+
             }
+
         }
 
-        else if(c.state==="queue"){
+        if(c.state==="queue"){
 
-            c.patience-=dt;
+            updateQueueTarget(c);
 
-            if(
-                c.patience<=0 &&
-                !hasCashier()
-            ){
+            moveCustomer(c,dt);
 
-                c.satisfaction-=.5;
+            const queue =
+                getQueueCustomers();
 
-                state.customers.splice(i,1);
-
-                continue;
-            }
+            const index =
+                queue.indexOf(c);
 
             if(
-                c.queueTime<=0 ||
-                hasCashier()
+                index===0 &&
+                distance(
+                    c.x,
+                    c.y,
+                    c.targetX,
+                    c.targetY
+                )<.7
             ){
 
-                completePurchase(c);
+                c.queueTime+=dt;
 
-                state.customers.splice(i,1);
+                const cashier =
+                    state.buildings.some(
+                        b=>
+                            b.type==="checkout"
+                    );
+
+                const checkoutTime =
+                    cashier
+                    ?5
+                    :8;
+
+                if(
+                    c.queueTime>
+                    checkoutTime
+                ){
+
+                    completePurchase(c);
+
+                    c.state="leave";
+
+                }
+
             }
+
         }
+
+        if(c.state==="leave"){
+
+            c.targetX =
+                state.width/2+.5;
+
+            c.targetY =
+                state.height+.8;
+
+            moveCustomer(c,dt);
+
+            if(
+                c.y>
+                state.height+.5
+            ){
+
+                state.customers.splice(
+                    i,
+                    1
+                );
+
+            }
+
+        }
+
+        if(
+            c.shoppingTime>100
+        ){
+
+            c.satisfaction-=.2;
+
+            c.state="leave";
+
+        }
+
     }
-}
 
-function findRandomShelf(){
-
-    const shelves=
-        state.buildings.filter(
-            b=>b.type==="shelf"||b.type==="fridge"
-        );
-
-    if(!shelves.length)return null;
-
-    return shelves[
-        Math.floor(
-            Math.random()*shelves.length
-        )
-    ];
-}
-
-function moveCustomer(c,dt){
-
-    const dx=c.targetX-c.x;
-    const dy=c.targetY-c.y;
-
-    const d=Math.hypot(dx,dy);
-
-    if(d>.05){
-
-        const speed=1.4;
-
-        c.x+=dx/d*speed*dt;
-        c.y+=dy/d*speed*dt;
-    }
-}
-
-function distance(x1,y1,x2,y2){
-    return Math.hypot(
-        x2-x1,
-        y2-y1
-    );
-}
-
-function hasCashier(){
-    return state.employees.some(
-        e=>e.type==="cashier"
-    );
 }
 
 function completePurchase(c){
 
-    let revenue=0;
-    let items=0;
+    let spent=0;
 
-    for(const name of c.shoppingList){
+    for(const item of c.products){
 
-        const p=state.products[name];
+        if(!item.bought){
 
-        if(!p)continue;
+            continue;
 
-        revenue+=p.price;
-        items++;
-    }
-
-    state.cash+=revenue;
-
-    state.revenueToday+=revenue;
-
-    state.customersToday++;
-
-    state.xp+=items*2;
-
-    if(c.satisfaction>=4){
-        state.xp+=5;
-    }
-
-    updateLevel();
-
-    // rating
-    let target=c.satisfaction;
-
-    if(hasCashier())target+=.15;
-
-    state.rating=
-        clamp(
-            state.rating+
-            (target-state.rating)*.015,
-            1,
-            5
-        );
-
-    moneyParticle(
-        c.x*TILE,
-        c.y*TILE,
-        "+"+money(revenue)
-    );
-}
-
-/* =========================
-   MONEY PARTICLES
-   ========================= */
-
-let particles=[];
-
-function moneyParticle(x,y,text){
-
-    particles.push({
-        x,
-        y,
-        text,
-        life:1
-    });
-}
-
-function updateParticles(dt){
-
-    for(let i=particles.length-1;i>=0;i--){
-
-        const p=particles[i];
-
-        p.y-=30*dt;
-        p.life-=dt;
-
-        if(p.life<=0){
-            particles.splice(i,1);
         }
+
+        const p =
+            PRODUCTS.find(
+                x=>x.id===item.id
+            );
+
+        if(p){
+
+            spent+=p.price;
+
+        }
+
     }
+
+    if(spent<=0){
+
+        return;
+
+    }
+
+    state.cash+=spent;
+
+    state.revenueToday+=spent;
+
+    createMoneyParticle(
+        c.x,
+        c.y,
+        spent
+    );
+
+    if(
+        c.satisfaction>=.8
+    ){
+
+        addXP(5);
+
+    }
+
+    updateRating();
+
+    updateUI();
+
 }
 
-function drawParticles(){
+/* ================= RATING ================= */
 
-    for(const p of particles){
+function updateRating(){
 
-        ctx.globalAlpha=p.life;
+    let empty=0;
 
-        ctx.fillStyle="#65e18a";
-        ctx.font="bold 16px Arial";
+    for(const p of PRODUCTS){
 
-        ctx.fillText(
-            p.text,
-            p.x,
-            p.y
+        if(p.stock<=0){
+
+            empty++;
+
+        }
+
+    }
+
+    const stockScore =
+        Math.max(
+            0,
+            1-
+            empty/
+            PRODUCTS.length
         );
 
-        ctx.globalAlpha=1;
+    const checkout =
+        state.buildings.some(
+            b=>b.type==="checkout"
+        );
+
+    const checkoutScore =
+        checkout
+        ?1
+        :.2;
+
+    let priceScore=1;
+
+    for(const p of PRODUCTS){
+
+        const recommended =
+            p.cost*2;
+
+        const ratio =
+            p.price/
+            recommended;
+
+        if(ratio>1.5){
+
+            priceScore-=.05;
+
+        }
+
+        if(ratio<.8){
+
+            priceScore-=.01;
+
+        }
+
     }
+
+    priceScore =
+        Math.max(
+            0,
+            priceScore
+        );
+
+    const target =
+        2+
+        stockScore*.9+
+        priceScore*.9+
+        checkoutScore*.6;
+
+    state.rating +=
+        (target-state.rating)*
+        .01;
+
+    state.rating =
+        Math.max(
+            1,
+            Math.min(
+                5,
+                state.rating
+            )
+        );
+
 }
 
-/* =========================
-   STORE OPEN/CLOSE
-   ========================= */
+/* ================= TIME ================= */
+
+let spawnTimer=0;
+
+function updateDay(dt){
+
+    if(!state.storeOpen){
+
+        return;
+
+    }
+
+    /*
+        8 real minutes = 12x game speed.
+    */
+
+    state.clock +=
+        dt*12;
+
+    if(
+        state.clock>=20*60
+    ){
+
+        closeStore();
+
+        return;
+
+    }
+
+    spawnTimer-=dt;
+
+    const hour =
+        state.clock/60;
+
+    let traffic=1;
+
+    if(hour<10){
+
+        traffic=.6;
+
+    }else if(hour<14){
+
+        traffic=.8;
+
+    }else if(hour<17){
+
+        traffic=1;
+
+    }else if(hour<19){
+
+        traffic=1.4;
+
+    }else{
+
+        traffic=1.1;
+
+    }
+
+    if(spawnTimer<=0){
+
+        spawnCustomer();
+
+        spawnTimer =
+            Math.max(
+                1.2,
+                3.5/traffic
+            );
+
+    }
+
+}
+
+/* ================= OPEN / CLOSE ================= */
 
 function openStore(){
 
-    if(state.open){
+    if(state.storeOpen){
+
         closeStore();
+
         return;
+
     }
 
-    const shelves=
+    const shelves =
         state.buildings.filter(
-            b=>b.type==="shelf"||b.type==="fridge"
-        ).length;
-
-    const checkouts=
-        state.buildings.filter(
-            b=>b.type==="checkout"
-        ).length;
-
-    const totalStock=
-        productNames.reduce(
-            (sum,n)=>sum+state.products[n].stock,
-            0
+            b=>
+                b.type==="shelf" ||
+                b.type==="fridge"
         );
 
-    if(shelves<1){
-        toast("You need at least one shelf!");
+    const checkout =
+        state.buildings.some(
+            b=>b.type==="checkout"
+        );
+
+    const stocked =
+        PRODUCTS.some(
+            p=>p.stock>0
+        );
+
+    if(shelves.length<1){
+
+        toast(
+            "Build at least one shelf!"
+        );
+
         return;
+
     }
 
-    if(checkouts<1){
-        toast("You need a checkout!");
+    if(!checkout){
+
+        toast(
+            "You need a checkout!"
+        );
+
         return;
+
     }
 
-    if(totalStock<10){
-        toast("You need at least 10 products!");
+    if(!stocked){
+
+        toast(
+            "You need inventory!"
+        );
+
         return;
+
     }
 
-    state.open=true;
+    state.storeOpen=true;
 
-    toast("STORE OPEN! 🛒🔥");
+    state.clock=8*60;
 
-    if(state.objective===0){
-        completeObjective();
-    }
+    state.customers=[];
+
+    spawnTimer=0;
+
+    toast(
+        "STORE OPEN! 🛒"
+    );
 
     updateUI();
+
 }
 
 function closeStore(){
 
-    state.open=false;
+    if(!state.storeOpen){
 
-    const profit=
-        state.revenueToday-
-        state.costsToday-
-        state.wagesToday;
+        return;
 
-    state.xp+=
-        Math.max(0,Math.floor(profit/10));
+    }
 
-    updateLevel();
+    state.storeOpen=false;
 
-    reportModal();
+    state.customers=[];
 
-    toast(
-        "Store closed. Profit: "+money(profit)
+    addXP(
+        Math.max(
+            0,
+            Math.floor(
+                state.revenueToday/10
+            )
+        )
     );
+
+    updateRating();
+
+    openReport();
+
+    state.day++;
+
+    state.clock=8*60;
+
+    state.revenueToday=0;
+
+    state.costsToday=0;
+
+    state.customersToday=0;
+
+    saveGame();
+
 }
 
-/* =========================
-   TIME
-   ========================= */
+document
+    .getElementById("openBtn")
+    .addEventListener(
+        "click",
+        openStore
+    );
 
-let lastTime=performance.now();
+/* ================= PRODUCTS UI ================= */
 
-function updateTime(dt){
+function renderProducts(){
 
-    if(!state.open)return;
-
-    // 8 real minutes = 12 in-game hours
-    state.minutes+=
-        dt*(720/480);
-
-    if(state.minutes>=1200){
-
-        state.minutes=1200;
-
-        closeStore();
-    }
-
-    // wages
-    for(const e of state.employees){
-
-        const hourly=
-            employeeTypes[e.type].wage;
-
-        state.wagesToday+=
-            hourly*(dt/480);
-    }
-
-    const hour=state.minutes/60;
-
-    let traffic=1;
-
-    if(hour>=8&&hour<10)traffic=.6;
-    else if(hour<14)traffic=.8;
-    else if(hour<17)traffic=1;
-    else if(hour<19)traffic=1.4;
-    else traffic=1.1;
-
-    const spawnChance=
-        dt*.16*traffic;
-
-    if(Math.random()<spawnChance){
-        spawnCustomer();
-    }
-}
-
-/* =========================
-   LEVEL SYSTEM
-   ========================= */
-
-const levelXP=[
-    0,
-    1000,
-    2500,
-    5000,
-    10000,
-    20000,
-    40000,
-    75000,
-    125000,
-    200000
-];
-
-function updateLevel(){
-
-    let newLevel=1;
-
-    for(let i=levelXP.length-1;i>=0;i--){
-
-        if(state.xp>=levelXP[i]){
-            newLevel=i+1;
-            break;
-        }
-    }
-
-    if(newLevel>state.level){
-
-        state.level=newLevel;
-
-        toast(
-            "LEVEL UP! Level "+newLevel+" 🎉"
+    const list =
+        document.getElementById(
+            "productList"
         );
 
-        state.cash+=newLevel*100;
-    }
+    list.innerHTML="";
 
-    checkObjectives();
-}
+    for(const p of PRODUCTS){
 
-function checkObjectives(){
+        const profit =
+            p.price-p.cost;
 
-    const obj=state.objective;
-
-    if(obj===1 && state.customersToday>=10){
-        completeObjective();
-    }
-
-    else if(
-        obj===2 &&
-        state.revenueToday-state.costsToday>=500
-    ){
-        completeObjective();
-    }
-
-    else if(
-        obj===3 &&
-        state.customersToday>=10
-    ){
-        completeObjective();
-    }
-
-    else if(obj===4){
-
-        const stock=
-            productNames.reduce(
-                (s,n)=>s+state.products[n].stock,
-                0
+        const row =
+            document.createElement(
+                "div"
             );
 
-        if(stock>=100){
-            completeObjective();
-        }
+        row.className =
+            "product-row";
+
+        row.innerHTML=`
+
+            <div>
+                <strong>${p.name}</strong>
+
+                <div style="
+                    font-size:10px;
+                    color:#74848c
+                ">
+                    ${p.category}
+                </div>
+            </div>
+
+            <div>
+                $${p.cost.toFixed(2)}
+            </div>
+
+            <div>
+
+                <input
+                    class="small-input"
+                    type="number"
+                    min="${p.cost.toFixed(2)}"
+                    step=".01"
+                    value="${p.price.toFixed(2)}"
+                    data-price="${p.id}"
+                >
+
+            </div>
+
+            <div>
+                $${profit.toFixed(2)}
+            </div>
+
+            <div>
+                ${p.stock}
+            </div>
+
+        `;
+
+        list.appendChild(row);
+
     }
 
-    else if(obj===5 && state.employees.length>=1){
-        completeObjective();
-    }
+    list
+        .querySelectorAll("[data-price]")
+        .forEach(input=>{
 
-    else if(obj===6 && state.rating>=4){
-        completeObjective();
-    }
+            input.addEventListener(
+                "change",
+                ()=>{
 
-    else if(
-        obj===7 &&
-        state.revenueToday-
-        state.costsToday-
-        state.wagesToday>=1000
-    ){
-        completeObjective();
-    }
+                    const p =
+                        PRODUCTS.find(
+                            x=>
+                                x.id===
+                                input.dataset.price
+                        );
 
-    else if(obj===9 && state.level>=3){
-        completeObjective();
-    }
+                    let value =
+                        parseFloat(
+                            input.value
+                        );
+
+                    if(
+                        !Number.isFinite(value)
+                    ){
+
+                        value=p.cost;
+
+                    }
+
+                    value =
+                        Math.max(
+                            p.cost,
+                            value
+                        );
+
+                    p.price=value;
+
+                    toast(
+                        `${p.name}: $${value.toFixed(2)}`
+                    );
+
+                    renderProducts();
+
+                }
+            );
+
+        });
+
 }
 
-function completeObjective(){
-
-    const o=
-        objectives[
-            Math.min(
-                state.objective,
-                objectives.length-1
-            )
-        ];
-
-    state.cash+=o.reward;
-
-    state.objective++;
-
-    toast(
-        "OBJECTIVE COMPLETE! +"+money(o.reward)+" 🎉"
+document
+    .getElementById("productsBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+            renderProducts();
+            openModal(
+                "productsModal"
+            );
+        }
     );
 
-    updateUI();
+/* ================= INVENTORY ================= */
+
+function renderInventory(){
+
+    const list =
+        document.getElementById(
+            "inventoryList"
+        );
+
+    list.innerHTML="";
+
+    for(const p of PRODUCTS){
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.style.display="flex";
+
+        row.style.justifyContent=
+            "space-between";
+
+        row.style.alignItems=
+            "center";
+
+        row.style.padding="12px";
+
+        row.style.borderBottom=
+            "1px solid #29363e";
+
+        row.innerHTML=`
+
+            <div>
+
+                <strong>
+                    ${p.name}
+                </strong>
+
+                <div style="
+                    color:#81929c;
+                    font-size:11px
+                ">
+                    ${p.stock} / ${p.max} in stock
+                </div>
+
+            </div>
+
+            <button class="action">
+                ORDER 10 —
+                $${(p.cost*10).toFixed(2)}
+            </button>
+
+        `;
+
+        row
+            .querySelector("button")
+            .addEventListener(
+                "click",
+                ()=>{
+
+                    const amount=10;
+
+                    if(
+                        p.stock+
+                        amount>
+                        p.max
+                    ){
+
+                        toast(
+                            "Storage is full."
+                        );
+
+                        return;
+
+                    }
+
+                    const cost =
+                        p.cost*
+                        amount;
+
+                    if(
+                        state.cash<
+                        cost
+                    ){
+
+                        toast(
+                            "Not enough money."
+                        );
+
+                        return;
+
+                    }
+
+                    state.cash-=cost;
+
+                    state.costsToday+=cost;
+
+                    p.stock+=amount;
+
+                    toast(
+                        `Ordered 10 ${p.name}.`
+                    );
+
+                    renderInventory();
+
+                    updateUI();
+
+                }
+            );
+
+        list.appendChild(row);
+
+    }
+
 }
 
-/* =========================
-   EXPANSION
-   ========================= */
+document
+    .getElementById("inventoryBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+            renderInventory();
+            openModal(
+                "inventoryModal"
+            );
+        }
+    );
 
-function expansionModal(){
+/* ================= EXPANSION ================= */
 
-    const prices=[
+function expansionCost(){
+
+    return [
+
         5000,
         12500,
         30000,
         75000,
         200000
+
+    ][
+        state.expansionLevel
+    ] || 500000;
+
+}
+
+function renderExpansion(){
+
+    const cost =
+        expansionCost();
+
+    const additions = [
+        [10,0],
+        [10,0],
+        [15,5],
+        [15,5],
+        [15,10]
     ];
 
-    const sizes=[
-        [20,15],
-        [30,15],
-        [40,20],
-        [50,25],
-        [65,30],
-        [80,40]
-    ];
+    const add =
+        additions[
+            state.expansionLevel
+        ] || [20,10];
 
-    let current=
-        sizes.findIndex(
-            s=>s[0]===state.storeW&&s[1]===state.storeH
+    const nextWidth =
+        state.width+
+        add[0];
+
+    const nextHeight =
+        state.height+
+        add[1];
+
+    document
+        .getElementById(
+            "expandDescription"
+        )
+        .innerHTML=`
+
+        <strong>Current size:</strong>
+        ${state.width} × ${state.height} tiles
+
+        <br><br>
+
+        <strong>New size:</strong>
+        ${nextWidth} × ${nextHeight} tiles
+
+        <br><br>
+
+        <strong>Cost:</strong>
+        $${cost.toLocaleString()}
+
+        <br><br>
+
+        Your physical map will become larger,
+        giving you more room for shelves,
+        departments and customers.
+
+    `;
+
+}
+
+document
+    .getElementById("expandBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+            renderExpansion();
+            openModal(
+                "expandModal"
+            );
+        }
+    );
+
+document
+    .getElementById("confirmExpand")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            const cost =
+                expansionCost();
+
+            if(state.cash<cost){
+
+                toast(
+                    "Not enough money!"
+                );
+
+                return;
+
+            }
+
+            state.cash-=cost;
+
+            state.expansionLevel++;
+
+            const additions = [
+
+                [10,0],
+                [10,0],
+                [15,5],
+                [15,5],
+                [15,10]
+
+            ];
+
+            const add =
+                additions[
+                    state.expansionLevel-1
+                ] || [20,10];
+
+            state.width+=add[0];
+
+            state.height+=add[1];
+
+            /*
+                Move player safely into
+                the newly expanded area.
+            */
+
+            player.x =
+                Math.min(
+                    player.x,
+                    state.width-.8
+                );
+
+            player.y =
+                Math.min(
+                    player.y,
+                    state.height-.8
+                );
+
+            addXP(250);
+
+            closeModal(
+                "expandModal"
+            );
+
+            toast(
+                "STORE EXPANDED! 🏗️"
+            );
+
+            updateUI();
+
+        }
+    );
+
+/* ================= REPORT ================= */
+
+function openReport(){
+
+    document
+        .getElementById(
+            "reportRevenue"
+        )
+        .textContent =
+        "$"+
+        state.revenueToday.toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits:0
+            }
         );
 
-    if(current<0)current=0;
+    document
+        .getElementById(
+            "reportCosts"
+        )
+        .textContent =
+        "-$"+
+        state.costsToday.toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits:0
+            }
+        );
 
-    const next=current+1;
+    document
+        .getElementById(
+            "reportCustomers"
+        )
+        .textContent =
+        state.customersToday;
 
-    let html=`
-        <button class="close" onclick="closeModal()">✕</button>
-        <h2>🏗️ Expand Store</h2>
-    `;
+    document
+        .getElementById(
+            "reportProfit"
+        )
+        .textContent =
+        "$"+
+        Math.max(
+            0,
+            state.revenueToday-
+            state.costsToday
+        ).toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits:0
+            }
+        );
 
-    if(next>=sizes.length){
+    document
+        .getElementById(
+            "reportRating"
+        )
+        .textContent =
+        state.rating.toFixed(1)+
+        " ⭐";
 
-        html+=`
-            <p class="gold">
-                Your store has reached the current maximum size!
-            </p>
-        `;
+    openModal(
+        "reportModal"
+    );
+
+}
+
+document
+    .getElementById("reportBtn")
+    .addEventListener(
+        "click",
+        openReport
+    );
+
+/* ================= XP ================= */
+
+function xpNeeded(){
+
+    return [
+
+        0,
+        1000,
+        2500,
+        5000,
+        10000,
+        20000,
+        40000,
+        75000,
+        125000,
+        200000
+
+    ][state.level] || 300000;
+
+}
+
+function addXP(amount){
+
+    state.xp+=amount;
+
+    while(
+        state.level<10 &&
+        state.xp>=xpNeeded()
+    ){
+
+        state.level++;
+
+        toast(
+            `LEVEL UP! Level ${state.level}! 🎉`
+        );
+
+    }
+
+}
+
+/* ================= PARTICLES ================= */
+
+function createMoneyParticle(
+    x,
+    y,
+    value
+){
+
+    state.particles.push({
+
+        x:x,
+        y:y,
+
+        text:
+            "+$"+
+            value.toFixed(2),
+
+        life:1,
+
+        vy:-.7
+
+    });
+
+}
+
+function updateParticles(dt){
+
+    for(
+        let i=state.particles.length-1;
+        i>=0;
+        i--
+    ){
+
+        const p =
+            state.particles[i];
+
+        p.y+=
+            p.vy*
+            dt*
+            2;
+
+        p.life-=dt;
+
+        if(p.life<=0){
+
+            state.particles.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+/* ================= DRAW WORLD ================= */
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    updateCamera();
+
+    drawWorld();
+
+    drawStore();
+
+    drawBuildings();
+
+    drawCustomers();
+
+    drawPlayer();
+
+    drawParticles();
+
+    if(state.selectedBuild){
+
+        drawBuildCursor();
+
+    }
+
+    if(state.storeOpen){
+
+        drawClock();
+
+    }
+
+}
+
+/* ================= OUTSIDE WORLD ================= */
+
+function drawWorld(){
+
+    /*
+        Huge green background.
+    */
+
+    ctx.fillStyle=
+        COLORS.outside;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    /*
+        World coordinates are converted
+        into screen coordinates here.
+    */
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    const sw =
+        state.width*TILE;
+
+    const sh =
+        state.height*TILE;
+
+    /*
+        Parking lot below store.
+    */
+
+    ctx.fillStyle=
+        COLORS.parking;
+
+    ctx.fillRect(
+        sx-250,
+        sy+sh,
+        sw+500,
+        130
+    );
+
+    /*
+        Road.
+    */
+
+    ctx.fillStyle=
+        COLORS.road;
+
+    ctx.fillRect(
+        sx-400,
+        sy+sh+130,
+        sw+800,
+        150
+    );
+
+    /*
+        Parking stripes.
+    */
+
+    ctx.strokeStyle=
+        "#b5b6aa";
+
+    ctx.lineWidth=2;
+
+    for(
+        let x=-300;
+        x<state.width*TILE+300;
+        x+=80
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            sx+x,
+            sy+sh+10
+        );
+
+        ctx.lineTo(
+            sx+x,
+            sy+sh+110
+        );
+
+        ctx.stroke();
+
+    }
+
+    /*
+        Road lane.
+    */
+
+    ctx.strokeStyle=
+        "#d8c75b";
+
+    ctx.lineWidth=3;
+
+    ctx.setLineDash([
+        25,
+        20
+    ]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        sx-400,
+        sy+sh+205
+    );
+
+    ctx.lineTo(
+        sx+sw+400,
+        sy+sh+205
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    /*
+        Trees around the property.
+    */
+
+    const treePositions=[
+
+        [-150,-80],
+        [-80,120],
+        [-170,320],
+
+        [state.width*TILE+100,-60],
+        [state.width*TILE+160,140],
+        [state.width*TILE+100,350],
+
+        [120,-100],
+        [state.width*TILE-100,-90]
+
+    ];
+
+    for(const pos of treePositions){
+
+        drawTree(
+            sx+pos[0],
+            sy+pos[1]
+        );
+
+    }
+
+}
+
+/* ================= STORE ================= */
+
+function drawStore(){
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    const sw =
+        state.width*TILE;
+
+    const sh =
+        state.height*TILE;
+
+    /*
+        Shadow.
+    */
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.28)";
+
+    ctx.fillRect(
+        sx+10,
+        sy+12,
+        sw,
+        sh
+    );
+
+    /*
+        Outer wall.
+    */
+
+    ctx.fillStyle=
+        COLORS.wall;
+
+    ctx.fillRect(
+        sx-10,
+        sy-10,
+        sw+20,
+        10
+    );
+
+    ctx.fillRect(
+        sx-10,
+        sy-10,
+        10,
+        sh+20
+    );
+
+    ctx.fillRect(
+        sx+sw,
+        sy-10,
+        10,
+        sh+20
+    );
+
+    ctx.fillRect(
+        sx-10,
+        sy+sh,
+        sw+20,
+        10
+    );
+
+    /*
+        Floor.
+    */
+
+    for(
+        let y=0;
+        y<state.height;
+        y++
+    ){
+
+        for(
+            let x=0;
+            x<state.width;
+            x++
+        ){
+
+            ctx.fillStyle =
+                (x+y)%2===0
+                ?COLORS.floor
+                :COLORS.floorAlt;
+
+            ctx.fillRect(
+                sx+x*TILE,
+                sy+y*TILE,
+                TILE,
+                TILE
+            );
+
+        }
+
+    }
+
+    /*
+        THE ACTUAL VISIBLE GRID.
+    */
+
+    ctx.strokeStyle=
+        COLORS.grid;
+
+    ctx.lineWidth=1;
+
+    for(
+        let x=0;
+        x<=state.width;
+        x++
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            sx+x*TILE+.5,
+            sy
+        );
+
+        ctx.lineTo(
+            sx+x*TILE+.5,
+            sy+sh
+        );
+
+        ctx.stroke();
+
+    }
+
+    for(
+        let y=0;
+        y<=state.height;
+        y++
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            sx,
+            sy+y*TILE+.5
+        );
+
+        ctx.lineTo(
+            sx+sw,
+            sy+y*TILE+.5
+        );
+
+        ctx.stroke();
+
+    }
+
+    /*
+        Entrance.
+    */
+
+    const entranceX =
+        Math.floor(
+            state.width/2
+        );
+
+    const entranceScreenX =
+        sx+
+        entranceX*TILE;
+
+    const entranceScreenY =
+        sy+
+        (state.height-1)*TILE;
+
+    ctx.fillStyle=
+        "#d6a936";
+
+    ctx.fillRect(
+        entranceScreenX+3,
+        entranceScreenY+2,
+        TILE-6,
+        TILE-4
+    );
+
+    ctx.fillStyle=
+        "#fff";
+
+    ctx.font=
+        "bold 11px Arial";
+
+    ctx.textAlign=
+        "center";
+
+    ctx.fillText(
+        "ENTRANCE",
+        sx+sw/2,
+        sy+sh+28
+    );
+
+    ctx.textAlign=
+        "left";
+
+    /*
+        Store name sign.
+    */
+
+    ctx.fillStyle=
+        "#283238";
+
+    ctx.fillRect(
+        sx+sw/2-105,
+        sy-38,
+        210,
+        25
+    );
+
+    ctx.fillStyle=
+        "#f5d76e";
+
+    ctx.font=
+        "bold 13px Arial";
+
+    ctx.textAlign=
+        "center";
+
+    ctx.fillText(
+        "YOUR SUPERMARKET",
+        sx+sw/2,
+        sy-20
+    );
+
+    ctx.textAlign=
+        "left";
+
+}
+
+/* ================= TREES ================= */
+
+function drawTree(x,y){
+
+    ctx.fillStyle=
+        "#664832";
+
+    ctx.fillRect(
+        x-4,
+        y+15,
+        8,
+        24
+    );
+
+    ctx.fillStyle=
+        "#356744";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        22,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#477e52";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-10,
+        y-8,
+        14,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+}
+
+/* ================= BUILDINGS ================= */
+
+function drawBuildings(){
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    for(const b of state.buildings){
+
+        const x =
+            sx+
+            b.x*TILE;
+
+        const y =
+            sy+
+            b.y*TILE;
+
+        if(b.type==="shelf"){
+
+            drawShelf(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="fridge"){
+
+            drawFridge(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="checkout"){
+
+            drawCheckout(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="storage"){
+
+            drawStorage(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="cart"){
+
+            drawCartStation(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="light"){
+
+            drawLight(
+                x,
+                y
+            );
+
+        }
+
+        if(b.type==="decor"){
+
+            drawDecor(
+                x,
+                y
+            );
+
+        }
+
+    }
+
+}
+
+/* ================= SHELF ================= */
+
+function drawShelf(x,y){
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.2)";
+
+    ctx.fillRect(
+        x+3,
+        y+5,
+        26,
+        25
+    );
+
+    ctx.fillStyle=
+        COLORS.shelf;
+
+    ctx.fillRect(
+        x+4,
+        y+3,
+        24,
+        25
+    );
+
+    ctx.fillStyle=
+        COLORS.shelfTop;
+
+    ctx.fillRect(
+        x+5,
+        y+4,
+        22,
+        5
+    );
+
+    ctx.fillStyle=
+        "#e6c27b";
+
+    for(
+        let i=0;
+        i<4;
+        i++
+    ){
+
+        ctx.fillRect(
+            x+7+i*5,
+            y+12,
+            3,
+            7
+        );
+
+    }
+
+    ctx.fillStyle=
+        "#d7a85a";
+
+    ctx.fillRect(
+        x+5,
+        y+22,
+        22,
+        3
+    );
+
+}
+
+/* ================= FRIDGE ================= */
+
+function drawFridge(x,y){
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.18)";
+
+    ctx.fillRect(
+        x+3,
+        y+4,
+        26,
+        27
+    );
+
+    ctx.fillStyle=
+        COLORS.fridge;
+
+    ctx.fillRect(
+        x+3,
+        y+2,
+        26,
+        27
+    );
+
+    ctx.fillStyle=
+        "#a7d4df";
+
+    ctx.fillRect(
+        x+7,
+        y+6,
+        18,
+        17
+    );
+
+    ctx.strokeStyle=
+        "#4a7180";
+
+    ctx.strokeRect(
+        x+7,
+        y+6,
+        18,
+        17
+    );
+
+    ctx.fillStyle=
+        "#fff";
+
+    ctx.fillRect(
+        x+23,
+        y+9,
+        2,
+        9
+    );
+
+}
+
+/* ================= CHECKOUT ================= */
+
+function drawCheckout(x,y){
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.18)";
+
+    ctx.fillRect(
+        x+2,
+        y+5,
+        28,
+        25
+    );
+
+    ctx.fillStyle=
+        COLORS.checkout;
+
+    ctx.fillRect(
+        x+3,
+        y+7,
+        26,
+        20
+    );
+
+    ctx.fillStyle=
+        "#2a3135";
+
+    ctx.fillRect(
+        x+8,
+        y+3,
+        16,
+        7
+    );
+
+    ctx.fillStyle=
+        "#8ed3a0";
+
+    ctx.fillRect(
+        x+10,
+        y+4,
+        12,
+        4
+    );
+
+    ctx.fillStyle=
+        "#e0b83f";
+
+    ctx.fillRect(
+        x+6,
+        y+20,
+        20,
+        3
+    );
+
+}
+
+/* ================= STORAGE ================= */
+
+function drawStorage(x,y){
+
+    ctx.fillStyle=
+        COLORS.wood;
+
+    ctx.fillRect(
+        x+4,
+        y+4,
+        24,
+        25
+    );
+
+    ctx.fillStyle=
+        "#a67445";
+
+    for(
+        let i=0;
+        i<3;
+        i++
+    ){
+
+        ctx.fillRect(
+            x+7,
+            y+7+i*7,
+            18,
+            4
+        );
+
+    }
+
+}
+
+/* ================= CART ================= */
+
+function drawCartStation(x,y){
+
+    ctx.fillStyle=
+        "#303a40";
+
+    ctx.fillRect(
+        x+6,
+        y+11,
+        20,
+        4
+    );
+
+    ctx.strokeStyle=
+        "#71818a";
+
+    ctx.lineWidth=2;
+
+    ctx.strokeRect(
+        x+7,
+        y+15,
+        14,
+        9
+    );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+10,
+        y+26,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+22,
+        y+26,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+
+}
+
+/* ================= LIGHT ================= */
+
+function drawLight(x,y){
+
+    /*
+        Glow.
+    */
+
+    const gradient =
+        ctx.createRadialGradient(
+            x+16,
+            y+16,
+            2,
+            x+16,
+            y+16,
+            40
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(255,235,150,.22)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(255,235,150,0)"
+    );
+
+    ctx.fillStyle=
+        gradient;
+
+    ctx.fillRect(
+        x-25,
+        y-25,
+        82,
+        82
+    );
+
+    ctx.fillStyle=
+        "#f7e9aa";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+16,
+        y+16,
+        8,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+}
+
+/* ================= DECOR ================= */
+
+function drawDecor(x,y){
+
+    ctx.fillStyle=
+        "#356644";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+16,
+        y+13,
+        8,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#684932";
+
+    ctx.fillRect(
+        x+13,
+        y+19,
+        6,
+        8
+    );
+
+}
+
+/* ================= CUSTOMERS ================= */
+
+function drawCustomers(){
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    for(const c of state.customers){
+
+        const x =
+            sx+
+            c.x*TILE;
+
+        const y =
+            sy+
+            c.y*TILE;
+
+        ctx.fillStyle=
+            "rgba(0,0,0,.18)";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            x,
+            y+9,
+            8,
+            4,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.fillStyle=
+            c.color;
+
+        ctx.fillRect(
+            x-7,
+            y,
+            14,
+            15
+        );
+
+        ctx.fillStyle=
+            "#e7b27d";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y-6,
+            6,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.fillStyle=
+            "#342a26";
+
+        ctx.fillRect(
+            x-5,
+            y-11,
+            10,
+            3
+        );
+
+        ctx.fillStyle=
+            "#292d30";
+
+        ctx.fillRect(
+            x-6,
+            y+14,
+            4,
+            5
+        );
+
+        ctx.fillRect(
+            x+2,
+            y+14,
+            4,
+            5
+        );
+
+        if(
+            c.products.length>0
+        ){
+
+            ctx.strokeStyle=
+                "#38464c";
+
+            ctx.lineWidth=2;
+
+            ctx.strokeRect(
+                x+8,
+                y+5,
+                8,
+                7
+            );
+
+        }
+
+    }
+
+}
+
+/* ================= PLAYER ================= */
+
+function drawPlayer(){
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    const x =
+        sx+
+        player.x*TILE;
+
+    const y =
+        sy+
+        player.y*TILE;
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.25)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y+10,
+        9,
+        4,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#3e78a4";
+
+    ctx.fillRect(
+        x-8,
+        y,
+        16,
+        16
+    );
+
+    ctx.fillStyle=
+        "#e5ad78";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-7,
+        7,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#302521";
+
+    ctx.fillRect(
+        x-6,
+        y-13,
+        12,
+        4
+    );
+
+    ctx.fillStyle=
+        "#24292d";
+
+    ctx.fillRect(
+        x-6,
+        y+15,
+        5,
+        6
+    );
+
+    ctx.fillRect(
+        x+1,
+        y+15,
+        5,
+        6
+    );
+
+    ctx.fillStyle=
+        "#fff";
+
+    ctx.font=
+        "bold 9px Arial";
+
+    ctx.textAlign=
+        "center";
+
+    ctx.fillText(
+        "YOU",
+        x,
+        y-18
+    );
+
+    ctx.textAlign=
+        "left";
+
+}
+
+/* ================= BUILD CURSOR ================= */
+
+function drawBuildCursor(){
+
+    if(
+        lastMouse.tileX===null ||
+        lastMouse.tileY===null
+    ){
+
+        return;
+
+    }
+
+    const x =
+        lastMouse.tileX;
+
+    const y =
+        lastMouse.tileY;
+
+    if(!insideStore(x,y)){
+
+        return;
+
+    }
+
+    const sx =
+        -camera.x;
+
+    const sy =
+        -camera.y;
+
+    const px =
+        sx+x*TILE;
+
+    const py =
+        sy+y*TILE;
+
+    let good=false;
+
+    if(
+        state.selectedBuild==="delete"
+    ){
+
+        good =
+            !!buildingAt(x,y);
+
     }else{
 
-        html+=`
-            <div class="row">
-                <div class="rowInfo">
-                    <strong>
-                        Expansion ${next}
-                    </strong>
-                    <small>
-                        ${sizes[next][0]} × ${sizes[next][1]} tiles
-                        <br>
-                        Cost: ${money(prices[next-1])}
-                    </small>
-                </div>
+        good =
+            canPlace(
+                state.selectedBuild,
+                x,
+                y
+            );
 
-                <button
-                    class="green"
-                    onclick="expandStore(${prices[next-1]},${sizes[next][0]},${sizes[next][1]})"
-                >
-                    BUY
-                </button>
-            </div>
-        `;
     }
 
-    openModal(html);
-}
+    ctx.fillStyle =
+        good
+        ? "rgba(95,190,115,.40)"
+        : "rgba(210,75,65,.42)";
 
-function expandStore(price,w,h){
-
-    if(state.cash<price){
-        toast("Not enough money!");
-        return;
-    }
-
-    state.cash-=price;
-
-    state.costsToday+=price;
-
-    state.storeW=w;
-    state.storeH=h;
-
-    state.xp+=250;
-
-    updateLevel();
-
-    closeModal();
-
-    toast(
-        "STORE EXPANDED! 🏗️🔥"
+    ctx.fillRect(
+        px,
+        py,
+        TILE,
+        TILE
     );
 
-    updateUI();
-    saveGame();
-}
+    ctx.strokeStyle =
+        good
+        ? "#77e08a"
+        : "#f06d63";
 
-/* =========================
-   DAILY REPORT
-   ========================= */
+    ctx.lineWidth=3;
 
-function reportModal(){
-
-    const profit=
-        state.revenueToday-
-        state.costsToday-
-        state.wagesToday;
-
-    const avg=
-        state.customersToday?
-        state.revenueToday/state.customersToday:
-        0;
-
-    let html=`
-        <button class="close" onclick="closeModal()">✕</button>
-
-        <h2>📊 Daily Report</h2>
-
-        <div class="row">
-            <strong>Revenue</strong>
-            <span class="good">${money(state.revenueToday)}</span>
-        </div>
-
-        <div class="row">
-            <strong>Inventory / Building Costs</strong>
-            <span class="bad">-${money(state.costsToday)}</span>
-        </div>
-
-        <div class="row">
-            <strong>Employee Wages</strong>
-            <span class="bad">-${money(state.wagesToday)}</span>
-        </div>
-
-        <div class="row">
-            <strong>Profit</strong>
-            <span class="${profit>=0?"good":"bad"}">
-                ${money(profit)}
-            </span>
-        </div>
-
-        <div class="row">
-            <strong>Customers Served</strong>
-            <span>${state.customersToday}</span>
-        </div>
-
-        <div class="row">
-            <strong>Average Customer Spend</strong>
-            <span>${money(avg)}</span>
-        </div>
-
-        <div class="row">
-            <strong>Store Rating</strong>
-            <span>${state.rating.toFixed(1)} ⭐</span>
-        </div>
-
-        <button
-            class="green"
-            style="width:100%;margin-top:10px"
-            onclick="finishDay()"
-        >
-            END DAY
-        </button>
-    `;
-
-    openModal(html);
-}
-
-function finishDay(){
-
-    state.open=false;
-
-    state.day++;
-
-    state.minutes=480;
-
-    state.revenueToday=0;
-    state.costsToday=50;
-    state.wagesToday=0;
-    state.customersToday=0;
-
-    state.customers=[];
-
-    closeModal();
-
-    toast(
-        "Day "+state.day+" begins! 🌅"
+    ctx.strokeRect(
+        px+1.5,
+        py+1.5,
+        TILE-3,
+        TILE-3
     );
 
-    saveGame();
-    updateUI();
 }
 
-/* =========================
-   MODALS
-   ========================= */
+/* ================= PARTICLES ================= */
 
-function openModal(html){
+function drawParticles(){
 
-    document.getElementById("modalContent").innerHTML=html;
-    document.getElementById("modal").style.display="flex";
-}
+    const sx =
+        -camera.x;
 
-function closeModal(){
+    const sy =
+        -camera.y;
 
-    document.getElementById("modal").style.display="none";
-}
+    ctx.textAlign=
+        "center";
 
-document.getElementById("modal").addEventListener("click",e=>{
+    for(const p of state.particles){
 
-    if(e.target.id==="modal"){
-        closeModal();
+        ctx.globalAlpha=
+            Math.max(
+                0,
+                p.life
+            );
+
+        ctx.fillStyle=
+            "#f3d15d";
+
+        ctx.font=
+            "bold 13px Arial";
+
+        ctx.fillText(
+            p.text,
+            sx+p.x*TILE,
+            sy+p.y*TILE
+        );
+
     }
-});
 
-/* =========================
-   GAME LOOP
-   ========================= */
+    ctx.globalAlpha=1;
+
+    ctx.textAlign="left";
+
+}
+
+/* ================= CLOCK ================= */
+
+function drawClock(){
+
+    const hour =
+        Math.floor(
+            state.clock/60
+        );
+
+    const minute =
+        Math.floor(
+            state.clock%60
+        );
+
+    const hh =
+        hour
+        .toString()
+        .padStart(
+            2,
+            "0"
+        );
+
+    const mm =
+        minute
+        .toString()
+        .padStart(
+            2,
+            "0"
+        );
+
+    ctx.fillStyle=
+        "rgba(10,15,18,.88)";
+
+    ctx.fillRect(
+        W/2-70,
+        H-60,
+        140,
+        34
+    );
+
+    ctx.fillStyle=
+        "#fff";
+
+    ctx.font=
+        "bold 15px Arial";
+
+    ctx.textAlign=
+        "center";
+
+    ctx.fillText(
+        `${hh}:${mm}`,
+        W/2,
+        H-38
+    );
+
+    ctx.textAlign=
+        "left";
+
+}
+
+/* ================= UI ================= */
+
+function updateUI(){
+
+    document
+        .getElementById("cashText")
+        .textContent =
+        "$"+
+        Math.floor(
+            state.cash
+        ).toLocaleString();
+
+    document
+        .getElementById("ratingText")
+        .textContent =
+        state.rating.toFixed(1)+
+        " ⭐";
+
+    document
+        .getElementById("dayText")
+        .textContent =
+        state.day;
+
+    document
+        .getElementById("levelText")
+        .textContent =
+        state.level;
+
+    document
+        .getElementById("customersText")
+        .textContent =
+        state.customers.length;
+
+    /*
+        OPEN / CLOSE button.
+    */
+
+    const openBtn =
+        document.getElementById(
+            "openBtn"
+        );
+
+    if(state.storeOpen){
+
+        openBtn.textContent =
+            "🔒 CLOSE STORE";
+
+    }else{
+
+        openBtn.textContent =
+            "🔓 OPEN STORE";
+
+    }
+
+    /*
+        Objective.
+    */
+
+    let objective =
+        "STOCK YOUR STORE";
+
+    const shelfCount =
+        state.buildings.filter(
+            b=>
+                b.type==="shelf" ||
+                b.type==="fridge"
+        ).length;
+
+    const checkout =
+        state.buildings.some(
+            b=>b.type==="checkout"
+        );
+
+    const totalStock =
+        PRODUCTS.reduce(
+            (sum,p)=>
+                sum+p.stock,
+            0
+        );
+
+    if(state.storeOpen){
+
+        objective =
+            "STORE OPEN — KEEP CUSTOMERS HAPPY";
+
+    }else if(shelfCount<1){
+
+        objective =
+            "BUILD A SHELF";
+
+    }else if(!checkout){
+
+        objective =
+            "BUILD A CHECKOUT";
+
+    }else if(totalStock<20){
+
+        objective =
+            "ORDER MORE INVENTORY";
+
+    }else{
+
+        objective =
+            "OPEN YOUR STORE";
+
+    }
+
+    document
+        .getElementById(
+            "objectiveText"
+        )
+        .textContent =
+        objective;
+
+}
+
+/* ================= UTILITIES ================= */
+
+function distance(
+    x1,
+    y1,
+    x2,
+    y2
+){
+
+    return Math.hypot(
+        x2-x1,
+        y2-y1
+    );
+
+}
+
+/* ================= SAVE / MENU ================= */
+
+document
+    .getElementById("saveBtn")
+    .addEventListener(
+        "click",
+        saveGame
+    );
+
+document
+    .getElementById("menuBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            if(state.storeOpen){
+
+                toast(
+                    "Close the store before leaving."
+                );
+
+                return;
+
+            }
+
+            saveGame();
+
+            showScreen(
+                "menu"
+            );
+
+        }
+    );
+
+/* ================= MAIN LOOP ================= */
 
 function gameLoop(now){
 
-    const dt=
+    const dt =
         Math.min(
             .05,
-            (now-lastTime)/1000
+            (now-state.lastTime)/
+            1000
         );
 
-    lastTime=now;
+    state.lastTime=now;
 
     if(
-        document.getElementById("game").style.display!=="none"
+        document
+            .getElementById("game")
+            .classList
+            .contains("active")
     ){
 
-        movePlayer(dt);
+        updatePlayer(dt);
 
-        updateTime(dt);
+        updateDay(dt);
 
         updateCustomers(dt);
 
-        updateEmployees(dt);
-
         updateParticles(dt);
+
+        updateRating();
 
         draw();
 
-        drawParticles();
-
         updateUI();
+
     }
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(
+        gameLoop
+    );
+
 }
 
-requestAnimationFrame(gameLoop);
+/* ================= AUTOSAVE ================= */
 
-/* =========================
-   AUTOSAVE
-   ========================= */
+setInterval(
+    ()=>{
 
-setInterval(()=>{
+        if(
+            document
+                .getElementById("game")
+                .classList
+                .contains("active")
+        ){
 
-    if(
-        document.getElementById("game").style.display!=="none"
-    ){
-        localStorage.setItem(
-            "supermarket_tycoon_v2",
-            JSON.stringify(state)
-        );
-    }
+            saveGame();
 
-},30000);
+        }
 
-/* initial UI */
-updateUI();
+    },
+    30000
+);
+
+/* ================= INITIALIZE ================= */
+
+showScreen("menu");
+
+requestAnimationFrame(
+    gameLoop
+);
 
 </script>
+
 </body>
 </html>

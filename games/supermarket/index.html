@@ -6,1163 +6,743 @@
 <title>Supermarket Tycoon</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    user-select:none;
-}
-
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#10151b;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
+*{box-sizing:border-box}
 body{
+    margin:0;
+    background:#10131a;
     color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    overflow:hidden;
 }
-
 button{
-    font:inherit;
     border:0;
+    border-radius:8px;
+    padding:11px 15px;
+    font-weight:bold;
     cursor:pointer;
+    background:#242a36;
+    color:white;
 }
-
-#app{
-    width:100vw;
-    height:100vh;
-    position:relative;
-}
-
-.screen{
-    position:absolute;
-    inset:0;
-    display:none;
-}
-
-.screen.active{
-    display:flex;
-}
-
-/* ================= MENU ================= */
+button:hover{background:#343c4c}
+button.green{background:#22a55b}
+button.green:hover{background:#2fc76f}
+button.red{background:#c43d45}
+button.blue{background:#287bd6}
 
 #menu{
+    position:absolute;
+    inset:0;
+    display:flex;
     align-items:center;
     justify-content:center;
     background:
-        radial-gradient(circle at 50% 35%,#31536a 0%,#17232c 38%,#0c1116 100%);
+        radial-gradient(circle at center,#26354c,#10131a 70%);
 }
-
-.menu-card{
-    width:min(520px,90vw);
-    padding:48px;
-    border-radius:24px;
-    background:rgba(16,23,29,.94);
-    border:2px solid #536976;
-    box-shadow:0 30px 80px rgba(0,0,0,.55);
+.menuBox{
+    width:480px;
+    padding:45px;
+    border-radius:20px;
+    background:#181d27;
+    box-shadow:0 20px 70px #0008;
     text-align:center;
 }
-
-.logo{
-    font-size:52px;
-    font-weight:1000;
-    letter-spacing:-4px;
-    color:#f5d76e;
-    text-shadow:5px 5px 0 #6d5722;
-    margin-bottom:4px;
+.menuBox h1{
+    margin:0 0 8px;
+    font-size:48px;
 }
-
-.subtitle{
-    color:#aebbc3;
-    margin-bottom:34px;
-    letter-spacing:2px;
-    font-size:13px;
+.menuBox p{color:#9da7b7}
+.menuButtons{
+    display:grid;
+    gap:12px;
+    margin-top:30px;
 }
-
-.menu-btn{
-    width:100%;
-    margin:8px 0;
+.menuButtons button{
+    font-size:18px;
     padding:16px;
-    border-radius:12px;
-    background:#263640;
-    color:white;
-    font-weight:800;
-    border:2px solid #40515b;
-    transition:.15s;
 }
-
-.menu-btn:hover{
-    transform:translateY(-2px);
-    background:#334954;
-    border-color:#6e8490;
-}
-
-.menu-btn.primary{
-    background:#e0b83f;
-    color:#17130a;
-    border-color:#f4d56a;
-}
-
-.menu-btn.primary:hover{
-    background:#f1cc55;
-}
-
-/* ================= GAME ================= */
 
 #game{
-    background:#182027;
-}
-
-#canvas{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    image-rendering:auto;
+    display:none;
+    width:100vw;
+    height:100vh;
 }
 
 #topbar{
-    position:absolute;
-    left:14px;
-    right:14px;
-    top:12px;
-    height:66px;
+    height:65px;
+    background:#171c25;
     display:flex;
     align-items:center;
-    gap:10px;
-    pointer-events:none;
+    gap:12px;
+    padding:8px 12px;
+    border-bottom:2px solid #303744;
 }
-
 .stat{
-    min-width:120px;
-    height:52px;
-    padding:8px 13px;
-    background:rgba(12,18,23,.92);
-    border:1px solid #465963;
-    border-radius:12px;
-    box-shadow:0 5px 20px rgba(0,0,0,.3);
+    background:#222936;
+    border-radius:8px;
+    padding:9px 13px;
+    min-width:115px;
 }
-
-.stat-label{
-    font-size:10px;
-    color:#91a1aa;
-    text-transform:uppercase;
-    letter-spacing:1px;
+.stat small{
+    display:block;
+    color:#8993a3;
+    font-size:11px;
 }
-
-.stat-value{
-    font-size:18px;
-    font-weight:900;
-    margin-top:3px;
+.stat strong{
+    font-size:16px;
 }
-
 #objective{
     flex:1;
-    min-width:180px;
-    max-width:500px;
 }
-
 #objectiveText{
-    color:#f5d76e;
+    color:#8fd8ff;
 }
 
-#buildPanel{
-    position:absolute;
-    left:15px;
-    bottom:15px;
-    width:270px;
-    padding:13px;
-    background:rgba(12,18,23,.95);
-    border:1px solid #4a5d67;
-    border-radius:15px;
-    box-shadow:0 8px 30px rgba(0,0,0,.4);
-}
-
-.panel-title{
-    font-size:12px;
-    color:#9eabb2;
-    text-transform:uppercase;
-    letter-spacing:1.5px;
-    margin-bottom:9px;
-}
-
-.build-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-}
-
-.build-btn{
-    padding:9px 6px;
-    border-radius:8px;
-    background:#26353d;
-    color:#fff;
-    border:1px solid #41535d;
-    font-size:12px;
-    font-weight:700;
-}
-
-.build-btn:hover{
-    background:#344954;
-}
-
-.build-btn.selected{
-    background:#d7ae3a;
-    color:#15120b;
-}
-
-#buildHint{
-    font-size:10px;
-    color:#81919a;
-    margin-top:9px;
-    line-height:1.4;
-}
-
-#sidePanel{
-    position:absolute;
-    right:15px;
-    bottom:15px;
-    width:260px;
-    padding:13px;
-    background:rgba(12,18,23,.95);
-    border:1px solid #4a5d67;
-    border-radius:15px;
-    box-shadow:0 8px 30px rgba(0,0,0,.4);
-}
-
-.side-btn{
-    width:100%;
-    margin:4px 0;
-    padding:10px;
-    text-align:left;
-    background:#26353d;
-    color:white;
-    border-radius:8px;
-    border:1px solid #40525c;
-    font-weight:700;
-}
-
-.side-btn:hover{
-    background:#344954;
-}
-
-#message{
-    position:absolute;
-    left:50%;
-    top:90px;
-    transform:translateX(-50%);
-    padding:10px 18px;
-    background:rgba(13,19,24,.95);
-    border:1px solid #637680;
-    border-radius:20px;
-    opacity:0;
-    pointer-events:none;
-    transition:.2s;
-    font-weight:700;
-}
-
-#message.show{
-    opacity:1;
-}
-
-/* ================= PANELS ================= */
-
-.modal{
-    position:absolute;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.62);
-    z-index:20;
-}
-
-.modal.active{
+#main{
     display:flex;
+    height:calc(100vh - 65px);
 }
 
-.modal-card{
-    width:min(900px,92vw);
-    max-height:85vh;
-    overflow:auto;
-    padding:25px;
-    border-radius:18px;
-    background:#151e24;
-    border:2px solid #4b606b;
-    box-shadow:0 25px 80px rgba(0,0,0,.7);
-}
-
-.modal-card h2{
-    margin:0 0 18px;
-    color:#f1ce63;
-}
-
-.close{
-    float:right;
-    background:#344650;
-    color:white;
-    border-radius:8px;
-    padding:8px 12px;
-}
-
-.close:hover{
-    background:#4a5d68;
-}
-
-.product-row{
-    display:grid;
-    grid-template-columns:1.5fr .8fr .8fr .9fr .8fr;
+#toolbar{
+    width:125px;
+    background:#171c25;
+    border-right:2px solid #303744;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
     gap:8px;
-    align-items:center;
-    padding:9px;
-    border-bottom:1px solid #29363e;
+}
+.toolTitle{
+    color:#8993a3;
+    font-size:12px;
+    margin:4px;
+}
+.tool{
+    width:100%;
+    font-size:12px;
+}
+.tool.active{
+    outline:2px solid #61b5ff;
+    background:#263c55;
 }
 
-.product-row.header{
-    color:#81929c;
-    font-size:11px;
-    text-transform:uppercase;
+#canvasWrap{
+    position:relative;
+    flex:1;
+    background:#111;
+}
+canvas{
+    display:block;
+    width:100%;
+    height:100%;
 }
 
-.small-input{
-    width:90px;
-    padding:7px;
-    border-radius:7px;
-    border:1px solid #566a75;
-    background:#202c33;
-    color:white;
+#side{
+    width:270px;
+    background:#171c25;
+    border-left:2px solid #303744;
+    padding:12px;
+    overflow-y:auto;
 }
-
-.action{
-    padding:7px 10px;
-    border-radius:7px;
-    background:#d3ad3d;
-    color:#16130a;
-    font-weight:800;
+.panelTitle{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
 }
-
-.action:hover{
-    background:#efd15f;
+.sideButton{
+    width:100%;
+    margin-bottom:8px;
+    text-align:left;
 }
-
-.report{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
-.report-box{
-    padding:15px;
-    background:#202b32;
-    border:1px solid #394b55;
-    border-radius:12px;
-}
-
-.report-big{
-    font-size:28px;
-    font-weight:900;
-    margin-top:5px;
-}
-
-/* ================= TOAST ================= */
 
 #toast{
     position:absolute;
     left:50%;
-    bottom:100px;
+    bottom:25px;
     transform:translateX(-50%);
-    background:#f1d061;
-    color:#19150a;
-    font-weight:900;
-    padding:12px 20px;
-    border-radius:20px;
+    background:#151a22;
+    padding:13px 20px;
+    border-radius:10px;
     opacity:0;
+    pointer-events:none;
     transition:.2s;
-    z-index:50;
+    box-shadow:0 5px 25px #0008;
+    z-index:20;
 }
+#toast.show{opacity:1}
 
-#toast.show{
-    opacity:1;
+.modal{
+    position:absolute;
+    inset:0;
+    background:#0009;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:30;
 }
+.modalBox{
+    width:600px;
+    max-height:80vh;
+    overflow:auto;
+    background:#181d27;
+    border:1px solid #3a4352;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 20px 80px #000;
+}
+.modalBox h2{margin-top:0}
+.row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px;
+    background:#222936;
+    border-radius:8px;
+    margin-bottom:8px;
+}
+.rowInfo{flex:1}
+.rowInfo small{
+    display:block;
+    color:#909aaa;
+}
+input{
+    width:90px;
+    padding:9px;
+    border:0;
+    border-radius:6px;
+    background:#0e1218;
+    color:white;
+}
+.close{
+    float:right;
+}
+.good{color:#57d98a}
+.bad{color:#ff6868}
+.gold{color:#ffd75e}
 
-/* ================= RESPONSIVE ================= */
+#employeePanel{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid #333b49;
+}
+.employee{
+    background:#222936;
+    padding:9px;
+    border-radius:7px;
+    margin-bottom:6px;
+    font-size:12px;
+}
+.employee small{color:#8f99aa}
 
-@media(max-width:850px){
-    #sidePanel{
-        display:none;
-    }
-
-    #buildPanel{
-        width:230px;
-    }
-
-    .stat{
-        min-width:85px;
-    }
-
-    .stat:nth-child(4){
-        display:none;
-    }
-
-    .logo{
-        font-size:42px;
-    }
+#hint{
+    position:absolute;
+    left:12px;
+    bottom:12px;
+    background:#111822dd;
+    border:1px solid #344052;
+    border-radius:8px;
+    padding:8px 12px;
+    color:#b6c0cf;
+    font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="app">
+<div id="menu">
+    <div class="menuBox">
+        <h1>🛒 Supermarket Tycoon</h1>
+        <p>Build it. Stock it. Open it. Get RICH.</p>
 
-<!-- ================= MAIN MENU ================= -->
-
-<div id="menu" class="screen active">
-    <div class="menu-card">
-
-        <div class="logo">SUPERMARKET</div>
-        <div class="subtitle">TYCOON</div>
-
-        <button id="newGameBtn" class="menu-btn primary">
-            🛒 NEW GAME
-        </button>
-
-        <button id="continueBtn" class="menu-btn">
-            ▶ CONTINUE
-        </button>
-
-        <button id="settingsBtn" class="menu-btn">
-            ⚙ SETTINGS
-        </button>
-
-        <button id="wipeBtn" class="menu-btn">
-            🗑 RESET SAVE
-        </button>
-
-        <div style="margin-top:20px;color:#687982;font-size:11px;">
-            Build your store. Stock the shelves. Make money.
+        <div class="menuButtons">
+            <button class="green" onclick="newGame()">NEW GAME</button>
+            <button onclick="continueGame()">CONTINUE</button>
+            <button onclick="showSettings()">SETTINGS</button>
+            <button class="red" onclick="resetSave()">RESET SAVE</button>
         </div>
-
     </div>
 </div>
 
-<!-- ================= GAME ================= -->
-
-<div id="game" class="screen">
-
-    <canvas id="canvas"></canvas>
+<div id="game">
 
     <div id="topbar">
 
         <div class="stat">
-            <div class="stat-label">Cash</div>
-            <div id="cashText" class="stat-value">$10,000</div>
+            <small>CASH</small>
+            <strong id="cash">$10,000</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-label">Rating</div>
-            <div id="ratingText" class="stat-value">3.5 ⭐</div>
+            <small>RATING</small>
+            <strong id="rating">3.5 ⭐</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-label">Day</div>
-            <div id="dayText" class="stat-value">1</div>
+            <small>DAY</small>
+            <strong id="day">1</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-label">Level</div>
-            <div id="levelText" class="stat-value">1</div>
-        </div>
-
-        <div id="objective" class="stat">
-            <div class="stat-label">Objective</div>
-            <div id="objectiveText" class="stat-value">
-                STOCK YOUR STORE
-            </div>
+            <small>LEVEL</small>
+            <strong id="level">1</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-label">Customers</div>
-            <div id="customersText" class="stat-value">0</div>
+            <small>TIME</small>
+            <strong id="clock">8:00 AM</strong>
+        </div>
+
+        <div class="stat">
+            <small>CUSTOMERS</small>
+            <strong id="customerCount">0</strong>
+        </div>
+
+        <div class="stat" id="objective">
+            <small>OBJECTIVE</small>
+            <strong id="objectiveText">Open your supermarket</strong>
         </div>
 
     </div>
 
-    <div id="buildPanel">
+    <div id="main">
 
-        <div class="panel-title">Build</div>
+        <div id="toolbar">
 
-        <div class="build-grid">
+            <div class="toolTitle">BUILD</div>
 
-            <button class="build-btn" data-build="shelf">
-                📦 Shelf<br>$150
-            </button>
+            <button class="tool" data-build="shelf">Shelf<br>$150</button>
+            <button class="tool" data-build="fridge">Fridge<br>$450</button>
+            <button class="tool" data-build="checkout">Checkout<br>$500</button>
+            <button class="tool" data-build="storage">Storage<br>$200</button>
+            <button class="tool" data-build="cart">Cart Station<br>$250</button>
+            <button class="tool" data-build="light">Light<br>$75</button>
+            <button class="tool" data-build="decor">Decor<br>$100</button>
+            <button class="tool red" data-build="delete">Delete</button>
 
-            <button class="build-btn" data-build="fridge">
-                🧊 Fridge<br>$450
-            </button>
-
-            <button class="build-btn" data-build="checkout">
-                🧾 Checkout<br>$500
-            </button>
-
-            <button class="build-btn" data-build="storage">
-                📚 Storage<br>$200
-            </button>
-
-            <button class="build-btn" data-build="cart">
-                🛒 Carts<br>$250
-            </button>
-
-            <button class="build-btn" data-build="light">
-                💡 Light<br>$75
-            </button>
-
-            <button class="build-btn" data-build="decor">
-                🌿 Decor<br>$100
-            </button>
-
-            <button class="build-btn" data-build="delete">
-                ❌ Delete
-            </button>
+            <div class="toolTitle">PLAYER</div>
+            <button onclick="centerPlayer()">Center</button>
 
         </div>
 
-        <div id="buildHint">
-            Click an item, then click a grid tile to place it.
-            Press ESC to cancel.
-        </div>
+        <div id="canvasWrap">
 
-    </div>
+            <canvas id="canvas"></canvas>
 
-    <div id="sidePanel">
-
-        <div class="panel-title">Management</div>
-
-        <button class="side-btn" id="productsBtn">
-            📦 Products & Pricing
-        </button>
-
-        <button class="side-btn" id="inventoryBtn">
-            📋 Inventory
-        </button>
-
-        <button class="side-btn" id="expandBtn">
-            🏗️ Expand Store
-        </button>
-
-        <button class="side-btn" id="reportBtn">
-            📊 Daily Report
-        </button>
-
-        <button class="side-btn" id="openBtn">
-            🔓 OPEN STORE
-        </button>
-
-        <button class="side-btn" id="saveBtn">
-            💾 Save Game
-        </button>
-
-        <button class="side-btn" id="menuBtn">
-            🏠 Main Menu
-        </button>
-
-    </div>
-
-    <div id="message"></div>
-    <div id="toast"></div>
-
-</div>
-
-<!-- ================= PRODUCTS ================= -->
-
-<div id="productsModal" class="modal">
-
-    <div class="modal-card">
-
-        <button class="close" data-close="productsModal">X</button>
-
-        <h2>📦 Products & Pricing</h2>
-
-        <div class="product-row header">
-            <div>Product</div>
-            <div>Cost</div>
-            <div>Price</div>
-            <div>Profit</div>
-            <div>Stock</div>
-        </div>
-
-        <div id="productList"></div>
-
-    </div>
-
-</div>
-
-<!-- ================= INVENTORY ================= -->
-
-<div id="inventoryModal" class="modal">
-
-    <div class="modal-card">
-
-        <button class="close" data-close="inventoryModal">X</button>
-
-        <h2>📋 Inventory Orders</h2>
-
-        <div id="inventoryList"></div>
-
-    </div>
-
-</div>
-
-<!-- ================= EXPANSION ================= -->
-
-<div id="expandModal" class="modal">
-
-    <div class="modal-card">
-
-        <button class="close" data-close="expandModal">X</button>
-
-        <h2>🏗️ Expand Your Store</h2>
-
-        <p id="expandDescription"></p>
-
-        <button id="confirmExpand" class="action">
-            PURCHASE EXPANSION
-        </button>
-
-    </div>
-
-</div>
-
-<!-- ================= REPORT ================= -->
-
-<div id="reportModal" class="modal">
-
-    <div class="modal-card">
-
-        <button class="close" data-close="reportModal">X</button>
-
-        <h2>📊 Daily Report</h2>
-
-        <div class="report">
-
-            <div class="report-box">
-                Revenue
-                <div id="reportRevenue" class="report-big">$0</div>
+            <div id="hint">
+                WASD / Arrow Keys = Move • Click = Build
             </div>
 
-            <div class="report-box">
-                Product Costs
-                <div id="reportCosts" class="report-big">$0</div>
-            </div>
+            <div id="toast"></div>
 
-            <div class="report-box">
-                Customer Count
-                <div id="reportCustomers" class="report-big">0</div>
-            </div>
-
-            <div class="report-box">
-                Net Profit
-                <div id="reportProfit" class="report-big">$0</div>
+            <div class="modal" id="modal">
+                <div class="modalBox" id="modalContent"></div>
             </div>
 
         </div>
 
-        <div style="margin-top:18px;color:#9baab2;">
-            Store rating:
-            <strong id="reportRating">3.5 ⭐</strong>
+        <div id="side">
+
+            <div class="panelTitle">🏪 Store</div>
+
+            <button class="sideButton green" onclick="openStore()">
+                ▶ Open Store
+            </button>
+
+            <button class="sideButton" onclick="productsModal()">
+                💵 Products & Pricing
+            </button>
+
+            <button class="sideButton" onclick="inventoryModal()">
+                📦 Inventory
+            </button>
+
+            <button class="sideButton" onclick="employeesModal()">
+                👷 Employees
+            </button>
+
+            <button class="sideButton" onclick="expansionModal()">
+                🏗️ Expand Store
+            </button>
+
+            <button class="sideButton" onclick="reportModal()">
+                📊 Daily Report
+            </button>
+
+            <button class="sideButton" onclick="saveGame()">
+                💾 Save Game
+            </button>
+
+            <button class="sideButton" onclick="mainMenu()">
+                🏠 Main Menu
+            </button>
+
+            <div id="employeePanel"></div>
+
         </div>
 
     </div>
-
-</div>
 
 </div>
 
 <script>
-"use strict";
-
 /* =========================================================
-   SUPERMARKET TYCOON V1
+   SUPERMARKET TYCOON V2
    ========================================================= */
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
 
-let W = 1400;
-let H = 800;
+const TILE=32;
 
-canvas.width = W;
-canvas.height = H;
-
-/* ================= CONSTANTS ================= */
-
-const TILE = 32;
-
-const COLORS = {
-    floor:"#d9c8a4",
-    floorAlt:"#d2be96",
-    wall:"#5a6267",
-    wallTop:"#78838a",
-    outside:"#55765c",
-    road:"#42484b",
-    parking:"#707579",
-    yellow:"#e3bd43",
-    shelf:"#875b36",
-    shelfTop:"#b77d47",
-    fridge:"#548ca1",
-    checkout:"#6b7074",
-    wood:"#754c2e",
-    white:"#f4f0df",
-    black:"#182027",
-    red:"#c84e45",
-    green:"#5db36c"
-};
-
-/* ================= PRODUCTS ================= */
-
-const PRODUCTS = [
-    {
-        id:"bread",
-        name:"Bread",
-        category:"Food",
-        cost:1.20,
-        price:2.49,
-        stock:20,
-        max:60
-    },
-    {
-        id:"cereal",
-        name:"Cereal",
-        category:"Food",
-        cost:2.40,
-        price:4.49,
-        stock:15,
-        max:60
-    },
-    {
-        id:"chips",
-        name:"Chips",
-        category:"Food",
-        cost:1.10,
-        price:2.29,
-        stock:20,
-        max:60
-    },
-    {
-        id:"cookies",
-        name:"Cookies",
-        category:"Food",
-        cost:1.30,
-        price:2.79,
-        stock:15,
-        max:60
-    },
-    {
-        id:"pasta",
-        name:"Pasta",
-        category:"Food",
-        cost:.90,
-        price:1.99,
-        stock:20,
-        max:60
-    },
-    {
-        id:"water",
-        name:"Water",
-        category:"Drinks",
-        cost:.30,
-        price:.99,
-        stock:30,
-        max:80
-    },
-    {
-        id:"soda",
-        name:"Soda",
-        category:"Drinks",
-        cost:.70,
-        price:1.79,
-        stock:25,
-        max:80
-    },
-    {
-        id:"juice",
-        name:"Juice",
-        category:"Drinks",
-        cost:1.10,
-        price:2.49,
-        stock:15,
-        max:60
-    },
-    {
-        id:"apples",
-        name:"Apples",
-        category:"Produce",
-        cost:.45,
-        price:.99,
-        stock:25,
-        max:80
-    },
-    {
-        id:"bananas",
-        name:"Bananas",
-        category:"Produce",
-        cost:.35,
-        price:.89,
-        stock:25,
-        max:80
-    }
-];
-
-/* ================= GAME STATE ================= */
-
-let state = {
+let state={
     cash:10000,
-    day:1,
-    level:1,
+    debt:0,
     xp:0,
+    level:1,
     rating:3.5,
+    day:1,
 
-    storeOpen:false,
+    storeW:20,
+    storeH:15,
 
-    width:20,
-    height:15,
+    open:false,
+    minutes:480,
 
     revenueToday:0,
     costsToday:0,
+    wagesToday:0,
     customersToday:0,
 
-    totalCustomers:0,
-    totalSales:0,
-
-    buildings:[],
     customers:[],
-    particles:[],
+    employees:[],
+    buildings:[],
+
+    player:{
+        x:10,
+        y:12,
+        speed:4
+    },
 
     selectedBuild:null,
+    mouseX:0,
+    mouseY:0,
 
-    clock:8*60,
-    lastTime:performance.now(),
+    objective:0,
 
-    expansionLevel:0,
-
-    settings:{
-        speed:1
+    products:{
+        Bread:{cost:1.20,price:2.49,stock:20,max:40},
+        Cereal:{cost:2.40,price:4.49,stock:15,max:30},
+        Chips:{cost:1.10,price:2.29,stock:20,max:40},
+        Cookies:{cost:1.30,price:2.79,stock:15,max:30},
+        Pasta:{cost:.90,price:1.99,stock:20,max:40},
+        Water:{cost:.30,price:.99,stock:30,max:60},
+        Soda:{cost:.70,price:1.79,stock:25,max:50},
+        Juice:{cost:1.10,price:2.49,stock:15,max:30},
+        Apples:{cost:.45,price:.99,stock:25,max:50},
+        Bananas:{cost:.35,price:.89,stock:25,max:50}
     }
 };
 
-/* ================= PLAYER ================= */
+const productNames=Object.keys(state.products);
 
-let player = {
-    x:10,
-    y:14,
-    speed:5,
-    moving:false
+const employeeTypes={
+    cashier:{
+        name:"Cashier",
+        hire:100,
+        wage:18,
+        color:"#55aaff"
+    },
+    stocker:{
+        name:"Stocker",
+        hire:150,
+        wage:17,
+        color:"#55dd88"
+    },
+    cleaner:{
+        name:"Cleaner",
+        hire:125,
+        wage:16,
+        color:"#dddd66"
+    },
+    security:{
+        name:"Security",
+        hire:200,
+        wage:20,
+        color:"#dd6688"
+    },
+    manager:{
+        name:"Manager",
+        hire:500,
+        wage:30,
+        color:"#cc77ff"
+    }
 };
 
-/* ================= BUILDING PRICES ================= */
+const objectives=[
+    {text:"Open your supermarket",reward:500},
+    {text:"Sell 10 products",reward:250},
+    {text:"Make $500 profit",reward:500},
+    {text:"Serve 10 customers",reward:300},
+    {text:"Stock 100 products",reward:400},
+    {text:"Hire your first employee",reward:750},
+    {text:"Reach 4.0 stars",reward:1000},
+    {text:"Make $1,000 daily profit",reward:1500},
+    {text:"Expand your store",reward:2000},
+    {text:"Reach Level 3",reward:3000}
+];
 
-const BUILD_PRICES = {
-    shelf:150,
-    fridge:450,
-    checkout:500,
-    storage:200,
-    cart:250,
-    light:75,
-    decor:100
-};
+/* =========================
+   BASIC FUNCTIONS
+   ========================= */
 
-/* ================= SAVE ================= */
-
-function saveGame(){
-    try{
-        localStorage.setItem(
-            "supermarket_tycoon_v1",
-            JSON.stringify({
-                state:{
-                    ...state,
-                    customers:[],
-                    particles:[]
-                },
-                products:PRODUCTS
-            })
-        );
-
-        toast("Game saved!");
-    }catch(e){
-        console.error(e);
-        toast("Could not save game.");
-    }
+function money(n){
+    return "$"+Math.round(n).toLocaleString();
 }
 
-function loadGame(){
-    try{
-        const raw=localStorage.getItem("supermarket_tycoon_v1");
-
-        if(!raw){
-            toast("No save found.");
-            return false;
-        }
-
-        const data=JSON.parse(raw);
-
-        state={
-            ...state,
-            ...data.state,
-            customers:[],
-            particles:[]
-        };
-
-        if(data.products){
-            for(const saved of data.products){
-                const p=PRODUCTS.find(x=>x.id===saved.id);
-
-                if(p){
-                    p.price=saved.price;
-                    p.stock=saved.stock;
-                }
-            }
-        }
-
-        return true;
-
-    }catch(e){
-        console.error(e);
-        toast("Save file is corrupted.");
-        return false;
-    }
+function clamp(v,a,b){
+    return Math.max(a,Math.min(b,v));
 }
-
-/* ================= UI ================= */
-
-function showScreen(name){
-
-    document.querySelectorAll(".screen").forEach(x=>{
-        x.classList.remove("active");
-    });
-
-    document.getElementById(name).classList.add("active");
-}
-
-function openModal(id){
-    document.getElementById(id).classList.add("active");
-}
-
-function closeModal(id){
-    document.getElementById(id).classList.remove("active");
-}
-
-document.querySelectorAll("[data-close]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-        closeModal(btn.dataset.close);
-    });
-});
-
-/* ================= TOAST ================= */
-
-let toastTimer=0;
 
 function toast(text){
-
-    const el=document.getElementById("toast");
-
-    el.textContent=text;
-    el.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer=setTimeout(()=>{
-        el.classList.remove("show");
-    },1800);
+    const t=document.getElementById("toast");
+    t.textContent=text;
+    t.classList.add("show");
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
 }
 
-/* ================= START ================= */
+function updateUI(){
+    document.getElementById("cash").textContent=money(state.cash);
+    document.getElementById("rating").textContent=state.rating.toFixed(1)+" ⭐";
+    document.getElementById("day").textContent=state.day;
+    document.getElementById("level").textContent=state.level;
+
+    let h=Math.floor(state.minutes/60);
+    let m=Math.floor(state.minutes%60);
+    let am=h<12;
+    let displayH=h%12;
+    if(displayH===0)displayH=12;
+
+    document.getElementById("clock").textContent=
+        displayH+":"+String(m).padStart(2,"0")+" "+(am?"AM":"PM");
+
+    document.getElementById("customerCount").textContent=
+        state.customers.length;
+
+    document.getElementById("objectiveText").textContent=
+        objectives[Math.min(state.objective,objectives.length-1)].text;
+
+    renderEmployees();
+}
+
+/* =========================
+   MENU / SAVE
+   ========================= */
 
 function newGame(){
+    localStorage.removeItem("supermarket_tycoon_v2");
 
-    localStorage.removeItem("supermarket_tycoon_v1");
+    state={
+        cash:10000,
+        debt:0,
+        xp:0,
+        level:1,
+        rating:3.5,
+        day:1,
+        storeW:20,
+        storeH:15,
+        open:false,
+        minutes:480,
+        revenueToday:0,
+        costsToday:0,
+        wagesToday:0,
+        customersToday:0,
+        customers:[],
+        employees:[],
+        buildings:[],
+        player:{x:10,y:12,speed:4},
+        selectedBuild:null,
+        mouseX:0,
+        mouseY:0,
+        objective:0,
+        products:{
+            Bread:{cost:1.20,price:2.49,stock:20,max:40},
+            Cereal:{cost:2.40,price:4.49,stock:15,max:30},
+            Chips:{cost:1.10,price:2.29,stock:20,max:40},
+            Cookies:{cost:1.30,price:2.79,stock:15,max:30},
+            Pasta:{cost:.90,price:1.99,stock:20,max:40},
+            Water:{cost:.30,price:.99,stock:30,max:60},
+            Soda:{cost:.70,price:1.79,stock:25,max:50},
+            Juice:{cost:1.10,price:2.49,stock:15,max:30},
+            Apples:{cost:.45,price:.99,stock:25,max:50},
+            Bananas:{cost:.35,price:.89,stock:25,max:50}
+        }
+    };
 
-    state.cash=10000;
-    state.day=1;
-    state.level=1;
-    state.xp=0;
-    state.rating=3.5;
-    state.storeOpen=false;
-    state.width=20;
-    state.height=15;
-    state.revenueToday=0;
-    state.costsToday=0;
-    state.customersToday=0;
-    state.totalCustomers=0;
-    state.totalSales=0;
-    state.buildings=[];
-    state.customers=[];
-    state.particles=[];
-    state.expansionLevel=0;
+    startingBuildings();
 
-    PRODUCTS.forEach(p=>{
-        const original={
-            bread:[1.20,2.49,20],
-            cereal:[2.40,4.49,15],
-            chips:[1.10,2.29,20],
-            cookies:[1.30,2.79,15],
-            pasta:[.90,1.99,20],
-            water:[.30,.99,30],
-            soda:[.70,1.79,25],
-            juice:[1.10,2.49,15],
-            apples:[.45,.99,25],
-            bananas:[.35,.89,25]
-        }[p.id];
-
-        p.cost=original[0];
-        p.price=original[1];
-        p.stock=original[2];
-    });
-
-    state.buildings=[
-        {type:"shelf",x:4,y:5},
-        {type:"shelf",x:7,y:5},
-        {type:"shelf",x:10,y:5},
-
-        {type:"fridge",x:14,y:5},
-
-        {type:"checkout",x:14,y:11},
-
-        {type:"storage",x:4,y:10},
-        {type:"storage",x:6,y:10},
-
-        {type:"cart",x:2,y:13},
-
-        {type:"light",x:3,y:2},
-        {type:"light",x:8,y:2},
-        {type:"light",x:13,y:2},
-        {type:"light",x:17,y:2}
-    ];
-
-    player.x=10;
-    player.y=14;
-
-    showScreen("game");
+    document.getElementById("menu").style.display="none";
+    document.getElementById("game").style.display="block";
 
     updateUI();
-
-    toast("Welcome to your supermarket!");
-
     saveGame();
+    toast("New supermarket created! 🛒");
 }
 
 function continueGame(){
+    let saved=localStorage.getItem("supermarket_tycoon_v2");
 
-    if(loadGame()){
-        showScreen("game");
+    if(!saved){
+        toast("No save found!");
+        return;
+    }
+
+    try{
+        state=JSON.parse(saved);
+        state.customers ||= [];
+        state.employees ||= [];
+        state.buildings ||= [];
+        state.products ||= {};
+        state.player ||= {x:10,y:12,speed:4};
+
+        document.getElementById("menu").style.display="none";
+        document.getElementById("game").style.display="block";
+
         updateUI();
-        toast("Welcome back!");
+        toast("Save loaded!");
+    }catch(e){
+        toast("Save file is corrupted.");
     }
 }
 
-/* ================= MENU BUTTONS ================= */
+function saveGame(){
+    localStorage.setItem(
+        "supermarket_tycoon_v2",
+        JSON.stringify(state)
+    );
+    toast("Game saved 💾");
+}
 
-document.getElementById("newGameBtn").addEventListener("click",newGame);
-
-document.getElementById("continueBtn").addEventListener("click",continueGame);
-
-document.getElementById("settingsBtn").addEventListener("click",()=>{
-    toast("Settings coming in a later version.");
-});
-
-document.getElementById("wipeBtn").addEventListener("click",()=>{
-
+function resetSave(){
     if(confirm("Delete your supermarket save?")){
-        localStorage.removeItem("supermarket_tycoon_v1");
+        localStorage.removeItem("supermarket_tycoon_v2");
         toast("Save deleted.");
     }
-
-});
-
-/* ================= BUILDING ================= */
-
-document.querySelectorAll("[data-build]").forEach(btn=>{
-
-    btn.addEventListener("click",()=>{
-
-        const type=btn.dataset.build;
-
-        state.selectedBuild=type;
-
-        document.querySelectorAll(".build-btn").forEach(b=>{
-            b.classList.remove("selected");
-        });
-
-        btn.classList.add("selected");
-
-        toast(
-            type==="delete"
-            ? "Click something to delete it."
-            : "Click a grid tile to place it."
-        );
-    });
-
-});
-
-function occupied(x,y){
-    return state.buildings.some(b=>b.x===x && b.y===y);
 }
 
-function insideStore(x,y){
-    return (
-        x>=0 &&
-        y>=0 &&
-        x<state.width &&
-        y<state.height
+function mainMenu(){
+    saveGame();
+    state.open=false;
+    document.getElementById("game").style.display="none";
+    document.getElementById("menu").style.display="flex";
+}
+
+function showSettings(){
+    alert(
+        "SETTINGS\n\n"+
+        "V2\n"+
+        "Autosave: ON\n"+
+        "Controls: WASD / Arrow Keys\n"+
+        "More settings coming later!"
     );
 }
 
-function buildAt(x,y){
+/* =========================
+   STARTING BUILDINGS
+   ========================= */
 
-    if(!state.selectedBuild){
-        return;
-    }
+function startingBuildings(){
+    state.buildings=[
+        {type:"shelf",x:6,y:5},
+        {type:"shelf",x:10,y:5},
+        {type:"shelf",x:14,y:5},
+        {type:"fridge",x:6,y:9},
+        {type:"checkout",x:15,y:12},
+        {type:"storage",x:3,y:11},
+        {type:"storage",x:3,y:13},
+        {type:"cart",x:16,y:13},
+        {type:"light",x:5,y:3},
+        {type:"light",x:10,y:3},
+        {type:"light",x:15,y:3},
+        {type:"light",x:18,y:7},
+        {type:"decor",x:18,y:3}
+    ];
+}
 
-    if(!insideStore(x,y)){
-        return;
-    }
+/* =========================
+   BUILDING
+   ========================= */
 
-    if(state.selectedBuild==="delete"){
+const buildInfo={
+    shelf:{price:150,w:1,h:2},
+    fridge:{price:450,w:2,h:1},
+    checkout:{price:500,w:2,h:1},
+    storage:{price:200,w:2,h:1},
+    cart:{price:250,w:1,h:1},
+    light:{price:75,w:1,h:1},
+    decor:{price:100,w:1,h:1}
+};
 
-        const index=state.buildings.findIndex(
-            b=>b.x===x && b.y===y
-        );
+document.querySelectorAll(".tool").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        const type=btn.dataset.build;
 
-        if(index>=0){
+        document.querySelectorAll(".tool")
+            .forEach(b=>b.classList.remove("active"));
 
-            state.buildings.splice(index,1);
+        btn.classList.add("active");
 
-            toast("Object removed.");
-            updateUI();
+        state.selectedBuild=type;
 
+        if(type==="delete"){
+            toast("Click a building to delete it.");
         }else{
-            toast("Nothing there.");
+            toast("Click inside the store to place it.");
         }
+    });
+});
 
+function canPlace(type,x,y){
+    const info=buildInfo[type];
+
+    if(
+        x<1 ||
+        y<1 ||
+        x+info.w>state.storeW-1 ||
+        y+info.h>state.storeH-1
+    ) return false;
+
+    for(const b of state.buildings){
+        const bi=buildInfo[b.type];
+
+        if(
+            x < b.x+bi.w &&
+            x+info.w > b.x &&
+            y < b.y+bi.h &&
+            y+info.h > b.y
+        ){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function placeBuilding(type,x,y){
+    const info=buildInfo[type];
+
+    if(state.cash<info.price){
+        toast("Not enough money!");
         return;
     }
 
-    if(occupied(x,y)){
-        toast("That tile is occupied.");
+    if(!canPlace(type,x,y)){
+        toast("That space is occupied!");
         return;
     }
 
-    const type=state.selectedBuild;
-    const price=BUILD_PRICES[type];
-
-    if(state.cash<price){
-        toast("Not enough money.");
-        return;
-    }
-
-    state.cash-=price;
+    state.cash-=info.price;
 
     state.buildings.push({
         type,
@@ -1170,531 +750,950 @@ function buildAt(x,y){
         y
     });
 
-    addXP(10);
+    state.costsToday+=info.price;
 
-    toast(
-        type.charAt(0).toUpperCase()+type.slice(1)
-        +" built!"
-    );
-
+    toast("Built "+type+"!");
     updateUI();
+    saveGame();
 }
 
-/* ================= CANVAS INPUT ================= */
+function deleteBuilding(x,y){
+    for(let i=state.buildings.length-1;i>=0;i--){
+        const b=state.buildings[i];
+        const bi=buildInfo[b.type];
+
+        if(
+            x>=b.x &&
+            x<b.x+bi.w &&
+            y>=b.y &&
+            y<b.y+bi.h
+        ){
+            if(["shelf","fridge","checkout"].includes(b.type)){
+                if(!confirm("Delete this "+b.type+"?")){
+                    return;
+                }
+            }
+
+            state.buildings.splice(i,1);
+            toast("Building removed.");
+            saveGame();
+            return;
+        }
+    }
+
+    toast("Nothing there.");
+}
+
+/* =========================
+   CANVAS
+   ========================= */
+
+function resizeCanvas(){
+    canvas.width=canvas.clientWidth;
+    canvas.height=canvas.clientHeight;
+}
+window.addEventListener("resize",resizeCanvas);
+resizeCanvas();
+
+canvas.addEventListener("mousemove",e=>{
+    const rect=canvas.getBoundingClientRect();
+
+    state.mouseX=e.clientX-rect.left;
+    state.mouseY=e.clientY-rect.top;
+});
 
 canvas.addEventListener("click",e=>{
+    if(!state.selectedBuild)return;
 
     const rect=canvas.getBoundingClientRect();
 
-    const mx=(e.clientX-rect.left)*(canvas.width/rect.width);
-    const my=(e.clientY-rect.top)*(canvas.height/rect.height);
+    const x=Math.floor(
+        (e.clientX-rect.left)/TILE
+    );
 
-    const tile=screenToTile(mx,my);
+    const y=Math.floor(
+        (e.clientY-rect.top)/TILE
+    );
 
-    if(tile){
-        buildAt(tile.x,tile.y);
+    if(state.selectedBuild==="delete"){
+        deleteBuilding(x,y);
+    }else{
+        placeBuilding(state.selectedBuild,x,y);
     }
 });
 
-function screenToTile(mx,my){
+function draw(){
+    const scale=Math.min(
+        canvas.width/(state.storeW*TILE+400),
+        canvas.height/(state.storeH*TILE+150)
+    );
 
-    const store=storeRect();
+    ctx.save();
 
-    if(
-        mx<store.x ||
-        my<store.y ||
-        mx>=store.x+store.w ||
-        my>=store.y+store.h
-    ){
-        return null;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const ox=70;
+    const oy=70;
+
+    drawOutside(ox,oy);
+
+    drawStore(ox,oy);
+
+    drawBuildings(ox,oy);
+
+    drawCustomers(ox,oy);
+
+    drawEmployees(ox,oy);
+
+    drawPlayer(ox,oy);
+
+    if(state.selectedBuild){
+        drawBuildPreview(ox,oy);
     }
 
-    return {
-        x:Math.floor((mx-store.x)/TILE),
-        y:Math.floor((my-store.y)/TILE)
-    };
+    ctx.restore();
 }
 
-/* ================= STORE GEOMETRY ================= */
+function drawOutside(ox,oy){
+    ctx.fillStyle="#18351f";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-function storeRect(){
+    // road
+    ctx.fillStyle="#30343b";
+    ctx.fillRect(
+        0,
+        oy+state.storeH*TILE+80,
+        canvas.width,
+        120
+    );
 
-    const w=state.width*TILE;
-    const h=state.height*TILE;
+    // parking
+    ctx.fillStyle="#4a4e55";
+    ctx.fillRect(
+        0,
+        oy+state.storeH*TILE,
+        canvas.width,
+        80
+    );
 
-    return {
-        x:(W-w)/2,
-        y:(H-h)/2+20,
-        w,
-        h
-    };
+    ctx.strokeStyle="#ddd";
+    ctx.globalAlpha=.4;
+
+    for(let x=0;x<canvas.width;x+=55){
+        ctx.beginPath();
+        ctx.moveTo(x,oy+state.storeH*TILE+10);
+        ctx.lineTo(x+35,oy+state.storeH*TILE+10);
+        ctx.stroke();
+    }
+
+    ctx.globalAlpha=1;
+
+    // trees
+    for(let x=20;x<canvas.width;x+=150){
+        ctx.fillStyle="#704b31";
+        ctx.fillRect(x,oy+30,10,20);
+
+        ctx.fillStyle="#29763c";
+        ctx.beginPath();
+        ctx.arc(x+5,oy+25,22,0,Math.PI*2);
+        ctx.fill();
+    }
 }
 
-/* ================= PLAYER ================= */
+function drawStore(ox,oy){
+    const w=state.storeW*TILE;
+    const h=state.storeH*TILE;
 
-const keys={};
+    ctx.fillStyle="#d4c7a2";
+    ctx.fillRect(ox,oy,w,h);
+
+    // floor grid
+    ctx.strokeStyle="#c3b694";
+    ctx.lineWidth=1;
+
+    for(let x=0;x<=w;x+=TILE){
+        ctx.beginPath();
+        ctx.moveTo(ox+x,oy);
+        ctx.lineTo(ox+x,oy+h);
+        ctx.stroke();
+    }
+
+    for(let y=0;y<=h;y+=TILE){
+        ctx.beginPath();
+        ctx.moveTo(ox,oy+y);
+        ctx.lineTo(ox+w,oy+y);
+        ctx.stroke();
+    }
+
+    // walls
+    ctx.fillStyle="#26313e";
+    ctx.fillRect(ox,oy,w,8);
+    ctx.fillRect(ox,oy,8,h);
+    ctx.fillRect(ox+w-8,oy,8,h);
+    ctx.fillRect(ox,oy+h-8,w,8);
+
+    // entrance
+    ctx.fillStyle="#5ed2ff";
+    ctx.fillRect(
+        ox+w/2-35,
+        oy+h-10,
+        70,
+        14
+    );
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 18px Arial";
+    ctx.textAlign="center";
+    ctx.fillText(
+        "SUPERMARKET",
+        ox+w/2,
+        oy-20
+    );
+}
+
+function drawBuildings(ox,oy){
+
+    for(const b of state.buildings){
+
+        const x=ox+b.x*TILE;
+        const y=oy+b.y*TILE;
+        const info=buildInfo[b.type];
+
+        let color="#777";
+
+        if(b.type==="shelf")color="#8b5a32";
+        if(b.type==="fridge")color="#57a8c8";
+        if(b.type==="checkout")color="#ad7043";
+        if(b.type==="storage")color="#655a4d";
+        if(b.type==="cart")color="#b5b9bf";
+        if(b.type==="light")color="#fff3a3";
+        if(b.type==="decor")color="#b27de2";
+
+        ctx.fillStyle=color;
+
+        ctx.fillRect(
+            x+2,
+            y+2,
+            info.w*TILE-4,
+            info.h*TILE-4
+        );
+
+        ctx.strokeStyle="#222";
+        ctx.lineWidth=2;
+        ctx.strokeRect(
+            x+2,
+            y+2,
+            info.w*TILE-4,
+            info.h*TILE-4
+        );
+
+        ctx.fillStyle="#fff";
+        ctx.font="bold 11px Arial";
+        ctx.textAlign="center";
+
+        let symbol={
+            shelf:"SHELF",
+            fridge:"FRIDGE",
+            checkout:"REGISTER",
+            storage:"STORAGE",
+            cart:"CARTS",
+            light:"💡",
+            decor:"★"
+        }[b.type];
+
+        ctx.fillText(
+            symbol,
+            x+info.w*TILE/2,
+            y+info.h*TILE/2+4
+        );
+    }
+}
+
+function drawPlayer(ox,oy){
+    const x=ox+state.player.x*TILE+TILE/2;
+    const y=oy+state.player.y*TILE+TILE/2;
+
+    ctx.fillStyle="#ffce55";
+    ctx.beginPath();
+    ctx.arc(x,y,10,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="#1c2530";
+    ctx.beginPath();
+    ctx.arc(x,y-3,4,0,Math.PI*2);
+    ctx.fill();
+}
+
+function drawCustomers(ox,oy){
+
+    for(const c of state.customers){
+
+        const x=ox+c.x*TILE+TILE/2;
+        const y=oy+c.y*TILE+TILE/2;
+
+        ctx.fillStyle=c.color;
+        ctx.beginPath();
+        ctx.arc(x,y,8,0,Math.PI*2);
+        ctx.fill();
+
+        if(c.state==="queue"){
+            ctx.strokeStyle="#fff";
+            ctx.strokeRect(x-10,y-10,20,20);
+        }
+    }
+}
+
+function drawEmployees(ox,oy){
+
+    for(const e of state.employees){
+
+        const x=ox+e.x*TILE+TILE/2;
+        const y=oy+e.y*TILE+TILE/2;
+
+        ctx.fillStyle=employeeTypes[e.type].color;
+
+        ctx.beginPath();
+        ctx.arc(x,y,9,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle="#111";
+        ctx.font="bold 9px Arial";
+        ctx.textAlign="center";
+
+        ctx.fillText(
+            e.type[0].toUpperCase(),
+            x,
+            y+3
+        );
+    }
+}
+
+function drawBuildPreview(ox,oy){
+
+    if(!buildInfo[state.selectedBuild])return;
+
+    const info=buildInfo[state.selectedBuild];
+
+    const x=Math.floor(
+        (state.mouseX-ox)/TILE
+    );
+
+    const y=Math.floor(
+        (state.mouseY-oy)/TILE
+    );
+
+    if(x<0||y<0)return;
+
+    ctx.fillStyle=
+        canPlace(state.selectedBuild,x,y)
+        ? "#4cff8866"
+        : "#ff444466";
+
+    ctx.fillRect(
+        ox+x*TILE,
+        oy+y*TILE,
+        info.w*TILE,
+        info.h*TILE
+    );
+}
+
+/* =========================
+   PLAYER
+   ========================= */
+
+let keys={};
 
 window.addEventListener("keydown",e=>{
-
     keys[e.key.toLowerCase()]=true;
-
-    if(e.key==="Escape"){
-        state.selectedBuild=null;
-
-        document.querySelectorAll(".build-btn").forEach(b=>{
-            b.classList.remove("selected");
-        });
-    }
-
 });
 
 window.addEventListener("keyup",e=>{
     keys[e.key.toLowerCase()]=false;
 });
 
-function updatePlayer(dt){
-
-    if(state.storeOpen){
-        return;
-    }
+function movePlayer(dt){
 
     let dx=0;
     let dy=0;
 
-    if(keys.w || keys.arrowup)dy--;
-    if(keys.s || keys.arrowdown)dy++;
-    if(keys.a || keys.arrowleft)dx--;
-    if(keys.d || keys.arrowright)dx++;
+    if(keys["w"]||keys["arrowup"])dy--;
+    if(keys["s"]||keys["arrowdown"])dy++;
+    if(keys["a"]||keys["arrowleft"])dx--;
+    if(keys["d"]||keys["arrowright"])dx++;
 
     if(dx||dy){
-
         const len=Math.hypot(dx,dy);
-
         dx/=len;
         dy/=len;
 
-        const speed=player.speed*dt;
+        state.player.x+=dx*state.player.speed*dt;
+        state.player.y+=dy*state.player.speed*dt;
+    }
 
-        player.x+=dx*speed;
-        player.y+=dy*speed;
+    state.player.x=clamp(
+        state.player.x,
+        1,
+        state.storeW-2
+    );
 
-        player.x=Math.max(.5,Math.min(state.width-.5,player.x));
-        player.y=Math.max(.5,Math.min(state.height-.5,player.y));
+    state.player.y=clamp(
+        state.player.y,
+        1,
+        state.storeH-2
+    );
+}
 
-        player.moving=true;
+function centerPlayer(){
+    state.player.x=state.storeW/2;
+    state.player.y=state.storeH-2;
+}
 
-    }else{
-        player.moving=false;
+/* =========================
+   PRODUCTS
+   ========================= */
+
+function productsModal(){
+
+    let html=`
+        <button class="close" onclick="closeModal()">✕</button>
+        <h2>💵 Products & Pricing</h2>
+        <p>Set the selling price for every product.</p>
+    `;
+
+    for(const name of productNames){
+
+        const p=state.products[name];
+
+        html+=`
+        <div class="row">
+            <div class="rowInfo">
+                <strong>${name}</strong>
+                <small>
+                    Wholesale: ${money(p.cost)}
+                    • Profit: ${money(p.price-p.cost)}
+                </small>
+            </div>
+
+            <input
+                type="number"
+                min="${p.cost}"
+                step=".01"
+                value="${p.price.toFixed(2)}"
+                onchange="changePrice('${name}',this.value)"
+            >
+        </div>`;
+    }
+
+    openModal(html);
+}
+
+function changePrice(name,value){
+
+    let price=parseFloat(value);
+
+    if(!Number.isFinite(price))return;
+
+    price=Math.max(
+        state.products[name].cost,
+        price
+    );
+
+    state.products[name].price=price;
+
+    toast(
+        name+" price set to "+money(price)
+    );
+
+    saveGame();
+}
+
+/* =========================
+   INVENTORY
+   ========================= */
+
+function inventoryModal(){
+
+    let html=`
+        <button class="close" onclick="closeModal()">✕</button>
+        <h2>📦 Inventory</h2>
+        <p>Buy stock from your suppliers.</p>
+    `;
+
+    for(const name of productNames){
+
+        const p=state.products[name];
+
+        html+=`
+        <div class="row">
+            <div class="rowInfo">
+                <strong>${name}</strong>
+                <small>
+                    ${p.stock}/${p.max} in stock
+                    • ${money(p.cost)} each
+                </small>
+            </div>
+
+            <button onclick="orderProduct('${name}',10)">
+                +10
+            </button>
+        </div>`;
+    }
+
+    openModal(html);
+}
+
+function orderProduct(name,amount){
+
+    const p=state.products[name];
+
+    const actual=Math.min(
+        amount,
+        p.max-p.stock
+    );
+
+    if(actual<=0){
+        toast("Storage is full for "+name+"!");
+        return;
+    }
+
+    const cost=actual*p.cost;
+
+    if(state.cash<cost){
+        toast("Not enough money!");
+        return;
+    }
+
+    state.cash-=cost;
+    p.stock+=actual;
+
+    state.costsToday+=cost;
+
+    toast(
+        "Ordered "+actual+" "+name
+    );
+
+    inventoryModal();
+    updateUI();
+    saveGame();
+}
+
+/* =========================
+   EMPLOYEES
+   ========================= */
+
+function employeesModal(){
+
+    let html=`
+        <button class="close" onclick="closeModal()">✕</button>
+        <h2>👷 Employees</h2>
+        <p>
+            Employees automatically work while the store is open.
+        </p>
+    `;
+
+    for(const type of Object.keys(employeeTypes)){
+
+        const info=employeeTypes[type];
+
+        html+=`
+        <div class="row">
+            <div class="rowInfo">
+                <strong>${info.name}</strong>
+                <small>
+                    Hire: ${money(info.hire)}
+                    • Wage: ${money(info.wage)}/hour
+                </small>
+            </div>
+
+            <button onclick="hireEmployee('${type}')">
+                Hire
+            </button>
+        </div>`;
+    }
+
+    html+=`
+        <hr>
+        <h3>Current Employees</h3>
+    `;
+
+    if(state.employees.length===0){
+        html+=`<p>No employees hired yet.</p>`;
+    }
+
+    for(const e of state.employees){
+
+        html+=`
+        <div class="employee">
+            <strong>${employeeTypes[e.type].name}</strong>
+            <br>
+            <small>
+                Level ${e.level}
+                • ${money(employeeTypes[e.type].wage)}/hour
+            </small>
+        </div>`;
+    }
+
+    openModal(html);
+}
+
+function hireEmployee(type){
+
+    const info=employeeTypes[type];
+
+    if(state.cash<info.hire){
+        toast("Not enough money to hire!");
+        return;
+    }
+
+    state.cash-=info.hire;
+
+    state.employees.push({
+        type,
+        level:1,
+        x:state.storeW/2,
+        y:state.storeH/2,
+        targetX:state.storeW/2,
+        targetY:state.storeH/2,
+        workTimer:0
+    });
+
+    state.costsToday+=info.hire;
+
+    toast(
+        info.name+" hired! 👷"
+    );
+
+    updateUI();
+    employeesModal();
+    saveGame();
+}
+
+function renderEmployees(){
+
+    const panel=document.getElementById("employeePanel");
+
+    if(!state.employees.length){
+        panel.innerHTML=`
+            <div class="toolTitle">EMPLOYEES</div>
+            <div style="color:#7f8999;font-size:12px">
+                No employees hired.
+            </div>
+        `;
+        return;
+    }
+
+    let html=`
+        <div class="toolTitle">EMPLOYEES</div>
+    `;
+
+    for(const e of state.employees){
+
+        html+=`
+        <div class="employee">
+            <strong>${employeeTypes[e.type].name}</strong>
+            <br>
+            <small>Level ${e.level}</small>
+        </div>
+        `;
+    }
+
+    panel.innerHTML=html;
+}
+
+/* =========================
+   EMPLOYEE AI
+   ========================= */
+
+function updateEmployees(dt){
+
+    if(!state.open)return;
+
+    for(const e of state.employees){
+
+        e.workTimer-=dt;
+
+        if(e.workTimer<=0){
+
+            e.targetX=
+                2+
+                Math.random()*
+                (state.storeW-4);
+
+            e.targetY=
+                2+
+                Math.random()*
+                (state.storeH-4);
+
+            e.workTimer=
+                3+
+                Math.random()*5;
+        }
+
+        const dx=e.targetX-e.x;
+        const dy=e.targetY-e.y;
+        const distance=Math.hypot(dx,dy);
+
+        if(distance>.1){
+
+            const speed=
+                .9+
+                e.level*.1;
+
+            e.x+=dx/distance*speed*dt;
+            e.y+=dy/distance*speed*dt;
+        }
+
+        // Stocker
+        if(e.type==="stocker"){
+            restockNearby(e);
+        }
+
+        // Cleaner
+        if(e.type==="cleaner"){
+            cleanNearby(e);
+        }
+
+        // Cashier
+        if(e.type==="cashier"){
+            cashierWork(e);
+        }
     }
 }
 
-/* ================= CUSTOMERS ================= */
+function restockNearby(e){
+
+    for(const name of productNames){
+
+        const p=state.products[name];
+
+        if(p.stock<=0){
+            p.stock++;
+            return;
+        }
+    }
+}
+
+function cleanNearby(e){
+    // V2 groundwork for physical dirt/messes.
+}
+
+function cashierWork(e){
+
+    for(const c of state.customers){
+
+        if(c.state==="queue"){
+            c.queueTime-=.1;
+
+            if(c.queueTime<=0){
+                completePurchase(c);
+                return;
+            }
+        }
+    }
+}
+
+/* =========================
+   CUSTOMER AI
+   ========================= */
+
+const customerColors=[
+    "#ff7373",
+    "#72b7ff",
+    "#b978ff",
+    "#65d58b",
+    "#ffb65e",
+    "#f17dc1"
+];
+
+const personalities=[
+    "budget",
+    "impatient",
+    "rich",
+    "family",
+    "health",
+    "snack"
+];
 
 function spawnCustomer(){
 
-    if(!state.storeOpen){
-        return;
-    }
-
-    if(state.customers.length>=25){
-        return;
-    }
-
-    const entrance={
-        x:state.width/2,
-        y:state.height-.4
-    };
-
-    const personality=[
-        "budget",
-        "impatient",
-        "rich",
-        "family",
-        "health",
-        "snack",
-        "oneItem",
-        "bigShopper"
-    ];
-
-    const type=
-        personality[
-            Math.floor(Math.random()*personality.length)
-        ];
+    if(!state.open)return;
 
     const c={
-        x:entrance.x,
-        y:entrance.y,
+        id:Math.random(),
+        x:state.storeW/2,
+        y:0.3,
 
-        targetX:entrance.x,
-        targetY:entrance.y,
+        targetX:state.storeW/2,
+        targetY:3,
 
-        speed:1.0+Math.random()*.35,
+        state:"shopping",
 
-        type,
+        personality:
+            personalities[
+                Math.floor(
+                    Math.random()*personalities.length
+                )
+            ],
 
-        state:"enter",
+        color:
+            customerColors[
+                Math.floor(
+                    Math.random()*customerColors.length
+                )
+            ],
 
-        shoppingTime:0,
+        shoppingList:[],
+        currentItem:0,
 
-        products:[],
+        queueTime:Math.random()*8+3,
+        patience:20+Math.random()*20,
 
-        money:5+Math.random()*55,
+        spending:5+Math.random()*55,
 
-        color:randomCustomerColor(),
-
-        satisfaction:1,
-
-        queueTime:0,
-
-        pathIndex:0
+        satisfaction:3.5
     };
 
-    createShoppingList(c);
+    let count=
+        4+
+        Math.floor(Math.random()*4);
 
-    state.customers.push(c);
-
-    state.customersToday++;
-    state.totalCustomers++;
-
-    updateUI();
-}
-
-function randomCustomerColor(){
-
-    const colors=[
-        "#e87d72",
-        "#72a7e8",
-        "#e8c772",
-        "#9c72e8",
-        "#72d69a",
-        "#d77ac1"
-    ];
-
-    return colors[
-        Math.floor(Math.random()*colors.length)
-    ];
-}
-
-function createShoppingList(c){
-
-    let count;
-
-    switch(c.type){
-
-        case"oneItem":
-            count=1;
-            break;
-
-        case"bigShopper":
-            count=7+Math.floor(Math.random()*4);
-            break;
-
-        case"family":
-            count=6+Math.floor(Math.random()*4);
-            break;
-
-        case"snack":
-            count=3+Math.floor(Math.random()*3);
-            break;
-
-        default:
-            count=3+Math.floor(Math.random()*4);
-    }
-
-    const shuffled=[...PRODUCTS]
-        .sort(()=>Math.random()-.5);
+    if(c.personality==="family")count+=3;
+    if(c.personality==="one")count=1;
+    if(c.personality==="snack")count+=2;
 
     for(let i=0;i<count;i++){
 
-        const p=shuffled[i%shuffled.length];
-
-        c.products.push({
-            id:p.id,
-            bought:false
-        });
-    }
-}
-
-function chooseShelfTarget(c){
-
-    const desired=
-        c.products.find(x=>!x.bought);
-
-    if(!desired){
-        c.state="checkout";
-        return;
+        c.shoppingList.push(
+            productNames[
+                Math.floor(
+                    Math.random()*productNames.length
+                )
+            ]
+        );
     }
 
-    const product=PRODUCTS.find(
-        p=>p.id===desired.id
-    );
-
-    const shelves=state.buildings.filter(
-        b=>b.type==="shelf" || b.type==="fridge"
-    );
-
-    if(!shelves.length){
-        c.state="leave";
-        return;
-    }
-
-    const target=
-        shelves[
-            Math.floor(Math.random()*shelves.length)
-        ];
-
-    c.targetX=target.x+.5;
-    c.targetY=target.y+.5;
-
-    c.state="shopping";
+    state.customers.push(c);
 }
 
 function updateCustomers(dt){
 
-    if(!state.storeOpen){
-        return;
-    }
+    if(!state.open)return;
 
     for(let i=state.customers.length-1;i>=0;i--){
 
         const c=state.customers[i];
 
-        c.shoppingTime+=dt;
-
-        if(c.state==="enter"){
-            chooseShelfTarget(c);
-        }
-
         if(c.state==="shopping"){
 
-            moveCustomer(c,dt);
+            if(c.currentItem>=c.shoppingList.length){
 
-            if(distance(c.x,c.y,c.targetX,c.targetY)<.5){
-
-                const desired=
-                    c.products.find(x=>!x.bought);
-
-                if(desired){
-
-                    const product=
-                        PRODUCTS.find(
-                            p=>p.id===desired.id
-                        );
-
-                    if(product.stock>0){
-
-                        const markup=
-                            product.price/product.cost;
-
-                        let chance=.72;
-
-                        if(c.type==="budget"){
-                            chance-=Math.max(
-                                0,
-                                markup-1.8
-                            )*.2;
-                        }
-
-                        if(c.type==="rich"){
-                            chance+=.15;
-                        }
-
-                        if(c.type==="snack" &&
-                           product.category==="Food"){
-                            chance+=.15;
-                        }
-
-                        if(Math.random()<chance){
-
-                            product.stock--;
-
-                            desired.bought=true;
-
-                            state.totalSales++;
-
-                            c.money-=product.price;
-
-                            createMoneyParticle(
-                                c.x,
-                                c.y,
-                                product.price
-                            );
-
-                            addXP(2);
-
-                        }else{
-
-                            c.satisfaction-=.08;
-
-                            desired.bought=true;
-                        }
-
-                    }else{
-
-                        c.satisfaction-=.18;
-
-                        desired.bought=true;
-                    }
-
-                }
-
-                chooseShelfTarget(c);
-            }
-
-            if(c.shoppingTime>45){
                 c.state="checkout";
+
+                c.targetX=
+                    state.storeW-4;
+
+                c.targetY=
+                    state.storeH-3;
+
+                continue;
             }
-        }
 
-        if(c.state==="checkout"){
+            const item=c.shoppingList[c.currentItem];
 
-            const checkout=
-                state.buildings.find(
-                    b=>b.type==="checkout"
-                );
+            const p=state.products[item];
 
-            if(!checkout){
+            if(!p || p.stock<=0){
 
-                c.satisfaction-=.4;
-                c.state="leave";
+                c.satisfaction-=.35;
 
-            }else{
+                c.currentItem++;
+                continue;
+            }
 
-                c.targetX=checkout.x+.5;
-                c.targetY=checkout.y+.5;
+            const shelf=findRandomShelf();
+
+            if(shelf){
+
+                c.targetX=shelf.x;
+                c.targetY=shelf.y;
 
                 moveCustomer(c,dt);
 
-                if(
-                    distance(
-                        c.x,
-                        c.y,
-                        c.targetX,
-                        c.targetY
-                    )<.65
-                ){
+                if(distance(c.x,c.y,c.targetX,c.targetY)<.5){
 
-                    c.queueTime+=dt;
+                    if(Math.random()<.85){
 
-                    const checkoutSpeed=
-                        8;
+                        p.stock--;
 
-                    if(c.queueTime>checkoutSpeed){
+                        c.currentItem++;
 
-                        completePurchase(c);
-
-                        c.state="leave";
+                        c.satisfaction+=.08;
                     }
                 }
+            }else{
+
+                c.currentItem++;
             }
         }
 
-        if(c.state==="leave"){
-
-            c.targetX=state.width/2;
-            c.targetY=state.height+.5;
+        else if(c.state==="checkout"){
 
             moveCustomer(c,dt);
 
-            if(c.y>state.height){
+            if(
+                distance(
+                    c.x,c.y,
+                    c.targetX,c.targetY
+                )<.6
+            ){
+
+                c.state="queue";
+            }
+        }
+
+        else if(c.state==="queue"){
+
+            c.patience-=dt;
+
+            if(
+                c.patience<=0 &&
+                !hasCashier()
+            ){
+
+                c.satisfaction-=.5;
+
+                state.customers.splice(i,1);
+
+                continue;
+            }
+
+            if(
+                c.queueTime<=0 ||
+                hasCashier()
+            ){
+
+                completePurchase(c);
 
                 state.customers.splice(i,1);
             }
         }
-
-        if(c.shoppingTime>90){
-
-            c.satisfaction-=.2;
-            c.state="leave";
-        }
     }
 }
 
-function completePurchase(c){
+function findRandomShelf(){
 
-    let spent=0;
-
-    for(const item of c.products){
-
-        if(item.bought){
-
-            const p=
-                PRODUCTS.find(
-                    x=>x.id===item.id
-                );
-
-            if(p){
-                spent+=p.price;
-            }
-        }
-    }
-
-    if(spent<=0){
-        return;
-    }
-
-    state.cash+=spent;
-    state.revenueToday+=spent;
-
-    const profit=spent;
-
-    createMoneyParticle(
-        c.x,
-        c.y,
-        profit
-    );
-
-    const priceScore=
-        Math.max(
-            0,
-            1-
-            averagePriceRatio(c)
+    const shelves=
+        state.buildings.filter(
+            b=>b.type==="shelf"||b.type==="fridge"
         );
 
-    c.satisfaction+=priceScore*.15;
+    if(!shelves.length)return null;
 
-    if(c.satisfaction>=.8){
-        addXP(5);
-    }
-
-    updateRating();
-
-    updateUI();
-}
-
-function averagePriceRatio(c){
-
-    let total=0;
-    let count=0;
-
-    for(const item of c.products){
-
-        if(item.bought){
-
-            const p=PRODUCTS.find(
-                x=>x.id===item.id
-            );
-
-            if(p){
-
-                const recommended=
-                    p.cost*2;
-
-                total+=
-                    Math.max(
-                        0,
-                        (p.price-recommended)/
-                        recommended
-                    );
-
-                count++;
-            }
-        }
-    }
-
-    return count?
-        Math.min(1,total/count):
-        0;
+    return shelves[
+        Math.floor(
+            Math.random()*shelves.length
+        )
+    ];
 }
 
 function moveCustomer(c,dt){
@@ -1704,1522 +1703,648 @@ function moveCustomer(c,dt){
 
     const d=Math.hypot(dx,dy);
 
-    if(d<.01){
-        return;
-    }
+    if(d>.05){
 
-    c.x+=(dx/d)*c.speed*dt;
-    c.y+=(dy/d)*c.speed*dt;
-}
+        const speed=1.4;
 
-/* ================= RATING ================= */
-
-function updateRating(){
-
-    let stockScore=1;
-
-    let empty=0;
-
-    for(const p of PRODUCTS){
-
-        if(p.stock<=0){
-            empty++;
-        }
-    }
-
-    stockScore=
-        Math.max(
-            0,
-            1-empty/PRODUCTS.length
-        );
-
-    let checkoutScore=1;
-
-    const checkout=
-        state.buildings.some(
-            b=>b.type==="checkout"
-        );
-
-    if(!checkout){
-        checkoutScore=.2;
-    }
-
-    let priceScore=1;
-
-    for(const p of PRODUCTS){
-
-        const recommended=p.cost*2;
-
-        const ratio=p.price/recommended;
-
-        if(ratio>1.5){
-            priceScore-=.05;
-        }
-
-        if(ratio<.8){
-            priceScore-=.01;
-        }
-    }
-
-    priceScore=Math.max(0,priceScore);
-
-    const buildScore=
-        Math.min(
-            1,
-            state.buildings.length/12
-        );
-
-    const target=
-        2+
-        stockScore*.9+
-        priceScore*.9+
-        checkoutScore*.6+
-        buildScore*.3;
-
-    state.rating+=
-        (target-state.rating)*.015;
-
-    state.rating=
-        Math.max(
-            1,
-            Math.min(5,state.rating)
-        );
-}
-
-/* ================= TIME ================= */
-
-let spawnTimer=0;
-
-function updateDay(dt){
-
-    if(!state.storeOpen){
-        return;
-    }
-
-    state.clock+=dt*12;
-
-    if(state.clock>=20*60){
-
-        closeStore();
-
-        return;
-    }
-
-    spawnTimer-=dt;
-
-    const hour=state.clock/60;
-
-    let traffic=1;
-
-    if(hour<10){
-        traffic=.6;
-    }else if(hour<14){
-        traffic=.8;
-    }else if(hour<17){
-        traffic=1;
-    }else if(hour<19){
-        traffic=1.4;
-    }else{
-        traffic=1.1;
-    }
-
-    if(spawnTimer<=0){
-
-        spawnCustomer();
-
-        spawnTimer=
-            Math.max(
-                1.1,
-                3.5/traffic
-            );
+        c.x+=dx/d*speed*dt;
+        c.y+=dy/d*speed*dt;
     }
 }
-
-/* ================= OPEN / CLOSE ================= */
-
-function openStore(){
-
-    if(state.storeOpen){
-        return;
-    }
-
-    const shelfCount=
-        state.buildings.filter(
-            b=>b.type==="shelf"||b.type==="fridge"
-        ).length;
-
-    const checkout=
-        state.buildings.some(
-            b=>b.type==="checkout"
-        );
-
-    const stocked=
-        PRODUCTS.some(
-            p=>p.stock>0
-        );
-
-    if(shelfCount<1){
-        toast("Build at least one shelf!");
-        return;
-    }
-
-    if(!checkout){
-        toast("You need a checkout!");
-        return;
-    }
-
-    if(!stocked){
-        toast("You need inventory!");
-        return;
-    }
-
-    state.storeOpen=true;
-
-    state.clock=8*60;
-
-    state.customers=[];
-
-    toast("STORE OPEN! 🛒");
-
-    updateUI();
-}
-
-function closeStore(){
-
-    if(!state.storeOpen){
-        return;
-    }
-
-    state.storeOpen=false;
-
-    state.customers=[];
-
-    const wages=0;
-
-    state.costsToday+=wages;
-
-    addXP(
-        Math.max(
-            0,
-            Math.floor(
-                state.revenueToday/10
-            )
-        )
-    );
-
-    updateRating();
-
-    openReport();
-
-    state.day++;
-
-    state.clock=8*60;
-
-    state.revenueToday=0;
-    state.costsToday=0;
-    state.customersToday=0;
-
-    saveGame();
-}
-
-document.getElementById("openBtn")
-    .addEventListener("click",openStore);
-
-/* ================= PRODUCTS UI ================= */
-
-function renderProducts(){
-
-    const list=
-        document.getElementById("productList");
-
-    list.innerHTML="";
-
-    for(const p of PRODUCTS){
-
-        const profit=p.price-p.cost;
-
-        const row=document.createElement("div");
-
-        row.className="product-row";
-
-        row.innerHTML=`
-            <div>
-                <strong>${p.name}</strong>
-                <div style="font-size:10px;color:#74848c">
-                    ${p.category}
-                </div>
-            </div>
-
-            <div>$${p.cost.toFixed(2)}</div>
-
-            <div>
-                <input
-                    class="small-input"
-                    type="number"
-                    min="${p.cost.toFixed(2)}"
-                    step=".01"
-                    value="${p.price.toFixed(2)}"
-                    data-price="${p.id}"
-                >
-            </div>
-
-            <div>
-                $${profit.toFixed(2)}
-            </div>
-
-            <div>
-                ${p.stock}
-            </div>
-        `;
-
-        list.appendChild(row);
-    }
-
-    list.querySelectorAll("[data-price]").forEach(input=>{
-
-        input.addEventListener("change",()=>{
-
-            const p=
-                PRODUCTS.find(
-                    x=>x.id===input.dataset.price
-                );
-
-            let value=parseFloat(input.value);
-
-            if(!Number.isFinite(value)){
-                value=p.cost;
-            }
-
-            value=Math.max(p.cost,value);
-
-            p.price=value;
-
-            toast(
-                `${p.name}: $${value.toFixed(2)}`
-            );
-
-            renderProducts();
-        });
-
-    });
-}
-
-document.getElementById("productsBtn")
-    .addEventListener("click",()=>{
-        renderProducts();
-        openModal("productsModal");
-    });
-
-/* ================= INVENTORY ================= */
-
-function renderInventory(){
-
-    const list=
-        document.getElementById("inventoryList");
-
-    list.innerHTML="";
-
-    for(const p of PRODUCTS){
-
-        const row=document.createElement("div");
-
-        row.style.display="flex";
-        row.style.justifyContent="space-between";
-        row.style.alignItems="center";
-        row.style.padding="12px";
-        row.style.borderBottom="1px solid #29363e";
-
-        row.innerHTML=`
-            <div>
-                <strong>${p.name}</strong>
-                <div style="color:#81929c;font-size:11px">
-                    ${p.stock} / ${p.max} in stock
-                </div>
-            </div>
-
-            <button class="action">
-                ORDER 10 — $${(p.cost*10).toFixed(2)}
-            </button>
-        `;
-
-        row.querySelector("button")
-            .addEventListener("click",()=>{
-
-                const amount=10;
-
-                if(
-                    p.stock+amount>
-                    p.max
-                ){
-                    toast("Storage is full.");
-                    return;
-                }
-
-                const cost=p.cost*amount;
-
-                if(state.cash<cost){
-                    toast("Not enough money.");
-                    return;
-                }
-
-                state.cash-=cost;
-
-                state.costsToday+=cost;
-
-                p.stock+=amount;
-
-                toast(
-                    `Ordered 10 ${p.name}.`
-                );
-
-                renderInventory();
-                updateUI();
-            });
-
-        list.appendChild(row);
-    }
-}
-
-document.getElementById("inventoryBtn")
-    .addEventListener("click",()=>{
-        renderInventory();
-        openModal("inventoryModal");
-    });
-
-/* ================= EXPANSION ================= */
-
-function expansionCost(){
-
-    return [
-        5000,
-        12500,
-        30000,
-        75000,
-        200000
-    ][state.expansionLevel] || 500000;
-}
-
-function renderExpansion(){
-
-    const cost=expansionCost();
-
-    const nextWidth=
-        state.width+
-        (state.expansionLevel<2?10:15);
-
-    const nextHeight=
-        state.height+
-        (state.expansionLevel<2?0:5);
-
-    document.getElementById(
-        "expandDescription"
-    ).innerHTML=`
-        <strong>Current size:</strong>
-        ${state.width} × ${state.height} tiles
-        <br><br>
-        <strong>New size:</strong>
-        ${nextWidth} × ${nextHeight} tiles
-        <br><br>
-        <strong>Cost:</strong>
-        $${cost.toLocaleString()}
-        <br><br>
-        More floor space means more room for shelves,
-        products and customers.
-    `;
-}
-
-document.getElementById("expandBtn")
-    .addEventListener("click",()=>{
-        renderExpansion();
-        openModal("expandModal");
-    });
-
-document.getElementById("confirmExpand")
-    .addEventListener("click",()=>{
-
-        const cost=expansionCost();
-
-        if(state.cash<cost){
-            toast("Not enough money!");
-            return;
-        }
-
-        state.cash-=cost;
-
-        state.expansionLevel++;
-
-        state.width+=
-            state.expansionLevel<3
-            ?10
-            :15;
-
-        if(state.expansionLevel>=3){
-            state.height+=5;
-        }
-
-        addXP(250);
-
-        closeModal("expandModal");
-
-        toast("STORE EXPANDED! 🏗️");
-
-        updateUI();
-    });
-
-/* ================= REPORT ================= */
-
-function openReport(){
-
-    document.getElementById("reportRevenue")
-        .textContent=
-        "$"+state.revenueToday.toLocaleString(
-            undefined,
-            {maximumFractionDigits:0}
-        );
-
-    document.getElementById("reportCosts")
-        .textContent=
-        "-$"+state.costsToday.toLocaleString(
-            undefined,
-            {maximumFractionDigits:0}
-        );
-
-    document.getElementById("reportCustomers")
-        .textContent=
-        state.customersToday;
-
-    document.getElementById("reportProfit")
-        .textContent=
-        "$"+
-        Math.max(
-            0,
-            state.revenueToday-
-            state.costsToday
-        ).toLocaleString(
-            undefined,
-            {maximumFractionDigits:0}
-        );
-
-    document.getElementById("reportRating")
-        .textContent=
-        state.rating.toFixed(1)+" ⭐";
-
-    openModal("reportModal");
-}
-
-document.getElementById("reportBtn")
-    .addEventListener("click",openReport);
-
-/* ================= XP ================= */
-
-function xpNeeded(){
-
-    return [
-        0,
-        1000,
-        2500,
-        5000,
-        10000,
-        20000,
-        40000,
-        75000,
-        125000,
-        200000
-    ][state.level] || 300000;
-}
-
-function addXP(amount){
-
-    state.xp+=amount;
-
-    const needed=xpNeeded();
-
-    if(
-        state.level<10 &&
-        state.xp>=needed
-    ){
-
-        state.level++;
-
-        toast(
-            `LEVEL UP! You reached Level ${state.level}!`
-        );
-
-        unlockCheck();
-    }
-}
-
-function unlockCheck(){
-
-    if(state.level===2){
-        toast("NEW: Meat & Household coming soon!");
-    }
-
-    if(state.level===3){
-        toast("NEW DEPARTMENT: Bakery!");
-    }
-}
-
-/* ================= PARTICLES ================= */
-
-function createMoneyParticle(x,y,value){
-
-    state.particles.push({
-        x,
-        y,
-        text:"+$"+value.toFixed(2),
-        life:1,
-        vy:-.7
-    });
-}
-
-function updateParticles(dt){
-
-    for(let i=state.particles.length-1;i>=0;i--){
-
-        const p=state.particles[i];
-
-        p.y+=p.vy*dt*60;
-
-        p.life-=dt;
-
-        if(p.life<=0){
-            state.particles.splice(i,1);
-        }
-    }
-}
-
-/* ================= DRAWING ================= */
-
-function draw(){
-
-    ctx.clearRect(0,0,W,H);
-
-    drawWorld();
-    drawStore();
-    drawBuildings();
-    drawCustomers();
-    drawPlayer();
-    drawParticles();
-
-    if(state.selectedBuild){
-        drawBuildCursor();
-    }
-
-    if(state.storeOpen){
-        drawClock();
-    }
-}
-
-function drawWorld(){
-
-    ctx.fillStyle=COLORS.outside;
-    ctx.fillRect(0,0,W,H);
-
-    const store=storeRect();
-
-    /* road */
-
-    ctx.fillStyle=COLORS.road;
-
-    ctx.fillRect(
-        0,
-        store.y+store.h+30,
-        W,
-        H-(store.y+store.h+30)
-    );
-
-    /* parking */
-
-    ctx.fillStyle=COLORS.parking;
-
-    ctx.fillRect(
-        0,
-        store.y+store.h,
-        W,
-        80
-    );
-
-    /* parking stripes */
-
-    ctx.strokeStyle="#a7aa9f";
-    ctx.lineWidth=2;
-
-    for(let x=40;x<W;x+=80){
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x,
-            store.y+store.h+8
-        );
-
-        ctx.lineTo(
-            x,
-            store.y+store.h+62
-        );
-
-        ctx.stroke();
-    }
-
-    /* trees */
-
-    for(let x=30;x<W;x+=130){
-
-        if(
-            x>store.x-80 &&
-            x<store.x+store.w+80
-        ){
-            continue;
-        }
-
-        drawTree(
-            x,
-            120+(x%170)
-        );
-    }
-}
-
-function drawTree(x,y){
-
-    ctx.fillStyle="#664832";
-
-    ctx.fillRect(
-        x-4,
-        y+15,
-        8,
-        24
-    );
-
-    ctx.fillStyle="#356744";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        22,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle="#477e52";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x-10,
-        y-8,
-        14,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-}
-
-function drawStore(){
-
-    const r=storeRect();
-
-    /* shadow */
-
-    ctx.fillStyle="rgba(0,0,0,.25)";
-
-    ctx.fillRect(
-        r.x+8,
-        r.y+10,
-        r.w,
-        r.h
-    );
-
-    /* walls */
-
-    ctx.fillStyle=COLORS.wall;
-
-    ctx.fillRect(
-        r.x-10,
-        r.y-10,
-        r.w+20,
-        10
-    );
-
-    ctx.fillRect(
-        r.x-10,
-        r.y-10,
-        10,
-        r.h+20
-    );
-
-    ctx.fillRect(
-        r.x+r.w,
-        r.y-10,
-        10,
-        r.h+20
-    );
-
-    ctx.fillRect(
-        r.x-10,
-        r.y+r.h,
-        r.w+20,
-        10
-    );
-
-    /* floor */
-
-    for(let y=0;y<state.height;y++){
-
-        for(let x=0;x<state.width;x++){
-
-            ctx.fillStyle=
-                (x+y)%2===0
-                ?COLORS.floor
-                :COLORS.floorAlt;
-
-            ctx.fillRect(
-                r.x+x*TILE,
-                r.y+y*TILE,
-                TILE,
-                TILE
-            );
-        }
-    }
-
-    /* entrance */
-
-    ctx.fillStyle="#d6a936";
-
-    ctx.fillRect(
-        r.x+r.w/2-35,
-        r.y+r.h-4,
-        70,
-        8
-    );
-
-    ctx.fillStyle="#fff";
-
-    ctx.font="bold 12px Arial";
-
-    ctx.textAlign="center";
-
-    ctx.fillText(
-        "ENTRANCE",
-        r.x+r.w/2,
-        r.y+r.h+27
-    );
-
-    ctx.textAlign="left";
-}
-
-function drawBuildings(){
-
-    const r=storeRect();
-
-    for(const b of state.buildings){
-
-        const x=r.x+b.x*TILE;
-        const y=r.y+b.y*TILE;
-
-        if(b.type==="shelf"){
-            drawShelf(x,y);
-        }
-
-        if(b.type==="fridge"){
-            drawFridge(x,y);
-        }
-
-        if(b.type==="checkout"){
-            drawCheckout(x,y);
-        }
-
-        if(b.type==="storage"){
-            drawStorage(x,y);
-        }
-
-        if(b.type==="cart"){
-            drawCartStation(x,y);
-        }
-
-        if(b.type==="light"){
-            drawLight(x,y);
-        }
-
-        if(b.type==="decor"){
-            drawDecor(x,y);
-        }
-    }
-}
-
-function drawShelf(x,y){
-
-    ctx.fillStyle="rgba(0,0,0,.18)";
-    ctx.fillRect(x+3,y+5,26,25);
-
-    ctx.fillStyle=COLORS.shelf;
-    ctx.fillRect(x+4,y+3,24,25);
-
-    ctx.fillStyle=COLORS.shelfTop;
-    ctx.fillRect(x+5,y+4,22,5);
-
-    ctx.fillStyle="#e6c27b";
-
-    for(let i=0;i<4;i++){
-
-        ctx.fillRect(
-            x+7+i*5,
-            y+12,
-            3,
-            7
-        );
-    }
-
-    ctx.fillStyle="#d7a85a";
-
-    ctx.fillRect(
-        x+5,
-        y+22,
-        22,
-        3
-    );
-}
-
-function drawFridge(x,y){
-
-    ctx.fillStyle="rgba(0,0,0,.18)";
-    ctx.fillRect(x+3,y+4,26,27);
-
-    ctx.fillStyle=COLORS.fridge;
-    ctx.fillRect(x+3,y+2,26,27);
-
-    ctx.fillStyle="#a7d4df";
-    ctx.fillRect(x+7,y+6,18,17);
-
-    ctx.strokeStyle="#4a7180";
-
-    ctx.strokeRect(
-        x+7,
-        y+6,
-        18,
-        17
-    );
-
-    ctx.fillStyle="#fff";
-
-    ctx.fillRect(
-        x+23,
-        y+9,
-        2,
-        9
-    );
-}
-
-function drawCheckout(x,y){
-
-    ctx.fillStyle="rgba(0,0,0,.18)";
-    ctx.fillRect(x+2,y+5,28,25);
-
-    ctx.fillStyle=COLORS.checkout;
-    ctx.fillRect(x+3,y+7,26,20);
-
-    ctx.fillStyle="#2a3135";
-
-    ctx.fillRect(
-        x+8,
-        y+3,
-        16,
-        7
-    );
-
-    ctx.fillStyle="#8ed3a0";
-
-    ctx.fillRect(
-        x+10,
-        y+4,
-        12,
-        4
-    );
-
-    ctx.fillStyle="#e0b83f";
-
-    ctx.fillRect(
-        x+6,
-        y+20,
-        20,
-        3
-    );
-}
-
-function drawStorage(x,y){
-
-    ctx.fillStyle=COLORS.wood;
-    ctx.fillRect(x+4,y+4,24,25);
-
-    ctx.fillStyle="#a67445";
-
-    for(let i=0;i<3;i++){
-
-        ctx.fillRect(
-            x+7,
-            y+7+i*7,
-            18,
-            4
-        );
-    }
-}
-
-function drawCartStation(x,y){
-
-    ctx.fillStyle="#303a40";
-
-    ctx.fillRect(
-        x+6,
-        y+11,
-        20,
-        4
-    );
-
-    ctx.strokeStyle="#71818a";
-    ctx.lineWidth=2;
-
-    ctx.strokeRect(
-        x+7,
-        y+15,
-        14,
-        9
-    );
-
-    ctx.beginPath();
-    ctx.arc(x+10,y+26,2,0,Math.PI*2);
-    ctx.arc(x+22,y+26,2,0,Math.PI*2);
-    ctx.stroke();
-}
-
-function drawLight(x,y){
-
-    ctx.fillStyle="#f7e9aa";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x+16,
-        y+16,
-        8,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    ctx.strokeStyle="rgba(255,235,150,.15)";
-    ctx.lineWidth=12;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x+16,
-        y+16,
-        12,
-        0,
-        Math.PI*2
-    );
-
-    ctx.stroke();
-}
-
-function drawDecor(x,y){
-
-    ctx.fillStyle="#356644";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x+16,
-        y+13,
-        8,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle="#684932";
-
-    ctx.fillRect(
-        x+13,
-        y+19,
-        6,
-        8
-    );
-}
-
-function drawCustomers(){
-
-    const r=storeRect();
-
-    for(const c of state.customers){
-
-        const x=r.x+c.x*TILE;
-        const y=r.y+c.y*TILE;
-
-        /* shadow */
-
-        ctx.fillStyle="rgba(0,0,0,.18)";
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-            x,
-            y+9,
-            8,
-            4,
-            0,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-        /* body */
-
-        ctx.fillStyle=c.color;
-
-        ctx.fillRect(
-            x-7,
-            y,
-            14,
-            15
-        );
-
-        /* head */
-
-        ctx.fillStyle="#e7b27d";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            y-6,
-            6,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-        /* hair */
-
-        ctx.fillStyle="#342a26";
-
-        ctx.fillRect(
-            x-5,
-            y-11,
-            10,
-            3
-        );
-
-        /* feet */
-
-        ctx.fillStyle="#292d30";
-
-        ctx.fillRect(
-            x-6,
-            y+14,
-            4,
-            5
-        );
-
-        ctx.fillRect(
-            x+2,
-            y+14,
-            4,
-            5
-        );
-
-        /* shopping basket */
-
-        if(c.products.length>0){
-
-            ctx.strokeStyle="#38464c";
-            ctx.lineWidth=2;
-
-            ctx.strokeRect(
-                x+8,
-                y+5,
-                8,
-                7
-            );
-        }
-    }
-}
-
-function drawPlayer(){
-
-    const r=storeRect();
-
-    const x=r.x+player.x*TILE;
-    const y=r.y+player.y*TILE;
-
-    /* shadow */
-
-    ctx.fillStyle="rgba(0,0,0,.25)";
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        x,
-        y+10,
-        9,
-        4,
-        0,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    /* body */
-
-    ctx.fillStyle="#3e78a4";
-
-    ctx.fillRect(
-        x-8,
-        y,
-        16,
-        16
-    );
-
-    /* head */
-
-    ctx.fillStyle="#e5ad78";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y-7,
-        7,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    /* hair */
-
-    ctx.fillStyle="#302521";
-
-    ctx.fillRect(
-        x-6,
-        y-13,
-        12,
-        4
-    );
-
-    /* legs */
-
-    ctx.fillStyle="#24292d";
-
-    ctx.fillRect(
-        x-6,
-        y+15,
-        5,
-        6
-    );
-
-    ctx.fillRect(
-        x+1,
-        y+15,
-        5,
-        6
-    );
-
-    /* name */
-
-    ctx.fillStyle="#fff";
-    ctx.font="bold 9px Arial";
-    ctx.textAlign="center";
-
-    ctx.fillText(
-        "YOU",
-        x,
-        y-18
-    );
-
-    ctx.textAlign="left";
-}
-
-function drawBuildCursor(){
-
-    const mouseX=lastMouse.x;
-    const mouseY=lastMouse.y;
-
-    const tile=screenToTile(mouseX,mouseY);
-
-    if(!tile){
-        return;
-    }
-
-    const r=storeRect();
-
-    const x=r.x+tile.x*TILE;
-    const y=r.y+tile.y*TILE;
-
-    const good=
-        !occupied(tile.x,tile.y) &&
-        state.selectedBuild!=="delete";
-
-    ctx.fillStyle=
-        good
-        ?"rgba(95,190,115,.35)"
-        :"rgba(210,75,65,.35)";
-
-    ctx.fillRect(
-        x,
-        y,
-        TILE,
-        TILE
-    );
-
-    ctx.strokeStyle=
-        good
-        ?"#77d68a"
-        :"#e36c63";
-
-    ctx.lineWidth=2;
-
-    ctx.strokeRect(
-        x+1,
-        y+1,
-        TILE-2,
-        TILE-2
-    );
-}
-
-let lastMouse={x:0,y:0};
-
-canvas.addEventListener("mousemove",e=>{
-
-    const rect=canvas.getBoundingClientRect();
-
-    lastMouse.x=
-        (e.clientX-rect.left)*
-        (canvas.width/rect.width);
-
-    lastMouse.y=
-        (e.clientY-rect.top)*
-        (canvas.height/rect.height);
-});
-
-function drawParticles(){
-
-    ctx.textAlign="center";
-
-    for(const p of state.particles){
-
-        ctx.globalAlpha=
-            Math.max(0,p.life);
-
-        ctx.fillStyle="#f3d15d";
-
-        ctx.font="bold 13px Arial";
-
-        const r=storeRect();
-
-        ctx.fillText(
-            p.text,
-            r.x+p.x*TILE,
-            r.y+p.y*TILE
-        );
-    }
-
-    ctx.globalAlpha=1;
-    ctx.textAlign="left";
-}
-
-function drawClock(){
-
-    const hour=Math.floor(state.clock/60);
-    const minute=Math.floor(state.clock%60);
-
-    const hh=
-        hour.toString().padStart(2,"0");
-
-    const mm=
-        minute.toString().padStart(2,"0");
-
-    ctx.fillStyle="rgba(10,15,18,.85)";
-
-    ctx.fillRect(
-        W/2-70,
-        H-60,
-        140,
-        34
-    );
-
-    ctx.fillStyle="#fff";
-
-    ctx.font="bold 15px Arial";
-
-    ctx.textAlign="center";
-
-    ctx.fillText(
-        `${hh}:${mm}`,
-        W/2,
-        H-38
-    );
-
-    ctx.textAlign="left";
-}
-
-/* ================= UPDATE UI ================= */
-
-function updateUI(){
-
-    document.getElementById("cashText")
-        .textContent=
-        "$"+Math.floor(state.cash).toLocaleString();
-
-    document.getElementById("ratingText")
-        .textContent=
-        state.rating.toFixed(1)+" ⭐";
-
-    document.getElementById("dayText")
-        .textContent=
-        state.day;
-
-    document.getElementById("levelText")
-        .textContent=
-        state.level;
-
-    document.getElementById("customersText")
-        .textContent=
-        state.customers.length;
-
-    let objective="STOCK YOUR STORE";
-
-    const shelfCount=
-        state.buildings.filter(
-            b=>b.type==="shelf"||b.type==="fridge"
-        ).length;
-
-    const checkout=
-        state.buildings.some(
-            b=>b.type==="checkout"
-        );
-
-    const totalStock=
-        PRODUCTS.reduce(
-            (sum,p)=>sum+p.stock,
-            0
-        );
-
-    if(state.storeOpen){
-
-        objective=
-            "STORE OPEN — KEEP CUSTOMERS HAPPY";
-    }else if(shelfCount<1){
-
-        objective=
-            "BUILD A SHELF";
-    }else if(!checkout){
-
-        objective=
-            "BUILD A CHECKOUT";
-    }else if(totalStock<20){
-
-        objective=
-            "ORDER MORE INVENTORY";
-    }else{
-
-        objective=
-            "OPEN YOUR STORE";
-    }
-
-    document.getElementById("objectiveText")
-        .textContent=
-        objective;
-}
-
-/* ================= UTILITIES ================= */
 
 function distance(x1,y1,x2,y2){
-
     return Math.hypot(
         x2-x1,
         y2-y1
     );
 }
 
-/* ================= SAVE / MENU ================= */
+function hasCashier(){
+    return state.employees.some(
+        e=>e.type==="cashier"
+    );
+}
 
-document.getElementById("saveBtn")
-    .addEventListener("click",saveGame);
+function completePurchase(c){
 
-document.getElementById("menuBtn")
-    .addEventListener("click",()=>{
+    let revenue=0;
+    let items=0;
 
-        if(state.storeOpen){
-            toast("Close the store before leaving.");
-            return;
-        }
+    for(const name of c.shoppingList){
 
-        saveGame();
+        const p=state.products[name];
 
-        showScreen("menu");
+        if(!p)continue;
+
+        revenue+=p.price;
+        items++;
+    }
+
+    state.cash+=revenue;
+
+    state.revenueToday+=revenue;
+
+    state.customersToday++;
+
+    state.xp+=items*2;
+
+    if(c.satisfaction>=4){
+        state.xp+=5;
+    }
+
+    updateLevel();
+
+    // rating
+    let target=c.satisfaction;
+
+    if(hasCashier())target+=.15;
+
+    state.rating=
+        clamp(
+            state.rating+
+            (target-state.rating)*.015,
+            1,
+            5
+        );
+
+    moneyParticle(
+        c.x*TILE,
+        c.y*TILE,
+        "+"+money(revenue)
+    );
+}
+
+/* =========================
+   MONEY PARTICLES
+   ========================= */
+
+let particles=[];
+
+function moneyParticle(x,y,text){
+
+    particles.push({
+        x,
+        y,
+        text,
+        life:1
     });
+}
 
-/* ================= MAIN LOOP ================= */
+function updateParticles(dt){
+
+    for(let i=particles.length-1;i>=0;i--){
+
+        const p=particles[i];
+
+        p.y-=30*dt;
+        p.life-=dt;
+
+        if(p.life<=0){
+            particles.splice(i,1);
+        }
+    }
+}
+
+function drawParticles(){
+
+    for(const p of particles){
+
+        ctx.globalAlpha=p.life;
+
+        ctx.fillStyle="#65e18a";
+        ctx.font="bold 16px Arial";
+
+        ctx.fillText(
+            p.text,
+            p.x,
+            p.y
+        );
+
+        ctx.globalAlpha=1;
+    }
+}
+
+/* =========================
+   STORE OPEN/CLOSE
+   ========================= */
+
+function openStore(){
+
+    if(state.open){
+        closeStore();
+        return;
+    }
+
+    const shelves=
+        state.buildings.filter(
+            b=>b.type==="shelf"||b.type==="fridge"
+        ).length;
+
+    const checkouts=
+        state.buildings.filter(
+            b=>b.type==="checkout"
+        ).length;
+
+    const totalStock=
+        productNames.reduce(
+            (sum,n)=>sum+state.products[n].stock,
+            0
+        );
+
+    if(shelves<1){
+        toast("You need at least one shelf!");
+        return;
+    }
+
+    if(checkouts<1){
+        toast("You need a checkout!");
+        return;
+    }
+
+    if(totalStock<10){
+        toast("You need at least 10 products!");
+        return;
+    }
+
+    state.open=true;
+
+    toast("STORE OPEN! 🛒🔥");
+
+    if(state.objective===0){
+        completeObjective();
+    }
+
+    updateUI();
+}
+
+function closeStore(){
+
+    state.open=false;
+
+    const profit=
+        state.revenueToday-
+        state.costsToday-
+        state.wagesToday;
+
+    state.xp+=
+        Math.max(0,Math.floor(profit/10));
+
+    updateLevel();
+
+    reportModal();
+
+    toast(
+        "Store closed. Profit: "+money(profit)
+    );
+}
+
+/* =========================
+   TIME
+   ========================= */
+
+let lastTime=performance.now();
+
+function updateTime(dt){
+
+    if(!state.open)return;
+
+    // 8 real minutes = 12 in-game hours
+    state.minutes+=
+        dt*(720/480);
+
+    if(state.minutes>=1200){
+
+        state.minutes=1200;
+
+        closeStore();
+    }
+
+    // wages
+    for(const e of state.employees){
+
+        const hourly=
+            employeeTypes[e.type].wage;
+
+        state.wagesToday+=
+            hourly*(dt/480);
+    }
+
+    const hour=state.minutes/60;
+
+    let traffic=1;
+
+    if(hour>=8&&hour<10)traffic=.6;
+    else if(hour<14)traffic=.8;
+    else if(hour<17)traffic=1;
+    else if(hour<19)traffic=1.4;
+    else traffic=1.1;
+
+    const spawnChance=
+        dt*.16*traffic;
+
+    if(Math.random()<spawnChance){
+        spawnCustomer();
+    }
+}
+
+/* =========================
+   LEVEL SYSTEM
+   ========================= */
+
+const levelXP=[
+    0,
+    1000,
+    2500,
+    5000,
+    10000,
+    20000,
+    40000,
+    75000,
+    125000,
+    200000
+];
+
+function updateLevel(){
+
+    let newLevel=1;
+
+    for(let i=levelXP.length-1;i>=0;i--){
+
+        if(state.xp>=levelXP[i]){
+            newLevel=i+1;
+            break;
+        }
+    }
+
+    if(newLevel>state.level){
+
+        state.level=newLevel;
+
+        toast(
+            "LEVEL UP! Level "+newLevel+" 🎉"
+        );
+
+        state.cash+=newLevel*100;
+    }
+
+    checkObjectives();
+}
+
+function checkObjectives(){
+
+    const obj=state.objective;
+
+    if(obj===1 && state.customersToday>=10){
+        completeObjective();
+    }
+
+    else if(
+        obj===2 &&
+        state.revenueToday-state.costsToday>=500
+    ){
+        completeObjective();
+    }
+
+    else if(
+        obj===3 &&
+        state.customersToday>=10
+    ){
+        completeObjective();
+    }
+
+    else if(obj===4){
+
+        const stock=
+            productNames.reduce(
+                (s,n)=>s+state.products[n].stock,
+                0
+            );
+
+        if(stock>=100){
+            completeObjective();
+        }
+    }
+
+    else if(obj===5 && state.employees.length>=1){
+        completeObjective();
+    }
+
+    else if(obj===6 && state.rating>=4){
+        completeObjective();
+    }
+
+    else if(
+        obj===7 &&
+        state.revenueToday-
+        state.costsToday-
+        state.wagesToday>=1000
+    ){
+        completeObjective();
+    }
+
+    else if(obj===9 && state.level>=3){
+        completeObjective();
+    }
+}
+
+function completeObjective(){
+
+    const o=
+        objectives[
+            Math.min(
+                state.objective,
+                objectives.length-1
+            )
+        ];
+
+    state.cash+=o.reward;
+
+    state.objective++;
+
+    toast(
+        "OBJECTIVE COMPLETE! +"+money(o.reward)+" 🎉"
+    );
+
+    updateUI();
+}
+
+/* =========================
+   EXPANSION
+   ========================= */
+
+function expansionModal(){
+
+    const prices=[
+        5000,
+        12500,
+        30000,
+        75000,
+        200000
+    ];
+
+    const sizes=[
+        [20,15],
+        [30,15],
+        [40,20],
+        [50,25],
+        [65,30],
+        [80,40]
+    ];
+
+    let current=
+        sizes.findIndex(
+            s=>s[0]===state.storeW&&s[1]===state.storeH
+        );
+
+    if(current<0)current=0;
+
+    const next=current+1;
+
+    let html=`
+        <button class="close" onclick="closeModal()">✕</button>
+        <h2>🏗️ Expand Store</h2>
+    `;
+
+    if(next>=sizes.length){
+
+        html+=`
+            <p class="gold">
+                Your store has reached the current maximum size!
+            </p>
+        `;
+    }else{
+
+        html+=`
+            <div class="row">
+                <div class="rowInfo">
+                    <strong>
+                        Expansion ${next}
+                    </strong>
+                    <small>
+                        ${sizes[next][0]} × ${sizes[next][1]} tiles
+                        <br>
+                        Cost: ${money(prices[next-1])}
+                    </small>
+                </div>
+
+                <button
+                    class="green"
+                    onclick="expandStore(${prices[next-1]},${sizes[next][0]},${sizes[next][1]})"
+                >
+                    BUY
+                </button>
+            </div>
+        `;
+    }
+
+    openModal(html);
+}
+
+function expandStore(price,w,h){
+
+    if(state.cash<price){
+        toast("Not enough money!");
+        return;
+    }
+
+    state.cash-=price;
+
+    state.costsToday+=price;
+
+    state.storeW=w;
+    state.storeH=h;
+
+    state.xp+=250;
+
+    updateLevel();
+
+    closeModal();
+
+    toast(
+        "STORE EXPANDED! 🏗️🔥"
+    );
+
+    updateUI();
+    saveGame();
+}
+
+/* =========================
+   DAILY REPORT
+   ========================= */
+
+function reportModal(){
+
+    const profit=
+        state.revenueToday-
+        state.costsToday-
+        state.wagesToday;
+
+    const avg=
+        state.customersToday?
+        state.revenueToday/state.customersToday:
+        0;
+
+    let html=`
+        <button class="close" onclick="closeModal()">✕</button>
+
+        <h2>📊 Daily Report</h2>
+
+        <div class="row">
+            <strong>Revenue</strong>
+            <span class="good">${money(state.revenueToday)}</span>
+        </div>
+
+        <div class="row">
+            <strong>Inventory / Building Costs</strong>
+            <span class="bad">-${money(state.costsToday)}</span>
+        </div>
+
+        <div class="row">
+            <strong>Employee Wages</strong>
+            <span class="bad">-${money(state.wagesToday)}</span>
+        </div>
+
+        <div class="row">
+            <strong>Profit</strong>
+            <span class="${profit>=0?"good":"bad"}">
+                ${money(profit)}
+            </span>
+        </div>
+
+        <div class="row">
+            <strong>Customers Served</strong>
+            <span>${state.customersToday}</span>
+        </div>
+
+        <div class="row">
+            <strong>Average Customer Spend</strong>
+            <span>${money(avg)}</span>
+        </div>
+
+        <div class="row">
+            <strong>Store Rating</strong>
+            <span>${state.rating.toFixed(1)} ⭐</span>
+        </div>
+
+        <button
+            class="green"
+            style="width:100%;margin-top:10px"
+            onclick="finishDay()"
+        >
+            END DAY
+        </button>
+    `;
+
+    openModal(html);
+}
+
+function finishDay(){
+
+    state.open=false;
+
+    state.day++;
+
+    state.minutes=480;
+
+    state.revenueToday=0;
+    state.costsToday=50;
+    state.wagesToday=0;
+    state.customersToday=0;
+
+    state.customers=[];
+
+    closeModal();
+
+    toast(
+        "Day "+state.day+" begins! 🌅"
+    );
+
+    saveGame();
+    updateUI();
+}
+
+/* =========================
+   MODALS
+   ========================= */
+
+function openModal(html){
+
+    document.getElementById("modalContent").innerHTML=html;
+    document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+
+    document.getElementById("modal").style.display="none";
+}
+
+document.getElementById("modal").addEventListener("click",e=>{
+
+    if(e.target.id==="modal"){
+        closeModal();
+    }
+});
+
+/* =========================
+   GAME LOOP
+   ========================= */
 
 function gameLoop(now){
 
     const dt=
         Math.min(
             .05,
-            (now-state.lastTime)/1000
+            (now-lastTime)/1000
         );
 
-    state.lastTime=now;
+    lastTime=now;
 
     if(
-        document.getElementById("game")
-            .classList.contains("active")
+        document.getElementById("game").style.display!=="none"
     ){
 
-        updatePlayer(dt);
-        updateDay(dt);
+        movePlayer(dt);
+
+        updateTime(dt);
+
         updateCustomers(dt);
+
+        updateEmployees(dt);
+
         updateParticles(dt);
-        updateRating();
 
         draw();
+
+        drawParticles();
+
         updateUI();
     }
 
     requestAnimationFrame(gameLoop);
 }
 
-/* ================= AUTOSAVE ================= */
+requestAnimationFrame(gameLoop);
+
+/* =========================
+   AUTOSAVE
+   ========================= */
 
 setInterval(()=>{
 
     if(
-        document.getElementById("game")
-            .classList.contains("active")
+        document.getElementById("game").style.display!=="none"
     ){
-        saveGame();
+        localStorage.setItem(
+            "supermarket_tycoon_v2",
+            JSON.stringify(state)
+        );
     }
 
 },30000);
 
-/* ================= INITIALIZE ================= */
-
-showScreen("menu");
-
-requestAnimationFrame(gameLoop);
+/* initial UI */
+updateUI();
 
 </script>
-
 </body>
 </html>

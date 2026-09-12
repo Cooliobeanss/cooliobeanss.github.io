@@ -2,288 +2,462 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PAYTIME</title>
-
 <style>
-*{
-    box-sizing:border-box;
-    user-select:none;
-}
-
+*{box-sizing:border-box}
 html,body{
     margin:0;
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#050607;
-    color:#fff;
+    background:#080a0e;
+    color:#eee2ca;
     font-family:Arial,Helvetica,sans-serif;
 }
-
 body{
     display:flex;
     align-items:center;
     justify-content:center;
 }
-
 #gameWrap{
     position:relative;
     width:min(1400px,100vw);
-    aspect-ratio:1400/800;
+    aspect-ratio:16/9;
     max-height:100vh;
     overflow:hidden;
-    background:#080a0d;
-    box-shadow:0 0 80px #000;
+    background:#11161d;
+    box-shadow:0 0 90px #000;
 }
-
 canvas{
-    display:block;
     width:100%;
     height:100%;
+    display:block;
+    cursor:none;
 }
+
+/* =========================
+   MENU
+========================= */
 
 .screen{
     position:absolute;
     inset:0;
     display:none;
-    z-index:20;
-    background:
-        radial-gradient(circle at center,rgba(50,50,55,.16),transparent 48%),
-        linear-gradient(135deg,rgba(3,4,5,.98),rgba(12,13,16,.96));
-}
-
-.screen.active{
-    display:flex;
-}
-
-.menu{
-    width:100%;
-    height:100%;
-    display:flex;
     align-items:center;
     justify-content:center;
-    flex-direction:column;
+    background:
+        radial-gradient(circle at 50% 35%,rgba(119,77,37,.18),transparent 35%),
+        linear-gradient(135deg,rgba(4,6,9,.76),rgba(8,10,14,.94));
+}
+.screen.active{display:flex}
+
+.menuPanel{
+    width:590px;
+    max-width:88%;
+    padding:44px;
+    text-align:center;
+    background:
+        linear-gradient(145deg,#20262e,#11151b);
+    border:3px solid #60472d;
+    box-shadow:
+        10px 10px 0 #050608,
+        0 0 50px rgba(0,0,0,.7);
 }
 
 .logo{
-    font-size:clamp(60px,9vw,130px);
+    font-size:72px;
+    line-height:1;
     font-weight:1000;
-    letter-spacing:9px;
-    text-shadow:0 5px 0 #171717,0 15px 40px #000;
+    letter-spacing:10px;
+    color:#efc56e;
+    text-shadow:
+        5px 5px 0 #57381e,
+        0 0 25px rgba(239,197,110,.18);
 }
 
 .subtitle{
-    margin-top:-5px;
-    margin-bottom:45px;
-    color:#888e96;
-    letter-spacing:5px;
+    margin-top:9px;
+    margin-bottom:35px;
+    color:#929aa5;
     font-size:12px;
-}
-
-.menuButtons{
-    width:320px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
+    letter-spacing:6px;
 }
 
 .menuButton{
     width:100%;
-    padding:16px 20px;
-    border:1px solid #383d44;
-    background:linear-gradient(#22262b,#111317);
-    color:#eee;
+    padding:16px;
+    margin:7px 0;
+    border:2px solid #6e5030;
+    background:#252b34;
+    color:#f1dfc2;
+    font-size:18px;
     font-weight:900;
-    letter-spacing:2px;
-    font-size:17px;
+    letter-spacing:4px;
+    box-shadow:5px 5px 0 #07090c;
     cursor:pointer;
-    transition:.15s;
+    transition:.08s;
 }
 
 .menuButton:hover{
-    border-color:#777e87;
-    background:linear-gradient(#353a40,#181b20);
-    transform:translateX(3px);
+    transform:translate(-2px,-2px);
+    border-color:#e0b15e;
+    background:#34342f;
 }
 
-.menuButton.play{
-    background:linear-gradient(#d6b02e,#806313);
-    border-color:#e5c74e;
-    color:#0a0a0a;
+.menuButton:active{
+    transform:translate(3px,3px);
+    box-shadow:1px 1px 0 #07090c;
 }
 
-.menuButton.play:hover{
-    background:linear-gradient(#ebc94b,#9c7b17);
-}
-
-.version{
-    position:absolute;
-    bottom:14px;
-    right:18px;
-    color:#4c5158;
+.controls{
+    margin-top:23px;
+    color:#69727e;
     font-size:10px;
+    letter-spacing:1px;
 }
 
-.panel{
-    width:min(850px,92%);
-    max-height:90%;
-    overflow:auto;
-    background:rgba(10,12,15,.98);
-    border:1px solid #3b4047;
-    padding:35px;
-    box-shadow:0 30px 100px #000;
-}
+/* =========================
+   LOADOUT / SETTINGS
+========================= */
 
 .panelTitle{
-    font-size:38px;
+    font-size:45px;
     font-weight:1000;
-    letter-spacing:4px;
-    margin-bottom:25px;
+    letter-spacing:7px;
+    color:#efc56e;
 }
 
-.loadoutWeapon{
-    background:#15181d;
-    border:1px solid #353a40;
-    padding:24px;
+.panelSubtitle{
+    color:#818a96;
+    font-size:11px;
+    letter-spacing:4px;
+    margin:7px 0 25px;
+}
+
+.weaponCard{
+    background:#14191f;
+    border:2px solid #343b45;
+    padding:20px;
+    text-align:left;
+    margin-bottom:18px;
 }
 
 .weaponName{
-    font-size:28px;
+    font-size:24px;
     font-weight:1000;
+    letter-spacing:2px;
 }
 
 .weaponType{
-    color:#777e87;
-    font-size:11px;
-    letter-spacing:2px;
-    margin-top:5px;
+    color:#747d88;
+    font-size:10px;
+    letter-spacing:3px;
+    margin-bottom:17px;
+}
+
+.statGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
 
 .stat{
-    margin-top:17px;
+    background:#0d1116;
+    padding:10px;
+    border:1px solid #282e36;
 }
 
-.statLabel{
-    display:flex;
-    justify-content:space-between;
-    color:#999fa6;
-    font-size:11px;
-    margin-bottom:5px;
+.statTitle{
+    color:#818a95;
+    font-size:9px;
+    letter-spacing:2px;
 }
 
 .statBar{
-    height:6px;
-    background:#292d32;
+    height:7px;
+    background:#05070a;
+    margin-top:7px;
 }
 
-.statFill{
+.statBar span{
+    display:block;
     height:100%;
-    background:#c8a52d;
-}
-
-.toggleRow{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-top:24px;
-    padding-top:20px;
-    border-top:1px solid #30343a;
+    background:#b9853f;
 }
 
 .toggle{
     display:flex;
-    gap:5px;
+    gap:8px;
 }
 
 .toggle button{
-    padding:10px 18px;
-    background:#1b1e23;
-    color:#aaa;
-    border:1px solid #454a51;
+    flex:1;
+    padding:12px;
+    border:2px solid #4b3928;
+    background:#20252c;
+    color:#ddd0ba;
     font-weight:900;
     cursor:pointer;
 }
 
 .toggle button.active{
-    background:#c8a52d;
-    color:#080808;
-    border-color:#e0c348;
+    background:#79552d;
+    border-color:#e3b65f;
+    color:#fff3d9;
 }
 
-.backButton{
-    margin-top:25px;
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    position:absolute;
+    inset:0;
+    display:none;
+    pointer-events:none;
 }
 
-.settingText{
-    color:#a1a7ae;
-    line-height:1.7;
+.hudTop{
+    position:absolute;
+    top:15px;
+    left:15px;
+    right:15px;
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
 }
 
-.controls{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:9px;
-    margin-top:20px;
+.hudBox{
+    background:rgba(8,11,15,.9);
+    border:2px solid #493826;
+    box-shadow:5px 5px 0 rgba(0,0,0,.45);
+    padding:9px 12px;
 }
 
-.control{
-    background:#15181d;
-    border:1px solid #2e3339;
-    padding:13px;
-    color:#aaa;
+.objective{
+    width:510px;
 }
 
-.control span{
-    color:#d2ad35;
+.objectiveSmall{
+    color:#777f8a;
+    font-size:9px;
+    letter-spacing:3px;
+}
+
+#objective{
+    margin-top:4px;
+    font-size:15px;
     font-weight:900;
-    margin-right:8px;
 }
 
-#pauseScreen,
-#resultScreen{
-    background:rgba(0,0,0,.72);
-    backdrop-filter:blur(5px);
+.hudStats{
+    display:flex;
+    gap:7px;
 }
 
-.centerBox{
-    min-width:390px;
-    padding:40px;
-    text-align:center;
-    background:#0d0f13;
-    border:1px solid #3d4249;
-    box-shadow:0 30px 90px #000;
+.hudStat{
+    min-width:95px;
 }
 
-.resultTitle{
-    font-size:44px;
+.hudLabel{
+    color:#727b87;
+    font-size:8px;
+    letter-spacing:2px;
+}
+
+.hudValue{
+    font-size:15px;
     font-weight:1000;
-    letter-spacing:4px;
+    margin-top:3px;
 }
 
-.resultSuccess{
-    color:#d7b538;
+#prompt{
+    position:absolute;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+    min-width:230px;
+    padding:12px 20px;
+    text-align:center;
+    background:rgba(8,10,13,.94);
+    border:2px solid #d0a15a;
+    box-shadow:5px 5px 0 #06080b;
+    color:#f5e5c6;
+    font-size:13px;
+    font-weight:1000;
+    letter-spacing:1px;
 }
 
-.resultFail{
-    color:#b84d4d;
+#message{
+    position:absolute;
+    top:103px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:18px;
+    font-weight:1000;
+    letter-spacing:3px;
+    text-shadow:3px 3px 0 #000;
+    opacity:0;
+    transition:.12s;
 }
 
-.resultStats{
-    color:#a7adb4;
-    line-height:2;
-    margin:25px 0;
+#message.show{opacity:1}
+
+#crosshair{
+    position:absolute;
+    width:22px;
+    height:22px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    display:none;
 }
 
-@media(max-width:600px){
-    .centerBox{
-        min-width:300px;
-        width:90%;
-    }
+#crosshair:before,
+#crosshair:after{
+    content:"";
+    position:absolute;
+    background:#fff;
+}
 
-    .controls{
-        grid-template-columns:1fr;
-    }
+#crosshair:before{
+    width:22px;
+    height:2px;
+    top:10px;
+}
+
+#crosshair:after{
+    height:22px;
+    width:2px;
+    left:10px;
+}
+
+#damage{
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle,transparent 38%,rgba(190,25,20,.5));
+    opacity:0;
+    transition:.1s;
+}
+
+/* =========================
+   LOCKPICK
+========================= */
+
+#lockpick{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(2,4,6,.76);
+}
+
+#lockpick.active{display:flex}
+
+.qte{
+    width:640px;
+    max-width:88%;
+    padding:32px;
+    text-align:center;
+    background:#171c23;
+    border:3px solid #6b4c2d;
+    box-shadow:10px 10px 0 #040507;
+}
+
+.qteTitle{
+    color:#efc56e;
+    font-size:28px;
+    font-weight:1000;
+    letter-spacing:5px;
+}
+
+.qteText{
+    color:#9199a4;
+    margin:10px 0 25px;
+}
+
+.qteBar{
+    position:relative;
+    height:34px;
+    background:#07090c;
+    border:2px solid #4c545e;
+}
+
+.qteSweet{
+    position:absolute;
+    top:3px;
+    bottom:3px;
+    background:#4c9861;
+}
+
+.qteCursor{
+    position:absolute;
+    top:-7px;
+    width:5px;
+    height:44px;
+    background:#fff;
+    box-shadow:0 0 8px #fff;
+}
+
+#lockStatus{
+    margin-top:17px;
+    font-weight:900;
+}
+
+/* =========================
+   DRILL
+========================= */
+
+#drill{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(3,5,7,.72);
+}
+
+#drill.active{display:flex}
+
+.drillBox{
+    width:570px;
+    padding:30px;
+    text-align:center;
+    background:#151a21;
+    border:3px solid #694a2a;
+    box-shadow:10px 10px 0 #040507;
+}
+
+.drillTitle{
+    color:#efc56e;
+    font-size:28px;
+    font-weight:1000;
+    letter-spacing:5px;
+}
+
+.drillBar{
+    height:22px;
+    margin-top:22px;
+    background:#06080b;
+    border:2px solid #4c535c;
+}
+
+#drillFill{
+    display:block;
+    width:0;
+    height:100%;
+    background:#bf8e4c;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:850px){
+    .logo{font-size:43px}
+    .menuPanel{padding:28px}
+    .hudTop{transform:scale(.8);transform-origin:top left;width:125%}
 }
 </style>
 </head>
@@ -294,276 +468,269 @@ canvas{
 
 <canvas id="game" width="1400" height="800"></canvas>
 
-<!-- =====================================================
-     MAIN MENU
-===================================================== -->
+<!-- ================= HUD ================= -->
 
-<div id="mainMenu" class="screen active">
-    <div class="menu">
+<div id="hud">
 
-        <div class="logo">PAYTIME</div>
-        <div class="subtitle">NO ONE GETS RICH PLAYING FAIR</div>
+    <div class="hudTop">
 
-        <div class="menuButtons">
-
-            <button class="menuButton play" id="playBtn">
-                ▶ PLAY
-            </button>
-
-            <button class="menuButton" id="loadoutBtn">
-                🔫 LOADOUT
-            </button>
-
-            <button class="menuButton" id="settingsBtn">
-                ⚙ SETTINGS
-            </button>
-
-            <button class="menuButton" id="exitBtn">
-                EXIT
-            </button>
-
+        <div class="hudBox objective">
+            <div class="objectiveSmall">CURRENT OBJECTIVE</div>
+            <div id="objective">PUT ON YOUR MASK — PRESS M</div>
         </div>
 
-        <div class="version">
-            PAYTIME // BANK JOB // V1.5
+        <div class="hudStats">
+
+            <div class="hudBox hudStat">
+                <div class="hudLabel">HEALTH</div>
+                <div class="hudValue" id="health">100</div>
+            </div>
+
+            <div class="hudBox hudStat">
+                <div class="hudLabel">ARMOR</div>
+                <div class="hudValue" id="armor">100</div>
+            </div>
+
+            <div class="hudBox hudStat">
+                <div class="hudLabel">CASH</div>
+                <div class="hudValue" id="cash">$0</div>
+            </div>
+
+            <div class="hudBox hudStat">
+                <div class="hudLabel">AMMO</div>
+                <div class="hudValue" id="ammo">STOWED</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="prompt"></div>
+    <div id="message"></div>
+    <div id="crosshair"></div>
+    <div id="damage"></div>
+
+</div>
+
+<!-- ================= LOCKPICK ================= -->
+
+<div id="lockpick">
+
+    <div class="qte">
+
+        <div class="qteTitle">LOCKPICK</div>
+
+        <div class="qteText">
+            PRESS <b>SPACE</b> WHEN THE WHITE MARKER IS IN THE GREEN.
+        </div>
+
+        <div class="qteBar">
+            <div class="qteSweet" id="sweet"></div>
+            <div class="qteCursor" id="cursor"></div>
+        </div>
+
+        <div id="lockStatus">SUCCESS: 0 / 4</div>
+
+    </div>
+
+</div>
+
+<!-- ================= DRILL ================= -->
+
+<div id="drill">
+
+    <div class="drillBox">
+
+        <div class="drillTitle">VAULT DRILL</div>
+
+        <p>
+            HOLD <b>E</b> TO DRILL
+        </p>
+
+        <div class="drillBar">
+            <span id="drillFill"></span>
+        </div>
+
+        <p id="drillPercent">0%</p>
+
+    </div>
+
+</div>
+
+<!-- ================= MAIN MENU ================= -->
+
+<div id="mainScreen" class="screen active">
+
+    <div class="menuPanel">
+
+        <div class="logo">PAYTIME</div>
+
+        <div class="subtitle">A LOW-POLY HEIST</div>
+
+        <button class="menuButton" id="playBtn">▶ PLAY</button>
+
+        <button class="menuButton" id="loadoutBtn">▣ LOADOUT</button>
+
+        <button class="menuButton" id="settingsBtn">⚙ SETTINGS</button>
+
+        <button class="menuButton" id="exitBtn">↩ EXIT</button>
+
+        <div class="controls">
+            WASD MOVE · SHIFT SPRINT · MOUSE AIM · LMB FIRE · R RELOAD · E INTERACT · M MASK
         </div>
 
     </div>
+
 </div>
 
-<!-- =====================================================
-     LOADOUT
-===================================================== -->
+<!-- ================= LOADOUT ================= -->
 
 <div id="loadoutScreen" class="screen">
 
-    <div class="menu">
+    <div class="menuPanel">
 
-        <div class="panel">
+        <div class="panelTitle">LOADOUT</div>
+        <div class="panelSubtitle">PRIMARY WEAPON</div>
 
-            <div class="panelTitle">
-                LOADOUT
-            </div>
+        <div class="weaponCard">
 
-            <div class="loadoutWeapon">
+            <div class="weaponName">ASSAULT RIFLE</div>
+            <div class="weaponType">CARBINE · FULL AUTO</div>
 
-                <div class="weaponName">
-                    ASSAULT RIFLE
-                </div>
+            <div class="statGrid">
 
-                <div class="weaponType">
-                    PRIMARY WEAPON // 5.56 CARBINE
+                <div class="stat">
+                    <div class="statTitle">DAMAGE</div>
+                    <div class="statBar"><span style="width:74%"></span></div>
                 </div>
 
                 <div class="stat">
-                    <div class="statLabel">
-                        <span>DAMAGE</span>
-                        <span>78</span>
-                    </div>
-
-                    <div class="statBar">
-                        <div class="statFill" style="width:78%"></div>
-                    </div>
+                    <div class="statTitle">FIRE RATE</div>
+                    <div class="statBar"><span style="width:84%"></span></div>
                 </div>
 
                 <div class="stat">
-                    <div class="statLabel">
-                        <span>ACCURACY</span>
-                        <span>82</span>
-                    </div>
-
-                    <div class="statBar">
-                        <div class="statFill" style="width:82%"></div>
-                    </div>
+                    <div class="statTitle">ACCURACY</div>
+                    <div class="statBar"><span style="width:67%"></span></div>
                 </div>
 
                 <div class="stat">
-                    <div class="statLabel">
-                        <span>FIRE RATE</span>
-                        <span>88</span>
-                    </div>
-
-                    <div class="statBar">
-                        <div class="statFill" style="width:88%"></div>
-                    </div>
-                </div>
-
-                <div class="toggleRow">
-
-                    <div>
-                        <strong>SUPPRESSOR</strong>
-
-                        <div class="weaponType">
-                            REDUCES GUNSHOT NOISE
-                        </div>
-                    </div>
-
-                    <div class="toggle">
-
-                        <button id="suppressorOff">
-                            OFF
-                        </button>
-
-                        <button id="suppressorOn">
-                            ON
-                        </button>
-
-                    </div>
-
+                    <div class="statTitle">NOISE</div>
+                    <div class="statBar"><span id="noiseBar" style="width:38%"></span></div>
                 </div>
 
             </div>
-
-            <button class="menuButton backButton" id="loadoutBack">
-                ← BACK
-            </button>
 
         </div>
+
+        <p style="text-align:left">SUPPRESSOR</p>
+
+        <div class="toggle">
+
+            <button id="supOff">OFF</button>
+            <button id="supOn" class="active">ON</button>
+
+        </div>
+
+        <button class="menuButton" id="loadoutBack">BACK</button>
 
     </div>
 
 </div>
 
-<!-- =====================================================
-     SETTINGS
-===================================================== -->
+<!-- ================= SETTINGS ================= -->
 
 <div id="settingsScreen" class="screen">
 
-    <div class="menu">
+    <div class="menuPanel">
 
-        <div class="panel">
+        <div class="panelTitle">SETTINGS</div>
+        <div class="panelSubtitle">GAME OPTIONS</div>
 
-            <div class="panelTitle">
-                SETTINGS
-            </div>
+        <button class="menuButton" id="shakeBtn">
+            SCREEN SHAKE: ON
+        </button>
 
-            <div class="settingText">
-                PAYTIME HEIST CONTROLS
-                <br><br>
-                The current build automatically uses browser-friendly
-                graphics settings.
-            </div>
+        <button class="menuButton" id="pixelBtn">
+            RETRO FILTER: ON
+        </button>
 
-            <div class="controls">
-
-                <div class="control">
-                    <span>WASD</span> MOVE
-                </div>
-
-                <div class="control">
-                    <span>MOUSE</span> AIM
-                </div>
-
-                <div class="control">
-                    <span>LMB</span> FIRE
-                </div>
-
-                <div class="control">
-                    <span>SHIFT</span> SPRINT
-                </div>
-
-                <div class="control">
-                    <span>R</span> RELOAD
-                </div>
-
-                <div class="control">
-                    <span>E</span> INTERACT
-                </div>
-
-                <div class="control">
-                    <span>M</span> PUT ON MASK
-                </div>
-
-                <div class="control">
-                    <span>G</span> DROP LOOT
-                </div>
-
-                <div class="control">
-                    <span>SPACE</span> LOCKPICK
-                </div>
-
-                <div class="control">
-                    <span>ESC</span> PAUSE
-                </div>
-
-            </div>
-
-            <button class="menuButton backButton" id="settingsBack">
-                ← BACK
-            </button>
-
-        </div>
+        <button class="menuButton" id="settingsBack">
+            BACK
+        </button>
 
     </div>
 
 </div>
 
-<!-- =====================================================
-     PAUSE
-===================================================== -->
+<!-- ================= PAUSE ================= -->
 
 <div id="pauseScreen" class="screen">
 
-    <div class="menu">
+    <div class="menuPanel">
 
-        <div class="centerBox">
+        <div class="panelTitle">PAUSED</div>
 
-            <div class="resultTitle">
-                PAUSED
-            </div>
+        <button class="menuButton" id="resumeBtn">
+            RESUME
+        </button>
 
-            <div class="menuButtons" style="margin:25px auto 0">
+        <button class="menuButton" id="restartBtn">
+            RESTART HEIST
+        </button>
 
-                <button class="menuButton play" id="resumeBtn">
-                    RESUME
-                </button>
-
-                <button class="menuButton" id="restartBtn">
-                    RESTART HEIST
-                </button>
-
-                <button class="menuButton" id="pauseMenuBtn">
-                    MAIN MENU
-                </button>
-
-            </div>
-
-        </div>
+        <button class="menuButton" id="pauseMenuBtn">
+            MAIN MENU
+        </button>
 
     </div>
 
 </div>
 
-<!-- =====================================================
-     RESULTS
-===================================================== -->
+<!-- ================= RESULTS ================= -->
 
 <div id="resultScreen" class="screen">
 
-    <div class="menu">
+    <div class="menuPanel">
 
-        <div class="centerBox">
+        <div class="panelTitle" id="resultTitle">
+            HEIST COMPLETE
+        </div>
 
-            <div id="resultTitle" class="resultTitle">
-                HEIST COMPLETE
+        <div class="panelSubtitle" id="resultSub">
+            CLEAN WORK.
+        </div>
+
+        <div class="statGrid">
+
+            <div class="stat">
+                <div class="statTitle">CASH</div>
+                <b id="resultCash">$0</b>
             </div>
 
-            <div id="resultStats" class="resultStats"></div>
+            <div class="stat">
+                <div class="statTitle">LOOT BAGS</div>
+                <b id="resultLoot">0</b>
+            </div>
 
-            <div class="menuButtons" style="margin:auto">
+            <div class="stat">
+                <div class="statTitle">KILLS</div>
+                <b id="resultKills">0</b>
+            </div>
 
-                <button class="menuButton play" id="resultReplay">
-                    PLAY AGAIN
-                </button>
-
-                <button class="menuButton" id="resultMenu">
-                    MAIN MENU
-                </button>
-
+            <div class="stat">
+                <div class="statTitle">TIME</div>
+                <b id="resultTime">0:00</b>
             </div>
 
         </div>
+
+        <button class="menuButton" id="resultRestart">
+            PLAY AGAIN
+        </button>
+
+        <button class="menuButton" id="resultMenu">
+            MAIN MENU
+        </button>
 
     </div>
 
@@ -575,373 +742,219 @@ canvas{
 
 /* =========================================================
    PAYTIME
-   FULL BANK HEIST
+   COMPLETE BROWSER HEIST
    ========================================================= */
 
 "use strict";
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
-const W = 1400;
-const H = 800;
+const W=1400;
+const H=800;
 
-const keys = {};
+const keys={};
 
-const mouse = {
+const mouse={
     x:700,
     y:400,
     down:false
 };
 
-let suppressor = false;
-let paused = false;
-let gameRunning = false;
+let screen="main";
+let paused=false;
+
+let lastTime=performance.now();
+
+let shake=0;
+let screenShake=true;
+let retro=true;
+let suppressor=true;
+
+let messageTimer=0;
 
 /* =========================================================
-   SCREEN MANAGEMENT
-========================================================= */
-
-const screens = {
-    main:document.getElementById("mainMenu"),
-    loadout:document.getElementById("loadoutScreen"),
-    settings:document.getElementById("settingsScreen"),
-    pause:document.getElementById("pauseScreen"),
-    result:document.getElementById("resultScreen")
-};
-
-function showScreen(name){
-
-    Object.values(screens).forEach(screen=>{
-        screen.classList.remove("active");
-    });
-
-    if(name && screens[name]){
-        screens[name].classList.add("active");
-    }
-}
-
-/* =========================================================
-   MENU
-========================================================= */
-
-document.getElementById("playBtn").onclick=()=>{
-    showScreen(null);
-    startHeist();
-};
-
-document.getElementById("loadoutBtn").onclick=()=>{
-    updateLoadoutUI();
-    showScreen("loadout");
-};
-
-document.getElementById("settingsBtn").onclick=()=>{
-    showScreen("settings");
-};
-
-document.getElementById("exitBtn").onclick=()=>{
-    window.location.href="../";
-};
-
-document.getElementById("loadoutBack").onclick=()=>{
-    showScreen("main");
-};
-
-document.getElementById("settingsBack").onclick=()=>{
-    showScreen("main");
-};
-
-document.getElementById("suppressorOff").onclick=()=>{
-    suppressor=false;
-    updateLoadoutUI();
-};
-
-document.getElementById("suppressorOn").onclick=()=>{
-    suppressor=true;
-    updateLoadoutUI();
-};
-
-document.getElementById("resumeBtn").onclick=()=>{
-    paused=false;
-    showScreen(null);
-};
-
-document.getElementById("restartBtn").onclick=()=>{
-    paused=false;
-    showScreen(null);
-    startHeist();
-};
-
-document.getElementById("pauseMenuBtn").onclick=()=>{
-    paused=false;
-    gameRunning=false;
-    showScreen("main");
-};
-
-document.getElementById("resultReplay").onclick=()=>{
-    showScreen(null);
-    startHeist();
-};
-
-document.getElementById("resultMenu").onclick=()=>{
-    showScreen("main");
-};
-
-function updateLoadoutUI(){
-
-    document.getElementById("suppressorOff")
-        .classList.toggle("active",!suppressor);
-
-    document.getElementById("suppressorOn")
-        .classList.toggle("active",suppressor);
-}
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-window.addEventListener("keydown",e=>{
-
-    keys[e.key.toLowerCase()]=true;
-
-    if(
-        [" ","arrowup","arrowdown","arrowleft","arrowright"].includes(
-            e.key.toLowerCase()
-        )
-    ){
-        e.preventDefault();
-    }
-
-    if(e.key==="Escape" && gameRunning){
-
-        if(lockpick.active){
-            cancelLockpick();
-            return;
-        }
-
-        if(!paused){
-            paused=true;
-            showScreen("pause");
-        }else{
-            paused=false;
-            showScreen(null);
-        }
-    }
-
-    if(e.key.toLowerCase()==="m" && gameRunning){
-        tryMask();
-    }
-
-    if(e.key.toLowerCase()==="e" && gameRunning){
-        interact();
-    }
-
-    if(e.key.toLowerCase()==="g" && gameRunning){
-        dropLoot();
-    }
-
-    if(e.key.toLowerCase()==="r" && gameRunning){
-        reload();
-    }
-
-    if(e.code==="Space" && gameRunning && lockpick.active){
-        lockpickAttempt();
-    }
-});
-
-window.addEventListener("keyup",e=>{
-    keys[e.key.toLowerCase()]=false;
-});
-
-canvas.addEventListener("mousemove",e=>{
-
-    const rect=canvas.getBoundingClientRect();
-
-    mouse.x=(e.clientX-rect.left)*(W/rect.width);
-    mouse.y=(e.clientY-rect.top)*(H/rect.height);
-});
-
-canvas.addEventListener("mousedown",e=>{
-    if(e.button===0) mouse.down=true;
-});
-
-canvas.addEventListener("mouseup",e=>{
-    if(e.button===0) mouse.down=false;
-});
-
-canvas.addEventListener("mouseleave",()=>{
-    mouse.down=false;
-});
-
-/* =========================================================
-   UTILITIES
-========================================================= */
+   HELPERS
+   ========================================================= */
 
 function clamp(v,min,max){
     return Math.max(min,Math.min(max,v));
 }
 
-function dist(a,b){
+function distance(a,b){
     return Math.hypot(a.x-b.x,a.y-b.y);
 }
 
-function rectContains(r,x,y){
+function random(min,max){
+    return Math.random()*(max-min)+min;
+}
 
-    return(
-        x>=r.x &&
-        x<=r.x+r.w &&
-        y>=r.y &&
-        y<=r.y+r.h
+function randomChoice(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function rect(x,y,w,h){
+    return {x,y,w,h};
+}
+
+function pointRect(x,y,r){
+    return x>=r.x &&
+           x<=r.x+r.w &&
+           y>=r.y &&
+           y<=r.y+r.h;
+}
+
+function angleDifference(a,b){
+    return Math.atan2(
+        Math.sin(a-b),
+        Math.cos(a-b)
     );
 }
 
-function circleRectCollision(c,r){
+/* =========================================================
+   PLAYER
+========================================================= */
 
-    const closestX=clamp(c.x,r.x,r.x+r.w);
-    const closestY=clamp(c.y,r.y,r.y+r.h);
+const player={
 
-    const dx=c.x-closestX;
-    const dy=c.y-closestY;
+    x:350,
+    y:610,
 
-    return dx*dx+dy*dy<c.r*c.r;
-}
+    radius:15,
 
-function pointInRect(x,y,r){
-    return x>=r.x && x<=r.x+r.w &&
-           y>=r.y && y<=r.y+r.h;
-}
+    speed:2.7,
+    sprintSpeed:4.45,
 
-function randomRange(a,b){
-    return Math.random()*(b-a)+a;
-}
+    stamina:100,
+
+    health:100,
+    armor:100,
+
+    masked:false,
+    maskAnimation:0,
+
+    cash:0,
+
+    lootBags:0,
+
+    weapon:{
+        ammo:30,
+        reserve:120,
+        cooldown:0,
+        reloading:false
+    }
+
+};
+
+/* =========================================================
+   HEIST STATE
+========================================================= */
+
+const state={
+
+    stage:0,
+
+    alarm:false,
+
+    alarmCooldown:0,
+
+    keycard:false,
+
+    camerasDisabled:false,
+
+    vaultUnlocked:false,
+
+    drillComplete:false,
+
+    lootCollected:0,
+
+    kills:0,
+
+    startTime:0,
+
+    endTime:0,
+
+    finished:false
+
+};
+
+/* =========================================================
+   OBJECTIVES
+========================================================= */
+
+const objectives=[
+
+    "PUT ON YOUR MASK — PRESS M",
+
+    "FIND THE KEYCARD",
+
+    "REACH THE SECURITY ROOM",
+
+    "DISABLE THE SECURITY CAMERAS",
+
+    "REACH THE VAULT",
+
+    "LOCKPICK THE VAULT",
+
+    "DRILL THE VAULT",
+
+    "GRAB THE LOOT",
+
+    "ESCAPE THROUGH THE PARK",
+
+    "REACH THE GETAWAY VAN",
+
+    "PRESS E TO ESCAPE"
+
+];
 
 /* =========================================================
    WORLD
 ========================================================= */
 
-const world={
-    width:1400,
-    height:800
-};
+const bank=rect(90,90,1220,595);
 
-/* =========================================================
-   ZONES
-========================================================= */
+const park=rect(90,700,1220,80);
 
-const zones=[
+const getawayVan=rect(1165,718,110,42);
 
-    {
-        name:"PARK",
-        type:"safe",
-        x:0,
-        y:705,
-        w:1400,
-        h:95
-    },
-
-    {
-        name:"PUBLIC LOBBY",
-        type:"safe",
-        x:90,
-        y:90,
-        w:410,
-        h:595
-    },
-
-    {
-        name:"EMPLOYEE AREA",
-        type:"escort",
-        x:500,
-        y:90,
-        w:310,
-        h:595
-    },
-
-    {
-        name:"SECURITY",
-        type:"illegal",
-        x:810,
-        y:90,
-        w:270,
-        h:595
-    },
-
-    {
-        name:"VAULT",
-        type:"illegal",
-        x:1080,
-        y:90,
-        w:230,
-        h:595
-    }
-];
-
-function getZone(x,y){
-
-    for(let i=zones.length-1;i>=0;i--){
-
-        if(pointInRect(x,y,zones[i])){
-            return zones[i];
-        }
-    }
-
-    return null;
-}
-
-/* =========================================================
-   WALLS
-========================================================= */
+/*
+    IMPORTANT:
+    The outer bottom wall is split.
+    The middle gap is the REAL park exit.
+*/
 
 const walls=[
 
-    /* OUTER BANK */
-    {x:90,y:90,w:1220,h:18},
-    {x:90,y:685,w:1220,h:18},
-    {x:90,y:90,w:18,h:613},
-    {x:1292,y:90,w:18,h:613},
+    /* outer */
+    rect(90,90,1220,18),
+    rect(90,90,18,595),
+    rect(1292,90,18,595),
 
-    /* LOBBY / EMPLOYEE */
-    {x:500,y:90,w:18,h:210},
-    {x:500,y:370,w:18,h:315},
+    /* bottom — PARK OPENING */
+    rect(90,685,520,18),
+    rect(760,685,550,18),
 
-    /* EMPLOYEE / SECURITY */
-    {x:810,y:90,w:18,h:150},
-    {x:810,y:320,w:18,h:365},
+    /* employee wing */
+    rect(500,110,18,190),
+    rect(500,370,18,315),
 
-    /* SECURITY / VAULT */
-    {x:1080,y:90,w:18,h:190},
-    {x:1080,y:390,w:18,h:295},
+    /* security room */
+    rect(720,110,18,125),
+    rect(720,325,18,360),
 
-    /* OFFICE WALLS */
-    {x:520,y:170,w:250,h:16},
-    {x:520,y:170,w:16,h:120},
-    {x:754,y:170,w:16,h:120},
+    rect(738,110,260,18),
+    rect(998,110,18,125),
+    rect(998,325,18,360),
 
-    /* SECURITY ROOM */
-    {x:835,y:160,w:190,h:16},
-    {x:835,y:160,w:16,h:115},
-    {x:1009,y:160,w:16,h:115},
+    /* vault wing */
+    rect(1060,110,18,170),
+    rect(1060,390,18,295),
 
-    /* VAULT INNER ROOM */
-    {x:1120,y:270,w:145,h:16},
-    {x:1120,y:270,w:16,h:215},
-    {x:1249,y:270,w:16,h:215},
-    {x:1120,y:469,w:145,h:16},
+    rect(1078,110,212,18),
+    rect(1272,110,18,575),
+    rect(1078,485,212,18)
 
-    /* LOBBY DESK */
-    {x:145,y:300,w:260,h:22},
-
-    /* OFFICE DESKS */
-    {x:555,y:235,w:105,h:30},
-    {x:685,y:235,w:105,h:30},
-    {x:555,y:470,w:105,h:30},
-    {x:685,y:470,w:105,h:30},
-
-    /* SECURITY CONSOLES */
-    {x:860,y:220,w:130,h:20},
-
-    /* VAULT CORRIDOR */
-    {x:1110,y:540,w:145,h:20}
 ];
 
 /* =========================================================
@@ -951,542 +964,295 @@ const walls=[
 const doors=[
 
     {
-        id:"employeeDoor",
+        id:"employee",
         x:500,
         y:300,
         w:18,
         h:70,
-        locked:true,
-        lockpickable:true,
-        open:false,
-        name:"EMPLOYEE DOOR"
+        type:"lockpick",
+        open:false
     },
 
     {
-        id:"securityDoor",
-        x:810,
-        y:240,
+        id:"security",
+        x:720,
+        y:235,
         w:18,
-        h:80,
-        locked:true,
-        keycard:true,
-        open:false,
-        name:"SECURITY DOOR"
+        h:90,
+        type:"keycard",
+        open:false
     },
 
     {
-        id:"vaultDoor",
-        x:1080,
+        id:"vault",
+        x:1060,
         y:280,
         w:18,
         h:110,
-        locked:true,
-        lockpickable:true,
-        open:false,
-        name:"VAULT ACCESS"
-    },
-
-    {
-        id:"parkDoor",
-        x:650,
-        y:685,
-        w:100,
-        h:18,
-        locked:false,
-        open:true,
-        name:"MAIN EXIT"
+        type:"lockpick",
+        open:false
     }
+
 ];
 
-function getDoorRect(door){
-    return{
-        x:door.x,
-        y:door.y,
-        w:door.w,
-        h:door.h
-    };
-}
-
-function getSolidWalls(){
-
-    const result=[...walls];
-
-    for(const door of doors){
-
-        if(!door.open){
-
-            result.push(getDoorRect(door));
-        }
-    }
-
-    return result;
-}
-
 /* =========================================================
-   PLAYER
+   PROPS
 ========================================================= */
 
-let player;
+const props=[
 
-function resetPlayer(){
+    {x:145,y:135,w:260,h:65,type:"counter"},
+    {x:145,y:265,w:130,h:65,type:"desk"},
+    {x:310,y:265,w:130,h:65,type:"desk"},
 
-    player={
-        x:245,
-        y:610,
-        r:14,
+    {x:145,y:395,w:130,h:65,type:"desk"},
+    {x:310,y:395,w:130,h:65,type:"desk"},
 
-        speed:2.65,
-        sprintSpeed:4.4,
+    {x:145,y:535,w:280,h:55,type:"couch"},
 
-        health:100,
-        armor:100,
+    {x:550,y:145,w:125,h:65,type:"desk"},
+    {x:550,y:450,w:125,h:65,type:"desk"},
 
-        stamina:100,
+    {x:770,y:145,w:190,h:60,type:"terminal"},
+    {x:770,y:370,w:180,h:55,type:"desk"},
 
-        angle:0,
+    {x:1090,y:150,w:160,h:55,type:"vaultEquipment"},
+    {x:1100,y:525,w:140,h:70,type:"crate"},
+    {x:1180,y:220,w:55,h:38,type:"locker"},
 
-        masked:false,
-        maskPuttingOn:false,
-        maskTimer:0,
+    {x:790,y:530,w:110,h:50,type:"crate"}
 
-        crimeCommitted:false,
-
-        hasKeycard:false,
-
-        carryingLoot:null,
-
-        weapon:{
-            magazine:30,
-            maxMagazine:30,
-            reserve:150,
-            fireCooldown:0,
-            fireRate:7,
-            damage:34,
-            reloadTimer:0,
-            reloading:false
-        }
-    };
-}
-
-/* =========================================================
-   HEIST STATE
-========================================================= */
-
-let stage=0;
-
-const objectives=[
-
-    "PUT ON YOUR MASK",
-
-    "FIND THE KEYCARD",
-
-    "ACCESS THE SECURITY ROOM",
-
-    "DISABLE THE CAMERAS",
-
-    "REACH THE VAULT",
-
-    "DRILL THE VAULT",
-
-    "TAKE THE LOOT",
-
-    "GET TO THE PARK",
-
-    "ESCAPE IN THE VAN"
-];
-
-let objectiveText="";
-
-let cash=0;
-let xp=0;
-let kills=0;
-
-let heistTime=0;
-
-let alarmLevel=0;
-let alarm=false;
-
-let extractionReady=false;
-let escapeComplete=false;
-
-/* =========================================================
-   SECURITY
-========================================================= */
-
-let camerasDisabled=false;
-
-const cameras=[
-
-    {
-        x:230,
-        y:150,
-        angle:0.4,
-        range:240,
-        fov:Math.PI/3,
-        disabled:false
-    },
-
-    {
-        x:650,
-        y:130,
-        angle:1.8,
-        range:220,
-        fov:Math.PI/3,
-        disabled:false
-    },
-
-    {
-        x:950,
-        y:130,
-        angle:1.2,
-        range:230,
-        fov:Math.PI/3,
-        disabled:false
-    },
-
-    {
-        x:1190,
-        y:150,
-        angle:2.1,
-        range:220,
-        fov:Math.PI/3,
-        disabled:false
-    }
 ];
 
 /* =========================================================
    GUARDS
 ========================================================= */
 
-let guards=[];
+const guards=[];
 
-function createGuard(x,y,patrol,role="guard"){
+function createGuard(x,y,kind){
 
     return{
 
         x,
         y,
 
-        r:13,
+        radius:14,
 
-        health:100,
+        homeX:x,
+        homeY:y,
 
-        speed:1.25,
+        kind,
 
-        angle:0,
+        angle:random(-Math.PI,Math.PI),
+
+        speed:1.05,
 
         state:"patrol",
 
-        role,
+        health:100,
 
-        patrol:patrol || [],
+        shootCooldown:random(.3,1),
 
-        patrolIndex:0,
+        lastSeen:0,
 
-        suspicion:0,
+        suspicion:0
 
-        shootCooldown:randomRange(20,80),
-
-        hasKeycard:false,
-
-        escortTarget:null,
-
-        alertTimer:0,
-
-        dead:false
     };
+
 }
 
-function spawnGuards(){
+function resetGuards(){
 
-    guards=[];
-
-    guards.push(
-        createGuard(
-            360,
-            180,
-            [
-                {x:360,y:180},
-                {x:430,y:180},
-                {x:430,y:500},
-                {x:360,y:500}
-            ],
-            "lobby"
-        )
-    );
-
-    const keyGuard=createGuard(
-        660,
-        140,
-        [
-            {x:660,y:140},
-            {x:735,y:140},
-            {x:735,y:350},
-            {x:660,y:350}
-        ],
-        "security"
-    );
-
-    keyGuard.hasKeycard=true;
-
-    guards.push(keyGuard);
-
-    guards.push(
-        createGuard(
-            900,
-            400,
-            [
-                {x:900,y:400},
-                {x:1000,y:400},
-                {x:1000,y:600},
-                {x:900,y:600}
-            ],
-            "security"
-        )
-    );
-
-    guards.push(
-        createGuard(
-            1170,
-            190,
-            [
-                {x:1170,y:190},
-                {x:1250,y:190},
-                {x:1250,y:230},
-                {x:1170,y:230}
-            ],
-            "vault"
-        )
-    );
-}
-
-/* =========================================================
-   REINFORCEMENTS
-========================================================= */
-
-let reinforcementTimer=0;
-
-function spawnReinforcement(){
+    guards.length=0;
 
     const positions=[
-        {x:120,y:680},
-        {x:1280,y:680},
-        {x:1350,y:750}
+
+        [370,210,"lobby"],
+        [430,520,"lobby"],
+        [620,230,"employee"],
+        [850,275,"security"],
+        [930,550,"security"],
+        [1160,190,"vault"],
+        [1230,570,"vault"],
+        [680,600,"lobby"]
+
     ];
 
-    const p=positions[
-        Math.floor(Math.random()*positions.length)
+    positions.forEach(p=>{
+        guards.push(
+            createGuard(
+                p[0],
+                p[1],
+                p[2]
+            )
+        );
+    });
+
+}
+
+/* =========================================================
+   CAMERAS
+========================================================= */
+
+const cameras=[];
+
+function resetCameras(){
+
+    cameras.length=0;
+
+    const data=[
+
+        [660,120,Math.PI/2],
+        [890,120,Math.PI/2],
+        [1110,120,Math.PI/2],
+        [1280,330,Math.PI],
+        [735,550,-Math.PI/2]
+
     ];
 
-    guards.push(
-        createGuard(
-            p.x,
-            p.y,
-            [
-                {x:p.x,y:p.y},
-                {x:p.x-40,y:p.y-30},
-                {x:p.x+40,y:p.y-20}
-            ],
-            "reinforcement"
-        )
-    );
-}
+    data.forEach(d=>{
 
-/* =========================================================
-   LOOT
-========================================================= */
+        cameras.push({
 
-let lootBags=[];
+            x:d[0],
+            y:d[1],
 
-function createLoot(){
+            angle:d[2],
 
-    lootBags=[];
+            range:270,
 
-    lootBags.push({
-        x:1180,
-        y:375,
-        r:15,
-        value:85000,
-        picked:false
-    });
+            fov:.65,
 
-    lootBags.push({
-        x:1215,
-        y:420,
-        r:15,
-        value:65000,
-        picked:false
-    });
-}
+            disabled:false,
 
-/* =========================================================
-   KEYCARD
-========================================================= */
+            timer:random(0,10)
 
-let keycard=null;
-
-/* =========================================================
-   PARTICLES
-========================================================= */
-
-let particles=[];
-
-function particle(x,y,options={}){
-
-    particles.push({
-
-        x,
-        y,
-
-        vx:options.vx ?? randomRange(-1,1),
-        vy:options.vy ?? randomRange(-1,1),
-
-        life:options.life ?? 30,
-        maxLife:options.life ?? 30,
-
-        size:options.size ?? randomRange(2,4),
-
-        type:options.type || "dust"
-    });
-}
-
-function burst(x,y,count,type="impact"){
-
-    for(let i=0;i<count;i++){
-
-        const angle=Math.random()*Math.PI*2;
-        const speed=randomRange(.5,3);
-
-        particle(x,y,{
-            vx:Math.cos(angle)*speed,
-            vy:Math.sin(angle)*speed,
-            life:randomRange(15,35),
-            size:randomRange(2,4),
-            type
         });
-    }
+
+    });
+
 }
 
 /* =========================================================
-   MASK
+   BULLETS / PARTICLES
 ========================================================= */
 
-function tryMask(){
-
-    if(player.masked || player.maskPuttingOn){
-        return;
-    }
-
-    /*
-       Once the mask is on, it can NEVER be removed.
-    */
-
-    player.maskPuttingOn=true;
-    player.maskTimer=70;
-}
-
-function updateMask(){
-
-    if(!player.maskPuttingOn){
-        return;
-    }
-
-    player.maskTimer--;
-
-    if(player.maskTimer<=0){
-
-        player.maskPuttingOn=false;
-        player.masked=true;
-
-        stage=1;
-
-        burst(player.x,player.y,25,"mask");
-
-    }
-}
+const bullets=[];
+const particles=[];
 
 /* =========================================================
    COLLISION
 ========================================================= */
 
-function blocked(x,y,r=player.r){
+function circleHitsRect(x,y,radius,r){
 
-    for(const wall of getSolidWalls()){
+    const nearestX=clamp(x,r.x,r.x+r.w);
+    const nearestY=clamp(y,r.y,r.y+r.h);
 
-        if(circleRectCollision(
-            {x,y,r},
-            wall
-        )){
-            return true;
-        }
-    }
+    return Math.hypot(
+        x-nearestX,
+        y-nearestY
+    )<radius;
 
-    return false;
 }
 
-function moveEntity(entity,dx,dy){
+function solidWalls(){
 
-    const nx=entity.x+dx;
-    const ny=entity.y+dy;
+    const result=walls.slice();
 
-    if(
-        nx>20 &&
-        nx<W-20 &&
-        ny>20 &&
-        ny<H-20 &&
-        !blocked(nx,entity.y,entity.r)
-    ){
-        entity.x=nx;
+    doors.forEach(d=>{
+
+        if(!d.open){
+            result.push(d);
+        }
+
+    });
+
+    return result;
+
+}
+
+function isBlocked(x,y,radius){
+
+    return solidWalls().some(w=>
+        circleHitsRect(
+            x,
+            y,
+            radius,
+            w
+        )
+    );
+
+}
+
+function movePlayer(dx,dy){
+
+    const oldX=player.x;
+    const oldY=player.y;
+
+    player.x+=dx;
+
+    if(isBlocked(player.x,player.y,player.radius)){
+        player.x=oldX;
     }
 
-    if(
-        nx>20 &&
-        nx<W-20 &&
-        ny>20 &&
-        ny<H-20 &&
-        !blocked(entity.x,ny,entity.r)
-    ){
-        entity.y=ny;
+    player.y+=dy;
+
+    if(isBlocked(player.x,player.y,player.radius)){
+        player.y=oldY;
     }
+
+    player.x=clamp(player.x,112,1280);
+    player.y=clamp(player.y,115,770);
+
 }
 
 /* =========================================================
    LINE OF SIGHT
 ========================================================= */
 
-function lineBlocked(x1,y1,x2,y2){
+function segmentHitsRect(x1,y1,x2,y2,r){
 
-    const dx=x2-x1;
-    const dy=y2-y1;
+    const length=Math.hypot(
+        x2-x1,
+        y2-y1
+    );
 
-    const length=Math.hypot(dx,dy);
+    const steps=Math.ceil(length/7);
 
-    const steps=Math.ceil(length/8);
-
-    for(let i=0;i<=steps;i++){
+    for(let i=1;i<steps;i++){
 
         const t=i/steps;
 
-        const x=x1+dx*t;
-        const y=y1+dy*t;
+        const x=x1+(x2-x1)*t;
+        const y=y1+(y2-y1)*t;
 
-        for(const wall of getSolidWalls()){
-
-            if(
-                x>=wall.x &&
-                x<=wall.x+wall.w &&
-                y>=wall.y &&
-                y<=wall.y+wall.h
-            ){
-                return true;
-            }
+        if(pointRect(x,y,r)){
+            return true;
         }
+
     }
 
     return false;
+
 }
 
-function canSeeEntity(observer,target,range,fov){
+function lineBlocked(a,b){
+
+    return solidWalls().some(w=>
+        segmentHitsRect(
+            a.x,
+            a.y,
+            b.x,
+            b.y,
+            w
+        )
+    );
+
+}
+
+function canSee(observer,target,range,fov){
 
     const dx=target.x-observer.x;
     const dy=target.y-observer.y;
@@ -1497,620 +1263,389 @@ function canSeeEntity(observer,target,range,fov){
         return false;
     }
 
-    const angle=Math.atan2(dy,dx);
-
-    let difference=angle-observer.angle;
-
-    while(difference>Math.PI){
-        difference-=Math.PI*2;
-    }
-
-    while(difference<-Math.PI){
-        difference+=Math.PI*2;
-    }
-
-    if(Math.abs(difference)>fov/2){
-        return false;
-    }
-
-    if(lineBlocked(
-        observer.x,
-        observer.y,
-        target.x,
-        target.y
-    )){
-        return false;
-    }
-
-    return true;
-}
-
-/* =========================================================
-   ZONE GUARD BEHAVIOR
-========================================================= */
-
-function updateGuardZoneBehavior(guard){
-
-    const zone=getZone(player.x,player.y);
-
-    if(!zone){
-        return;
-    }
-
-    if(player.masked){
-
-        /*
-           Masked = illegal everywhere.
-        */
-
-        if(canSeeEntity(
-            guard,
-            player,
-            330,
-            Math.PI*.95
-        )){
-            guard.state="combat";
-            triggerAlarm();
-        }
-
-        return;
-    }
-
-    /*
-       UNMASKED
-    */
-
-    if(zone.type==="safe"){
-
-        guard.state="patrol";
-        guard.suspicion=Math.max(
-            0,
-            guard.suspicion-.2
-        );
-
-        return;
-    }
-
-    if(zone.type==="escort"){
-
-        if(
-            dist(guard,player)<230 &&
-            canSeeEntity(
-                guard,
-                player,
-                230,
-                Math.PI*.75
-            )
-        ){
-
-            guard.state="escort";
-            guard.escortTarget=player;
-        }
-
-        return;
-    }
-
-    if(zone.type==="illegal"){
-
-        if(canSeeEntity(
-            guard,
-            player,
-            300,
-            Math.PI*.9
-        )){
-
-            guard.state="combat";
-            triggerAlarm();
-        }
-    }
-}
-
-/* =========================================================
-   ALARM
-========================================================= */
-
-function triggerAlarm(){
-
-    if(!alarm){
-
-        alarm=true;
-        alarmLevel=100;
-        stage=Math.max(stage,1);
-
-        burst(player.x,player.y,35,"alarm");
-    }else{
-
-        alarmLevel=clamp(
-            alarmLevel+1,
-            0,
-            100
-        );
-    }
-}
-
-/* =========================================================
-   GUARD UPDATE
-========================================================= */
-
-function updateGuards(){
-
-    for(const guard of guards){
-
-        if(guard.dead){
-            continue;
-        }
-
-        updateGuardZoneBehavior(guard);
-
-        guard.shootCooldown--;
-
-        if(guard.state==="patrol"){
-
-            const target=
-                guard.patrol[guard.patrolIndex];
-
-            if(target){
-
-                const dx=target.x-guard.x;
-                const dy=target.y-guard.y;
-
-                const d=Math.hypot(dx,dy);
-
-                guard.angle=Math.atan2(dy,dx);
-
-                if(d>5){
-
-                    moveEntity(
-                        guard,
-                        Math.cos(guard.angle)*guard.speed,
-                        Math.sin(guard.angle)*guard.speed
-                    );
-
-                }else{
-
-                    guard.patrolIndex=
-                        (guard.patrolIndex+1)%
-                        guard.patrol.length;
-                }
-            }
-        }
-
-        else if(guard.state==="escort"){
-
-            if(!player.masked){
-
-                const dx=player.x-guard.x;
-                const dy=player.y-guard.y;
-
-                const d=Math.hypot(dx,dy);
-
-                if(d>90){
-
-                    guard.angle=Math.atan2(dy,dx);
-
-                    moveEntity(
-                        guard,
-                        Math.cos(guard.angle)*guard.speed,
-                        Math.sin(guard.angle)*guard.speed
-                    );
-                }
-
-                guard.suspicion+=.02;
-
-                if(guard.suspicion>100){
-                    triggerAlarm();
-                    guard.state="combat";
-                }
-
-            }else{
-
-                guard.state="combat";
-            }
-        }
-
-        else if(guard.state==="combat"){
-
-            const dx=player.x-guard.x;
-            const dy=player.y-guard.y;
-
-            const d=Math.hypot(dx,dy);
-
-            guard.angle=Math.atan2(dy,dx);
-
-            if(
-                d>120 &&
-                !lineBlocked(
-                    guard.x,
-                    guard.y,
-                    player.x,
-                    player.y
-                )
-            ){
-
-                moveEntity(
-                    guard,
-                    Math.cos(guard.angle)*guard.speed*1.15,
-                    Math.sin(guard.angle)*guard.speed*1.15
-                );
-            }
-
-            if(
-                d<390 &&
-                guard.shootCooldown<=0 &&
-                canSeeEntity(
-                    guard,
-                    player,
-                    390,
-                    Math.PI*.9
-                )
-            ){
-
-                guardShoot(guard);
-
-                guard.shootCooldown=
-                    randomRange(45,75);
-            }
-        }
-    }
-
-    if(alarm){
-
-        reinforcementTimer--;
-
-        if(
-            reinforcementTimer<=0 &&
-            guards.filter(g=>!g.dead).length<10
-        ){
-
-            spawnReinforcement();
-
-            reinforcementTimer=420;
-        }
-    }
-}
-
-/* =========================================================
-   GUARD SHOOTING
-========================================================= */
-
-function guardShoot(guard){
-
-    const accuracy=.035;
-
-    const angle=
-        Math.atan2(
-            player.y-guard.y,
-            player.x-guard.x
-        )+
-        randomRange(-accuracy,accuracy);
-
-    const hitDist=
-        dist(guard,player);
-
-    const damage=
-        hitDist<170 ? 14 : 8;
+    const targetAngle=Math.atan2(dy,dx);
 
     if(
-        !lineBlocked(
-            guard.x,
-            guard.y,
+        Math.abs(
+            angleDifference(
+                targetAngle,
+                observer.angle
+            )
+        )>fov
+    ){
+        return false;
+    }
+
+    return !lineBlocked(observer,target);
+
+}
+
+/* =========================================================
+   ZONES
+========================================================= */
+
+function getZone(x,y){
+
+    if(y>=700){
+        return "safe";
+    }
+
+    if(
+        x<500 &&
+        y>110 &&
+        y<680
+    ){
+        return state.stage===0
+            ?"safe"
+            :"illegal";
+    }
+
+    if(x>=500&&x<720){
+        return "escort";
+    }
+
+    return "illegal";
+
+}
+
+/* =========================================================
+   MASK
+========================================================= */
+
+function putMaskOn(){
+
+    if(player.masked){
+        return;
+    }
+
+    if(state.stage!==0){
+        return;
+    }
+
+    player.masked=true;
+    player.maskAnimation=1;
+
+    state.stage=1;
+
+    showMessage(
+        "MASK ON — TIME TO WORK"
+    );
+
+    updateObjective();
+
+}
+
+/* =========================================================
+   INTERACTIONS
+========================================================= */
+
+function getKeycardGuard(){
+
+    if(state.keycard){
+        return null;
+    }
+
+    return guards.find(
+        g=>g.kind==="employee"
+    )||guards[2];
+
+}
+
+function interaction(){
+
+    /* KEYCARD */
+
+    if(
+        state.stage===1 &&
+        !state.keycard
+    ){
+
+        const g=getKeycardGuard();
+
+        if(g&&distance(player,g)<52){
+
+            return{
+                type:"keycard",
+                text:"E  TAKE KEYCARD"
+            };
+
+        }
+
+    }
+
+    /* DOORS */
+
+    for(const d of doors){
+
+        const center={
+            x:d.x+d.w/2,
+            y:d.y+d.h/2
+        };
+
+        if(
+            distance(player,center)<68 &&
+            !d.open
+        ){
+
+            if(d.type==="keycard"){
+
+                if(state.keycard){
+
+                    return{
+                        type:"securityDoor",
+                        door:d,
+                        text:"E  OPEN SECURITY DOOR"
+                    };
+
+                }
+
+                return{
+                    type:"none",
+                    text:"SECURITY DOOR — KEYCARD REQUIRED"
+                };
+
+            }
+
+            return{
+                type:"lockpick",
+                door:d,
+                text:"E  LOCKPICK DOOR"
+            };
+
+        }
+
+    }
+
+    /* SECURITY TERMINAL */
+
+    if(
+        state.stage===3 &&
+        pointRect(
             player.x,
-            player.y
+            player.y,
+            rect(760,140,205,85)
         )
     ){
 
-        damagePlayer(damage);
-
-        for(let i=0;i<5;i++){
-
-            particle(
-                guard.x,
-                guard.y,
-                {
-                    vx:Math.cos(angle)*randomRange(1,3),
-                    vy:Math.sin(angle)*randomRange(1,3),
-                    life:20,
-                    size:2,
-                    type:"bullet"
-                }
-            );
-        }
-    }
-}
-
-/* =========================================================
-   PLAYER DAMAGE
-========================================================= */
-
-function damagePlayer(amount){
-
-    if(player.armor>0){
-
-        const armorDamage=Math.min(
-            player.armor,
-            amount*.7
-        );
-
-        player.armor-=armorDamage;
-
-        amount-=armorDamage*.5;
-    }
-
-    player.health-=amount;
-
-    burst(
-        player.x,
-        player.y,
-        5,
-        "blood"
-    );
-
-    if(player.health<=0){
-
-        player.health=0;
-        endHeist(false);
-    }
-}
-
-/* =========================================================
-   CAMERA SYSTEM
-========================================================= */
-
-function updateCameras(){
-
-    for(const camera of cameras){
-
-        if(camera.disabled){
-            continue;
-        }
-
-        camera.angle+=0.006;
-
-        if(
-            canSeeEntity(
-                camera,
-                player,
-                camera.range,
-                camera.fov
-            )
-        ){
-
-            if(player.masked || player.crimeCommitted){
-
-                alarmLevel+=.5;
-
-                if(alarmLevel>100){
-                    triggerAlarm();
-                }
-            }
-        }
-    }
-}
-
-/* =========================================================
-   WEAPON
-========================================================= */
-
-function shoot(){
-
-    const weapon=player.weapon;
-
-    if(weapon.reloading){
-        return;
-    }
-
-    if(weapon.fireCooldown>0){
-        return;
-    }
-
-    if(weapon.magazine<=0){
-
-        reload();
-        return;
-    }
-
-    weapon.magazine--;
-
-    weapon.fireCooldown=weapon.fireRate;
-
-    const angle=
-        Math.atan2(
-            mouse.y-player.y,
-            mouse.x-player.x
-        )+
-        randomRange(
-            suppressor ? -.025 : -.045,
-            suppressor ? .025 : .045
-        );
-
-    player.angle=angle;
-
-    const maxDistance=850;
-
-    let closest=null;
-    let closestDistance=maxDistance;
-
-    for(const guard of guards){
-
-        if(guard.dead){
-            continue;
-        }
-
-        const dx=guard.x-player.x;
-        const dy=guard.y-player.y;
-
-        const d=Math.hypot(dx,dy);
-
-        if(d>maxDistance){
-            continue;
-        }
-
-        const targetAngle=Math.atan2(dy,dx);
-
-        let diff=targetAngle-angle;
-
-        while(diff>Math.PI){
-            diff-=Math.PI*2;
-        }
-
-        while(diff<-Math.PI){
-            diff+=Math.PI*2;
-        }
-
-        if(Math.abs(diff)<.09){
-
-            if(
-                d<closestDistance &&
-                !lineBlocked(
-                    player.x,
-                    player.y,
-                    guard.x,
-                    guard.y
-                )
-            ){
-
-                closest=guard;
-                closestDistance=d;
-            }
-        }
-    }
-
-    if(closest){
-
-        closest.health-=player.weapon.damage;
-
-        burst(
-            closest.x,
-            closest.y,
-            8,
-            "blood"
-        );
-
-        if(closest.health<=0){
-
-            killGuard(closest);
-        }
-    }
-
-    /*
-       Unsuppressed shots are MUCH louder.
-       Suppressed shots can still be detected nearby.
-    */
-
-    const noiseRadius=suppressor?90:280;
-
-    for(const guard of guards){
-
-        if(guard.dead){
-            continue;
-        }
-
-        if(
-            dist(player,guard)<noiseRadius &&
-            canSeeEntity(
-                guard,
-                player,
-                noiseRadius,
-                Math.PI
-            )
-        ){
-
-            guard.state="combat";
-            triggerAlarm();
-        }
-    }
-
-    burst(
-        player.x+Math.cos(angle)*20,
-        player.y+Math.sin(angle)*20,
-        suppressor?3:8,
-        "muzzle"
-    );
-}
-
-function reload(){
-
-    const weapon=player.weapon;
-
-    if(weapon.reloading){
-        return;
-    }
-
-    if(
-        weapon.magazine>=weapon.maxMagazine ||
-        weapon.reserve<=0
-    ){
-        return;
-    }
-
-    weapon.reloading=true;
-    weapon.reloadTimer=75;
-}
-
-function updateWeapon(){
-
-    const weapon=player.weapon;
-
-    if(weapon.fireCooldown>0){
-        weapon.fireCooldown--;
-    }
-
-    if(weapon.reloading){
-
-        weapon.reloadTimer--;
-
-        if(weapon.reloadTimer<=0){
-
-            const needed=
-                weapon.maxMagazine-
-                weapon.magazine;
-
-            const amount=
-                Math.min(
-                    needed,
-                    weapon.reserve
-                );
-
-            weapon.magazine+=amount;
-            weapon.reserve-=amount;
-
-            weapon.reloading=false;
-        }
-    }
-
-    if(mouse.down && !lockpick.active){
-        shoot();
-    }
-}
-
-/* =========================================================
-   GUARD DEATH
-========================================================= */
-
-function killGuard(guard){
-
-    guard.dead=true;
-
-    kills++;
-    xp+=150;
-
-    burst(
-        guard.x,
-        guard.y,
-        25,
-        "death"
-    );
-
-    if(guard.hasKeycard && !player.hasKeycard){
-
-        keycard={
-            x:guard.x,
-            y:guard.y,
-            r:10
+        return{
+            type:"terminal",
+            text:"E  DISABLE CAMERAS"
         };
 
-        guard.hasKeycard=false;
     }
+
+    /* DRILL */
+
+    if(
+        state.stage===6 &&
+        pointRect(
+            player.x,
+            player.y,
+            rect(1080,140,190,100)
+        )
+    ){
+
+        return{
+            type:"drill",
+            text:"E  START VAULT DRILL"
+        };
+
+    }
+
+    /* LOOT */
+
+    if(state.stage===7){
+
+        const lootPoint={
+            x:1170,
+            y:300
+        };
+
+        if(
+            distance(player,lootPoint)<75
+        ){
+
+            return{
+                type:"loot",
+                text:"E  TAKE LOOT"
+            };
+
+        }
+
+    }
+
+    /* VAN */
+
+    if(
+        state.stage>=9 &&
+        distance(
+            player,
+            {
+                x:1215,
+                y:740
+            }
+        )<115
+    ){
+
+        return{
+            type:"van",
+            text:"E  ENTER GETAWAY VAN"
+        };
+
+    }
+
+    return null;
+
+}
+
+/* =========================================================
+   INTERACT
+========================================================= */
+
+function interact(){
+
+    if(screen!=="game"){
+        return;
+    }
+
+    if(lockpick.active){
+        return;
+    }
+
+    if(drill.active){
+        return;
+    }
+
+    const action=interaction();
+
+    if(!action){
+        return;
+    }
+
+    /* KEYCARD */
+
+    if(action.type==="keycard"){
+
+        state.keycard=true;
+        state.stage=2;
+
+        showMessage(
+            "KEYCARD ACQUIRED"
+        );
+
+        updateObjective();
+
+        return;
+
+    }
+
+    /* SECURITY */
+
+    if(action.type==="securityDoor"){
+
+        action.door.open=true;
+
+        state.stage=3;
+
+        showMessage(
+            "SECURITY ROOM ACCESSED"
+        );
+
+        updateObjective();
+
+        return;
+
+    }
+
+    /* LOCKPICK */
+
+    if(action.type==="lockpick"){
+
+        beginLockpick(action.door);
+
+        return;
+
+    }
+
+    /* TERMINAL */
+
+    if(action.type==="terminal"){
+
+        state.camerasDisabled=true;
+
+        state.stage=4;
+
+        cameras.forEach(
+            c=>c.disabled=true
+        );
+
+        showMessage(
+            "CAMERAS DISABLED"
+        );
+
+        updateObjective();
+
+        return;
+
+    }
+
+    /* DRILL */
+
+    if(action.type==="drill"){
+
+        drill.active=true;
+        drill.progress=0;
+
+        document
+            .getElementById("drill")
+            .classList.add("active");
+
+        showMessage(
+            "DRILL RUNNING"
+        );
+
+        return;
+
+    }
+
+    /* LOOT */
+
+    if(action.type==="loot"){
+
+        player.lootBags++;
+
+        state.lootCollected++;
+
+        showMessage(
+            "LOOT BAG SECURED"
+        );
+
+        if(
+            state.lootCollected>=2
+        ){
+
+            state.stage=8;
+
+            showMessage(
+                "LOOT SECURED — GET OUT"
+            );
+
+        }
+
+        updateObjective();
+
+        return;
+
+    }
+
+    /* VAN */
+
+    if(action.type==="van"){
+
+        finishHeist(true);
+
+    }
+
 }
 
 /* =========================================================
@@ -2121,346 +1656,169 @@ const lockpick={
 
     active:false,
 
-    door:null,
-
     cursor:0,
 
     direction:1,
 
-    speed:.75,
+    speed:.72,
 
-    targetStart:.30,
+    sweet:.28,
 
-    targetWidth:.40,
+    width:.34,
 
-    hits:0,
+    successes:0,
 
-    needed:4,
+    misses:0,
 
-    misses:0
+    door:null
+
 };
 
-function startLockpick(door){
-
-    if(lockpick.active){
-        return;
-    }
+function beginLockpick(door){
 
     lockpick.active=true;
-
-    lockpick.door=door;
 
     lockpick.cursor=0;
 
     lockpick.direction=1;
 
-    /*
-       Very forgiving settings.
-    */
+    lockpick.speed=.72;
 
-    lockpick.speed=.75;
+    lockpick.sweet=random(
+        .08,
+        .58
+    );
 
-    lockpick.targetStart=
-        randomRange(.20,.55);
+    lockpick.width=.34;
 
-    lockpick.targetWidth=.40;
-
-    lockpick.hits=0;
+    lockpick.successes=0;
 
     lockpick.misses=0;
+
+    lockpick.door=door;
+
+    document
+        .getElementById("lockpick")
+        .classList.add("active");
+
+    updateLockUI();
+
 }
 
-function cancelLockpick(){
-
-    lockpick.active=false;
-    lockpick.door=null;
-}
-
-function lockpickAttempt(){
+function lockpickPress(){
 
     if(!lockpick.active){
         return;
     }
 
-    const start=lockpick.targetStart;
-    const end=start+lockpick.targetWidth;
+    const center=
+        lockpick.sweet+
+        lockpick.width/2;
 
-    if(
-        lockpick.cursor>=start &&
-        lockpick.cursor<=end
-    ){
+    const success=
+        Math.abs(
+            lockpick.cursor-center
+        )<=lockpick.width/2;
 
-        lockpick.hits++;
+    if(success){
 
-        burst(
+        lockpick.successes++;
+
+        spawnBurst(
             player.x,
             player.y,
-            8,
-            "lockpick"
+            10,
+            "#e6bd6b"
         );
 
-        if(lockpick.hits>=lockpick.needed){
+        showMessage("CLICK");
 
-            const door=lockpick.door;
+        if(
+            lockpick.successes>=4
+        ){
 
-            door.locked=false;
-            door.open=true;
+            lockpick.active=false;
 
-            cancelLockpick();
+            document
+                .getElementById("lockpick")
+                .classList.remove("active");
 
-            burst(
-                door.x,
-                door.y,
-                25,
-                "door"
-            );
+            lockpick.door.open=true;
+
+            if(
+                lockpick.door.id==="vault"
+            ){
+
+                state.vaultUnlocked=true;
+                state.stage=6;
+
+                showMessage(
+                    "VAULT UNLOCKED"
+                );
+
+                updateObjective();
+
+            }else{
+
+                showMessage(
+                    "DOOR UNLOCKED"
+                );
+
+            }
 
         }else{
 
-            lockpick.targetStart=
-                randomRange(.18,.58);
+            lockpick.sweet=random(
+                .08,
+                .58
+            );
+
+            updateLockUI();
+
         }
 
     }else{
 
         lockpick.misses++;
 
-        /*
-           Misses are forgiving.
-           You can miss several times.
-        */
+        showMessage("MISS");
 
-        if(lockpick.misses>=6){
+        if(lockpick.misses>=5){
 
-            alarmLevel+=12;
-
-            if(alarmLevel>=100){
-                triggerAlarm();
-            }
+            triggerAlarm(
+                "LOCKPICK DETECTED"
+            );
 
             lockpick.misses=0;
+
         }
+
     }
+
 }
 
-function updateLockpick(){
+function updateLockUI(){
 
-    if(!lockpick.active){
-        return;
-    }
+    document
+        .getElementById("cursor")
+        .style.left=
+            `calc(${lockpick.cursor*100}% - 2px)`;
 
-    lockpick.cursor+=
-        lockpick.direction*
-        lockpick.speed*
-        .01;
+    document
+        .getElementById("sweet")
+        .style.left=
+            (lockpick.sweet*100)+"%";
 
-    if(lockpick.cursor>=1){
+    document
+        .getElementById("sweet")
+        .style.width=
+            (lockpick.width*100)+"%";
 
-        lockpick.cursor=1;
-        lockpick.direction=-1;
-    }
+    document
+        .getElementById("lockStatus")
+        .textContent=
+            `SUCCESS: ${lockpick.successes} / 4`;
 
-    if(lockpick.cursor<=0){
-
-        lockpick.cursor=0;
-        lockpick.direction=1;
-    }
-}
-
-/* =========================================================
-   INTERACTION
-========================================================= */
-
-function interact(){
-
-    if(lockpick.active){
-        return;
-    }
-
-    /* KEYCARD */
-
-    if(
-        keycard &&
-        dist(player,keycard)<35
-    ){
-
-        player.hasKeycard=true;
-        keycard=null;
-
-        stage=2;
-
-        burst(
-            player.x,
-            player.y,
-            12,
-            "pickup"
-        );
-
-        return;
-    }
-
-    /* DOORS */
-
-    for(const door of doors){
-
-        const center={
-            x:door.x+door.w/2,
-            y:door.y+door.h/2
-        };
-
-        if(dist(player,center)>55){
-            continue;
-        }
-
-        if(door.open){
-            continue;
-        }
-
-        if(door.keycard){
-
-            if(player.hasKeycard){
-
-                door.locked=false;
-                door.open=true;
-
-                stage=Math.max(stage,2);
-
-                burst(
-                    center.x,
-                    center.y,
-                    18,
-                    "door"
-                );
-
-            }
-
-            return;
-        }
-
-        if(door.lockpickable){
-
-            startLockpick(door);
-
-            return;
-        }
-    }
-
-    /* SECURITY TERMINAL */
-
-    if(
-        stage>=2 &&
-        pointInRect(
-            player.x,
-            player.y,
-            {
-                x:840,
-                y:180,
-                w:180,
-                h:70
-            }
-        )
-    ){
-
-        if(!camerasDisabled){
-
-            camerasDisabled=true;
-
-            cameras.forEach(c=>{
-                c.disabled=true;
-            });
-
-            stage=4;
-
-            burst(
-                player.x,
-                player.y,
-                30,
-                "hack"
-            );
-        }
-
-        return;
-    }
-
-    /* VAULT DRILL */
-
-    if(
-        stage>=4 &&
-        pointInRect(
-            player.x,
-            player.y,
-            {
-                x:1140,
-                y:300,
-                w:100,
-                h:130
-            }
-        )
-    ){
-
-        drill.active=true;
-
-        return;
-    }
-
-    /* LOOT */
-
-    for(const bag of lootBags){
-
-        if(
-            !bag.picked &&
-            dist(player,bag)<38
-        ){
-
-            bag.picked=true;
-            player.carryingLoot=bag;
-
-            stage=6;
-
-            return;
-        }
-    }
-
-    /* VAN */
-
-    if(
-        player.carryingLoot &&
-        dist(
-            player,
-            getawayVan
-        )<80
-    ){
-
-        escapeComplete=true;
-        extractionReady=true;
-
-        cash+=player.carryingLoot.value;
-
-        player.carryingLoot=null;
-
-        endHeist(true);
-
-        return;
-    }
-}
-
-/* =========================================================
-   LOOT DROP
-========================================================= */
-
-function dropLoot(){
-
-    if(!player.carryingLoot){
-        return;
-    }
-
-    const bag=player.carryingLoot;
-
-    bag.x=player.x;
-    bag.y=player.y;
-    bag.picked=false;
-
-    player.carryingLoot=null;
 }
 
 /* =========================================================
@@ -2468,1198 +1826,1864 @@ function dropLoot(){
 ========================================================= */
 
 const drill={
-
     active:false,
-
-    progress:0,
-
-    max:600
+    progress:0
 };
 
-function updateDrill(){
+function updateDrill(dt){
 
     if(!drill.active){
         return;
     }
 
-    const inside=
-        pointInRect(
-            player.x,
-            player.y,
-            {
-                x:1120,
-                y:285,
-                w:145,
-                h:185
-            }
+    if(!keys.e){
+
+        drill.active=false;
+
+        document
+            .getElementById("drill")
+            .classList.remove("active");
+
+        showMessage(
+            "DRILL PAUSED — HOLD E"
         );
 
+        return;
+
+    }
+
+    drill.progress+=dt*.11;
+
+    document
+        .getElementById("drillFill")
+        .style.width=
+            `${clamp(drill.progress,0,1)*100}%`;
+
+    document
+        .getElementById("drillPercent")
+        .textContent=
+            `${Math.floor(
+                clamp(drill.progress,0,1)*100
+            )}%`;
+
     if(
-        inside &&
-        keys["e"]
+        Math.random()<dt*10
     ){
 
-        drill.progress++;
+        spawnBurst(
+            random(1100,1250),
+            random(155,235),
+            2,
+            "#d4aa62"
+        );
 
-        if(
-            Math.random()<.12
-        ){
-            particle(
-                1180,
-                375,
-                {
-                    vx:randomRange(-2,2),
-                    vy:randomRange(-2,2),
-                    life:20,
-                    type:"spark"
-                }
-            );
-        }
-
-        if(
-            drill.progress>=drill.max
-        ){
-
-            drill.active=false;
-
-            stage=6;
-
-            burst(
-                1180,
-                375,
-                50,
-                "vault"
-            );
-        }
-
-    }else{
-
-        /*
-           Progress doesn't vanish instantly.
-           This makes the objective playable.
-        */
-
-        drill.progress=
-            Math.max(
-                0,
-                drill.progress-.15
-            );
     }
+
+    if(drill.progress>=1){
+
+        drill.active=false;
+
+        document
+            .getElementById("drill")
+            .classList.remove("active");
+
+        state.drillComplete=true;
+        state.stage=7;
+
+        showMessage(
+            "VAULT OPEN — GRAB THE LOOT"
+        );
+
+        updateObjective();
+
+    }
+
 }
 
 /* =========================================================
-   PLAYER UPDATE
+   ALARM
 ========================================================= */
 
-function updatePlayer(){
+function triggerAlarm(reason){
 
-    if(lockpick.active){
-        return;
+    if(!state.alarm){
+
+        state.alarm=true;
+
+        showMessage(
+            "🚨 ALARM — "+reason
+        );
+
+        guards.forEach(
+            g=>{
+                g.state="combat";
+                g.suspicion=1;
+            }
+        );
+
     }
 
-    if(player.maskPuttingOn){
-        return;
-    }
+}
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function updatePlayer(dt){
 
     let dx=0;
     let dy=0;
 
-    if(keys["w"]) dy--;
-    if(keys["s"]) dy++;
-    if(keys["a"]) dx--;
-    if(keys["d"]) dx++;
+    if(keys.w)dy--;
+    if(keys.s)dy++;
+    if(keys.a)dx--;
+    if(keys.d)dx++;
 
-    if(dx!==0 || dy!==0){
+    const length=
+        Math.hypot(dx,dy)||1;
 
-        const len=Math.hypot(dx,dy);
+    let speed=player.speed;
 
-        dx/=len;
-        dy/=len;
+    if(
+        keys.shift &&
+        player.stamina>0 &&
+        player.masked
+    ){
 
-        let speed=player.speed;
-
-        if(
-            keys["shift"] &&
-            player.stamina>0 &&
-            !player.carryingLoot
-        ){
-
-            speed=player.sprintSpeed;
-
-            player.stamina-=.7;
-        }else{
-
-            player.stamina+=.45;
-        }
+        speed=player.sprintSpeed;
 
         player.stamina=
-            clamp(
-                player.stamina,
+            Math.max(
                 0,
-                100
+                player.stamina-dt*26
             );
 
-        if(player.carryingLoot){
-            speed*=.68;
-        }
-
-        moveEntity(
-            player,
-            dx*speed,
-            dy*speed
-        );
     }else{
 
         player.stamina=
-            clamp(
-                player.stamina+.7,
-                0,
-                100
+            Math.min(
+                100,
+                player.stamina+dt*18
             );
+
     }
 
-    player.angle=
+    movePlayer(
+        dx/length*speed,
+        dy/length*speed
+    );
+
+    /* PARK ESCAPE */
+
+    if(
+        state.stage===7 &&
+        player.y>=700
+    ){
+
+        state.stage=8;
+
+        showMessage(
+            "BANK CLEARED — RUN TO THE VAN"
+        );
+
+        updateObjective();
+
+    }
+
+    if(
+        state.stage===8
+    ){
+
+        state.stage=9;
+
+        updateObjective();
+
+    }
+
+    if(
+        state.stage===9 &&
+        distance(
+            player,
+            {
+                x:1215,
+                y:740
+            }
+        )<115
+    ){
+
+        state.stage=10;
+
+        updateObjective();
+
+    }
+
+}
+
+/* =========================================================
+   WEAPON
+========================================================= */
+
+function shoot(){
+
+    /* UNMASKED CAN NEVER SHOOT */
+
+    if(!player.masked){
+        return;
+    }
+
+    if(
+        player.weapon.reloading ||
+        player.weapon.ammo<=0 ||
+        player.weapon.cooldown>0
+    ){
+        return;
+    }
+
+    player.weapon.ammo--;
+
+    player.weapon.cooldown=.105;
+
+    const angle=
         Math.atan2(
             mouse.y-player.y,
             mouse.x-player.x
+        )+
+        random(-.045,.045);
+
+    bullets.push({
+
+        x:
+            player.x+
+            Math.cos(angle)*25,
+
+        y:
+            player.y+
+            Math.sin(angle)*25,
+
+        vx:
+            Math.cos(angle)*11,
+
+        vy:
+            Math.sin(angle)*11,
+
+        life:1,
+
+        damage:34,
+
+        enemy:false
+
+    });
+
+    spawnBurst(
+        player.x+Math.cos(angle)*25,
+        player.y+Math.sin(angle)*25,
+        6,
+        "#f0ce7b"
+    );
+
+    if(!suppressor){
+
+        triggerAlarm(
+            "GUNFIRE"
         );
+
+    }
+
+}
+
+function reload(){
+
+    if(
+        player.weapon.reloading ||
+        player.weapon.ammo>=30 ||
+        player.weapon.reserve<=0
+    ){
+        return;
+    }
+
+    player.weapon.reloading=true;
+
+    setTimeout(()=>{
+
+        const amount=
+            Math.min(
+                30-player.weapon.ammo,
+                player.weapon.reserve
+            );
+
+        player.weapon.ammo+=amount;
+        player.weapon.reserve-=amount;
+
+        player.weapon.reloading=false;
+
+    },850);
+
+}
+
+function updateWeapon(dt){
+
+    player.weapon.cooldown=
+        Math.max(
+            0,
+            player.weapon.cooldown-dt
+        );
+
+    if(
+        mouse.down &&
+        screen==="game" &&
+        !lockpick.active &&
+        !drill.active
+    ){
+
+        shoot();
+
+    }
+
 }
 
 /* =========================================================
-   STAGE LOGIC
+   GUARD AI
 ========================================================= */
 
-function updateStage(){
+function moveGuard(g,dx,dy){
 
-    if(!player.masked){
+    const oldX=g.x;
+    const oldY=g.y;
 
-        objectiveText=
-            "PUT ON YOUR MASK";
+    g.x+=dx;
 
-        return;
+    if(
+        isBlocked(
+            g.x,
+            g.y,
+            g.radius
+        )
+    ){
+
+        g.x=oldX;
+
     }
 
-    if(stage===1){
+    g.y+=dy;
 
-        if(player.hasKeycard){
-            stage=2;
-        }else{
-            objectiveText=
-                "FIND THE KEYCARD";
-        }
+    if(
+        isBlocked(
+            g.x,
+            g.y,
+            g.radius
+        )
+    ){
 
-        return;
+        g.y=oldY;
+
     }
 
-    if(stage===2){
+}
 
-        if(player.hasKeycard){
+function updateGuards(dt){
 
-            const securityDoor=doors.find(
-                d=>d.id==="securityDoor"
+    guards.forEach(g=>{
+
+        const visible=
+            canSee(
+                g,
+                player,
+                285,
+                .78
             );
 
-            if(securityDoor.open){
+        const playerZone=
+            getZone(
+                player.x,
+                player.y
+            );
 
-                stage=3;
+        /* =====================
+           UNMASKED
+        ===================== */
 
-            }else{
+        if(!player.masked){
 
-                objectiveText=
-                    "ACCESS THE SECURITY ROOM";
+            if(playerZone==="safe"){
+
+                g.state="patrol";
+                g.suspicion=0;
+
             }
+
+            else if(
+                playerZone==="escort"
+            ){
+
+                if(
+                    distance(g,player)<220
+                ){
+
+                    g.state="escort";
+
+                }
+
+            }
+
+            else if(
+                playerZone==="illegal" &&
+                visible
+            ){
+
+                g.state="combat";
+
+                triggerAlarm(
+                    "RESTRICTED AREA"
+                );
+
+            }
+
         }
 
-        return;
-    }
+        /* =====================
+           MASKED
+        ===================== */
 
-    if(stage===3){
+        else{
 
-        if(camerasDisabled){
-            stage=4;
-        }else{
+            if(visible){
 
-            objectiveText=
-                "DISABLE THE CAMERAS";
+                g.state="combat";
+                g.lastSeen=2;
+
+            }
+
         }
 
-        return;
-    }
-
-    if(stage===4){
+        /* =====================
+           PATROL
+        ===================== */
 
         if(
-            pointInRect(
-                player.x,
-                player.y,
-                {
-                    x:1120,
-                    y:285,
-                    w:145,
-                    h:185
+            g.state==="patrol"
+        ){
+
+            const targetX=
+                g.homeX+
+                Math.cos(
+                    performance.now()/1800+
+                    g.x
+                )*55;
+
+            const targetY=
+                g.homeY+
+                Math.sin(
+                    performance.now()/2100+
+                    g.y
+                )*45;
+
+            const angle=
+                Math.atan2(
+                    targetY-g.y,
+                    targetX-g.x
+                );
+
+            g.angle=angle;
+
+            moveGuard(
+                g,
+                Math.cos(angle)*
+                g.speed*.4,
+
+                Math.sin(angle)*
+                g.speed*.4
+            );
+
+        }
+
+        /* =====================
+           ESCORT
+        ===================== */
+
+        else if(
+            g.state==="escort"
+        ){
+
+            const target={
+                x:460,
+                y:650
+            };
+
+            const angle=
+                Math.atan2(
+                    target.y-g.y,
+                    target.x-g.x
+                );
+
+            g.angle=angle;
+
+            moveGuard(
+                g,
+                Math.cos(angle)*.9,
+                Math.sin(angle)*.9
+            );
+
+        }
+
+        /* =====================
+           COMBAT
+        ===================== */
+
+        else if(
+            g.state==="combat"
+        ){
+
+            const d=
+                distance(g,player);
+
+            const angle=
+                Math.atan2(
+                    player.y-g.y,
+                    player.x-g.x
+                );
+
+            g.angle=angle;
+
+            if(d>145){
+
+                moveGuard(
+                    g,
+                    Math.cos(angle)*
+                    g.speed*1.25,
+
+                    Math.sin(angle)*
+                    g.speed*1.25
+                );
+
+            }
+
+            if(
+                d<300 &&
+                canSee(
+                    g,
+                    player,
+                    310,
+                    .9
+                )
+            ){
+
+                g.shootCooldown-=dt;
+
+                if(
+                    g.shootCooldown<=0
+                ){
+
+                    g.shootCooldown=
+                        random(.45,.95);
+
+                    enemyShoot(g);
+
                 }
+
+            }
+
+        }
+
+    });
+
+}
+
+/* =========================================================
+   ENEMY SHOOTING
+========================================================= */
+
+function enemyShoot(g){
+
+    const angle=
+        Math.atan2(
+            player.y-g.y,
+            player.x-g.x
+        )+
+        random(-.08,.08);
+
+    bullets.push({
+
+        x:
+            g.x+
+            Math.cos(angle)*18,
+
+        y:
+            g.y+
+            Math.sin(angle)*18,
+
+        vx:
+            Math.cos(angle)*6.5,
+
+        vy:
+            Math.sin(angle)*6.5,
+
+        life:1.3,
+
+        damage:10,
+
+        enemy:true
+
+    });
+
+}
+
+/* =========================================================
+   BULLETS
+========================================================= */
+
+function updateBullets(dt){
+
+    for(
+        let i=bullets.length-1;
+        i>=0;
+        i--
+    ){
+
+        const b=bullets[i];
+
+        b.x+=b.vx;
+        b.y+=b.vy;
+
+        b.life-=dt;
+
+        if(
+            b.life<=0 ||
+            b.x<0 ||
+            b.x>W ||
+            b.y<0 ||
+            b.y>H
+        ){
+
+            bullets.splice(i,1);
+            continue;
+
+        }
+
+        if(
+            solidWalls().some(
+                w=>pointRect(
+                    b.x,
+                    b.y,
+                    w
+                )
             )
         ){
 
-            stage=5;
+            spawnBurst(
+                b.x,
+                b.y,
+                4,
+                "#aeb6bf"
+            );
 
-        }else{
+            bullets.splice(i,1);
+            continue;
 
-            objectiveText=
-                "REACH THE VAULT";
         }
 
-        return;
-    }
+        if(!b.enemy){
 
-    if(stage===5){
+            for(
+                let j=guards.length-1;
+                j>=0;
+                j--
+            ){
 
-        if(!drill.active){
+                const g=guards[j];
 
-            objectiveText=
-                "HOLD E TO DRILL THE VAULT";
-        }else{
+                if(
+                    distance(b,g)<
+                    g.radius+5
+                ){
 
-            objectiveText=
-                "DRILLING VAULT...";
+                    g.health-=b.damage;
+
+                    spawnBurst(
+                        b.x,
+                        b.y,
+                        8,
+                        "#b34c45"
+                    );
+
+                    bullets.splice(i,1);
+
+                    if(
+                        g.health<=0
+                    ){
+
+                        state.kills++;
+
+                        spawnBurst(
+                            g.x,
+                            g.y,
+                            15,
+                            "#d0a45e"
+                        );
+
+                        /*
+                            Keycard stays in the world.
+                            Guard death makes it easier to approach.
+                        */
+
+                        if(
+                            !state.keycard &&
+                            g===getKeycardGuard()
+                        ){
+
+                            g.kind="employee";
+
+                        }
+
+                        guards.splice(j,1);
+
+                    }
+
+                    break;
+
+                }
+
+            }
+
         }
 
-        return;
-    }
+        else{
 
-    if(stage===6){
+            if(
+                distance(b,player)<
+                player.radius+5
+            ){
 
-        if(!player.carryingLoot){
+                const armorDamage=
+                    Math.min(
+                        player.armor,
+                        b.damage*.7
+                    );
 
-            objectiveText=
-                "TAKE THE LOOT";
+                player.armor-=armorDamage;
 
-        }else{
+                player.health-=
+                    b.damage-
+                    armorDamage;
 
-            stage=7;
+                $("damage").style.opacity=.65;
+
+                setTimeout(()=>{
+                    $("damage").style.opacity=0;
+                },80);
+
+                shake=
+                    screenShake
+                    ?5
+                    :0;
+
+                bullets.splice(i,1);
+
+                if(
+                    player.health<=0
+                ){
+
+                    finishHeist(false);
+
+                }
+
+            }
+
         }
 
-        return;
     }
 
-    if(stage===7){
-
-        const park=getZone(
-            player.x,
-            player.y
-        );
-
-        if(
-            park &&
-            park.name==="PARK"
-        ){
-
-            stage=8;
-
-        }else{
-
-            objectiveText=
-                "GET TO THE PARK";
-        }
-
-        return;
-    }
-
-    if(stage===8){
-
-        objectiveText=
-            "REACH THE GETAWAY VAN";
-
-    }
 }
 
 /* =========================================================
-   GETAWAY VAN
+   CAMERAS
 ========================================================= */
 
-const getawayVan={
-    x:1080,
-    y:750,
-    w:130,
-    h:48
-};
+function updateCameras(dt){
+
+    cameras.forEach(c=>{
+
+        if(c.disabled){
+            return;
+        }
+
+        c.timer+=dt;
+
+        c.angle+=
+            Math.sin(c.timer*.7)*
+            dt*.12;
+
+        if(
+            player.masked &&
+            canSee(
+                c,
+                player,
+                c.range,
+                c.fov
+            )
+        ){
+
+            triggerAlarm(
+                "CAMERA SPOTTED YOU"
+            );
+
+        }
+
+    });
+
+}
 
 /* =========================================================
-   PARTICLE UPDATE
+   PARTICLES
 ========================================================= */
 
-function updateParticles(){
+function spawnParticle(
+    x,
+    y,
+    vx,
+    vy,
+    life,
+    size,
+    color
+){
 
-    for(let i=particles.length-1;i>=0;i--){
+    particles.push({
+        x,
+        y,
+        vx,
+        vy,
+        life,
+        maxLife:life,
+        size,
+        color
+    });
+
+}
+
+function spawnBurst(
+    x,
+    y,
+    count,
+    color
+){
+
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        const a=random(
+            0,
+            Math.PI*2
+        );
+
+        const speed=random(
+            .5,
+            3.7
+        );
+
+        spawnParticle(
+            x,
+            y,
+            Math.cos(a)*speed,
+            Math.sin(a)*speed,
+            random(.25,.7),
+            random(2,5),
+            color
+        );
+
+    }
+
+}
+
+function updateParticles(dt){
+
+    for(
+        let i=particles.length-1;
+        i>=0;
+        i--
+    ){
 
         const p=particles[i];
 
         p.x+=p.vx;
         p.y+=p.vy;
 
-        p.vx*=.96;
-        p.vy*=.96;
+        p.vx*=.97;
+        p.vy*=.97;
 
-        p.life--;
+        p.life-=dt;
 
         if(p.life<=0){
+
             particles.splice(i,1);
+
         }
-    }
-}
 
-/* =========================================================
-   HEIST START
-========================================================= */
-
-function startHeist(){
-
-    gameRunning=true;
-    paused=false;
-
-    stage=0;
-
-    cash=0;
-    xp=0;
-    kills=0;
-
-    heistTime=0;
-
-    alarm=false;
-    alarmLevel=0;
-
-    camerasDisabled=false;
-
-    extractionReady=false;
-    escapeComplete=false;
-
-    reinforcementTimer=420;
-
-    keycard=null;
-
-    lootBags=[];
-
-    particles=[];
-
-    lockpick.active=false;
-
-    drill.active=false;
-    drill.progress=0;
-
-    doors.forEach(door=>{
-
-        if(door.id==="parkDoor"){
-            door.open=true;
-            door.locked=false;
-        }else{
-            door.open=false;
-            door.locked=true;
-        }
-    });
-
-    resetPlayer();
-    spawnGuards();
-    createLoot();
-
-    objectiveText=
-        "PUT ON YOUR MASK";
-
-    showScreen(null);
-}
-
-/* =========================================================
-   HEIST END
-========================================================= */
-
-function endHeist(success){
-
-    if(!gameRunning){
-        return;
     }
 
-    gameRunning=false;
-
-    const minutes=
-        Math.floor(heistTime/60);
-
-    const seconds=
-        Math.floor(heistTime%60)
-        .toString()
-        .padStart(2,"0");
-
-    const title=
-        document.getElementById("resultTitle");
-
-    title.textContent=
-        success
-        ?"HEIST COMPLETE"
-        :"HEIST FAILED";
-
-    title.className=
-        "resultTitle "+
-        (
-            success
-            ?"resultSuccess"
-            :"resultFail"
-        );
-
-    document.getElementById("resultStats").innerHTML=`
-
-        <div>TIME: ${minutes}:${seconds}</div>
-
-        <div>LOOT: $${cash.toLocaleString()}</div>
-
-        <div>KILLS: ${kills}</div>
-
-        <div>XP: ${xp.toLocaleString()}</div>
-
-        <div>ALARM: ${alarm ? "TRIGGERED" : "STEALTHED"}</div>
-
-        <div>
-            ${success
-                ?"GETAWAY SUCCESSFUL"
-                :"CREW WIPED / JOB FAILED"}
-        </div>
-    `;
-
-    showScreen("result");
 }
 
 /* =========================================================
-   DRAW HELPERS
+   MESSAGE
 ========================================================= */
 
-function drawRect(x,y,w,h,fill,stroke){
+function showMessage(text){
 
-    ctx.fillStyle=fill;
-    ctx.fillRect(x,y,w,h);
+    $("message").textContent=text;
 
-    if(stroke){
+    $("message").classList.add("show");
 
-        ctx.strokeStyle=stroke;
-        ctx.strokeRect(x+.5,y+.5,w-1,h-1);
-    }
-}
+    messageTimer=2;
 
-function text(
-    value,
-    x,
-    y,
-    size=16,
-    color="#fff",
-    align="left"
-){
-
-    ctx.fillStyle=color;
-    ctx.font=`700 ${size}px Arial`;
-    ctx.textAlign=align;
-    ctx.textBaseline="middle";
-    ctx.fillText(value,x,y);
 }
 
 /* =========================================================
-   WORLD RENDER
+   OBJECTIVE
+========================================================= */
+
+function updateObjective(){
+
+    $("objective").textContent=
+        objectives[
+            state.stage
+        ]||
+        "ESCAPE";
+
+}
+
+/* =========================================================
+   DRAW WORLD
 ========================================================= */
 
 function drawWorld(){
 
-    /* BACKGROUND */
-
-    drawRect(
-        0,
-        0,
-        W,
-        H,
-        "#171a1d"
-    );
+    ctx.fillStyle="#10151b";
+    ctx.fillRect(0,0,W,H);
 
     /* PARK */
 
-    drawRect(
-        0,
-        703,
-        W,
-        97,
-        "#1b2920"
+    ctx.fillStyle="#2e4931";
+    ctx.fillRect(
+        park.x,
+        park.y,
+        park.w,
+        park.h
     );
 
-    /* STREET */
+    for(
+        let x=95;
+        x<1300;
+        x+=40
+    ){
 
-    drawRect(
-        0,
-        0,
-        W,
-        74,
-        "#202327"
-    );
+        ctx.fillStyle=
+            x%80===0
+            ?"rgba(85,120,65,.22)"
+            :"rgba(20,30,20,.15)";
 
-    /* SIDEWALK */
+        ctx.fillRect(
+            x,
+            700,
+            25,
+            80
+        );
 
-    drawRect(
-        0,
-        72,
-        W,
-        20,
-        "#77726a"
-    );
-
-    drawRect(
-        0,
-        693,
-        W,
-        12,
-        "#716c64"
-    );
-
-    /* ROAD LINES */
-
-    ctx.strokeStyle="#b7aa62";
-    ctx.lineWidth=3;
-
-    for(let x=30;x<W;x+=90){
-
-        ctx.setLineDash([40,35]);
-
-        ctx.beginPath();
-        ctx.moveTo(x,35);
-        ctx.lineTo(x+40,35);
-        ctx.stroke();
     }
 
-    ctx.setLineDash([]);
+    /* ROAD */
 
-    /* BANK FLOOR */
+    ctx.fillStyle="#252a30";
 
-    drawRect(
+    ctx.fillRect(
         90,
-        90,
+        680,
         1220,
-        595,
-        "#30343a"
+        105
     );
 
-    /* ROOMS */
+    ctx.fillStyle="#3b4147";
 
-    drawRect(
+    ctx.fillRect(
+        90,
+        690,
+        1220,
+        7
+    );
+
+    /* road markings */
+
+    ctx.fillStyle="#9b8351";
+
+    for(
+        let x=115;
+        x<1290;
+        x+=90
+    ){
+
+        ctx.fillRect(
+            x,
+            736,
+            45,
+            5
+        );
+
+    }
+
+    /* BANK */
+
+    ctx.fillStyle="#1e252d";
+
+    ctx.fillRect(
+        bank.x,
+        bank.y,
+        bank.w,
+        bank.h
+    );
+
+    /* LOBBY */
+
+    ctx.fillStyle="#332a27";
+
+    ctx.fillRect(
         110,
         110,
         380,
-        555,
-        "#373b40"
+        565
     );
 
-    drawRect(
-        520,
+    /* EMPLOYEE */
+
+    ctx.fillStyle="#1b2229";
+
+    ctx.fillRect(
+        518,
         110,
-        270,
-        555,
-        "#34383d"
+        202,
+        575
     );
 
-    drawRect(
-        830,
+    /* SECURITY */
+
+    ctx.fillStyle="#171e25";
+
+    ctx.fillRect(
+        738,
         110,
-        240,
-        555,
-        "#30343a"
+        260,
+        575
     );
 
-    drawRect(
-        1100,
+    /* VAULT */
+
+    ctx.fillStyle="#10161c";
+
+    ctx.fillRect(
+        1078,
         110,
-        190,
-        555,
-        "#2c3035"
+        212,
+        575
     );
 
     /* FLOOR TILES */
 
-    ctx.strokeStyle="rgba(255,255,255,.035)";
+    ctx.strokeStyle=
+        "rgba(255,255,255,.035)";
+
     ctx.lineWidth=1;
 
-    for(let x=110;x<1290;x+=45){
+    for(
+        let x=110;
+        x<1290;
+        x+=40
+    ){
 
         ctx.beginPath();
         ctx.moveTo(x,110);
         ctx.lineTo(x,665);
         ctx.stroke();
+
     }
 
-    for(let y=110;y<665;y+=45){
+    for(
+        let y=110;
+        y<665;
+        y+=40
+    ){
 
         ctx.beginPath();
         ctx.moveTo(110,y);
         ctx.lineTo(1290,y);
         ctx.stroke();
+
     }
-
-    /* LOBBY DESK */
-
-    drawRect(
-        145,
-        300,
-        260,
-        22,
-        "#503a27",
-        "#7d5b39"
-    );
-
-    drawRect(
-        160,
-        276,
-        70,
-        20,
-        "#1b2025"
-    );
-
-    drawRect(
-        250,
-        276,
-        70,
-        20,
-        "#1b2025"
-    );
-
-    drawRect(
-        340,
-        276,
-        45,
-        20,
-        "#1b2025"
-    );
-
-    /* COUCHES */
-
-    drawRect(
-        145,
-        390,
-        105,
-        40,
-        "#26292d"
-    );
-
-    drawRect(
-        375,
-        390,
-        105,
-        40,
-        "#26292d"
-    );
-
-    /* OFFICE DESKS */
-
-    drawDesk(555,235);
-    drawDesk(685,235);
-    drawDesk(555,470);
-    drawDesk(685,470);
-
-    /* SECURITY CONSOLES */
-
-    drawRect(
-        850,
-        210,
-        155,
-        45,
-        "#181b20",
-        "#464b52"
-    );
-
-    for(let i=0;i<4;i++){
-
-        drawRect(
-            860+i*34,
-            218,
-            27,
-            22,
-            "#18241e"
-        );
-    }
-
-    /* VAULT */
-
-    drawRect(
-        1120,
-        270,
-        145,
-        215,
-        "#202328",
-        "#555a60"
-    );
-
-    /* VAULT DOOR CIRCLE */
-
-    ctx.strokeStyle="#8b8f93";
-    ctx.lineWidth=8;
-
-    ctx.beginPath();
-    ctx.arc(
-        1192,
-        378,
-        55,
-        0,
-        Math.PI*2
-    );
-    ctx.stroke();
-
-    ctx.lineWidth=3;
-
-    for(let i=0;i<8;i++){
-
-        const a=i*Math.PI/4;
-
-        ctx.beginPath();
-        ctx.moveTo(
-            1192+Math.cos(a)*12,
-            378+Math.sin(a)*12
-        );
-        ctx.lineTo(
-            1192+Math.cos(a)*48,
-            378+Math.sin(a)*48
-        );
-        ctx.stroke();
-    }
-
-    /* LABELS */
-
-    text(
-        "PUBLIC",
-        300,
-        135,
-        12,
-        "#757a80",
-        "center"
-    );
-
-    text(
-        "EMPLOYEE",
-        655,
-        135,
-        12,
-        "#757a80",
-        "center"
-    );
-
-    text(
-        "SECURITY",
-        950,
-        135,
-        12,
-        "#757a80",
-        "center"
-    );
-
-    text(
-        "VAULT",
-        1195,
-        135,
-        12,
-        "#757a80",
-        "center"
-    );
-
-    drawParkDetails();
-    drawVan();
 
     /* WALLS */
 
-    for(const wall of walls){
+    solidWalls().forEach(
+        drawWall
+    );
 
-        drawRect(
-            wall.x,
-            wall.y,
-            wall.w,
-            wall.h,
-            "#111316",
-            "#555a60"
-        );
-    }
+    /* PROPS */
+
+    drawProps();
 
     /* DOORS */
 
-    for(const door of doors){
-
-        if(!door.open){
-
-            drawRect(
-                door.x,
-                door.y,
-                door.w,
-                door.h,
-                "#63401f",
-                "#9b6b35"
-            );
-
-            if(door.locked){
-
-                ctx.fillStyle="#d0a23e";
-
-                ctx.beginPath();
-                ctx.arc(
-                    door.x+door.w/2,
-                    door.y+door.h/2,
-                    4,
-                    0,
-                    Math.PI*2
-                );
-                ctx.fill();
-            }
-        }
-    }
-}
-
-function drawDesk(x,y){
-
-    drawRect(
-        x,
-        y,
-        105,
-        30,
-        "#4a3525",
-        "#715137"
+    doors.forEach(
+        drawDoor
     );
 
-    drawRect(
-        x+25,
-        y-20,
-        55,
-        20,
-        "#171a1f",
-        "#454a50"
+    /* PARK DECOR */
+
+    drawParkDecor();
+
+    /* VAN */
+
+    drawVan();
+
+    /* CAMERAS */
+
+    cameras.forEach(
+        drawCamera
     );
+
+    /* GUARDS */
+
+    drawGuards();
+
+    /* LOOT */
+
+    drawLoot();
+
+    /* BULLETS */
+
+    drawBullets();
+
+    /* PLAYER */
+
+    drawPlayer();
+
+    /* PARTICLES */
+
+    drawParticles();
+
+    /* LIGHTING */
+
+    drawLighting();
+
 }
 
-function drawParkDetails(){
+/* =========================================================
+   WALL DRAWING
+========================================================= */
 
-    /* TREES */
+function drawWall(w){
 
-    const trees=[
-        [80,740],
-        [220,755],
-        [400,735],
-        [560,755],
-        [760,740],
-        [920,760],
-        [1260,740],
-        [1360,755]
-    ];
+    ctx.fillStyle="#38291e";
 
-    for(const [x,y] of trees){
+    ctx.fillRect(
+        w.x,
+        w.y,
+        w.w,
+        w.h
+    );
 
-        ctx.fillStyle="#3d2d1f";
+    ctx.fillStyle="#67462b";
+
+    if(w.w>w.h){
 
         ctx.fillRect(
-            x-5,
-            y,
-            10,
-            28
+            w.x,
+            w.y,
+            w.w,
+            4
         );
 
-        ctx.fillStyle="#274a2d";
+    }else{
 
-        ctx.beginPath();
-        ctx.arc(x,y-4,22,0,Math.PI*2);
-        ctx.fill();
+        ctx.fillRect(
+            w.x,
+            w.y,
+            4,
+            w.h
+        );
 
-        ctx.fillStyle="#315b35";
-
-        ctx.beginPath();
-        ctx.arc(x-12,y+2,14,0,Math.PI*2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(x+12,y+2,14,0,Math.PI*2);
-        ctx.fill();
     }
 
-    /* BENCHES */
+    ctx.fillStyle=
+        "rgba(0,0,0,.22)";
 
-    const benches=[
-        [300,735],
-        [680,755],
-        [1010,730]
+    ctx.fillRect(
+        w.x+5,
+        w.y+5,
+        Math.max(0,w.w-5),
+        Math.max(0,w.h-5)
+    );
+
+}
+
+/* =========================================================
+   DOORS
+========================================================= */
+
+function drawDoor(d){
+
+    if(d.open){
+
+        /* open frame */
+
+        ctx.fillStyle="#67472b";
+
+        ctx.fillRect(
+            d.x-5,
+            d.y-4,
+            d.w+10,
+            d.h+8
+        );
+
+        ctx.fillStyle="#080b0f";
+
+        ctx.fillRect(
+            d.x,
+            d.y,
+            d.w,
+            d.h
+        );
+
+    }else{
+
+        /* brown door */
+
+        ctx.fillStyle="#694323";
+
+        ctx.fillRect(
+            d.x,
+            d.y,
+            d.w,
+            d.h
+        );
+
+        ctx.fillStyle="#a56e36";
+
+        ctx.fillRect(
+            d.x+3,
+            d.y+4,
+            d.w-6,
+            d.h-8
+        );
+
+        ctx.fillStyle="#17100a";
+
+        ctx.fillRect(
+            d.x+5,
+            d.y+d.h/2-2,
+            5,
+            4
+        );
+
+    }
+
+}
+
+/* =========================================================
+   PROPS
+========================================================= */
+
+function drawProps(){
+
+    props.forEach(p=>{
+
+        /* shadow */
+
+        ctx.fillStyle=
+            "rgba(0,0,0,.2)";
+
+        ctx.fillRect(
+            p.x+7,
+            p.y+8,
+            p.w,
+            p.h
+        );
+
+        if(p.type==="counter"){
+
+            ctx.fillStyle="#634329";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#96643a";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                11
+            );
+
+        }
+
+        else if(p.type==="desk"){
+
+            ctx.fillStyle="#553722";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#865936";
+
+            ctx.fillRect(
+                p.x+4,
+                p.y+4,
+                p.w-8,
+                12
+            );
+
+            ctx.fillStyle="#11171c";
+
+            ctx.fillRect(
+                p.x+12,
+                p.y+21,
+                48,
+                25
+            );
+
+            ctx.fillStyle="#596b72";
+
+            ctx.fillRect(
+                p.x+16,
+                p.y+25,
+                40,
+                4
+            );
+
+        }
+
+        else if(p.type==="couch"){
+
+            ctx.fillStyle="#49302f";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#684342";
+
+            ctx.fillRect(
+                p.x+8,
+                p.y+7,
+                p.w-16,
+                p.h-14
+            );
+
+        }
+
+        else if(p.type==="terminal"){
+
+            ctx.fillStyle="#343c45";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            for(
+                let i=0;
+                i<5;
+                i++
+            ){
+
+                ctx.fillStyle=
+                    i%2
+                    ?" #47664f"
+                    :"#334b3c";
+
+                ctx.fillRect(
+                    p.x+10+i*35,
+                    p.y+15,
+                    25,
+                    27
+                );
+
+            }
+
+        }
+
+        else if(
+            p.type==="vaultEquipment"
+        ){
+
+            ctx.fillStyle="#353b42";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#686e73";
+
+            ctx.fillRect(
+                p.x+14,
+                p.y+12,
+                p.w-28,
+                7
+            );
+
+            ctx.fillRect(
+                p.x+14,
+                p.y+29,
+                p.w-28,
+                7
+            );
+
+        }
+
+        else if(p.type==="crate"){
+
+            ctx.fillStyle="#5b3c25";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.strokeStyle="#966238";
+            ctx.lineWidth=4;
+
+            ctx.strokeRect(
+                p.x+4,
+                p.y+4,
+                p.w-8,
+                p.h-8
+            );
+
+        }
+
+        else if(p.type==="locker"){
+
+            ctx.fillStyle="#46525a";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#20262c";
+
+            ctx.fillRect(
+                p.x+8,
+                p.y+7,
+                8,
+                p.h-14
+            );
+
+        }
+
+    });
+
+}
+
+/* =========================================================
+   PARK DECOR
+========================================================= */
+
+function drawParkDecor(){
+
+    const trees=[
+        [150,735],
+        [260,755],
+        [390,730],
+        [990,745],
+        [1080,715],
+        [1320,735]
     ];
 
-    for(const [x,y] of benches){
+    trees.forEach(t=>{
 
-        drawRect(
+        /* trunk */
+
+        ctx.fillStyle="#513722";
+
+        ctx.fillRect(
+            t[0]-5,
+            t[1]-32,
+            10,
+            32
+        );
+
+        /* chunky foliage */
+
+        ctx.fillStyle="#2d6138";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            t[0],
+            t[1]-72
+        );
+
+        ctx.lineTo(
+            t[0]-30,
+            t[1]-27
+        );
+
+        ctx.lineTo(
+            t[0]+30,
+            t[1]-27
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.fillStyle="#3f7843";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            t[0],
+            t[1]-58
+        );
+
+        ctx.lineTo(
+            t[0]-22,
+            t[1]-31
+        );
+
+        ctx.lineTo(
+            t[0]+22,
+            t[1]-31
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+    });
+
+    /* benches */
+
+    [560,860].forEach(x=>{
+
+        ctx.fillStyle="#65452a";
+
+        ctx.fillRect(
             x,
-            y,
+            725,
             70,
-            8,
-            "#5d432b"
+            9
         );
 
-        drawRect(
-            x+7,
-            y+8,
-            6,
-            20,
-            "#3d2c1e"
+        ctx.fillRect(
+            x,
+            740,
+            70,
+            9
         );
 
-        drawRect(
-            x+57,
-            y+8,
-            6,
-            20,
-            "#3d2c1e"
+        ctx.fillRect(
+            x+8,
+            750,
+            7,
+            15
         );
-    }
+
+        ctx.fillRect(
+            x+55,
+            750,
+            7,
+            15
+        );
+
+    });
+
+    /* lamps */
+
+    [500,950].forEach(x=>{
+
+        ctx.fillStyle="#20262b";
+
+        ctx.fillRect(
+            x,
+            704,
+            6,
+            66
+        );
+
+        ctx.fillStyle="#e3bb6e";
+
+        ctx.fillRect(
+            x-7,
+            699,
+            20,
+            7
+        );
+
+    });
+
 }
+
+/* =========================================================
+   VAN
+========================================================= */
 
 function drawVan(){
 
-    drawRect(
-        getawayVan.x,
-        getawayVan.y,
-        getawayVan.w,
-        getawayVan.h,
-        "#15191d",
-        "#686e75"
+    const x=1165;
+    const y=718;
+
+    ctx.fillStyle=
+        "rgba(0,0,0,.35)";
+
+    ctx.fillRect(
+        x+5,
+        y+26,
+        110,
+        20
     );
 
-    drawRect(
-        getawayVan.x+70,
-        getawayVan.y+7,
-        45,
+    ctx.fillStyle="#43525b";
+
+    ctx.fillRect(
+        x,
+        y,
+        105,
+        35
+    );
+
+    ctx.fillStyle="#61737c";
+
+    ctx.fillRect(
+        x+12,
+        y-10,
+        70,
+        24
+    );
+
+    ctx.fillStyle="#18242b";
+
+    ctx.fillRect(
+        x+23,
+        y-7,
         23,
-        "#222b31",
-        "#606870"
+        15
     );
 
-    ctx.fillStyle="#090a0b";
-
-    ctx.beginPath();
-    ctx.arc(
-        getawayVan.x+25,
-        getawayVan.y+48,
-        10,
-        0,
-        Math.PI*2
+    ctx.fillRect(
+        x+51,
+        y-7,
+        23,
+        15
     );
-    ctx.fill();
 
-    ctx.beginPath();
-    ctx.arc(
-        getawayVan.x+105,
-        getawayVan.y+48,
-        10,
-        0,
-        Math.PI*2
-    );
-    ctx.fill();
+    ctx.fillStyle="#15191d";
 
-    text(
-        "GETAWAY",
-        getawayVan.x+65,
-        getawayVan.y+23,
-        9,
-        "#aaa",
-        "center"
+    ctx.fillRect(
+        x+12,
+        y+29,
+        20,
+        10
     );
+
+    ctx.fillRect(
+        x+72,
+        y+29,
+        20,
+        10
+    );
+
+    ctx.fillStyle="#d2aa63";
+
+    ctx.font=
+        "bold 11px Arial";
+
+    ctx.fillText(
+        "PAYTIME",
+        x+28,
+        y+22
+    );
+
 }
 
 /* =========================================================
-   CAMERA RENDER
+   CAMERAS
 ========================================================= */
 
-function drawCameras(){
-
-    for(const camera of cameras){
-
-        ctx.save();
-
-        ctx.translate(camera.x,camera.y);
-
-        ctx.rotate(camera.angle);
-
-        ctx.globalAlpha=
-            camera.disabled?.08:.08;
-
-        ctx.fillStyle=
-            camera.disabled
-            ?"rgba(80,160,90,.5)"
-            :"rgba(210,180,40,.5)";
-
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(camera.range,Math.tan(camera.fov/2)*camera.range);
-        ctx.lineTo(camera.range,-Math.tan(camera.fov/2)*camera.range);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.restore();
-
-        ctx.globalAlpha=1;
-
-        ctx.fillStyle=
-            camera.disabled
-            ?" #47704c"
-            :"#8b8d82";
-
-        ctx.beginPath();
-        ctx.arc(
-            camera.x,
-            camera.y,
-            7,
-            0,
-            Math.PI*2
-        );
-        ctx.fill();
-    }
-}
-
-/* =========================================================
-   GUARD RENDER
-========================================================= */
-
-function drawGuards(){
-
-    for(const guard of guards){
-
-        if(guard.dead){
-            continue;
-        }
-
-        ctx.save();
-
-        ctx.translate(
-            guard.x,
-            guard.y
-        );
-
-        ctx.rotate(guard.angle);
-
-        ctx.fillStyle=
-            guard.state==="combat"
-            ?" #8b3737"
-            :"#4a5058";
-
-        ctx.beginPath();
-        ctx.arc(
-            0,
-            0,
-            guard.r,
-            0,
-            Math.PI*2
-        );
-        ctx.fill();
-
-        ctx.fillStyle="#22252a";
-
-        ctx.fillRect(
-            4,
-            -4,
-            14,
-            8
-        );
-
-        ctx.restore();
-
-        /* HEALTH */
-
-        if(guard.health<100){
-
-            drawRect(
-                guard.x-16,
-                guard.y-23,
-                32,
-                4,
-                "#191919"
-            );
-
-            drawRect(
-                guard.x-16,
-                guard.y-23,
-                32*(guard.health/100),
-                4,
-                "#a74343"
-            );
-        }
-    }
-}
-
-/* =========================================================
-   KEYCARD RENDER
-========================================================= */
-
-function drawKeycard(){
-
-    if(!keycard){
-        return;
-    }
+function drawCamera(c){
 
     ctx.save();
 
     ctx.translate(
-        keycard.x,
-        keycard.y
+        c.x,
+        c.y
     );
 
-    ctx.rotate(.2);
+    ctx.rotate(c.angle);
 
-    drawRect(
+    ctx.fillStyle=
+        c.disabled
+        ?" #43564b"
+        :"#723934";
+
+    ctx.fillRect(
         -9,
         -6,
         18,
-        12,
-        "#d7b53b",
-        "#fff0a1"
+        12
     );
 
-    drawRect(
-        -5,
-        -2,
-        10,
-        2,
-        "#513f0d"
+    ctx.fillStyle="#101317";
+
+    ctx.fillRect(
+        4,
+        -3,
+        9,
+        6
     );
 
     ctx.restore();
+
 }
 
 /* =========================================================
-   LOOT RENDER
+   GUARDS
 ========================================================= */
 
-function drawLoot(){
+function drawGuards(){
 
-    for(const bag of lootBags){
+    guards.forEach(g=>{
 
-        if(bag.picked){
-            continue;
-        }
+        ctx.save();
 
-        ctx.fillStyle="#7e5a31";
+        ctx.translate(
+            g.x,
+            g.y
+        );
 
-        ctx.beginPath();
+        ctx.rotate(
+            g.angle
+        );
 
-        ctx.roundRect(
-            bag.x-13,
-            bag.y-10,
-            26,
+        /* shadow */
+
+        ctx.fillStyle=
+            "rgba(0,0,0,.3)";
+
+        ctx.fillRect(
+            -16,
+            12,
+            32,
+            7
+        );
+
+        /* body */
+
+        ctx.fillStyle=
+            g.state==="combat"
+            ?" #863b37"
+            :"#405967";
+
+        ctx.fillRect(
+            -12,
+            -13,
+            24,
+            27
+        );
+
+        /* head */
+
+        ctx.fillStyle="#d09e78";
+
+        ctx.fillRect(
+            -8,
+            -21,
+            16,
+            11
+        );
+
+        /* hat */
+
+        ctx.fillStyle="#20262c";
+
+        ctx.fillRect(
+            -10,
+            -24,
             20,
+            6
+        );
+
+        /* weapon */
+
+        ctx.fillStyle="#171a1e";
+
+        ctx.fillRect(
+            9,
+            -4,
+            20,
+            6
+        );
+
+        ctx.fillStyle="#818991";
+
+        ctx.fillRect(
+            27,
+            -3,
+            7,
             4
         );
 
-        ctx.fill();
+        ctx.restore();
 
-        ctx.strokeStyle="#bd8d49";
-        ctx.stroke();
+        if(
+            g.state==="combat"
+        ){
 
-        text(
-            "$"+Math.round(bag.value/1000)+"K",
-            bag.x,
-            bag.y-23,
-            9,
-            "#d5bd67",
-            "center"
-        );
-    }
+            ctx.fillStyle="#c34e46";
+
+            ctx.fillRect(
+                g.x-15,
+                g.y-31,
+                30,
+                3
+            );
+
+            ctx.fillStyle="#111";
+
+            ctx.fillRect(
+                g.x-15,
+                g.y-28,
+                30,
+                2
+            );
+
+        }
+
+    });
+
 }
 
 /* =========================================================
-   PLAYER RENDER
+   PLAYER DRAW
 ========================================================= */
 
 function drawPlayer(){
@@ -3671,671 +3695,1136 @@ function drawPlayer(){
         player.y
     );
 
-    ctx.rotate(player.angle);
-
-    /* BODY */
+    /* shadow */
 
     ctx.fillStyle=
-        player.masked
-        ?" #1d2024"
-        :"#4f6571";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        player.r,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    /* WEAPON */
-
-    ctx.fillStyle="#16191d";
+        "rgba(0,0,0,.35)";
 
     ctx.fillRect(
-        4,
-        -4,
-        25,
+        -19,
+        14,
+        38,
         8
     );
 
-    ctx.fillStyle="#777";
+    /* body */
+
+    ctx.fillStyle=
+        player.masked
+        ?" #4b5c67"
+        :"#506976";
 
     ctx.fillRect(
-        18,
-        -2,
-        10,
-        4
+        -13,
+        -13,
+        26,
+        28
     );
-
-    /* MASK */
 
     if(player.masked){
 
-        ctx.strokeStyle="#111";
-        ctx.lineWidth=3;
+        /* mask */
 
-        ctx.beginPath();
+        ctx.fillStyle="#1b2228";
 
-        ctx.arc(
-            0,
-            0,
-            11,
-            0,
-            Math.PI*2
+        ctx.fillRect(
+            -9,
+            -22,
+            18,
+            11
         );
 
-        ctx.stroke();
+        ctx.fillStyle="#9ba9ae";
+
+        ctx.fillRect(
+            -7,
+            -19,
+            5,
+            3
+        );
+
+        ctx.fillRect(
+            2,
+            -19,
+            5,
+            3
+        );
+
+        /* WEAPON ONLY EXISTS WHEN MASKED */
+
+        ctx.fillStyle="#17191c";
+
+        ctx.fillRect(
+            8,
+            -4,
+            28,
+            7
+        );
+
+        ctx.fillStyle="#858d93";
+
+        ctx.fillRect(
+            28,
+            -3,
+            9,
+            4
+        );
+
+    }else{
+
+        /* uncovered face */
+
+        ctx.fillStyle="#d1a078";
+
+        ctx.fillRect(
+            -8,
+            -22,
+            16,
+            11
+        );
+
+        ctx.fillStyle="#272d32";
+
+        ctx.fillRect(
+            -8,
+            -25,
+            16,
+            5
+        );
+
+        /*
+            NO WEAPON HERE.
+            This is intentional.
+        */
+
     }
 
     ctx.restore();
 
-    /* CARRYING LOOT */
+    /* loot bag carried */
 
-    if(player.carryingLoot){
+    if(player.lootBags>0){
 
-        drawRect(
-            player.x-10,
-            player.y-29,
-            20,
-            13,
-            "#806039",
-            "#bd9658"
+        ctx.fillStyle="#7d542d";
+
+        ctx.fillRect(
+            player.x-13,
+            player.y+20,
+            26,
+            20
         );
+
+        ctx.fillStyle="#b37b3e";
+
+        ctx.fillRect(
+            player.x-8,
+            player.y+23,
+            16,
+            3
+        );
+
     }
 
-    /* MASK TIMER */
-
-    if(player.maskPuttingOn){
-
-        drawRect(
-            player.x-28,
-            player.y-40,
-            56,
-            6,
-            "#222"
-        );
-
-        drawRect(
-            player.x-28,
-            player.y-40,
-            56*(1-player.maskTimer/70),
-            6,
-            "#d4b139"
-        );
-    }
 }
 
 /* =========================================================
-   PARTICLE RENDER
+   LOOT
+========================================================= */
+
+function drawLoot(){
+
+    if(state.stage<7){
+        return;
+    }
+
+    for(
+        let i=0;
+        i<2;
+        i++
+    ){
+
+        const x=
+            1130+
+            i*70;
+
+        const y=300;
+
+        ctx.fillStyle=
+            "rgba(0,0,0,.35)";
+
+        ctx.fillRect(
+            x-16,
+            y+11,
+            32,
+            7
+        );
+
+        ctx.fillStyle="#80552d";
+
+        ctx.fillRect(
+            x-14,
+            y-10,
+            28,
+            21
+        );
+
+        ctx.fillStyle="#b47e40";
+
+        ctx.fillRect(
+            x-9,
+            y-7,
+            18,
+            4
+        );
+
+    }
+
+}
+
+/* =========================================================
+   BULLET DRAW
+========================================================= */
+
+function drawBullets(){
+
+    bullets.forEach(b=>{
+
+        ctx.fillStyle=
+            b.enemy
+            ?" #d75a52"
+            :"#f0d17d";
+
+        ctx.fillRect(
+            b.x-2,
+            b.y-2,
+            5,
+            5
+        );
+
+    });
+
+}
+
+/* =========================================================
+   PARTICLES DRAW
 ========================================================= */
 
 function drawParticles(){
 
-    for(const p of particles){
+    particles.forEach(p=>{
 
-        const alpha=
+        ctx.globalAlpha=
             clamp(
                 p.life/p.maxLife,
                 0,
                 1
             );
 
-        ctx.globalAlpha=alpha;
+        ctx.fillStyle=p.color;
 
-        let color="#aaa";
-
-        if(p.type==="blood"){
-            color="#b34848";
-        }
-
-        if(p.type==="muzzle"){
-            color="#e5bd45";
-        }
-
-        if(p.type==="spark"){
-            color="#e5c14b";
-        }
-
-        if(p.type==="alarm"){
-            color="#c34747";
-        }
-
-        if(p.type==="pickup"){
-            color="#d9bb45";
-        }
-
-        if(p.type==="mask"){
-            color="#c4a637";
-        }
-
-        if(p.type==="hack"){
-            color="#62a979";
-        }
-
-        if(p.type==="vault"){
-            color="#e0c247";
-        }
-
-        ctx.fillStyle=color;
-
-        ctx.beginPath();
-
-        ctx.arc(
+        ctx.fillRect(
             p.x,
             p.y,
             p.size,
-            0,
-            Math.PI*2
+            p.size
         );
 
-        ctx.fill();
-    }
+    });
 
     ctx.globalAlpha=1;
+
 }
 
 /* =========================================================
-   LOCKPICK RENDER
+   LIGHTING
 ========================================================= */
 
-function drawLockpick(){
+function drawLighting(){
 
-    if(!lockpick.active){
+    const glow=
+        ctx.createRadialGradient(
+            player.x,
+            player.y,
+            50,
+            player.x,
+            player.y,
+            430
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(255,225,165,.09)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,.34)"
+    );
+
+    ctx.fillStyle=glow;
+
+    ctx.fillRect(
+        90,
+        90,
+        1220,
+        595
+    );
+
+    if(state.alarm){
+
+        const pulse=
+            (Math.sin(
+                performance.now()/130
+            )+1)/2;
+
+        ctx.fillStyle=
+            `rgba(205,30,25,${
+                .02+
+                pulse*.055
+            })`;
+
+        ctx.fillRect(
+            90,
+            90,
+            1220,
+            595
+        );
+
+    }
+
+}
+
+/* =========================================================
+   RETRO FILTER
+========================================================= */
+
+function drawRetro(){
+
+    if(!retro){
         return;
     }
 
-    ctx.fillStyle="rgba(0,0,0,.72)";
-    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=
+        "rgba(0,0,0,.025)";
 
-    const boxW=600;
-    const boxH=250;
-
-    const bx=W/2-boxW/2;
-    const by=H/2-boxH/2;
-
-    drawRect(
-        bx,
-        by,
-        boxW,
-        boxH,
-        "#101216",
-        "#555b62"
-    );
-
-    text(
-        "LOCKPICK",
-        W/2,
-        by+38,
-        28,
-        "#e0bd43",
-        "center"
-    );
-
-    text(
-        "PRESS SPACE WHEN THE INDICATOR IS IN THE GREEN",
-        W/2,
-        by+72,
-        13,
-        "#a7adb3",
-        "center"
-    );
-
-    const barX=bx+70;
-    const barY=by+120;
-    const barW=460;
-    const barH=30;
-
-    drawRect(
-        barX,
-        barY,
-        barW,
-        barH,
-        "#22262b",
-        "#4d5258"
-    );
-
-    const greenX=
-        barX+
-        barW*lockpick.targetStart;
-
-    const greenW=
-        barW*lockpick.targetWidth;
-
-    drawRect(
-        greenX,
-        barY,
-        greenW,
-        barH,
-        "#557d55"
-    );
-
-    const cursorX=
-        barX+
-        barW*lockpick.cursor;
-
-    drawRect(
-        cursorX-4,
-        barY-9,
-        8,
-        barH+18,
-        "#e8d06a"
-    );
-
-    text(
-        `PINS ${lockpick.hits}/${lockpick.needed}`,
-        W/2,
-        by+185,
-        17,
-        "#ddd",
-        "center"
-    );
-
-    text(
-        `MISSES ${lockpick.misses}/6`,
-        W/2,
-        by+212,
-        12,
-        "#999",
-        "center"
-    );
-}
-
-/* =========================================================
-   DRILL UI
-========================================================= */
-
-function drawDrillUI(){
-
-    if(
-        !drill.active &&
-        drill.progress<=0
+    for(
+        let y=0;
+        y<H;
+        y+=4
     ){
-        return;
+
+        ctx.fillRect(
+            0,
+            y,
+            W,
+            1
+        );
+
     }
 
-    const x=500;
-    const y=740;
-    const w=400;
-
-    drawRect(
-        x,
-        y,
-        w,
-        18,
-        "#17191d",
-        "#454a50"
-    );
-
-    drawRect(
-        x,
-        y,
-        w*(drill.progress/drill.max),
-        18,
-        "#c6a42f"
-    );
-
-    text(
-        "VAULT DRILL",
-        x+w/2,
-        y-12,
-        11,
-        "#c8cdd1",
-        "center"
-    );
 }
 
 /* =========================================================
    HUD
 ========================================================= */
 
-function drawHUD(){
+function updateHUD(){
 
-    /* TOP LEFT */
-
-    drawRect(
-        18,
-        18,
-        430,
-        105,
-        "rgba(7,8,10,.85)",
-        "#343940"
-    );
-
-    text(
-        "DOWNTOWN BANK",
-        34,
-        39,
-        15,
-        "#d5b33b"
-    );
-
-    text(
-        objectiveText,
-        34,
-        66,
-        15,
-        "#e4e6e8"
-    );
-
-    const minutes=
-        Math.floor(heistTime/60);
-
-    const seconds=
-        Math.floor(heistTime%60)
-        .toString()
-        .padStart(2,"0");
-
-    text(
-        `TIME ${minutes}:${seconds}`,
-        34,
-        94,
-        12,
-        "#81878e"
-    );
-
-    /* MONEY */
-
-    text(
-        "$"+cash.toLocaleString(),
-        1350,
-        36,
-        18,
-        "#d9b83d",
-        "right"
-    );
-
-    text(
-        `${kills} KILLS`,
-        1350,
-        58,
-        11,
-        "#92979d",
-        "right"
-    );
-
-    /* HEALTH */
-
-    drawRect(
-        18,
-        748,
-        180,
-        14,
-        "#1c1f23",
-        "#41464c"
-    );
-
-    drawRect(
-        18,
-        748,
-        180*(player.health/100),
-        14,
-        "#a64343"
-    );
-
-    text(
-        "HEALTH",
-        108,
-        742,
-        9,
-        "#bbb",
-        "center"
-    );
-
-    /* ARMOR */
-
-    drawRect(
-        210,
-        748,
-        180,
-        14,
-        "#1c1f23",
-        "#41464c"
-    );
-
-    drawRect(
-        210,
-        748,
-        180*(player.armor/100),
-        14,
-        "#59718a"
-    );
-
-    text(
-        "ARMOR",
-        300,
-        742,
-        9,
-        "#bbb",
-        "center"
-    );
-
-    /* STAMINA */
-
-    drawRect(
-        402,
-        748,
-        130,
-        14,
-        "#1c1f23",
-        "#41464c"
-    );
-
-    drawRect(
-        402,
-        748,
-        130*(player.stamina/100),
-        14,
-        "#73894d"
-    );
-
-    text(
-        "STAMINA",
-        467,
-        742,
-        9,
-        "#bbb",
-        "center"
-    );
-
-    /* AMMO */
-
-    text(
-        `${player.weapon.magazine}/${player.weapon.reserve}`,
-        1350,
-        735,
-        26,
-        "#eee",
-        "right"
-    );
-
-    text(
-        suppressor
-        ?"SUPPRESSED"
-        :"UNSUPPRESSED",
-        1350,
-        762,
-        10,
-        suppressor
-        ?" #78a878"
-        :"#b36b55",
-        "right"
-    );
-
-    /* MASK */
-
-    text(
-        player.masked
-        ?"MASKED"
-        :"UNMASKED",
-        680,
-        760,
-        12,
-        player.masked
-        ?" #d5b23d"
-        :"#788088",
-        "center"
-    );
-
-    /* ALARM */
-
-    if(alarm){
-
-        text(
-            "⚠ ALARM",
-            700,
-            25,
-            15,
-            "#c94c4c",
-            "center"
-        );
-
-        drawRect(
-            610,
-            42,
-            180,
-            6,
-            "#2a1717"
-        );
-
-        drawRect(
-            610,
-            42,
-            180*(alarmLevel/100),
-            6,
-            "#b84646"
-        );
-    }
-}
-
-/* =========================================================
-   MAIN DRAW
-========================================================= */
-
-function draw(){
-
-    drawWorld();
-
-    drawCameras();
-    drawLoot();
-    drawKeycard();
-    drawGuards();
-    drawPlayer();
-    drawParticles();
-
-    drawHUD();
-    drawDrillUI();
-    drawLockpick();
-
-    /*
-       Subtle damage vignette
-    */
-
-    if(player.health<35){
-
-        const alpha=
-            (35-player.health)/80;
-
-        const gradient=
-            ctx.createRadialGradient(
-                W/2,
-                H/2,
-                150,
-                W/2,
-                H/2,
-                750
-            );
-
-        gradient.addColorStop(
+    $("health").textContent=
+        Math.max(
             0,
-            "rgba(120,0,0,0)"
+            Math.ceil(player.health)
         );
 
-        gradient.addColorStop(
-            1,
-            `rgba(130,0,0,${alpha})`
+    $("armor").textContent=
+        Math.max(
+            0,
+            Math.ceil(player.armor)
         );
 
-        ctx.fillStyle=gradient;
-        ctx.fillRect(0,0,W,H);
+    $("cash").textContent=
+        "$"+
+        Math.floor(
+            player.cash+
+            player.lootBags*25000
+        ).toLocaleString();
+
+    $("ammo").textContent=
+        player.masked
+        ?(
+            player.weapon.reloading
+            ?"RELOADING..."
+            :
+            `${player.weapon.ammo} / ${player.weapon.reserve}`
+        )
+        :"STOWED";
+
+    const action=
+        interaction();
+
+    if(action){
+
+        $("prompt").textContent=
+            action.text;
+
+        if(
+            action.type==="none"
+        ){
+
+            $("prompt").style.borderColor=
+                "#a64b45";
+
+        }else{
+
+            $("prompt").style.borderColor=
+                "#d0a15a";
+
+        }
+
+    }else{
+
+        $("prompt").textContent="";
+
     }
+
+    $("crosshair").style.display=
+        player.masked &&
+        screen==="game"
+        ?"block"
+        :"none";
+
+    $("crosshair").style.left=
+        mouse.x+"px";
+
+    $("crosshair").style.top=
+        mouse.y+"px";
+
 }
 
 /* =========================================================
-   MAIN UPDATE
+   STAGE LOGIC
 ========================================================= */
 
-function update(){
+function stageLogic(){
 
-    if(!gameRunning || paused){
+    /* reach vault */
+
+    if(
+        state.stage===4 &&
+        player.x>1030 &&
+        player.y>240 &&
+        player.y<440
+    ){
+
+        state.stage=5;
+
+        updateObjective();
+
+    }
+
+    /* after vault unlocked */
+
+    if(
+        state.stage===5 &&
+        doors[2].open
+    ){
+
+        state.stage=6;
+
+        updateObjective();
+
+    }
+
+    /* park */
+
+    if(
+        state.stage===7 &&
+        player.y>=700
+    ){
+
+        state.stage=8;
+
+        updateObjective();
+
+        showMessage(
+            "BANK CLEARED — RUN TO THE VAN"
+        );
+
+    }
+
+    /* van */
+
+    if(
+        state.stage===8 &&
+        player.y>=700
+    ){
+
+        state.stage=9;
+
+        updateObjective();
+
+    }
+
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetGame(){
+
+    player.x=350;
+    player.y=610;
+
+    player.health=100;
+    player.armor=100;
+
+    player.stamina=100;
+
+    player.masked=false;
+
+    player.cash=0;
+    player.lootBags=0;
+
+    player.weapon={
+        ammo:30,
+        reserve:120,
+        cooldown:0,
+        reloading:false
+    };
+
+    state.stage=0;
+    state.alarm=false;
+    state.alarmCooldown=0;
+    state.keycard=false;
+    state.camerasDisabled=false;
+    state.vaultUnlocked=false;
+    state.drillComplete=false;
+    state.lootCollected=0;
+    state.kills=0;
+    state.finished=false;
+    state.startTime=performance.now();
+
+    doors.forEach(
+        d=>d.open=false
+    );
+
+    bullets.length=0;
+    particles.length=0;
+
+    lockpick.active=false;
+    drill.active=false;
+
+    $("lockpick")
+        .classList.remove("active");
+
+    $("drill")
+        .classList.remove("active");
+
+    resetGuards();
+    resetCameras();
+
+    showScreen("game");
+
+    updateObjective();
+
+}
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+function finishHeist(success){
+
+    if(state.finished){
         return;
     }
 
-    heistTime+=1/60;
+    state.finished=true;
 
-    updateMask();
-    updatePlayer();
-    updateWeapon();
-    updateGuards();
-    updateCameras();
-    updateLockpick();
-    updateDrill();
-    updateStage();
-    updateParticles();
+    state.endTime=
+        performance.now();
 
-    /*
-       Crime is permanent after masking/alarm.
-    */
+    if(success){
 
-    if(
-        player.masked ||
-        alarm
-    ){
-        player.crimeCommitted=true;
+        player.cash+=
+            player.lootBags*25000;
+
+        $("resultTitle")
+            .textContent=
+                "HEIST COMPLETE";
+
+        $("resultSub")
+            .textContent=
+                state.alarm
+                ?"MESSY — BUT PROFITABLE."
+                :"CLEAN WORK. PROFESSIONAL.";
+
+    }else{
+
+        $("resultTitle")
+            .textContent=
+                "HEIST FAILED";
+
+        $("resultSub")
+            .textContent=
+                "THE JOB WENT LOUD.";
+
     }
 
-    /*
-       If player has loot, make sure they can eventually
-       reach the park and van.
-    */
+    $("resultCash")
+        .textContent=
+            "$"+
+            Math.floor(
+                player.cash
+            ).toLocaleString();
 
-    if(
-        player.carryingLoot &&
-        stage<7
-    ){
-        stage=7;
-    }
+    $("resultLoot")
+        .textContent=
+            player.lootBags;
 
-    /*
-       Keep player from accidentally walking outside
-       through the normal bank wall except at the park exit.
-    */
+    $("resultKills")
+        .textContent=
+            state.kills;
 
-    if(player.y>700 && stage<7){
+    const seconds=
+        Math.max(
+            0,
+            (state.endTime-
+             state.startTime)/1000
+        );
 
-        player.y=700;
-    }
+    $("resultTime")
+        .textContent=
+            Math.floor(seconds/60)+
+            ":"+
+            String(
+                Math.floor(seconds%60)
+            ).padStart(2,"0");
+
+    showScreen("result");
+
 }
 
 /* =========================================================
-   GAME LOOP
+   SCREEN MANAGEMENT
 ========================================================= */
 
-function loop(){
+function showScreen(name){
 
-    update();
-    draw();
+    screen=name;
 
-    requestAnimationFrame(loop);
+    document
+        .querySelectorAll(".screen")
+        .forEach(
+            s=>s.classList.remove("active")
+        );
+
+    if(name==="main"){
+
+        $("mainScreen")
+            .classList.add("active");
+
+    }
+
+    if(name==="loadout"){
+
+        $("loadoutScreen")
+            .classList.add("active");
+
+    }
+
+    if(name==="settings"){
+
+        $("settingsScreen")
+            .classList.add("active");
+
+    }
+
+    if(name==="pause"){
+
+        $("pauseScreen")
+            .classList.add("active");
+
+    }
+
+    if(name==="result"){
+
+        $("resultScreen")
+            .classList.add("active");
+
+    }
+
+    $("hud").style.display=
+        name==="game"
+        ?"block"
+        :"none";
+
 }
 
-startHeist();
+/* =========================================================
+   MESSAGE UPDATE
+========================================================= */
 
-loop();
+function updateMessage(dt){
+
+    if(messageTimer<=0){
+        return;
+    }
+
+    messageTimer-=dt;
+
+    if(messageTimer<=0){
+
+        $("message")
+            .classList.remove("show");
+
+    }
+
+}
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+window.addEventListener(
+    "keydown",
+    e=>{
+
+        const key=
+            e.key.toLowerCase();
+
+        keys[key]=true;
+
+        if(
+            [
+                " ",
+                "arrowup",
+                "arrowdown",
+                "arrowleft",
+                "arrowright"
+            ].includes(key)
+        ){
+
+            e.preventDefault();
+
+        }
+
+        if(screen==="game"){
+
+            if(key==="m"){
+
+                putMaskOn();
+
+            }
+
+            if(key==="e"){
+
+                if(!lockpick.active){
+
+                    if(!drill.active){
+
+                        interact();
+
+                    }
+
+                }
+
+            }
+
+            if(key==="r"){
+
+                reload();
+
+            }
+
+            if(
+                key===" " &&
+                lockpick.active
+            ){
+
+                lockpickPress();
+
+            }
+
+            if(
+                key==="escape" &&
+                !lockpick.active &&
+                !drill.active
+            ){
+
+                paused=true;
+
+                showScreen(
+                    "pause"
+                );
+
+            }
+
+        }
+
+        else if(
+            screen==="pause" &&
+            key==="escape"
+        ){
+
+            paused=false;
+
+            showScreen("game");
+
+        }
+
+    }
+);
+
+window.addEventListener(
+    "keyup",
+    e=>{
+
+        keys[
+            e.key.toLowerCase()
+        ]=false;
+
+    }
+);
+
+canvas.addEventListener(
+    "mousemove",
+    e=>{
+
+        const r=
+            canvas.getBoundingClientRect();
+
+        mouse.x=
+            (e.clientX-r.left)*
+            W/r.width;
+
+        mouse.y=
+            (e.clientY-r.top)*
+            H/r.height;
+
+    }
+);
+
+canvas.addEventListener(
+    "mousedown",
+    e=>{
+
+        if(e.button===0){
+
+            mouse.down=true;
+
+        }
+
+    }
+);
+
+window.addEventListener(
+    "mouseup",
+    e=>{
+
+        if(e.button===0){
+
+            mouse.down=false;
+
+        }
+
+    }
+);
+
+/* =========================================================
+   MENU BUTTONS
+========================================================= */
+
+$("playBtn").onclick=()=>{
+
+    resetGame();
+
+};
+
+$("loadoutBtn").onclick=()=>{
+
+    showScreen("loadout");
+
+};
+
+$("settingsBtn").onclick=()=>{
+
+    showScreen("settings");
+
+};
+
+$("exitBtn").onclick=()=>{
+
+    /*
+        Games page is one folder above:
+        /games/paytime/ -> /games/
+    */
+
+    window.location.href="../";
+
+};
+
+$("loadoutBack").onclick=()=>{
+
+    showScreen("main");
+
+};
+
+$("settingsBack").onclick=()=>{
+
+    showScreen("main");
+
+};
+
+$("resumeBtn").onclick=()=>{
+
+    paused=false;
+
+    showScreen("game");
+
+};
+
+$("restartBtn").onclick=()=>{
+
+    resetGame();
+
+};
+
+$("pauseMenuBtn").onclick=()=>{
+
+    paused=false;
+
+    showScreen("main");
+
+};
+
+$("resultRestart").onclick=()=>{
+
+    resetGame();
+
+};
+
+$("resultMenu").onclick=()=>{
+
+    showScreen("main");
+
+};
+
+/* =========================================================
+   LOADOUT
+========================================================= */
+
+function updateLoadout(){
+
+    $("supOn")
+        .classList.toggle(
+            "active",
+            suppressor
+        );
+
+    $("supOff")
+        .classList.toggle(
+            "active",
+            !suppressor
+        );
+
+    $("noiseBar").style.width=
+        suppressor
+        ?"38%"
+        :"88%";
+
+}
+
+$("supOn").onclick=()=>{
+
+    suppressor=true;
+
+    updateLoadout();
+
+};
+
+$("supOff").onclick=()=>{
+
+    suppressor=false;
+
+    updateLoadout();
+
+};
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+$("shakeBtn").onclick=()=>{
+
+    screenShake=!screenShake;
+
+    $("shakeBtn").textContent=
+        "SCREEN SHAKE: "+
+        (
+            screenShake
+            ?"ON"
+            :"OFF"
+        );
+
+};
+
+$("pixelBtn").onclick=()=>{
+
+    retro=!retro;
+
+    $("pixelBtn").textContent=
+        "RETRO FILTER: "+
+        (
+            retro
+            ?"ON"
+            :"OFF"
+        );
+
+};
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(dt){
+
+    if(screen!=="game"){
+        return;
+    }
+
+    if(paused){
+        return;
+    }
+
+    updateMessage(dt);
+
+    updatePlayer(dt);
+
+    updateWeapon(dt);
+
+    updateBullets(dt);
+
+    updateGuards(dt);
+
+    updateCameras(dt);
+
+    updateParticles(dt);
+
+    updateDrill(dt);
+
+    if(lockpick.active){
+
+        lockpick.cursor+=
+            lockpick.direction*
+            lockpick.speed*
+            dt;
+
+        if(lockpick.cursor>=1){
+
+            lockpick.cursor=1;
+            lockpick.direction=-1;
+
+        }
+
+        if(lockpick.cursor<=0){
+
+            lockpick.cursor=0;
+            lockpick.direction=1;
+
+        }
+
+        updateLockUI();
+
+    }
+
+    stageLogic();
+
+    updateHUD();
+
+}
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    ctx.save();
+
+    if(
+        screenShake &&
+        shake>0
+    ){
+
+        ctx.translate(
+            random(-shake,shake),
+            random(-shake,shake)
+        );
+
+        shake*=.84;
+
+    }
+
+    drawWorld();
+
+    ctx.restore();
+
+    drawRetro();
+
+}
+
+/* =========================================================
+   LOOP
+========================================================= */
+
+function loop(now){
+
+    const dt=
+        Math.min(
+            .033,
+            (now-lastTime)/1000
+        );
+
+    lastTime=now;
+
+    update(dt);
+
+    render();
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+/* =========================================================
+   START
+========================================================= */
+
+updateLoadout();
+
+resetGuards();
+
+resetCameras();
+
+/*
+    IMPORTANT:
+    We start at the MENU.
+    We DO NOT call resetGame() here.
+*/
+
+showScreen("main");
+
+requestAnimationFrame(loop);
 
 </script>
 

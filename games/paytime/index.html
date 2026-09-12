@@ -4,460 +4,505 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PAYTIME</title>
+
 <style>
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+    user-select:none;
+}
+
 html,body{
     margin:0;
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#080a0e;
-    color:#eee2ca;
+    background:#090b0d;
     font-family:Arial,Helvetica,sans-serif;
+    color:white;
 }
+
 body{
     display:flex;
     align-items:center;
     justify-content:center;
 }
+
 #gameWrap{
     position:relative;
     width:min(1400px,100vw);
     aspect-ratio:16/9;
     max-height:100vh;
     overflow:hidden;
-    background:#11161d;
-    box-shadow:0 0 90px #000;
+    background:#111;
+    box-shadow:0 0 60px #000;
 }
+
 canvas{
+    position:absolute;
+    inset:0;
     width:100%;
     height:100%;
-    display:block;
-    cursor:none;
+    image-rendering:auto;
+    background:#17201c;
+}
+
+.hidden{
+    display:none !important;
 }
 
 /* =========================
-   MENU
+   MENUS
 ========================= */
 
 .screen{
     position:absolute;
     inset:0;
-    display:none;
+    display:flex;
     align-items:center;
     justify-content:center;
     background:
-        radial-gradient(circle at 50% 35%,rgba(119,77,37,.18),transparent 35%),
-        linear-gradient(135deg,rgba(4,6,9,.76),rgba(8,10,14,.94));
+        radial-gradient(circle at 50% 35%,rgba(80,100,90,.22),transparent 35%),
+        linear-gradient(180deg,rgba(5,7,8,.35),rgba(5,7,8,.92));
+    z-index:20;
 }
-.screen.active{display:flex}
 
-.menuPanel{
-    width:590px;
-    max-width:88%;
-    padding:44px;
+.menuBox{
+    width:min(620px,85%);
+    padding:55px 65px;
     text-align:center;
-    background:
-        linear-gradient(145deg,#20262e,#11151b);
-    border:3px solid #60472d;
+    background:rgba(13,17,18,.93);
+    border:3px solid #52615b;
     box-shadow:
-        10px 10px 0 #050608,
-        0 0 50px rgba(0,0,0,.7);
+        0 0 0 5px rgba(0,0,0,.35),
+        0 20px 80px rgba(0,0,0,.8);
 }
 
 .logo{
     font-size:72px;
-    line-height:1;
+    line-height:.9;
     font-weight:1000;
-    letter-spacing:10px;
-    color:#efc56e;
+    letter-spacing:8px;
+    color:#e9eee9;
     text-shadow:
-        5px 5px 0 #57381e,
-        0 0 25px rgba(239,197,110,.18);
+        5px 5px 0 #28312d,
+        9px 9px 0 rgba(0,0,0,.7);
+    margin-bottom:12px;
 }
 
 .subtitle{
-    margin-top:9px;
-    margin-bottom:35px;
-    color:#929aa5;
-    font-size:12px;
-    letter-spacing:6px;
+    color:#89948f;
+    letter-spacing:5px;
+    font-weight:bold;
+    font-size:13px;
+    margin-bottom:42px;
+}
+
+.menuButtons{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
 }
 
 .menuButton{
     width:100%;
-    padding:16px;
-    margin:7px 0;
-    border:2px solid #6e5030;
-    background:#252b34;
-    color:#f1dfc2;
-    font-size:18px;
+    min-height:64px;
+    border:2px solid #59655f;
+    background:#29332f;
+    color:#eef2ef;
+    font-size:21px;
     font-weight:900;
-    letter-spacing:4px;
-    box-shadow:5px 5px 0 #07090c;
+    letter-spacing:3px;
     cursor:pointer;
-    transition:.08s;
+    transition:.12s;
+    box-shadow:inset 0 -5px 0 rgba(0,0,0,.25);
 }
 
 .menuButton:hover{
-    transform:translate(-2px,-2px);
-    border-color:#e0b15e;
-    background:#34342f;
+    transform:translateY(-2px);
+    background:#39453f;
+    border-color:#aab7b0;
 }
 
 .menuButton:active{
-    transform:translate(3px,3px);
-    box-shadow:1px 1px 0 #07090c;
+    transform:translateY(2px);
+    box-shadow:none;
 }
 
-.controls{
-    margin-top:23px;
-    color:#69727e;
-    font-size:10px;
+.menuButton.primary{
+    background:#55685e;
+    border-color:#a9b9ae;
+}
+
+.menuButton.danger{
+    background:#422d2d;
+    border-color:#765151;
+}
+
+.smallText{
+    color:#78817d;
+    font-size:12px;
+    margin-top:25px;
     letter-spacing:1px;
 }
 
-/* =========================
-   LOADOUT / SETTINGS
-========================= */
+/* LOADOUT */
 
 .panelTitle{
-    font-size:45px;
+    font-size:42px;
     font-weight:1000;
-    letter-spacing:7px;
-    color:#efc56e;
+    letter-spacing:5px;
+    margin-bottom:30px;
 }
 
-.panelSubtitle{
-    color:#818a96;
-    font-size:11px;
-    letter-spacing:4px;
-    margin:7px 0 25px;
-}
-
-.weaponCard{
-    background:#14191f;
-    border:2px solid #343b45;
-    padding:20px;
+.loadoutCard{
     text-align:left;
-    margin-bottom:18px;
+    background:#1a211e;
+    border:2px solid #4e5b55;
+    padding:22px;
+    margin-bottom:20px;
 }
 
 .weaponName{
-    font-size:24px;
+    font-size:26px;
     font-weight:1000;
     letter-spacing:2px;
 }
 
 .weaponType{
-    color:#747d88;
-    font-size:10px;
-    letter-spacing:3px;
-    margin-bottom:17px;
-}
-
-.statGrid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+    color:#84918a;
+    margin-top:4px;
+    margin-bottom:18px;
 }
 
 .stat{
-    background:#0d1116;
-    padding:10px;
-    border:1px solid #282e36;
-}
-
-.statTitle{
-    color:#818a95;
-    font-size:9px;
-    letter-spacing:2px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:8px 0;
+    font-size:13px;
+    color:#b5beb9;
 }
 
 .statBar{
-    height:7px;
-    background:#05070a;
-    margin-top:7px;
-}
-
-.statBar span{
-    display:block;
-    height:100%;
-    background:#b9853f;
-}
-
-.toggle{
-    display:flex;
-    gap:8px;
-}
-
-.toggle button{
+    height:8px;
     flex:1;
-    padding:12px;
-    border:2px solid #4b3928;
-    background:#20252c;
-    color:#ddd0ba;
-    font-weight:900;
-    cursor:pointer;
+    background:#0d100f;
+    border:1px solid #3c4541;
 }
 
-.toggle button.active{
-    background:#79552d;
-    border-color:#e3b65f;
-    color:#fff3d9;
+.statFill{
+    height:100%;
+    background:#9caea2;
 }
 
-/* =========================
-   HUD
-========================= */
-
-#hud{
-    position:absolute;
-    inset:0;
-    display:none;
-    pointer-events:none;
-}
-
-.hudTop{
-    position:absolute;
-    top:15px;
-    left:15px;
-    right:15px;
+.toggleRow{
     display:flex;
+    align-items:center;
     justify-content:space-between;
-    gap:15px;
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid #39433e;
 }
 
-.hudBox{
-    background:rgba(8,11,15,.9);
-    border:2px solid #493826;
-    box-shadow:5px 5px 0 rgba(0,0,0,.45);
-    padding:9px 12px;
-}
-
-.objective{
-    width:510px;
-}
-
-.objectiveSmall{
-    color:#777f8a;
-    font-size:9px;
-    letter-spacing:3px;
-}
-
-#objective{
-    margin-top:4px;
-    font-size:15px;
-    font-weight:900;
-}
-
-.hudStats{
+.toggleButtons{
     display:flex;
     gap:7px;
 }
 
-.hudStat{
-    min-width:95px;
+.toggle{
+    padding:9px 16px;
+    border:2px solid #48534e;
+    background:#171c1a;
+    color:#aab3ae;
+    cursor:pointer;
+    font-weight:bold;
 }
 
-.hudLabel{
-    color:#727b87;
-    font-size:8px;
-    letter-spacing:2px;
+.toggle.active{
+    background:#687a6e;
+    color:white;
+    border-color:#aebbb1;
 }
 
-.hudValue{
+/* SETTINGS */
+
+.settingRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 0;
+    border-bottom:1px solid #36403b;
+    color:#ccd2ce;
+}
+
+.checkbox{
+    width:48px;
+    height:25px;
+    border-radius:20px;
+    background:#29312e;
+    border:2px solid #56615b;
+    cursor:pointer;
+    position:relative;
+}
+
+.checkbox::after{
+    content:"";
+    position:absolute;
+    top:3px;
+    left:3px;
+    width:15px;
+    height:15px;
+    background:#8d9892;
+    border-radius:50%;
+    transition:.15s;
+}
+
+.checkbox.on{
+    background:#66776c;
+}
+
+.checkbox.on::after{
+    left:26px;
+    background:white;
+}
+
+/* PAUSE */
+
+.pauseBox{
+    width:500px;
+    padding:45px;
+    background:rgba(10,13,12,.96);
+    border:3px solid #536059;
+    text-align:center;
+}
+
+.pauseTitle{
+    font-size:50px;
+    font-weight:1000;
+    letter-spacing:6px;
+    margin-bottom:30px;
+}
+
+/* HUD */
+
+#hud{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:5;
+}
+
+#objective{
+    position:absolute;
+    top:20px;
+    left:25px;
+    padding:13px 18px;
+    background:rgba(7,10,9,.82);
+    border-left:5px solid #b9c6bd;
     font-size:15px;
+    font-weight:bold;
+    letter-spacing:1px;
+    max-width:560px;
+}
+
+#objective span{
+    display:block;
+    color:#7f8d85;
+    font-size:10px;
+    letter-spacing:3px;
+    margin-bottom:5px;
+}
+
+#stats{
+    position:absolute;
+    bottom:22px;
+    left:25px;
+    display:flex;
+    gap:10px;
+}
+
+.statBox{
+    background:rgba(7,10,9,.86);
+    border:2px solid #3e4843;
+    padding:9px 14px;
+    min-width:100px;
+}
+
+.statLabel{
+    color:#748079;
+    font-size:9px;
+    letter-spacing:2px;
+    font-weight:bold;
+}
+
+.statValue{
+    font-size:20px;
     font-weight:1000;
     margin-top:3px;
 }
 
-#prompt{
+#weaponHUD{
     position:absolute;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
-    min-width:230px;
-    padding:12px 20px;
-    text-align:center;
-    background:rgba(8,10,13,.94);
-    border:2px solid #d0a15a;
-    box-shadow:5px 5px 0 #06080b;
-    color:#f5e5c6;
-    font-size:13px;
-    font-weight:1000;
-    letter-spacing:1px;
+    right:25px;
+    bottom:22px;
+    text-align:right;
+    background:rgba(7,10,9,.86);
+    border:2px solid #3e4843;
+    padding:12px 18px;
 }
 
-#message{
-    position:absolute;
-    top:103px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:18px;
-    font-weight:1000;
-    letter-spacing:3px;
-    text-shadow:3px 3px 0 #000;
-    opacity:0;
-    transition:.12s;
+#weaponNameHUD{
+    font-size:14px;
+    letter-spacing:2px;
+    font-weight:bold;
 }
 
-#message.show{opacity:1}
+#ammoHUD{
+    font-size:34px;
+    font-weight:1000;
+}
 
-#crosshair{
+#maskHUD{
     position:absolute;
-    width:22px;
-    height:22px;
+    top:20px;
+    right:25px;
+    background:rgba(7,10,9,.82);
+    border:2px solid #3e4843;
+    padding:10px 15px;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+#lockpickUI,
+#drillUI{
+    position:absolute;
+    left:50%;
+    top:50%;
     transform:translate(-50%,-50%);
-    pointer-events:none;
-    display:none;
-}
-
-#crosshair:before,
-#crosshair:after{
-    content:"";
-    position:absolute;
-    background:#fff;
-}
-
-#crosshair:before{
-    width:22px;
-    height:2px;
-    top:10px;
-}
-
-#crosshair:after{
-    height:22px;
-    width:2px;
-    left:10px;
-}
-
-#damage{
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle,transparent 38%,rgba(190,25,20,.5));
-    opacity:0;
-    transition:.1s;
-}
-
-/* =========================
-   LOCKPICK
-========================= */
-
-#lockpick{
-    position:absolute;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background:rgba(2,4,6,.76);
-}
-
-#lockpick.active{display:flex}
-
-.qte{
-    width:640px;
-    max-width:88%;
-    padding:32px;
+    width:470px;
+    padding:28px;
+    background:rgba(8,11,10,.96);
+    border:3px solid #67736c;
     text-align:center;
-    background:#171c23;
-    border:3px solid #6b4c2d;
-    box-shadow:10px 10px 0 #040507;
+    z-index:15;
 }
 
 .qteTitle{
-    color:#efc56e;
     font-size:28px;
     font-weight:1000;
-    letter-spacing:5px;
+    letter-spacing:3px;
+    margin-bottom:10px;
 }
 
-.qteText{
-    color:#9199a4;
-    margin:10px 0 25px;
+.qteHelp{
+    color:#88928d;
+    font-size:13px;
+    margin-bottom:22px;
 }
 
 .qteBar{
     position:relative;
-    height:34px;
-    background:#07090c;
-    border:2px solid #4c545e;
+    height:35px;
+    background:#171c1a;
+    border:2px solid #59635e;
+    overflow:hidden;
 }
 
 .qteSweet{
     position:absolute;
-    top:3px;
-    bottom:3px;
-    background:#4c9861;
+    top:0;
+    height:100%;
+    background:#657f6c;
 }
 
 .qteCursor{
     position:absolute;
-    top:-7px;
-    width:5px;
-    height:44px;
+    top:-5px;
+    width:6px;
+    height:45px;
     background:#fff;
-    box-shadow:0 0 8px #fff;
+    box-shadow:0 0 10px #fff;
 }
 
-#lockStatus{
-    margin-top:17px;
-    font-weight:900;
+#qteSuccess{
+    margin-top:14px;
+    font-weight:bold;
+    color:#aebbb1;
 }
 
-/* =========================
-   DRILL
-========================= */
+#drillProgressOuter{
+    height:24px;
+    border:2px solid #59635e;
+    background:#151917;
+    margin-top:20px;
+}
 
-#drill{
+#drillProgress{
+    height:100%;
+    width:0%;
+    background:#7b8c81;
+}
+
+#crosshair{
+    position:absolute;
+    width:18px;
+    height:18px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    z-index:6;
+}
+
+#crosshair::before,
+#crosshair::after{
+    content:"";
+    position:absolute;
+    background:#fff;
+    opacity:.85;
+}
+
+#crosshair::before{
+    width:18px;
+    height:2px;
+    top:8px;
+    left:0;
+}
+
+#crosshair::after{
+    width:2px;
+    height:18px;
+    top:0;
+    left:8px;
+}
+
+/* RESULT */
+
+.resultCash{
+    font-size:50px;
+    font-weight:1000;
+    margin:15px 0;
+}
+
+.resultStats{
+    color:#9ba69f;
+    line-height:2;
+    margin-bottom:25px;
+}
+
+/* retro effect */
+
+#scanlines{
     position:absolute;
     inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background:rgba(3,5,7,.72);
-}
-
-#drill.active{display:flex}
-
-.drillBox{
-    width:570px;
-    padding:30px;
-    text-align:center;
-    background:#151a21;
-    border:3px solid #694a2a;
-    box-shadow:10px 10px 0 #040507;
-}
-
-.drillTitle{
-    color:#efc56e;
-    font-size:28px;
-    font-weight:1000;
-    letter-spacing:5px;
-}
-
-.drillBar{
-    height:22px;
-    margin-top:22px;
-    background:#06080b;
-    border:2px solid #4c535c;
-}
-
-#drillFill{
-    display:block;
-    width:0;
-    height:100%;
-    background:#bf8e4c;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:850px){
-    .logo{font-size:43px}
-    .menuPanel{padding:28px}
-    .hudTop{transform:scale(.8);transform-origin:top left;width:125%}
+    pointer-events:none;
+    z-index:30;
+    background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.018) 0px,
+        rgba(255,255,255,.018) 1px,
+        transparent 1px,
+        transparent 4px
+    );
 }
 </style>
 </head>
@@ -468,492 +513,617 @@ canvas{
 
 <canvas id="game" width="1400" height="800"></canvas>
 
-<!-- ================= HUD ================= -->
+<div id="hud" class="hidden">
+    <div id="objective">
+        <span>OBJECTIVE</span>
+        <b id="objectiveText">PUT ON YOUR MASK — PRESS M</b>
+    </div>
 
-<div id="hud">
+    <div id="maskHUD">UNMASKED</div>
 
-    <div class="hudTop">
-
-        <div class="hudBox objective">
-            <div class="objectiveSmall">CURRENT OBJECTIVE</div>
-            <div id="objective">PUT ON YOUR MASK — PRESS M</div>
+    <div id="stats">
+        <div class="statBox">
+            <div class="statLabel">HEALTH</div>
+            <div class="statValue" id="healthHUD">100</div>
         </div>
 
-        <div class="hudStats">
+        <div class="statBox">
+            <div class="statLabel">ARMOR</div>
+            <div class="statValue" id="armorHUD">100</div>
+        </div>
 
-            <div class="hudBox hudStat">
-                <div class="hudLabel">HEALTH</div>
-                <div class="hudValue" id="health">100</div>
-            </div>
-
-            <div class="hudBox hudStat">
-                <div class="hudLabel">ARMOR</div>
-                <div class="hudValue" id="armor">100</div>
-            </div>
-
-            <div class="hudBox hudStat">
-                <div class="hudLabel">CASH</div>
-                <div class="hudValue" id="cash">$0</div>
-            </div>
-
-            <div class="hudBox hudStat">
-                <div class="hudLabel">AMMO</div>
-                <div class="hudValue" id="ammo">STOWED</div>
-            </div>
-
+        <div class="statBox">
+            <div class="statLabel">CASH</div>
+            <div class="statValue" id="cashHUD">$0</div>
         </div>
     </div>
 
-    <div id="prompt"></div>
-    <div id="message"></div>
+    <div id="weaponHUD">
+        <div id="weaponNameHUD">ASSAULT RIFLE</div>
+        <div id="ammoHUD">30 / 120</div>
+    </div>
+
     <div id="crosshair"></div>
-    <div id="damage"></div>
-
 </div>
 
-<!-- ================= LOCKPICK ================= -->
+<!-- MAIN MENU -->
 
-<div id="lockpick">
-
-    <div class="qte">
-
-        <div class="qteTitle">LOCKPICK</div>
-
-        <div class="qteText">
-            PRESS <b>SPACE</b> WHEN THE WHITE MARKER IS IN THE GREEN.
-        </div>
-
-        <div class="qteBar">
-            <div class="qteSweet" id="sweet"></div>
-            <div class="qteCursor" id="cursor"></div>
-        </div>
-
-        <div id="lockStatus">SUCCESS: 0 / 4</div>
-
-    </div>
-
-</div>
-
-<!-- ================= DRILL ================= -->
-
-<div id="drill">
-
-    <div class="drillBox">
-
-        <div class="drillTitle">VAULT DRILL</div>
-
-        <p>
-            HOLD <b>E</b> TO DRILL
-        </p>
-
-        <div class="drillBar">
-            <span id="drillFill"></span>
-        </div>
-
-        <p id="drillPercent">0%</p>
-
-    </div>
-
-</div>
-
-<!-- ================= MAIN MENU ================= -->
-
-<div id="mainScreen" class="screen active">
-
-    <div class="menuPanel">
-
+<div id="mainScreen" class="screen">
+    <div class="menuBox">
         <div class="logo">PAYTIME</div>
+        <div class="subtitle">A 2D HEIST EXPERIENCE</div>
 
-        <div class="subtitle">A LOW-POLY HEIST</div>
-
-        <button class="menuButton" id="playBtn">▶ PLAY</button>
-
-        <button class="menuButton" id="loadoutBtn">▣ LOADOUT</button>
-
-        <button class="menuButton" id="settingsBtn">⚙ SETTINGS</button>
-
-        <button class="menuButton" id="exitBtn">↩ EXIT</button>
-
-        <div class="controls">
-            WASD MOVE · SHIFT SPRINT · MOUSE AIM · LMB FIRE · R RELOAD · E INTERACT · M MASK
+        <div class="menuButtons">
+            <button id="playBtn" class="menuButton primary">▶ PLAY</button>
+            <button id="loadoutBtn" class="menuButton">LOADOUT</button>
+            <button id="settingsBtn" class="menuButton">SETTINGS</button>
+            <button id="exitBtn" class="menuButton danger">EXIT</button>
         </div>
 
+        <div class="smallText">
+            ROB THE BANK. GET THE LOOT. GET OUT.
+        </div>
     </div>
-
 </div>
 
-<!-- ================= LOADOUT ================= -->
+<!-- LOADOUT -->
 
-<div id="loadoutScreen" class="screen">
-
-    <div class="menuPanel">
+<div id="loadoutScreen" class="screen hidden">
+    <div class="menuBox">
 
         <div class="panelTitle">LOADOUT</div>
-        <div class="panelSubtitle">PRIMARY WEAPON</div>
 
-        <div class="weaponCard">
-
+        <div class="loadoutCard">
             <div class="weaponName">ASSAULT RIFLE</div>
-            <div class="weaponType">CARBINE · FULL AUTO</div>
+            <div class="weaponType">PRIMARY WEAPON</div>
 
-            <div class="statGrid">
-
-                <div class="stat">
-                    <div class="statTitle">DAMAGE</div>
-                    <div class="statBar"><span style="width:74%"></span></div>
+            <div class="stat">
+                DAMAGE
+                <div class="statBar">
+                    <div class="statFill" style="width:78%"></div>
                 </div>
-
-                <div class="stat">
-                    <div class="statTitle">FIRE RATE</div>
-                    <div class="statBar"><span style="width:84%"></span></div>
-                </div>
-
-                <div class="stat">
-                    <div class="statTitle">ACCURACY</div>
-                    <div class="statBar"><span style="width:67%"></span></div>
-                </div>
-
-                <div class="stat">
-                    <div class="statTitle">NOISE</div>
-                    <div class="statBar"><span id="noiseBar" style="width:38%"></span></div>
-                </div>
-
             </div>
 
+            <div class="stat">
+                FIRE RATE
+                <div class="statBar">
+                    <div class="statFill" style="width:86%"></div>
+                </div>
+            </div>
+
+            <div class="stat">
+                ACCURACY
+                <div class="statBar">
+                    <div class="statFill" style="width:70%"></div>
+                </div>
+            </div>
+
+            <div class="stat">
+                MAGAZINE
+                <div class="statBar">
+                    <div class="statFill" style="width:60%"></div>
+                </div>
+            </div>
+
+            <div class="toggleRow">
+                <b>SUPPRESSOR</b>
+
+                <div class="toggleButtons">
+                    <button id="suppressorOff" class="toggle active">OFF</button>
+                    <button id="suppressorOn" class="toggle">ON</button>
+                </div>
+            </div>
         </div>
 
-        <p style="text-align:left">SUPPRESSOR</p>
-
-        <div class="toggle">
-
-            <button id="supOff">OFF</button>
-            <button id="supOn" class="active">ON</button>
-
-        </div>
-
-        <button class="menuButton" id="loadoutBack">BACK</button>
+        <button id="loadoutBackBtn" class="menuButton">BACK</button>
 
     </div>
-
 </div>
 
-<!-- ================= SETTINGS ================= -->
+<!-- SETTINGS -->
 
-<div id="settingsScreen" class="screen">
-
-    <div class="menuPanel">
+<div id="settingsScreen" class="screen hidden">
+    <div class="menuBox">
 
         <div class="panelTitle">SETTINGS</div>
-        <div class="panelSubtitle">GAME OPTIONS</div>
 
-        <button class="menuButton" id="shakeBtn">
-            SCREEN SHAKE: ON
-        </button>
+        <div class="settingRow">
+            <span>SCREEN SHAKE</span>
+            <div id="shakeToggle" class="checkbox on"></div>
+        </div>
 
-        <button class="menuButton" id="pixelBtn">
-            RETRO FILTER: ON
-        </button>
+        <div class="settingRow">
+            <span>RETRO SCANLINES</span>
+            <div id="retroToggle" class="checkbox on"></div>
+        </div>
 
-        <button class="menuButton" id="settingsBack">
-            BACK
-        </button>
+        <br>
 
+        <button id="settingsBackBtn" class="menuButton">BACK</button>
+
+    </div>
+</div>
+
+<!-- PAUSE -->
+
+<div id="pauseScreen" class="screen hidden">
+    <div class="pauseBox">
+
+        <div class="pauseTitle">PAUSED</div>
+
+        <div class="menuButtons">
+            <button id="resumeBtn" class="menuButton primary">RESUME</button>
+            <button id="restartBtn" class="menuButton">RESTART HEIST</button>
+            <button id="pauseMenuBtn" class="menuButton">MAIN MENU</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- LOCKPICK -->
+
+<div id="lockpickUI" class="hidden">
+
+    <div class="qteTitle">LOCKPICK</div>
+
+    <div class="qteHelp">
+        PRESS SPACE WHEN THE CURSOR IS IN THE GREEN ZONE
+    </div>
+
+    <div class="qteBar">
+        <div id="qteSweet" class="qteSweet"></div>
+        <div id="qteCursor" class="qteCursor"></div>
+    </div>
+
+    <div id="qteSuccess">
+        SUCCESS: 0 / 4
     </div>
 
 </div>
 
-<!-- ================= PAUSE ================= -->
+<!-- DRILL -->
 
-<div id="pauseScreen" class="screen">
+<div id="drillUI" class="hidden">
 
-    <div class="menuPanel">
+    <div class="qteTitle">VAULT DRILL</div>
 
-        <div class="panelTitle">PAUSED</div>
+    <div class="qteHelp">
+        HOLD E TO DRILL THROUGH THE VAULT
+    </div>
 
-        <button class="menuButton" id="resumeBtn">
-            RESUME
-        </button>
+    <div id="drillProgressOuter">
+        <div id="drillProgress"></div>
+    </div>
 
-        <button class="menuButton" id="restartBtn">
-            RESTART HEIST
-        </button>
+    <div id="drillPercent">0%</div>
 
-        <button class="menuButton" id="pauseMenuBtn">
+</div>
+
+<!-- RESULTS -->
+
+<div id="resultScreen" class="screen hidden">
+    <div class="menuBox">
+
+        <div class="panelTitle" id="resultTitle">HEIST COMPLETE</div>
+
+        <div class="resultCash" id="resultCash">$0</div>
+
+        <div class="resultStats" id="resultStats">
+            TIME: 0:00<br>
+            KILLS: 0<br>
+            LOOT: $0
+        </div>
+
+        <button id="resultMenuBtn" class="menuButton primary">
             MAIN MENU
         </button>
 
     </div>
-
 </div>
 
-<!-- ================= RESULTS ================= -->
-
-<div id="resultScreen" class="screen">
-
-    <div class="menuPanel">
-
-        <div class="panelTitle" id="resultTitle">
-            HEIST COMPLETE
-        </div>
-
-        <div class="panelSubtitle" id="resultSub">
-            CLEAN WORK.
-        </div>
-
-        <div class="statGrid">
-
-            <div class="stat">
-                <div class="statTitle">CASH</div>
-                <b id="resultCash">$0</b>
-            </div>
-
-            <div class="stat">
-                <div class="statTitle">LOOT BAGS</div>
-                <b id="resultLoot">0</b>
-            </div>
-
-            <div class="stat">
-                <div class="statTitle">KILLS</div>
-                <b id="resultKills">0</b>
-            </div>
-
-            <div class="stat">
-                <div class="statTitle">TIME</div>
-                <b id="resultTime">0:00</b>
-            </div>
-
-        </div>
-
-        <button class="menuButton" id="resultRestart">
-            PLAY AGAIN
-        </button>
-
-        <button class="menuButton" id="resultMenu">
-            MAIN MENU
-        </button>
-
-    </div>
-
-</div>
+<div id="scanlines"></div>
 
 </div>
 
 <script>
+"use strict";
 
 /* =========================================================
    PAYTIME
-   COMPLETE BROWSER HEIST
-   ========================================================= */
+   COMPLETE SINGLE FILE
+========================================================= */
 
-"use strict";
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-
-const W=1400;
-const H=800;
-
-const keys={};
-
-const mouse={
-    x:700,
-    y:400,
-    down:false
-};
-
-let screen="main";
-let paused=false;
-
-let lastTime=performance.now();
-
-let shake=0;
-let screenShake=true;
-let retro=true;
-let suppressor=true;
-
-let messageTimer=0;
+const W = canvas.width;
+const H = canvas.height;
 
 /* =========================================================
-   HELPERS
-   ========================================================= */
+   UI
+========================================================= */
 
-function clamp(v,min,max){
-    return Math.max(min,Math.min(max,v));
+const screens = {
+    main: document.getElementById("mainScreen"),
+    loadout: document.getElementById("loadoutScreen"),
+    settings: document.getElementById("settingsScreen"),
+    pause: document.getElementById("pauseScreen"),
+    result: document.getElementById("resultScreen")
+};
+
+const hud = document.getElementById("hud");
+const lockpickUI = document.getElementById("lockpickUI");
+const drillUI = document.getElementById("drillUI");
+const scanlines = document.getElementById("scanlines");
+
+const objectiveText = document.getElementById("objectiveText");
+const healthHUD = document.getElementById("healthHUD");
+const armorHUD = document.getElementById("armorHUD");
+const cashHUD = document.getElementById("cashHUD");
+const ammoHUD = document.getElementById("ammoHUD");
+const maskHUD = document.getElementById("maskHUD");
+
+const suppressorOff = document.getElementById("suppressorOff");
+const suppressorOn = document.getElementById("suppressorOn");
+
+const shakeToggle = document.getElementById("shakeToggle");
+const retroToggle = document.getElementById("retroToggle");
+
+const qteSweet = document.getElementById("qteSweet");
+const qteCursor = document.getElementById("qteCursor");
+const qteSuccess = document.getElementById("qteSuccess");
+
+const drillProgress = document.getElementById("drillProgress");
+const drillPercent = document.getElementById("drillPercent");
+
+/* =========================================================
+   MENU SYSTEM
+========================================================= */
+
+function hideAllScreens(){
+    Object.values(screens).forEach(screen=>{
+        screen.classList.add("hidden");
+    });
 }
 
-function distance(a,b){
-    return Math.hypot(a.x-b.x,a.y-b.y);
+function showScreen(name){
+    hideAllScreens();
+
+    if(screens[name]){
+        screens[name].classList.remove("hidden");
+    }
+
+    if(name === "main"){
+        hud.classList.add("hidden");
+        lockpickUI.classList.add("hidden");
+        drillUI.classList.add("hidden");
+    }
 }
 
-function random(min,max){
-    return Math.random()*(max-min)+min;
+function openLoadout(){
+    showScreen("loadout");
 }
 
-function randomChoice(arr){
-    return arr[Math.floor(Math.random()*arr.length)];
+function openSettings(){
+    showScreen("settings");
 }
 
-function rect(x,y,w,h){
-    return {x,y,w,h};
+function startHeist(){
+    resetGame();
+    hideAllScreens();
+    hud.classList.remove("hidden");
+    state.playing = true;
+    state.paused = false;
 }
 
-function pointRect(x,y,r){
-    return x>=r.x &&
-           x<=r.x+r.w &&
-           y>=r.y &&
-           y<=r.y+r.h;
+function pauseGame(){
+    if(!state.playing) return;
+
+    state.paused = true;
+    screens.pause.classList.remove("hidden");
 }
 
-function angleDifference(a,b){
-    return Math.atan2(
-        Math.sin(a-b),
-        Math.cos(a-b)
-    );
+function resumeGame(){
+    screens.pause.classList.add("hidden");
+    state.paused = false;
 }
+
+function restartHeist(){
+    screens.pause.classList.add("hidden");
+    startHeist();
+}
+
+function returnToMenu(){
+    state.playing = false;
+    state.paused = false;
+    lockpickUI.classList.add("hidden");
+    drillUI.classList.add("hidden");
+    showScreen("main");
+}
+
+/* =========================================================
+   BUTTON EVENTS
+   THESE ARE REAL HTML BUTTON EVENTS
+========================================================= */
+
+document.getElementById("playBtn").addEventListener("click", startHeist);
+
+document.getElementById("loadoutBtn").addEventListener("click", openLoadout);
+
+document.getElementById("settingsBtn").addEventListener("click", openSettings);
+
+document.getElementById("exitBtn").addEventListener("click", ()=>{
+    /*
+       Goes from /games/paytime/ back to /games/
+    */
+    window.location.href = "../";
+});
+
+document.getElementById("loadoutBackBtn").addEventListener("click", ()=>{
+    showScreen("main");
+});
+
+document.getElementById("settingsBackBtn").addEventListener("click", ()=>{
+    showScreen("main");
+});
+
+document.getElementById("resumeBtn").addEventListener("click", resumeGame);
+
+document.getElementById("restartBtn").addEventListener("click", restartHeist);
+
+document.getElementById("pauseMenuBtn").addEventListener("click", returnToMenu);
+
+document.getElementById("resultMenuBtn").addEventListener("click", returnToMenu);
+
+/* suppressor */
+
+suppressorOff.addEventListener("click", ()=>{
+    state.suppressor = false;
+    updateLoadoutUI();
+});
+
+suppressorOn.addEventListener("click", ()=>{
+    state.suppressor = true;
+    updateLoadoutUI();
+});
+
+function updateLoadoutUI(){
+
+    suppressorOff.classList.toggle("active", !state.suppressor);
+    suppressorOn.classList.toggle("active", state.suppressor);
+
+}
+
+/* settings */
+
+shakeToggle.addEventListener("click", ()=>{
+    state.screenShake = !state.screenShake;
+    shakeToggle.classList.toggle("on",state.screenShake);
+});
+
+retroToggle.addEventListener("click", ()=>{
+    state.retro = !state.retro;
+    retroToggle.classList.toggle("on",state.retro);
+    scanlines.style.display = state.retro ? "block" : "none";
+});
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+const state = {
+
+    playing:false,
+    paused:false,
+
+    stage:0,
+
+    masked:false,
+    crimeCommitted:false,
+
+    suppressor:false,
+
+    screenShake:true,
+    retro:true,
+
+    alarm:false,
+
+    cash:0,
+    loot:0,
+    kills:0,
+
+    startTime:0,
+
+    ammo:30,
+    reserve:120,
+    maxAmmo:30,
+
+    reloadTimer:0,
+
+    lockpick:false,
+    lockSuccess:0,
+    lockCursor:0,
+    lockDirection:1,
+
+    drilling:false,
+    drillAmount:0,
+
+    escaped:false,
+
+    keycard:false,
+
+    camerasDisabled:false
+};
 
 /* =========================================================
    PLAYER
 ========================================================= */
 
-const player={
+const player = {
 
-    x:350,
-    y:610,
+    x:190,
+    y:570,
 
-    radius:15,
+    radius:17,
 
     speed:2.7,
-    sprintSpeed:4.45,
-
-    stamina:100,
+    sprint:4.4,
 
     health:100,
     armor:100,
 
-    masked:false,
-    maskAnimation:0,
+    angle:0,
 
-    cash:0,
+    fireCooldown:0,
 
-    lootBags:0,
+    stamina:100
+};
 
-    weapon:{
-        ammo:30,
-        reserve:120,
-        cooldown:0,
-        reloading:false
+/* =========================================================
+   INPUT
+========================================================= */
+
+const keys = {};
+const mouse = {
+    x:700,
+    y:400,
+    down:false
+};
+
+window.addEventListener("keydown",e=>{
+
+    keys[e.code] = true;
+
+    if(e.code === "Escape"){
+
+        if(state.playing){
+
+            if(state.paused){
+                resumeGame();
+            }else if(
+                !state.lockpick &&
+                !state.drilling
+            ){
+                pauseGame();
+            }
+
+        }
+
+        e.preventDefault();
     }
 
-};
+    if(
+        e.code === "KeyM" &&
+        state.playing &&
+        !state.masked &&
+        state.stage === 0
+    ){
+        putMaskOn();
+    }
+
+    if(
+        e.code === "Space" &&
+        state.lockpick
+    ){
+        lockpickHit();
+        e.preventDefault();
+    }
+
+    if(
+        e.code === "KeyE" &&
+        state.playing &&
+        !state.lockpick
+    ){
+        keys.KeyE = true;
+    }
+
+});
+
+window.addEventListener("keyup",e=>{
+    keys[e.code] = false;
+});
+
+canvas.addEventListener("mousemove",e=>{
+
+    const rect = canvas.getBoundingClientRect();
+
+    mouse.x =
+        (e.clientX - rect.left) *
+        W / rect.width;
+
+    mouse.y =
+        (e.clientY - rect.top) *
+        H / rect.height;
+
+});
+
+canvas.addEventListener("mousedown",e=>{
+    if(e.button===0){
+        mouse.down=true;
+    }
+});
+
+window.addEventListener("mouseup",e=>{
+    if(e.button===0){
+        mouse.down=false;
+    }
+});
 
 /* =========================================================
-   HEIST STATE
+   MAP
 ========================================================= */
 
-const state={
+const walls = [
 
-    stage:0,
+    /* outside border */
 
-    alarm:false,
+    {x:40,y:40,w:1320,h:18},
+    {x:40,y:40,w:18,h:720},
+    {x:1342,y:40,w:18,h:720},
+    {x:40,y:742,w:520,h:18},
+    {x:840,y:742,w:520,h:18},
 
-    alarmCooldown:0,
+    /* bank bottom walls - PARK EXIT GAP */
 
-    keycard:false,
+    {x:90,y:660,w:460,h:18},
+    {x:760,y:660,w:580,h:18},
 
-    camerasDisabled:false,
+    /* lobby */
 
-    vaultUnlocked:false,
+    {x:90,y:110,w:500,h:18},
+    {x:90,y:110,w:18,h:220},
+    {x:90,y:330,w:180,h:18},
 
-    drillComplete:false,
+    /* offices */
 
-    lootCollected:0,
+    {x:620,y:100,w:18,h:230},
+    {x:620,y:330,w:150,h:18},
 
-    kills:0,
+    /* security */
 
-    startTime:0,
+    {x:770,y:100,w:18,h:150},
+    {x:770,y:250,w:200,h:18},
+    {x:970,y:100,w:18,h:168},
 
-    endTime:0,
+    /* vault corridor */
 
-    finished:false
+    {x:970,y:300,w:18,h:190},
+    {x:970,y:490,w:220,h:18},
 
-};
+    /* vault */
 
-/* =========================================================
-   OBJECTIVES
-========================================================= */
+    {x:1190,y:490,w:18,h:130},
+    {x:1030,y:620,w:178,h:18},
+    {x:1030,y:490,w:18,h:90},
 
-const objectives=[
+    /* offices lower */
 
-    "PUT ON YOUR MASK — PRESS M",
+    {x:350,y:400,w:18,h:170},
+    {x:350,y:570,w:250,h:18},
 
-    "FIND THE KEYCARD",
+    /* decorative inner wall */
 
-    "REACH THE SECURITY ROOM",
-
-    "DISABLE THE SECURITY CAMERAS",
-
-    "REACH THE VAULT",
-
-    "LOCKPICK THE VAULT",
-
-    "DRILL THE VAULT",
-
-    "GRAB THE LOOT",
-
-    "ESCAPE THROUGH THE PARK",
-
-    "REACH THE GETAWAY VAN",
-
-    "PRESS E TO ESCAPE"
-
-];
-
-/* =========================================================
-   WORLD
-========================================================= */
-
-const bank=rect(90,90,1220,595);
-
-const park=rect(90,700,1220,80);
-
-const getawayVan=rect(1165,718,110,42);
-
-/*
-    IMPORTANT:
-    The outer bottom wall is split.
-    The middle gap is the REAL park exit.
-*/
-
-const walls=[
-
-    /* outer */
-    rect(90,90,1220,18),
-    rect(90,90,18,595),
-    rect(1292,90,18,595),
-
-    /* bottom — PARK OPENING */
-    rect(90,685,520,18),
-    rect(760,685,550,18),
-
-    /* employee wing */
-    rect(500,110,18,190),
-    rect(500,370,18,315),
-
-    /* security room */
-    rect(720,110,18,125),
-    rect(720,325,18,360),
-
-    rect(738,110,260,18),
-    rect(998,110,18,125),
-    rect(998,325,18,360),
-
-    /* vault wing */
-    rect(1060,110,18,170),
-    rect(1060,390,18,295),
-
-    rect(1078,110,212,18),
-    rect(1272,110,18,575),
-    rect(1078,485,212,18)
+    {x:600,y:430,w:150,h:18}
 
 ];
 
@@ -961,274 +1131,326 @@ const walls=[
    DOORS
 ========================================================= */
 
-const doors=[
+const doors = [
 
     {
-        id:"employee",
-        x:500,
-        y:300,
-        w:18,
-        h:70,
-        type:"lockpick",
-        open:false
+        x:600,
+        y:330,
+        w:55,
+        h:18,
+        locked:true,
+        open:false,
+        type:"lockpick"
     },
 
     {
-        id:"security",
-        x:720,
-        y:235,
-        w:18,
-        h:90,
-        type:"keycard",
-        open:false
+        x:965,
+        y:250,
+        w:55,
+        h:18,
+        locked:true,
+        open:false,
+        type:"keycard"
     },
 
     {
-        id:"vault",
-        x:1060,
-        y:280,
+        x:970,
+        y:490,
         w:18,
-        h:110,
-        type:"lockpick",
-        open:false
+        h:55,
+        locked:true,
+        open:false,
+        type:"lockpick"
     }
 
 ];
 
 /* =========================================================
-   PROPS
+   CAMERA
 ========================================================= */
 
-const props=[
+const cameras = [
 
-    {x:145,y:135,w:260,h:65,type:"counter"},
-    {x:145,y:265,w:130,h:65,type:"desk"},
-    {x:310,y:265,w:130,h:65,type:"desk"},
-
-    {x:145,y:395,w:130,h:65,type:"desk"},
-    {x:310,y:395,w:130,h:65,type:"desk"},
-
-    {x:145,y:535,w:280,h:55,type:"couch"},
-
-    {x:550,y:145,w:125,h:65,type:"desk"},
-    {x:550,y:450,w:125,h:65,type:"desk"},
-
-    {x:770,y:145,w:190,h:60,type:"terminal"},
-    {x:770,y:370,w:180,h:55,type:"desk"},
-
-    {x:1090,y:150,w:160,h:55,type:"vaultEquipment"},
-    {x:1100,y:525,w:140,h:70,type:"crate"},
-    {x:1180,y:220,w:55,h:38,type:"locker"},
-
-    {x:790,y:530,w:110,h:50,type:"crate"}
+    {x:690,y:160,angle:0.8,disabled:false},
+    {x:880,y:180,angle:2.1,disabled:false},
+    {x:1100,y:420,angle:3.0,disabled:false}
 
 ];
+
+/* =========================================================
+   KEYCARD
+========================================================= */
+
+const keycardItem = {
+    x:0,
+    y:0,
+    active:false
+};
+
+/* =========================================================
+   LOOT
+========================================================= */
+
+const lootBags = [
+
+    {
+        x:1110,
+        y:550,
+        taken:false,
+        value:35000
+    },
+
+    {
+        x:1160,
+        y:550,
+        taken:false,
+        value:45000
+    }
+
+];
+
+/* =========================================================
+   VAN
+========================================================= */
+
+const van = {
+    x:700,
+    y:720,
+    w:145,
+    h:48
+};
+
+/* =========================================================
+   PARK
+========================================================= */
+
+const park = {
+    x:58,
+    y:678,
+    w:1284,
+    h:64
+};
 
 /* =========================================================
    GUARDS
 ========================================================= */
 
-const guards=[];
+let guards = [];
 
-function createGuard(x,y,kind){
+function createGuards(){
 
-    return{
+    guards = [
 
-        x,
-        y,
+        {
+            x:430,
+            y:190,
+            homeX:430,
+            homeY:190,
+            angle:0,
+            speed:1.1,
+            health:100,
+            state:"patrol",
+            kind:"employee",
+            alive:true,
+            patrolOffset:0
+        },
 
-        radius:14,
+        {
+            x:540,
+            y:510,
+            homeX:540,
+            homeY:510,
+            angle:Math.PI,
+            speed:1.15,
+            health:100,
+            state:"patrol",
+            kind:"employee",
+            alive:true,
+            patrolOffset:2
+        },
 
-        homeX:x,
-        homeY:y,
+        {
+            x:830,
+            y:170,
+            homeX:830,
+            homeY:170,
+            angle:0,
+            speed:1.2,
+            health:100,
+            state:"patrol",
+            kind:"security",
+            alive:true,
+            patrolOffset:4
+        },
 
-        kind,
+        {
+            x:1060,
+            y:380,
+            homeX:1060,
+            homeY:380,
+            angle:Math.PI,
+            speed:1.25,
+            health:100,
+            state:"patrol",
+            kind:"security",
+            alive:true,
+            patrolOffset:6
+        },
 
-        angle:random(-Math.PI,Math.PI),
-
-        speed:1.05,
-
-        state:"patrol",
-
-        health:100,
-
-        shootCooldown:random(.3,1),
-
-        lastSeen:0,
-
-        suspicion:0
-
-    };
-
-}
-
-function resetGuards(){
-
-    guards.length=0;
-
-    const positions=[
-
-        [370,210,"lobby"],
-        [430,520,"lobby"],
-        [620,230,"employee"],
-        [850,275,"security"],
-        [930,550,"security"],
-        [1160,190,"vault"],
-        [1230,570,"vault"],
-        [680,600,"lobby"]
+        {
+            x:1180,
+            y:390,
+            homeX:1180,
+            homeY:390,
+            angle:Math.PI,
+            speed:1.2,
+            health:100,
+            state:"patrol",
+            kind:"security",
+            alive:true,
+            patrolOffset:8
+        }
 
     ];
 
-    positions.forEach(p=>{
-        guards.push(
-            createGuard(
-                p[0],
-                p[1],
-                p[2]
-            )
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+let particles = [];
+
+function particle(x,y,vx,vy,life,size){
+
+    particles.push({
+        x,y,vx,vy,
+        life,
+        maxLife:life,
+        size
+    });
+
+}
+
+function burst(x,y,count=8){
+
+    for(let i=0;i<count;i++){
+
+        const a=Math.random()*Math.PI*2;
+        const s=Math.random()*3+1;
+
+        particle(
+            x,
+            y,
+            Math.cos(a)*s,
+            Math.sin(a)*s,
+            25+Math.random()*20,
+            2+Math.random()*3
         );
-    });
+
+    }
 
 }
 
 /* =========================================================
-   CAMERAS
+   BULLETS
 ========================================================= */
 
-const cameras=[];
+let bullets = [];
 
-function resetCameras(){
+function shoot(){
 
-    cameras.length=0;
+    if(!state.playing || state.paused) return;
+    if(!state.masked) return;
+    if(state.lockpick || state.drilling) return;
+    if(state.stage===0) return;
 
-    const data=[
+    if(state.ammo<=0){
 
-        [660,120,Math.PI/2],
-        [890,120,Math.PI/2],
-        [1110,120,Math.PI/2],
-        [1280,330,Math.PI],
-        [735,550,-Math.PI/2]
+        reload();
+        return;
 
-    ];
+    }
 
-    data.forEach(d=>{
+    if(player.fireCooldown>0) return;
 
-        cameras.push({
+    player.fireCooldown = 7;
 
-            x:d[0],
-            y:d[1],
+    state.ammo--;
 
-            angle:d[2],
+    const dx=mouse.x-player.x;
+    const dy=mouse.y-player.y;
 
-            range:270,
+    const len=Math.hypot(dx,dy)||1;
 
-            fov:.65,
+    const speed=12;
 
-            disabled:false,
+    bullets.push({
 
-            timer:random(0,10)
+        x:player.x,
+        y:player.y,
 
-        });
+        vx:dx/len*speed,
+        vy:dy/len*speed,
+
+        life:90,
+
+        damage:34
 
     });
 
+    burst(
+        player.x+dx/len*25,
+        player.y+dy/len*25,
+        5
+    );
+
+    if(!state.suppressor){
+        state.crimeCommitted=true;
+    }
+
 }
 
-/* =========================================================
-   BULLETS / PARTICLES
-========================================================= */
+function reload(){
 
-const bullets=[];
-const particles=[];
+    if(state.ammo>=state.maxAmmo) return;
+    if(state.reserve<=0) return;
+    if(state.reloadTimer>0) return;
+
+    state.reloadTimer=75;
+
+}
 
 /* =========================================================
    COLLISION
 ========================================================= */
 
-function circleHitsRect(x,y,radius,r){
+function circleRectCollision(cx,cy,r,rect){
 
-    const nearestX=clamp(x,r.x,r.x+r.w);
-    const nearestY=clamp(y,r.y,r.y+r.h);
+    const closestX=Math.max(rect.x,Math.min(cx,rect.x+rect.w));
+    const closestY=Math.max(rect.y,Math.min(cy,rect.y+rect.h));
 
-    return Math.hypot(
-        x-nearestX,
-        y-nearestY
-    )<radius;
+    const dx=cx-closestX;
+    const dy=cy-closestY;
+
+    return dx*dx+dy*dy<r*r;
 
 }
 
-function solidWalls(){
+function blocked(x,y,r=player.radius){
 
-    const result=walls.slice();
+    for(const wall of walls){
 
-    doors.forEach(d=>{
-
-        if(!d.open){
-            result.push(d);
+        if(circleRectCollision(x,y,r,wall)){
+            return true;
         }
 
-    });
-
-    return result;
-
-}
-
-function isBlocked(x,y,radius){
-
-    return solidWalls().some(w=>
-        circleHitsRect(
-            x,
-            y,
-            radius,
-            w
-        )
-    );
-
-}
-
-function movePlayer(dx,dy){
-
-    const oldX=player.x;
-    const oldY=player.y;
-
-    player.x+=dx;
-
-    if(isBlocked(player.x,player.y,player.radius)){
-        player.x=oldX;
     }
 
-    player.y+=dy;
+    for(const door of doors){
 
-    if(isBlocked(player.x,player.y,player.radius)){
-        player.y=oldY;
-    }
-
-    player.x=clamp(player.x,112,1280);
-    player.y=clamp(player.y,115,770);
-
-}
-
-/* =========================================================
-   LINE OF SIGHT
-========================================================= */
-
-function segmentHitsRect(x1,y1,x2,y2,r){
-
-    const length=Math.hypot(
-        x2-x1,
-        y2-y1
-    );
-
-    const steps=Math.ceil(length/7);
-
-    for(let i=1;i<steps;i++){
-
-        const t=i/steps;
-
-        const x=x1+(x2-x1)*t;
-        const y=y1+(y2-y1)*t;
-
-        if(pointRect(x,y,r)){
+        if(!door.open &&
+           circleRectCollision(x,y,r,door)){
             return true;
         }
 
@@ -1238,45 +1460,112 @@ function segmentHitsRect(x1,y1,x2,y2,r){
 
 }
 
-function lineBlocked(a,b){
+function movePlayer(dx,dy){
 
-    return solidWalls().some(w=>
-        segmentHitsRect(
-            a.x,
-            a.y,
-            b.x,
-            b.y,
-            w
-        )
-    );
+    let nx=player.x+dx;
+
+    if(!blocked(nx,player.y)){
+        player.x=nx;
+    }
+
+    let ny=player.y+dy;
+
+    if(!blocked(player.x,ny)){
+        player.y=ny;
+    }
 
 }
 
-function canSee(observer,target,range,fov){
+/* =========================================================
+   LINE OF SIGHT
+========================================================= */
 
-    const dx=target.x-observer.x;
-    const dy=target.y-observer.y;
+function lineIntersectsRect(x1,y1,x2,y2,r){
 
-    const d=Math.hypot(dx,dy);
+    const steps=Math.ceil(
+        Math.hypot(x2-x1,y2-y1)/8
+    );
 
-    if(d>range){
+    for(let i=0;i<=steps;i++){
+
+        const t=i/steps;
+
+        const x=x1+(x2-x1)*t;
+        const y=y1+(y2-y1)*t;
+
+        if(
+            x>=r.x &&
+            x<=r.x+r.w &&
+            y>=r.y &&
+            y<=r.y+r.h
+        ){
+            return true;
+        }
+
+    }
+
+    return false;
+
+}
+
+function lineBlocked(x1,y1,x2,y2){
+
+    for(const wall of walls){
+
+        if(lineIntersectsRect(
+            x1,y1,x2,y2,wall
+        )){
+            return true;
+        }
+
+    }
+
+    for(const door of doors){
+
+        if(!door.open){
+
+            if(lineIntersectsRect(
+                x1,y1,x2,y2,door
+            )){
+                return true;
+            }
+
+        }
+
+    }
+
+    return false;
+
+}
+
+function canSee(g){
+
+    const dx=player.x-g.x;
+    const dy=player.y-g.y;
+
+    const dist=Math.hypot(dx,dy);
+
+    if(dist>330) return false;
+
+    const angle=Math.atan2(dy,dx);
+
+    let diff=Math.atan2(
+        Math.sin(angle-g.angle),
+        Math.cos(angle-g.angle)
+    );
+
+    if(Math.abs(diff)>1.05){
         return false;
     }
 
-    const targetAngle=Math.atan2(dy,dx);
-
-    if(
-        Math.abs(
-            angleDifference(
-                targetAngle,
-                observer.angle
-            )
-        )>fov
-    ){
+    if(lineBlocked(
+        g.x,g.y,
+        player.x,player.y
+    )){
         return false;
     }
 
-    return !lineBlocked(observer,target);
+    return true;
 
 }
 
@@ -1284,25 +1573,35 @@ function canSee(observer,target,range,fov){
    ZONES
 ========================================================= */
 
-function getZone(x,y){
+function getZone(){
 
-    if(y>=700){
+    /* park is always safe */
+
+    if(player.y>675){
         return "safe";
     }
 
+    /* lobby before masking */
+
     if(
-        x<500 &&
-        y>110 &&
-        y<680
+        !state.masked &&
+        player.x<600 &&
+        player.y<330
     ){
-        return state.stage===0
-            ?"safe"
-            :"illegal";
+        return "safe";
     }
 
-    if(x>=500&&x<720){
+    /* employee areas */
+
+    if(
+        !state.masked &&
+        player.x>360 &&
+        player.x<720
+    ){
         return "escort";
     }
+
+    /* everything else */
 
     return "illegal";
 
@@ -1314,24 +1613,16 @@ function getZone(x,y){
 
 function putMaskOn(){
 
-    if(player.masked){
-        return;
-    }
+    if(state.masked) return;
 
-    if(state.stage!==0){
-        return;
-    }
-
-    player.masked=true;
-    player.maskAnimation=1;
-
+    state.masked=true;
+    state.crimeCommitted=true;
     state.stage=1;
 
-    showMessage(
-        "MASK ON — TIME TO WORK"
-    );
+    maskHUD.textContent="MASK ON";
+    maskHUD.style.color="#e8eee9";
 
-    updateObjective();
+    objectiveText.textContent="FIND THE KEYCARD";
 
 }
 
@@ -1339,312 +1630,202 @@ function putMaskOn(){
    INTERACTIONS
 ========================================================= */
 
-function getKeycardGuard(){
+function distance(a,b){
 
-    if(state.keycard){
-        return null;
-    }
-
-    return guards.find(
-        g=>g.kind==="employee"
-    )||guards[2];
+    return Math.hypot(
+        a.x-b.x,
+        a.y-b.y
+    );
 
 }
 
 function interaction(){
 
-    /* KEYCARD */
+    if(!state.playing) return;
+    if(state.paused) return;
+    if(state.lockpick) return;
+    if(state.drilling) return;
+
+    /* keycard */
 
     if(
         state.stage===1 &&
         !state.keycard
     ){
 
-        const g=getKeycardGuard();
-
-        if(g&&distance(player,g)<52){
-
-            return{
-                type:"keycard",
-                text:"E  TAKE KEYCARD"
-            };
-
-        }
-
-    }
-
-    /* DOORS */
-
-    for(const d of doors){
-
-        const center={
-            x:d.x+d.w/2,
-            y:d.y+d.h/2
-        };
+        const guard=getKeycardGuard();
 
         if(
-            distance(player,center)<68 &&
-            !d.open
+            guard &&
+            !guard.alive &&
+            distance(player,guard)<65
         ){
 
-            if(d.type==="keycard"){
+            state.keycard=true;
+            state.stage=2;
 
-                if(state.keycard){
+            objectiveText.textContent=
+                "REACH THE SECURITY ROOM";
 
-                    return{
-                        type:"securityDoor",
-                        door:d,
-                        text:"E  OPEN SECURITY DOOR"
-                    };
-
-                }
-
-                return{
-                    type:"none",
-                    text:"SECURITY DOOR — KEYCARD REQUIRED"
-                };
-
-            }
-
-            return{
-                type:"lockpick",
-                door:d,
-                text:"E  LOCKPICK DOOR"
-            };
+            burst(guard.x,guard.y,15);
 
         }
 
     }
 
-    /* SECURITY TERMINAL */
+    /* security door */
 
     if(
-        state.stage===3 &&
-        pointRect(
-            player.x,
-            player.y,
-            rect(760,140,205,85)
-        )
+        state.stage===2 &&
+        state.keycard
     ){
 
-        return{
-            type:"terminal",
-            text:"E  DISABLE CAMERAS"
-        };
+        const door=doors[1];
+
+        if(
+            distance(
+                player,
+                {x:door.x,y:door.y}
+            )<75
+        ){
+
+            door.open=true;
+            state.stage=3;
+
+            objectiveText.textContent=
+                "DISABLE THE SECURITY CAMERAS";
+
+        }
 
     }
 
-    /* DRILL */
+    /* security terminal */
 
-    if(
-        state.stage===6 &&
-        pointRect(
-            player.x,
-            player.y,
-            rect(1080,140,190,100)
-        )
-    ){
+    if(state.stage===3){
 
-        return{
-            type:"drill",
-            text:"E  START VAULT DRILL"
+        const terminal={
+            x:850,
+            y:200
         };
+
+        if(distance(player,terminal)<65){
+
+            state.camerasDisabled=true;
+
+            cameras.forEach(c=>{
+                c.disabled=true;
+            });
+
+            state.stage=4;
+
+            objectiveText.textContent=
+                "REACH THE VAULT";
+
+        }
 
     }
 
-    /* LOOT */
+    /* vault lockpick */
+
+    if(state.stage===4){
+
+        const vaultDoor=doors[2];
+
+        if(
+            distance(
+                player,
+                {x:vaultDoor.x,y:vaultDoor.y}
+            )<75
+        ){
+
+            beginLockpick();
+
+        }
+
+    }
+
+    /* loot */
 
     if(state.stage===7){
 
-        const lootPoint={
-            x:1170,
-            y:300
-        };
+        for(const bag of lootBags){
 
-        if(
-            distance(player,lootPoint)<75
-        ){
+            if(
+                !bag.taken &&
+                distance(player,bag)<55
+            ){
 
-            return{
-                type:"loot",
-                text:"E  TAKE LOOT"
-            };
+                bag.taken=true;
+
+                state.loot+=bag.value;
+                state.cash+=bag.value;
+
+                burst(
+                    bag.x,
+                    bag.y,
+                    20
+                );
+
+            }
 
         }
 
-    }
-
-    /* VAN */
-
-    if(
-        state.stage>=9 &&
-        distance(
-            player,
-            {
-                x:1215,
-                y:740
-            }
-        )<115
-    ){
-
-        return{
-            type:"van",
-            text:"E  ENTER GETAWAY VAN"
-        };
-
-    }
-
-    return null;
-
-}
-
-/* =========================================================
-   INTERACT
-========================================================= */
-
-function interact(){
-
-    if(screen!=="game"){
-        return;
-    }
-
-    if(lockpick.active){
-        return;
-    }
-
-    if(drill.active){
-        return;
-    }
-
-    const action=interaction();
-
-    if(!action){
-        return;
-    }
-
-    /* KEYCARD */
-
-    if(action.type==="keycard"){
-
-        state.keycard=true;
-        state.stage=2;
-
-        showMessage(
-            "KEYCARD ACQUIRED"
-        );
-
-        updateObjective();
-
-        return;
-
-    }
-
-    /* SECURITY */
-
-    if(action.type==="securityDoor"){
-
-        action.door.open=true;
-
-        state.stage=3;
-
-        showMessage(
-            "SECURITY ROOM ACCESSED"
-        );
-
-        updateObjective();
-
-        return;
-
-    }
-
-    /* LOCKPICK */
-
-    if(action.type==="lockpick"){
-
-        beginLockpick(action.door);
-
-        return;
-
-    }
-
-    /* TERMINAL */
-
-    if(action.type==="terminal"){
-
-        state.camerasDisabled=true;
-
-        state.stage=4;
-
-        cameras.forEach(
-            c=>c.disabled=true
-        );
-
-        showMessage(
-            "CAMERAS DISABLED"
-        );
-
-        updateObjective();
-
-        return;
-
-    }
-
-    /* DRILL */
-
-    if(action.type==="drill"){
-
-        drill.active=true;
-        drill.progress=0;
-
-        document
-            .getElementById("drill")
-            .classList.add("active");
-
-        showMessage(
-            "DRILL RUNNING"
-        );
-
-        return;
-
-    }
-
-    /* LOOT */
-
-    if(action.type==="loot"){
-
-        player.lootBags++;
-
-        state.lootCollected++;
-
-        showMessage(
-            "LOOT BAG SECURED"
-        );
-
         if(
-            state.lootCollected>=2
+            lootBags.every(b=>b.taken)
         ){
 
             state.stage=8;
 
-            showMessage(
-                "LOOT SECURED — GET OUT"
-            );
+            objectiveText.textContent=
+                "ESCAPE THROUGH THE PARK";
 
         }
 
-        updateObjective();
+    }
 
-        return;
+    /* van */
+
+    if(state.stage===9){
+
+        if(
+            player.x>van.x-100 &&
+            player.x<van.x+van.w+100 &&
+            player.y>van.y-70
+        ){
+
+            state.stage=10;
+
+            objectiveText.textContent=
+                "PRESS E TO ESCAPE";
+
+        }
 
     }
 
-    /* VAN */
+    /* escape */
 
-    if(action.type==="van"){
+    if(state.stage===10){
 
-        finishHeist(true);
+        if(
+            keys.KeyE &&
+            player.x>van.x-120 &&
+            player.x<van.x+van.w+120 &&
+            player.y>van.y-80
+        ){
+
+            completeHeist();
+
+        }
 
     }
+
+}
+
+function getKeycardGuard(){
+
+    return guards.find(
+        g=>g.kind==="security" || g.kind==="employee"
+    );
 
 }
 
@@ -1652,172 +1833,82 @@ function interact(){
    LOCKPICK
 ========================================================= */
 
-const lockpick={
+function beginLockpick(){
 
-    active:false,
+    state.lockpick=true;
+    state.lockSuccess=0;
+    state.lockCursor=0;
+    state.lockDirection=1;
 
-    cursor:0,
+    lockpickUI.classList.remove("hidden");
 
-    direction:1,
-
-    speed:.72,
-
-    sweet:.28,
-
-    width:.34,
-
-    successes:0,
-
-    misses:0,
-
-    door:null
-
-};
-
-function beginLockpick(door){
-
-    lockpick.active=true;
-
-    lockpick.cursor=0;
-
-    lockpick.direction=1;
-
-    lockpick.speed=.72;
-
-    lockpick.sweet=random(
-        .08,
-        .58
-    );
-
-    lockpick.width=.34;
-
-    lockpick.successes=0;
-
-    lockpick.misses=0;
-
-    lockpick.door=door;
-
-    document
-        .getElementById("lockpick")
-        .classList.add("active");
-
-    updateLockUI();
+    updateLockpickUI();
 
 }
 
-function lockpickPress(){
+function updateLockpickUI(){
 
-    if(!lockpick.active){
-        return;
-    }
+    qteCursor.style.left=
+        state.lockCursor+"%";
 
-    const center=
-        lockpick.sweet+
-        lockpick.width/2;
+    qteSweet.style.left="68%";
+    qteSweet.style.width="15%";
 
-    const success=
-        Math.abs(
-            lockpick.cursor-center
-        )<=lockpick.width/2;
+    qteSuccess.textContent=
+        "SUCCESS: "+
+        state.lockSuccess+
+        " / 4";
 
-    if(success){
+}
 
-        lockpick.successes++;
+function lockpickHit(){
 
-        spawnBurst(
+    if(!state.lockpick) return;
+
+    if(
+        state.lockCursor>=68 &&
+        state.lockCursor<=83
+    ){
+
+        state.lockSuccess++;
+
+        burst(
             player.x,
             player.y,
-            10,
-            "#e6bd6b"
+            5
         );
 
-        showMessage("CLICK");
+        if(state.lockSuccess>=4){
 
-        if(
-            lockpick.successes>=4
-        ){
-
-            lockpick.active=false;
-
-            document
-                .getElementById("lockpick")
-                .classList.remove("active");
-
-            lockpick.door.open=true;
-
-            if(
-                lockpick.door.id==="vault"
-            ){
-
-                state.vaultUnlocked=true;
-                state.stage=6;
-
-                showMessage(
-                    "VAULT UNLOCKED"
-                );
-
-                updateObjective();
-
-            }else{
-
-                showMessage(
-                    "DOOR UNLOCKED"
-                );
-
-            }
-
-        }else{
-
-            lockpick.sweet=random(
-                .08,
-                .58
-            );
-
-            updateLockUI();
+            finishLockpick();
 
         }
 
     }else{
 
-        lockpick.misses++;
-
-        showMessage("MISS");
-
-        if(lockpick.misses>=5){
-
-            triggerAlarm(
-                "LOCKPICK DETECTED"
-            );
-
-            lockpick.misses=0;
-
-        }
+        state.lockSuccess=Math.max(
+            0,
+            state.lockSuccess-1
+        );
 
     }
 
+    updateLockpickUI();
+
 }
 
-function updateLockUI(){
+function finishLockpick(){
 
-    document
-        .getElementById("cursor")
-        .style.left=
-            `calc(${lockpick.cursor*100}% - 2px)`;
+    state.lockpick=false;
 
-    document
-        .getElementById("sweet")
-        .style.left=
-            (lockpick.sweet*100)+"%";
+    lockpickUI.classList.add("hidden");
 
-    document
-        .getElementById("sweet")
-        .style.width=
-            (lockpick.width*100)+"%";
+    doors[2].open=true;
 
-    document
-        .getElementById("lockStatus")
-        .textContent=
-            `SUCCESS: ${lockpick.successes} / 4`;
+    state.stage=5;
+
+    objectiveText.textContent=
+        "DRILL THE VAULT";
 
 }
 
@@ -1825,766 +1916,482 @@ function updateLockUI(){
    DRILL
 ========================================================= */
 
-const drill={
-    active:false,
-    progress:0
-};
+function beginDrill(){
 
-function updateDrill(dt){
+    state.drilling=true;
+    state.drillAmount=0;
 
-    if(!drill.active){
-        return;
-    }
-
-    if(!keys.e){
-
-        drill.active=false;
-
-        document
-            .getElementById("drill")
-            .classList.remove("active");
-
-        showMessage(
-            "DRILL PAUSED — HOLD E"
-        );
-
-        return;
-
-    }
-
-    drill.progress+=dt*.11;
-
-    document
-        .getElementById("drillFill")
-        .style.width=
-            `${clamp(drill.progress,0,1)*100}%`;
-
-    document
-        .getElementById("drillPercent")
-        .textContent=
-            `${Math.floor(
-                clamp(drill.progress,0,1)*100
-            )}%`;
-
-    if(
-        Math.random()<dt*10
-    ){
-
-        spawnBurst(
-            random(1100,1250),
-            random(155,235),
-            2,
-            "#d4aa62"
-        );
-
-    }
-
-    if(drill.progress>=1){
-
-        drill.active=false;
-
-        document
-            .getElementById("drill")
-            .classList.remove("active");
-
-        state.drillComplete=true;
-        state.stage=7;
-
-        showMessage(
-            "VAULT OPEN — GRAB THE LOOT"
-        );
-
-        updateObjective();
-
-    }
+    drillUI.classList.remove("hidden");
 
 }
 
-/* =========================================================
-   ALARM
-========================================================= */
+function updateDrill(){
 
-function triggerAlarm(reason){
+    if(!state.drilling) return;
 
-    if(!state.alarm){
+    if(keys.KeyE){
+
+        state.drillAmount+=0.32;
+
+        burst(
+            1060+Math.random()*30,
+            510+Math.random()*30,
+            1
+        );
+
+    }else{
+
+        state.drillAmount-=0.12;
+
+    }
+
+    state.drillAmount=
+        Math.max(
+            0,
+            Math.min(
+                100,
+                state.drillAmount
+            )
+        );
+
+    drillProgress.style.width=
+        state.drillAmount+"%";
+
+    drillPercent.textContent=
+        Math.floor(state.drillAmount)+"%";
+
+    if(state.drillAmount>=100){
+
+        state.drilling=false;
+
+        drillUI.classList.add("hidden");
+
+        state.stage=7;
+
+        objectiveText.textContent=
+            "GRAB THE LOOT";
 
         state.alarm=true;
 
-        showMessage(
-            "🚨 ALARM — "+reason
-        );
-
-        guards.forEach(
-            g=>{
-                g.state="combat";
-                g.suspicion=1;
-            }
-        );
-
     }
 
 }
 
 /* =========================================================
-   PLAYER
+   PLAYER UPDATE
 ========================================================= */
 
-function updatePlayer(dt){
+function updatePlayer(){
+
+    if(!state.playing || state.paused) return;
+
+    if(player.fireCooldown>0){
+        player.fireCooldown--;
+    }
+
+    if(state.reloadTimer>0){
+
+        state.reloadTimer--;
+
+        if(state.reloadTimer===0){
+
+            const needed=
+                state.maxAmmo-state.ammo;
+
+            const amount=
+                Math.min(
+                    needed,
+                    state.reserve
+                );
+
+            state.ammo+=amount;
+            state.reserve-=amount;
+
+        }
+
+    }
+
+    if(state.lockpick){
+
+        state.lockCursor +=
+            state.lockDirection*1.7;
+
+        if(state.lockCursor>=100){
+
+            state.lockCursor=100;
+            state.lockDirection=-1;
+
+        }
+
+        if(state.lockCursor<=0){
+
+            state.lockCursor=0;
+            state.lockDirection=1;
+
+        }
+
+        updateLockpickUI();
+
+        return;
+
+    }
+
+    if(state.drilling){
+
+        updateDrill();
+        return;
+
+    }
 
     let dx=0;
     let dy=0;
 
-    if(keys.w)dy--;
-    if(keys.s)dy++;
-    if(keys.a)dx--;
-    if(keys.d)dx++;
+    if(keys.KeyW) dy--;
+    if(keys.KeyS) dy++;
+    if(keys.KeyA) dx--;
+    if(keys.KeyD) dx++;
 
-    const length=
-        Math.hypot(dx,dy)||1;
+    if(dx!==0 || dy!==0){
 
-    let speed=player.speed;
+        const len=Math.hypot(dx,dy);
 
-    if(
-        keys.shift &&
-        player.stamina>0 &&
-        player.masked
-    ){
+        dx/=len;
+        dy/=len;
 
-        speed=player.sprintSpeed;
+        let speed=player.speed;
 
-        player.stamina=
-            Math.max(
-                0,
-                player.stamina-dt*26
-            );
+        if(
+            keys.ShiftLeft ||
+            keys.ShiftRight
+        ){
 
-    }else{
+            if(player.stamina>0){
 
-        player.stamina=
-            Math.min(
-                100,
-                player.stamina+dt*18
-            );
+                speed=player.sprint;
+                player.stamina-=0.8;
 
-    }
+            }
 
-    movePlayer(
-        dx/length*speed,
-        dy/length*speed
-    );
+        }else{
 
-    /* PARK ESCAPE */
+            player.stamina=
+                Math.min(
+                    100,
+                    player.stamina+0.45
+                );
 
-    if(
-        state.stage===7 &&
-        player.y>=700
-    ){
+        }
 
-        state.stage=8;
-
-        showMessage(
-            "BANK CLEARED — RUN TO THE VAN"
+        movePlayer(
+            dx*speed,
+            dy*speed
         );
 
-        updateObjective();
-
     }
 
-    if(
-        state.stage===8
-    ){
-
-        state.stage=9;
-
-        updateObjective();
-
-    }
-
-    if(
-        state.stage===9 &&
-        distance(
-            player,
-            {
-                x:1215,
-                y:740
-            }
-        )<115
-    ){
-
-        state.stage=10;
-
-        updateObjective();
-
-    }
-
-}
-
-/* =========================================================
-   WEAPON
-========================================================= */
-
-function shoot(){
-
-    /* UNMASKED CAN NEVER SHOOT */
-
-    if(!player.masked){
-        return;
-    }
-
-    if(
-        player.weapon.reloading ||
-        player.weapon.ammo<=0 ||
-        player.weapon.cooldown>0
-    ){
-        return;
-    }
-
-    player.weapon.ammo--;
-
-    player.weapon.cooldown=.105;
-
-    const angle=
+    player.angle=
         Math.atan2(
             mouse.y-player.y,
             mouse.x-player.x
-        )+
-        random(-.045,.045);
-
-    bullets.push({
-
-        x:
-            player.x+
-            Math.cos(angle)*25,
-
-        y:
-            player.y+
-            Math.sin(angle)*25,
-
-        vx:
-            Math.cos(angle)*11,
-
-        vy:
-            Math.sin(angle)*11,
-
-        life:1,
-
-        damage:34,
-
-        enemy:false
-
-    });
-
-    spawnBurst(
-        player.x+Math.cos(angle)*25,
-        player.y+Math.sin(angle)*25,
-        6,
-        "#f0ce7b"
-    );
-
-    if(!suppressor){
-
-        triggerAlarm(
-            "GUNFIRE"
         );
 
-    }
-
-}
-
-function reload(){
-
-    if(
-        player.weapon.reloading ||
-        player.weapon.ammo>=30 ||
-        player.weapon.reserve<=0
-    ){
-        return;
-    }
-
-    player.weapon.reloading=true;
-
-    setTimeout(()=>{
-
-        const amount=
-            Math.min(
-                30-player.weapon.ammo,
-                player.weapon.reserve
-            );
-
-        player.weapon.ammo+=amount;
-        player.weapon.reserve-=amount;
-
-        player.weapon.reloading=false;
-
-    },850);
-
-}
-
-function updateWeapon(dt){
-
-    player.weapon.cooldown=
-        Math.max(
-            0,
-            player.weapon.cooldown-dt
-        );
-
-    if(
-        mouse.down &&
-        screen==="game" &&
-        !lockpick.active &&
-        !drill.active
-    ){
+    if(mouse.down){
 
         shoot();
 
     }
 
+    /* interactions */
+
+    if(keys.KeyE){
+
+        interaction();
+
+    }
+
+    /* stage progression */
+
+    if(
+        state.stage===5 &&
+        distance(
+            player,
+            {x:1100,y:550}
+        )<100
+    ){
+
+        beginDrill();
+
+    }
+
+    if(
+        state.stage===7 &&
+        player.y>665
+    ){
+
+        /* don't leave until loot is taken */
+
+    }
+
+    if(
+        state.stage===8 &&
+        player.y>680
+    ){
+
+        state.stage=9;
+
+        objectiveText.textContent=
+            "REACH THE GETAWAY VAN";
+
+    }
+
 }
 
 /* =========================================================
-   GUARD AI
+   GUARD UPDATE
 ========================================================= */
 
-function moveGuard(g,dx,dy){
+function updateGuards(){
 
-    const oldX=g.x;
-    const oldY=g.y;
+    if(!state.playing || state.paused) return;
 
-    g.x+=dx;
+    for(const g of guards){
 
-    if(
-        isBlocked(
-            g.x,
-            g.y,
-            g.radius
-        )
-    ){
+        if(!g.alive) continue;
 
-        g.x=oldX;
+        const sees=canSee(g);
 
-    }
+        const d=distance(player,g);
 
-    g.y+=dy;
+        if(!state.masked){
 
-    if(
-        isBlocked(
-            g.x,
-            g.y,
-            g.radius
-        )
-    ){
-
-        g.y=oldY;
-
-    }
-
-}
-
-function updateGuards(dt){
-
-    guards.forEach(g=>{
-
-        const visible=
-            canSee(
-                g,
-                player,
-                285,
-                .78
-            );
-
-        const playerZone=
-            getZone(
-                player.x,
-                player.y
-            );
-
-        /* =====================
-           UNMASKED
-        ===================== */
-
-        if(!player.masked){
-
-            if(playerZone==="safe"){
+            if(
+                getZone()==="safe"
+            ){
 
                 g.state="patrol";
-                g.suspicion=0;
+
+            }else if(
+                getZone()==="escort" &&
+                d<260
+            ){
+
+                g.state="escort";
 
             }
 
-            else if(
-                playerZone==="escort"
+        }else{
+
+            if(
+                sees ||
+                state.alarm ||
+                state.crimeCommitted
             ){
 
-                if(
-                    distance(g,player)<220
-                ){
+                if(d<420){
 
-                    g.state="escort";
+                    g.state="combat";
 
                 }
 
             }
 
-            else if(
-                playerZone==="illegal" &&
-                visible
-            ){
-
-                g.state="combat";
-
-                triggerAlarm(
-                    "RESTRICTED AREA"
-                );
-
-            }
-
         }
 
-        /* =====================
-           MASKED
-        ===================== */
+        if(g.state==="patrol"){
 
-        else{
+            const t=
+                performance.now()/1200+
+                g.patrolOffset;
 
-            if(visible){
-
-                g.state="combat";
-                g.lastSeen=2;
-
-            }
-
-        }
-
-        /* =====================
-           PATROL
-        ===================== */
-
-        if(
-            g.state==="patrol"
-        ){
-
-            const targetX=
+            g.x=
                 g.homeX+
-                Math.cos(
-                    performance.now()/1800+
-                    g.x
-                )*55;
+                Math.cos(t)*65;
 
-            const targetY=
+            g.y=
                 g.homeY+
-                Math.sin(
-                    performance.now()/2100+
-                    g.y
-                )*45;
+                Math.sin(t)*45;
 
-            const angle=
-                Math.atan2(
-                    targetY-g.y,
-                    targetX-g.x
-                );
-
-            g.angle=angle;
-
-            moveGuard(
-                g,
-                Math.cos(angle)*
-                g.speed*.4,
-
-                Math.sin(angle)*
-                g.speed*.4
-            );
+            g.angle=
+                t+Math.PI/2;
 
         }
 
-        /* =====================
-           ESCORT
-        ===================== */
+        else if(g.state==="escort"){
 
-        else if(
-            g.state==="escort"
-        ){
+            const dx=player.x-g.x;
+            const dy=player.y-g.y;
+            const len=Math.hypot(dx,dy)||1;
 
-            const target={
-                x:460,
-                y:650
-            };
+            g.x-=dx/len*g.speed;
+            g.y-=dy/len*g.speed;
 
-            const angle=
+            g.angle=
                 Math.atan2(
-                    target.y-g.y,
-                    target.x-g.x
+                    dy,
+                    dx
                 );
-
-            g.angle=angle;
-
-            moveGuard(
-                g,
-                Math.cos(angle)*.9,
-                Math.sin(angle)*.9
-            );
 
         }
 
-        /* =====================
-           COMBAT
-        ===================== */
+        else if(g.state==="combat"){
 
-        else if(
-            g.state==="combat"
-        ){
+            const dx=player.x-g.x;
+            const dy=player.y-g.y;
 
-            const d=
-                distance(g,player);
+            const len=Math.hypot(dx,dy)||1;
 
-            const angle=
-                Math.atan2(
-                    player.y-g.y,
-                    player.x-g.x
-                );
+            g.angle=
+                Math.atan2(dy,dx);
 
-            g.angle=angle;
+            if(len>130){
 
-            if(d>145){
-
-                moveGuard(
-                    g,
-                    Math.cos(angle)*
-                    g.speed*1.25,
-
-                    Math.sin(angle)*
-                    g.speed*1.25
-                );
+                g.x+=dx/len*g.speed;
+                g.y+=dy/len*g.speed;
 
             }
 
             if(
-                d<300 &&
-                canSee(
-                    g,
-                    player,
-                    310,
-                    .9
-                )
+                len<330 &&
+                Math.random()<0.018
             ){
 
-                g.shootCooldown-=dt;
-
-                if(
-                    g.shootCooldown<=0
-                ){
-
-                    g.shootCooldown=
-                        random(.45,.95);
-
-                    enemyShoot(g);
-
-                }
+                damagePlayer(7);
 
             }
 
         }
 
-    });
+    }
 
 }
 
 /* =========================================================
-   ENEMY SHOOTING
+   DAMAGE
 ========================================================= */
 
-function enemyShoot(g){
+function damagePlayer(amount){
 
-    const angle=
-        Math.atan2(
-            player.y-g.y,
-            player.x-g.x
-        )+
-        random(-.08,.08);
+    if(player.armor>0){
 
-    bullets.push({
+        const armorDamage=
+            Math.min(
+                player.armor,
+                amount*0.65
+            );
 
-        x:
-            g.x+
-            Math.cos(angle)*18,
+        player.armor-=armorDamage;
+        amount-=armorDamage;
 
-        y:
-            g.y+
-            Math.sin(angle)*18,
+    }
 
-        vx:
-            Math.cos(angle)*6.5,
+    player.health-=amount;
 
-        vy:
-            Math.sin(angle)*6.5,
+    burst(
+        player.x,
+        player.y,
+        5
+    );
 
-        life:1.3,
+    if(player.health<=0){
 
-        damage:10,
+        failHeist();
 
-        enemy:true
-
-    });
+    }
 
 }
 
 /* =========================================================
-   BULLETS
+   BULLET UPDATE
 ========================================================= */
 
-function updateBullets(dt){
+function updateBullets(){
 
-    for(
-        let i=bullets.length-1;
-        i>=0;
-        i--
-    ){
+    for(let i=bullets.length-1;i>=0;i--){
 
         const b=bullets[i];
 
         b.x+=b.vx;
         b.y+=b.vy;
+        b.life--;
 
-        b.life-=dt;
+        let remove=false;
 
         if(
-            b.life<=0 ||
             b.x<0 ||
             b.x>W ||
             b.y<0 ||
-            b.y>H
+            b.y>H ||
+            b.life<=0
         ){
 
-            bullets.splice(i,1);
-            continue;
+            remove=true;
 
         }
 
-        if(
-            solidWalls().some(
-                w=>pointRect(
-                    b.x,
-                    b.y,
-                    w
-                )
-            )
-        ){
+        for(const wall of walls){
 
-            spawnBurst(
-                b.x,
-                b.y,
-                4,
-                "#aeb6bf"
-            );
-
-            bullets.splice(i,1);
-            continue;
-
-        }
-
-        if(!b.enemy){
-
-            for(
-                let j=guards.length-1;
-                j>=0;
-                j--
+            if(
+                b.x>=wall.x &&
+                b.x<=wall.x+wall.w &&
+                b.y>=wall.y &&
+                b.y<=wall.y+wall.h
             ){
 
-                const g=guards[j];
-
-                if(
-                    distance(b,g)<
-                    g.radius+5
-                ){
-
-                    g.health-=b.damage;
-
-                    spawnBurst(
-                        b.x,
-                        b.y,
-                        8,
-                        "#b34c45"
-                    );
-
-                    bullets.splice(i,1);
-
-                    if(
-                        g.health<=0
-                    ){
-
-                        state.kills++;
-
-                        spawnBurst(
-                            g.x,
-                            g.y,
-                            15,
-                            "#d0a45e"
-                        );
-
-                        /*
-                            Keycard stays in the world.
-                            Guard death makes it easier to approach.
-                        */
-
-                        if(
-                            !state.keycard &&
-                            g===getKeycardGuard()
-                        ){
-
-                            g.kind="employee";
-
-                        }
-
-                        guards.splice(j,1);
-
-                    }
-
-                    break;
-
-                }
+                burst(b.x,b.y,5);
+                remove=true;
+                break;
 
             }
 
         }
 
-        else{
+        if(remove){
 
-            if(
-                distance(b,player)<
-                player.radius+5
-            ){
+            bullets.splice(i,1);
+            continue;
 
-                const armorDamage=
-                    Math.min(
-                        player.armor,
-                        b.damage*.7
-                    );
+        }
 
-                player.armor-=armorDamage;
+        for(const g of guards){
 
-                player.health-=
-                    b.damage-
-                    armorDamage;
+            if(!g.alive) continue;
 
-                $("damage").style.opacity=.65;
+            const d=Math.hypot(
+                b.x-g.x,
+                b.y-g.y
+            );
 
-                setTimeout(()=>{
-                    $("damage").style.opacity=0;
-                },80);
+            if(d<20){
 
-                shake=
-                    screenShake
-                    ?5
-                    :0;
+                g.health-=b.damage;
+
+                burst(
+                    g.x,
+                    g.y,
+                    8
+                );
 
                 bullets.splice(i,1);
 
-                if(
-                    player.health<=0
-                ){
+                if(g.health<=0){
 
-                    finishHeist(false);
+                    g.alive=false;
+                    state.kills++;
+
+                    if(
+                        state.stage===1 &&
+                        getKeycardGuard()===g
+                    ){
+
+                        keycardItem.x=g.x;
+                        keycardItem.y=g.y;
+                        keycardItem.active=true;
+
+                    }
 
                 }
+
+                break;
 
             }
 
@@ -2595,124 +2402,22 @@ function updateBullets(dt){
 }
 
 /* =========================================================
-   CAMERAS
+   PARTICLE UPDATE
 ========================================================= */
 
-function updateCameras(dt){
+function updateParticles(){
 
-    cameras.forEach(c=>{
-
-        if(c.disabled){
-            return;
-        }
-
-        c.timer+=dt;
-
-        c.angle+=
-            Math.sin(c.timer*.7)*
-            dt*.12;
-
-        if(
-            player.masked &&
-            canSee(
-                c,
-                player,
-                c.range,
-                c.fov
-            )
-        ){
-
-            triggerAlarm(
-                "CAMERA SPOTTED YOU"
-            );
-
-        }
-
-    });
-
-}
-
-/* =========================================================
-   PARTICLES
-========================================================= */
-
-function spawnParticle(
-    x,
-    y,
-    vx,
-    vy,
-    life,
-    size,
-    color
-){
-
-    particles.push({
-        x,
-        y,
-        vx,
-        vy,
-        life,
-        maxLife:life,
-        size,
-        color
-    });
-
-}
-
-function spawnBurst(
-    x,
-    y,
-    count,
-    color
-){
-
-    for(
-        let i=0;
-        i<count;
-        i++
-    ){
-
-        const a=random(
-            0,
-            Math.PI*2
-        );
-
-        const speed=random(
-            .5,
-            3.7
-        );
-
-        spawnParticle(
-            x,
-            y,
-            Math.cos(a)*speed,
-            Math.sin(a)*speed,
-            random(.25,.7),
-            random(2,5),
-            color
-        );
-
-    }
-
-}
-
-function updateParticles(dt){
-
-    for(
-        let i=particles.length-1;
-        i>=0;
-        i--
-    ){
+    for(let i=particles.length-1;i>=0;i--){
 
         const p=particles[i];
 
         p.x+=p.vx;
         p.y+=p.vy;
 
-        p.vx*=.97;
-        p.vy*=.97;
+        p.vx*=0.96;
+        p.vy*=0.96;
 
-        p.life-=dt;
+        p.life--;
 
         if(p.life<=0){
 
@@ -2725,1443 +2430,56 @@ function updateParticles(dt){
 }
 
 /* =========================================================
-   MESSAGE
-========================================================= */
-
-function showMessage(text){
-
-    $("message").textContent=text;
-
-    $("message").classList.add("show");
-
-    messageTimer=2;
-
-}
-
-/* =========================================================
-   OBJECTIVE
-========================================================= */
-
-function updateObjective(){
-
-    $("objective").textContent=
-        objectives[
-            state.stage
-        ]||
-        "ESCAPE";
-
-}
-
-/* =========================================================
-   DRAW WORLD
-========================================================= */
-
-function drawWorld(){
-
-    ctx.fillStyle="#10151b";
-    ctx.fillRect(0,0,W,H);
-
-    /* PARK */
-
-    ctx.fillStyle="#2e4931";
-    ctx.fillRect(
-        park.x,
-        park.y,
-        park.w,
-        park.h
-    );
-
-    for(
-        let x=95;
-        x<1300;
-        x+=40
-    ){
-
-        ctx.fillStyle=
-            x%80===0
-            ?"rgba(85,120,65,.22)"
-            :"rgba(20,30,20,.15)";
-
-        ctx.fillRect(
-            x,
-            700,
-            25,
-            80
-        );
-
-    }
-
-    /* ROAD */
-
-    ctx.fillStyle="#252a30";
-
-    ctx.fillRect(
-        90,
-        680,
-        1220,
-        105
-    );
-
-    ctx.fillStyle="#3b4147";
-
-    ctx.fillRect(
-        90,
-        690,
-        1220,
-        7
-    );
-
-    /* road markings */
-
-    ctx.fillStyle="#9b8351";
-
-    for(
-        let x=115;
-        x<1290;
-        x+=90
-    ){
-
-        ctx.fillRect(
-            x,
-            736,
-            45,
-            5
-        );
-
-    }
-
-    /* BANK */
-
-    ctx.fillStyle="#1e252d";
-
-    ctx.fillRect(
-        bank.x,
-        bank.y,
-        bank.w,
-        bank.h
-    );
-
-    /* LOBBY */
-
-    ctx.fillStyle="#332a27";
-
-    ctx.fillRect(
-        110,
-        110,
-        380,
-        565
-    );
-
-    /* EMPLOYEE */
-
-    ctx.fillStyle="#1b2229";
-
-    ctx.fillRect(
-        518,
-        110,
-        202,
-        575
-    );
-
-    /* SECURITY */
-
-    ctx.fillStyle="#171e25";
-
-    ctx.fillRect(
-        738,
-        110,
-        260,
-        575
-    );
-
-    /* VAULT */
-
-    ctx.fillStyle="#10161c";
-
-    ctx.fillRect(
-        1078,
-        110,
-        212,
-        575
-    );
-
-    /* FLOOR TILES */
-
-    ctx.strokeStyle=
-        "rgba(255,255,255,.035)";
-
-    ctx.lineWidth=1;
-
-    for(
-        let x=110;
-        x<1290;
-        x+=40
-    ){
-
-        ctx.beginPath();
-        ctx.moveTo(x,110);
-        ctx.lineTo(x,665);
-        ctx.stroke();
-
-    }
-
-    for(
-        let y=110;
-        y<665;
-        y+=40
-    ){
-
-        ctx.beginPath();
-        ctx.moveTo(110,y);
-        ctx.lineTo(1290,y);
-        ctx.stroke();
-
-    }
-
-    /* WALLS */
-
-    solidWalls().forEach(
-        drawWall
-    );
-
-    /* PROPS */
-
-    drawProps();
-
-    /* DOORS */
-
-    doors.forEach(
-        drawDoor
-    );
-
-    /* PARK DECOR */
-
-    drawParkDecor();
-
-    /* VAN */
-
-    drawVan();
-
-    /* CAMERAS */
-
-    cameras.forEach(
-        drawCamera
-    );
-
-    /* GUARDS */
-
-    drawGuards();
-
-    /* LOOT */
-
-    drawLoot();
-
-    /* BULLETS */
-
-    drawBullets();
-
-    /* PLAYER */
-
-    drawPlayer();
-
-    /* PARTICLES */
-
-    drawParticles();
-
-    /* LIGHTING */
-
-    drawLighting();
-
-}
-
-/* =========================================================
-   WALL DRAWING
-========================================================= */
-
-function drawWall(w){
-
-    ctx.fillStyle="#38291e";
-
-    ctx.fillRect(
-        w.x,
-        w.y,
-        w.w,
-        w.h
-    );
-
-    ctx.fillStyle="#67462b";
-
-    if(w.w>w.h){
-
-        ctx.fillRect(
-            w.x,
-            w.y,
-            w.w,
-            4
-        );
-
-    }else{
-
-        ctx.fillRect(
-            w.x,
-            w.y,
-            4,
-            w.h
-        );
-
-    }
-
-    ctx.fillStyle=
-        "rgba(0,0,0,.22)";
-
-    ctx.fillRect(
-        w.x+5,
-        w.y+5,
-        Math.max(0,w.w-5),
-        Math.max(0,w.h-5)
-    );
-
-}
-
-/* =========================================================
-   DOORS
-========================================================= */
-
-function drawDoor(d){
-
-    if(d.open){
-
-        /* open frame */
-
-        ctx.fillStyle="#67472b";
-
-        ctx.fillRect(
-            d.x-5,
-            d.y-4,
-            d.w+10,
-            d.h+8
-        );
-
-        ctx.fillStyle="#080b0f";
-
-        ctx.fillRect(
-            d.x,
-            d.y,
-            d.w,
-            d.h
-        );
-
-    }else{
-
-        /* brown door */
-
-        ctx.fillStyle="#694323";
-
-        ctx.fillRect(
-            d.x,
-            d.y,
-            d.w,
-            d.h
-        );
-
-        ctx.fillStyle="#a56e36";
-
-        ctx.fillRect(
-            d.x+3,
-            d.y+4,
-            d.w-6,
-            d.h-8
-        );
-
-        ctx.fillStyle="#17100a";
-
-        ctx.fillRect(
-            d.x+5,
-            d.y+d.h/2-2,
-            5,
-            4
-        );
-
-    }
-
-}
-
-/* =========================================================
-   PROPS
-========================================================= */
-
-function drawProps(){
-
-    props.forEach(p=>{
-
-        /* shadow */
-
-        ctx.fillStyle=
-            "rgba(0,0,0,.2)";
-
-        ctx.fillRect(
-            p.x+7,
-            p.y+8,
-            p.w,
-            p.h
-        );
-
-        if(p.type==="counter"){
-
-            ctx.fillStyle="#634329";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#96643a";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                11
-            );
-
-        }
-
-        else if(p.type==="desk"){
-
-            ctx.fillStyle="#553722";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#865936";
-
-            ctx.fillRect(
-                p.x+4,
-                p.y+4,
-                p.w-8,
-                12
-            );
-
-            ctx.fillStyle="#11171c";
-
-            ctx.fillRect(
-                p.x+12,
-                p.y+21,
-                48,
-                25
-            );
-
-            ctx.fillStyle="#596b72";
-
-            ctx.fillRect(
-                p.x+16,
-                p.y+25,
-                40,
-                4
-            );
-
-        }
-
-        else if(p.type==="couch"){
-
-            ctx.fillStyle="#49302f";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#684342";
-
-            ctx.fillRect(
-                p.x+8,
-                p.y+7,
-                p.w-16,
-                p.h-14
-            );
-
-        }
-
-        else if(p.type==="terminal"){
-
-            ctx.fillStyle="#343c45";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            for(
-                let i=0;
-                i<5;
-                i++
-            ){
-
-                ctx.fillStyle=
-                    i%2
-                    ?" #47664f"
-                    :"#334b3c";
-
-                ctx.fillRect(
-                    p.x+10+i*35,
-                    p.y+15,
-                    25,
-                    27
-                );
-
-            }
-
-        }
-
-        else if(
-            p.type==="vaultEquipment"
-        ){
-
-            ctx.fillStyle="#353b42";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#686e73";
-
-            ctx.fillRect(
-                p.x+14,
-                p.y+12,
-                p.w-28,
-                7
-            );
-
-            ctx.fillRect(
-                p.x+14,
-                p.y+29,
-                p.w-28,
-                7
-            );
-
-        }
-
-        else if(p.type==="crate"){
-
-            ctx.fillStyle="#5b3c25";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.strokeStyle="#966238";
-            ctx.lineWidth=4;
-
-            ctx.strokeRect(
-                p.x+4,
-                p.y+4,
-                p.w-8,
-                p.h-8
-            );
-
-        }
-
-        else if(p.type==="locker"){
-
-            ctx.fillStyle="#46525a";
-
-            ctx.fillRect(
-                p.x,
-                p.y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#20262c";
-
-            ctx.fillRect(
-                p.x+8,
-                p.y+7,
-                8,
-                p.h-14
-            );
-
-        }
-
-    });
-
-}
-
-/* =========================================================
-   PARK DECOR
-========================================================= */
-
-function drawParkDecor(){
-
-    const trees=[
-        [150,735],
-        [260,755],
-        [390,730],
-        [990,745],
-        [1080,715],
-        [1320,735]
-    ];
-
-    trees.forEach(t=>{
-
-        /* trunk */
-
-        ctx.fillStyle="#513722";
-
-        ctx.fillRect(
-            t[0]-5,
-            t[1]-32,
-            10,
-            32
-        );
-
-        /* chunky foliage */
-
-        ctx.fillStyle="#2d6138";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            t[0],
-            t[1]-72
-        );
-
-        ctx.lineTo(
-            t[0]-30,
-            t[1]-27
-        );
-
-        ctx.lineTo(
-            t[0]+30,
-            t[1]-27
-        );
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        ctx.fillStyle="#3f7843";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            t[0],
-            t[1]-58
-        );
-
-        ctx.lineTo(
-            t[0]-22,
-            t[1]-31
-        );
-
-        ctx.lineTo(
-            t[0]+22,
-            t[1]-31
-        );
-
-        ctx.closePath();
-
-        ctx.fill();
-
-    });
-
-    /* benches */
-
-    [560,860].forEach(x=>{
-
-        ctx.fillStyle="#65452a";
-
-        ctx.fillRect(
-            x,
-            725,
-            70,
-            9
-        );
-
-        ctx.fillRect(
-            x,
-            740,
-            70,
-            9
-        );
-
-        ctx.fillRect(
-            x+8,
-            750,
-            7,
-            15
-        );
-
-        ctx.fillRect(
-            x+55,
-            750,
-            7,
-            15
-        );
-
-    });
-
-    /* lamps */
-
-    [500,950].forEach(x=>{
-
-        ctx.fillStyle="#20262b";
-
-        ctx.fillRect(
-            x,
-            704,
-            6,
-            66
-        );
-
-        ctx.fillStyle="#e3bb6e";
-
-        ctx.fillRect(
-            x-7,
-            699,
-            20,
-            7
-        );
-
-    });
-
-}
-
-/* =========================================================
-   VAN
-========================================================= */
-
-function drawVan(){
-
-    const x=1165;
-    const y=718;
-
-    ctx.fillStyle=
-        "rgba(0,0,0,.35)";
-
-    ctx.fillRect(
-        x+5,
-        y+26,
-        110,
-        20
-    );
-
-    ctx.fillStyle="#43525b";
-
-    ctx.fillRect(
-        x,
-        y,
-        105,
-        35
-    );
-
-    ctx.fillStyle="#61737c";
-
-    ctx.fillRect(
-        x+12,
-        y-10,
-        70,
-        24
-    );
-
-    ctx.fillStyle="#18242b";
-
-    ctx.fillRect(
-        x+23,
-        y-7,
-        23,
-        15
-    );
-
-    ctx.fillRect(
-        x+51,
-        y-7,
-        23,
-        15
-    );
-
-    ctx.fillStyle="#15191d";
-
-    ctx.fillRect(
-        x+12,
-        y+29,
-        20,
-        10
-    );
-
-    ctx.fillRect(
-        x+72,
-        y+29,
-        20,
-        10
-    );
-
-    ctx.fillStyle="#d2aa63";
-
-    ctx.font=
-        "bold 11px Arial";
-
-    ctx.fillText(
-        "PAYTIME",
-        x+28,
-        y+22
-    );
-
-}
-
-/* =========================================================
-   CAMERAS
-========================================================= */
-
-function drawCamera(c){
-
-    ctx.save();
-
-    ctx.translate(
-        c.x,
-        c.y
-    );
-
-    ctx.rotate(c.angle);
-
-    ctx.fillStyle=
-        c.disabled
-        ?" #43564b"
-        :"#723934";
-
-    ctx.fillRect(
-        -9,
-        -6,
-        18,
-        12
-    );
-
-    ctx.fillStyle="#101317";
-
-    ctx.fillRect(
-        4,
-        -3,
-        9,
-        6
-    );
-
-    ctx.restore();
-
-}
-
-/* =========================================================
-   GUARDS
-========================================================= */
-
-function drawGuards(){
-
-    guards.forEach(g=>{
-
-        ctx.save();
-
-        ctx.translate(
-            g.x,
-            g.y
-        );
-
-        ctx.rotate(
-            g.angle
-        );
-
-        /* shadow */
-
-        ctx.fillStyle=
-            "rgba(0,0,0,.3)";
-
-        ctx.fillRect(
-            -16,
-            12,
-            32,
-            7
-        );
-
-        /* body */
-
-        ctx.fillStyle=
-            g.state==="combat"
-            ?" #863b37"
-            :"#405967";
-
-        ctx.fillRect(
-            -12,
-            -13,
-            24,
-            27
-        );
-
-        /* head */
-
-        ctx.fillStyle="#d09e78";
-
-        ctx.fillRect(
-            -8,
-            -21,
-            16,
-            11
-        );
-
-        /* hat */
-
-        ctx.fillStyle="#20262c";
-
-        ctx.fillRect(
-            -10,
-            -24,
-            20,
-            6
-        );
-
-        /* weapon */
-
-        ctx.fillStyle="#171a1e";
-
-        ctx.fillRect(
-            9,
-            -4,
-            20,
-            6
-        );
-
-        ctx.fillStyle="#818991";
-
-        ctx.fillRect(
-            27,
-            -3,
-            7,
-            4
-        );
-
-        ctx.restore();
-
-        if(
-            g.state==="combat"
-        ){
-
-            ctx.fillStyle="#c34e46";
-
-            ctx.fillRect(
-                g.x-15,
-                g.y-31,
-                30,
-                3
-            );
-
-            ctx.fillStyle="#111";
-
-            ctx.fillRect(
-                g.x-15,
-                g.y-28,
-                30,
-                2
-            );
-
-        }
-
-    });
-
-}
-
-/* =========================================================
-   PLAYER DRAW
-========================================================= */
-
-function drawPlayer(){
-
-    ctx.save();
-
-    ctx.translate(
-        player.x,
-        player.y
-    );
-
-    /* shadow */
-
-    ctx.fillStyle=
-        "rgba(0,0,0,.35)";
-
-    ctx.fillRect(
-        -19,
-        14,
-        38,
-        8
-    );
-
-    /* body */
-
-    ctx.fillStyle=
-        player.masked
-        ?" #4b5c67"
-        :"#506976";
-
-    ctx.fillRect(
-        -13,
-        -13,
-        26,
-        28
-    );
-
-    if(player.masked){
-
-        /* mask */
-
-        ctx.fillStyle="#1b2228";
-
-        ctx.fillRect(
-            -9,
-            -22,
-            18,
-            11
-        );
-
-        ctx.fillStyle="#9ba9ae";
-
-        ctx.fillRect(
-            -7,
-            -19,
-            5,
-            3
-        );
-
-        ctx.fillRect(
-            2,
-            -19,
-            5,
-            3
-        );
-
-        /* WEAPON ONLY EXISTS WHEN MASKED */
-
-        ctx.fillStyle="#17191c";
-
-        ctx.fillRect(
-            8,
-            -4,
-            28,
-            7
-        );
-
-        ctx.fillStyle="#858d93";
-
-        ctx.fillRect(
-            28,
-            -3,
-            9,
-            4
-        );
-
-    }else{
-
-        /* uncovered face */
-
-        ctx.fillStyle="#d1a078";
-
-        ctx.fillRect(
-            -8,
-            -22,
-            16,
-            11
-        );
-
-        ctx.fillStyle="#272d32";
-
-        ctx.fillRect(
-            -8,
-            -25,
-            16,
-            5
-        );
-
-        /*
-            NO WEAPON HERE.
-            This is intentional.
-        */
-
-    }
-
-    ctx.restore();
-
-    /* loot bag carried */
-
-    if(player.lootBags>0){
-
-        ctx.fillStyle="#7d542d";
-
-        ctx.fillRect(
-            player.x-13,
-            player.y+20,
-            26,
-            20
-        );
-
-        ctx.fillStyle="#b37b3e";
-
-        ctx.fillRect(
-            player.x-8,
-            player.y+23,
-            16,
-            3
-        );
-
-    }
-
-}
-
-/* =========================================================
-   LOOT
-========================================================= */
-
-function drawLoot(){
-
-    if(state.stage<7){
-        return;
-    }
-
-    for(
-        let i=0;
-        i<2;
-        i++
-    ){
-
-        const x=
-            1130+
-            i*70;
-
-        const y=300;
-
-        ctx.fillStyle=
-            "rgba(0,0,0,.35)";
-
-        ctx.fillRect(
-            x-16,
-            y+11,
-            32,
-            7
-        );
-
-        ctx.fillStyle="#80552d";
-
-        ctx.fillRect(
-            x-14,
-            y-10,
-            28,
-            21
-        );
-
-        ctx.fillStyle="#b47e40";
-
-        ctx.fillRect(
-            x-9,
-            y-7,
-            18,
-            4
-        );
-
-    }
-
-}
-
-/* =========================================================
-   BULLET DRAW
-========================================================= */
-
-function drawBullets(){
-
-    bullets.forEach(b=>{
-
-        ctx.fillStyle=
-            b.enemy
-            ?" #d75a52"
-            :"#f0d17d";
-
-        ctx.fillRect(
-            b.x-2,
-            b.y-2,
-            5,
-            5
-        );
-
-    });
-
-}
-
-/* =========================================================
-   PARTICLES DRAW
-========================================================= */
-
-function drawParticles(){
-
-    particles.forEach(p=>{
-
-        ctx.globalAlpha=
-            clamp(
-                p.life/p.maxLife,
-                0,
-                1
-            );
-
-        ctx.fillStyle=p.color;
-
-        ctx.fillRect(
-            p.x,
-            p.y,
-            p.size,
-            p.size
-        );
-
-    });
-
-    ctx.globalAlpha=1;
-
-}
-
-/* =========================================================
-   LIGHTING
-========================================================= */
-
-function drawLighting(){
-
-    const glow=
-        ctx.createRadialGradient(
-            player.x,
-            player.y,
-            50,
-            player.x,
-            player.y,
-            430
-        );
-
-    glow.addColorStop(
-        0,
-        "rgba(255,225,165,.09)"
-    );
-
-    glow.addColorStop(
-        1,
-        "rgba(0,0,0,.34)"
-    );
-
-    ctx.fillStyle=glow;
-
-    ctx.fillRect(
-        90,
-        90,
-        1220,
-        595
-    );
-
-    if(state.alarm){
-
-        const pulse=
-            (Math.sin(
-                performance.now()/130
-            )+1)/2;
-
-        ctx.fillStyle=
-            `rgba(205,30,25,${
-                .02+
-                pulse*.055
-            })`;
-
-        ctx.fillRect(
-            90,
-            90,
-            1220,
-            595
-        );
-
-    }
-
-}
-
-/* =========================================================
-   RETRO FILTER
-========================================================= */
-
-function drawRetro(){
-
-    if(!retro){
-        return;
-    }
-
-    ctx.fillStyle=
-        "rgba(0,0,0,.025)";
-
-    for(
-        let y=0;
-        y<H;
-        y+=4
-    ){
-
-        ctx.fillRect(
-            0,
-            y,
-            W,
-            1
-        );
-
-    }
-
-}
-
-/* =========================================================
-   HUD
-========================================================= */
-
-function updateHUD(){
-
-    $("health").textContent=
-        Math.max(
-            0,
-            Math.ceil(player.health)
-        );
-
-    $("armor").textContent=
-        Math.max(
-            0,
-            Math.ceil(player.armor)
-        );
-
-    $("cash").textContent=
-        "$"+
-        Math.floor(
-            player.cash+
-            player.lootBags*25000
-        ).toLocaleString();
-
-    $("ammo").textContent=
-        player.masked
-        ?(
-            player.weapon.reloading
-            ?"RELOADING..."
-            :
-            `${player.weapon.ammo} / ${player.weapon.reserve}`
-        )
-        :"STOWED";
-
-    const action=
-        interaction();
-
-    if(action){
-
-        $("prompt").textContent=
-            action.text;
-
-        if(
-            action.type==="none"
-        ){
-
-            $("prompt").style.borderColor=
-                "#a64b45";
-
-        }else{
-
-            $("prompt").style.borderColor=
-                "#d0a15a";
-
-        }
-
-    }else{
-
-        $("prompt").textContent="";
-
-    }
-
-    $("crosshair").style.display=
-        player.masked &&
-        screen==="game"
-        ?"block"
-        :"none";
-
-    $("crosshair").style.left=
-        mouse.x+"px";
-
-    $("crosshair").style.top=
-        mouse.y+"px";
-
-}
-
-/* =========================================================
    STAGE LOGIC
 ========================================================= */
 
 function stageLogic(){
 
-    /* reach vault */
+    if(!state.playing) return;
+
+    /* keycard pickup from actual dropped card */
+
+    if(
+        state.stage===1 &&
+        keycardItem.active &&
+        distance(
+            player,
+            keycardItem
+        )<45
+    ){
+
+        keycardItem.active=false;
+        state.keycard=true;
+        state.stage=2;
+
+        objectiveText.textContent=
+            "REACH THE SECURITY ROOM";
+
+    }
+
+    /* vault approach */
 
     if(
         state.stage===4 &&
-        player.x>1030 &&
-        player.y>240 &&
-        player.y<440
+        player.x>880 &&
+        player.y>400
     ){
 
-        state.stage=5;
-
-        updateObjective();
+        objectiveText.textContent=
+            "LOCKPICK THE VAULT DOOR — PRESS E";
 
     }
 
-    /* after vault unlocked */
+    /* drill approach */
 
     if(
         state.stage===5 &&
-        doors[2].open
+        player.x>1020 &&
+        player.y>500
     ){
 
-        state.stage=6;
-
-        updateObjective();
-
-    }
-
-    /* park */
-
-    if(
-        state.stage===7 &&
-        player.y>=700
-    ){
-
-        state.stage=8;
-
-        updateObjective();
-
-        showMessage(
-            "BANK CLEARED — RUN TO THE VAN"
-        );
-
-    }
-
-    /* van */
-
-    if(
-        state.stage===8 &&
-        player.y>=700
-    ){
-
-        state.stage=9;
-
-        updateObjective();
+        objectiveText.textContent=
+            "PRESS E TO START THE DRILL";
 
     }
 
@@ -4173,612 +2491,1160 @@ function stageLogic(){
 
 function resetGame(){
 
-    player.x=350;
-    player.y=610;
-
-    player.health=100;
-    player.armor=100;
-
-    player.stamina=100;
-
-    player.masked=false;
-
-    player.cash=0;
-    player.lootBags=0;
-
-    player.weapon={
-        ammo:30,
-        reserve:120,
-        cooldown:0,
-        reloading:false
-    };
+    state.playing=true;
+    state.paused=false;
 
     state.stage=0;
+
+    state.masked=false;
+    state.crimeCommitted=false;
+
     state.alarm=false;
-    state.alarmCooldown=0;
-    state.keycard=false;
-    state.camerasDisabled=false;
-    state.vaultUnlocked=false;
-    state.drillComplete=false;
-    state.lootCollected=0;
+
+    state.cash=0;
+    state.loot=0;
     state.kills=0;
-    state.finished=false;
+
     state.startTime=performance.now();
 
-    doors.forEach(
-        d=>d.open=false
-    );
+    state.ammo=30;
+    state.reserve=120;
+    state.reloadTimer=0;
 
-    bullets.length=0;
-    particles.length=0;
+    state.lockpick=false;
+    state.lockSuccess=0;
+    state.lockCursor=0;
 
-    lockpick.active=false;
-    drill.active=false;
+    state.drilling=false;
+    state.drillAmount=0;
 
-    $("lockpick")
-        .classList.remove("active");
+    state.escaped=false;
 
-    $("drill")
-        .classList.remove("active");
+    state.keycard=false;
+    state.camerasDisabled=false;
 
-    resetGuards();
-    resetCameras();
+    player.x=190;
+    player.y=570;
+    player.health=100;
+    player.armor=100;
+    player.stamina=100;
 
-    showScreen("game");
+    doors.forEach(d=>{
+        d.open=false;
+    });
 
-    updateObjective();
+    cameras.forEach(c=>{
+        c.disabled=false;
+    });
 
-}
+    lootBags.forEach(b=>{
+        b.taken=false;
+    });
 
-/* =========================================================
-   FINISH
-========================================================= */
+    keycardItem.active=false;
 
-function finishHeist(success){
+    bullets=[];
+    particles=[];
 
-    if(state.finished){
-        return;
-    }
+    createGuards();
 
-    state.finished=true;
+    objectiveText.textContent=
+        "PUT ON YOUR MASK — PRESS M";
 
-    state.endTime=
-        performance.now();
-
-    if(success){
-
-        player.cash+=
-            player.lootBags*25000;
-
-        $("resultTitle")
-            .textContent=
-                "HEIST COMPLETE";
-
-        $("resultSub")
-            .textContent=
-                state.alarm
-                ?"MESSY — BUT PROFITABLE."
-                :"CLEAN WORK. PROFESSIONAL.";
-
-    }else{
-
-        $("resultTitle")
-            .textContent=
-                "HEIST FAILED";
-
-        $("resultSub")
-            .textContent=
-                "THE JOB WENT LOUD.";
-
-    }
-
-    $("resultCash")
-        .textContent=
-            "$"+
-            Math.floor(
-                player.cash
-            ).toLocaleString();
-
-    $("resultLoot")
-        .textContent=
-            player.lootBags;
-
-    $("resultKills")
-        .textContent=
-            state.kills;
-
-    const seconds=
-        Math.max(
-            0,
-            (state.endTime-
-             state.startTime)/1000
-        );
-
-    $("resultTime")
-        .textContent=
-            Math.floor(seconds/60)+
-            ":"+
-            String(
-                Math.floor(seconds%60)
-            ).padStart(2,"0");
-
-    showScreen("result");
-
-}
-
-/* =========================================================
-   SCREEN MANAGEMENT
-========================================================= */
-
-function showScreen(name){
-
-    screen=name;
-
-    document
-        .querySelectorAll(".screen")
-        .forEach(
-            s=>s.classList.remove("active")
-        );
-
-    if(name==="main"){
-
-        $("mainScreen")
-            .classList.add("active");
-
-    }
-
-    if(name==="loadout"){
-
-        $("loadoutScreen")
-            .classList.add("active");
-
-    }
-
-    if(name==="settings"){
-
-        $("settingsScreen")
-            .classList.add("active");
-
-    }
-
-    if(name==="pause"){
-
-        $("pauseScreen")
-            .classList.add("active");
-
-    }
-
-    if(name==="result"){
-
-        $("resultScreen")
-            .classList.add("active");
-
-    }
-
-    $("hud").style.display=
-        name==="game"
-        ?"block"
-        :"none";
-
-}
-
-/* =========================================================
-   MESSAGE UPDATE
-========================================================= */
-
-function updateMessage(dt){
-
-    if(messageTimer<=0){
-        return;
-    }
-
-    messageTimer-=dt;
-
-    if(messageTimer<=0){
-
-        $("message")
-            .classList.remove("show");
-
-    }
-
-}
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-window.addEventListener(
-    "keydown",
-    e=>{
-
-        const key=
-            e.key.toLowerCase();
-
-        keys[key]=true;
-
-        if(
-            [
-                " ",
-                "arrowup",
-                "arrowdown",
-                "arrowleft",
-                "arrowright"
-            ].includes(key)
-        ){
-
-            e.preventDefault();
-
-        }
-
-        if(screen==="game"){
-
-            if(key==="m"){
-
-                putMaskOn();
-
-            }
-
-            if(key==="e"){
-
-                if(!lockpick.active){
-
-                    if(!drill.active){
-
-                        interact();
-
-                    }
-
-                }
-
-            }
-
-            if(key==="r"){
-
-                reload();
-
-            }
-
-            if(
-                key===" " &&
-                lockpick.active
-            ){
-
-                lockpickPress();
-
-            }
-
-            if(
-                key==="escape" &&
-                !lockpick.active &&
-                !drill.active
-            ){
-
-                paused=true;
-
-                showScreen(
-                    "pause"
-                );
-
-            }
-
-        }
-
-        else if(
-            screen==="pause" &&
-            key==="escape"
-        ){
-
-            paused=false;
-
-            showScreen("game");
-
-        }
-
-    }
-);
-
-window.addEventListener(
-    "keyup",
-    e=>{
-
-        keys[
-            e.key.toLowerCase()
-        ]=false;
-
-    }
-);
-
-canvas.addEventListener(
-    "mousemove",
-    e=>{
-
-        const r=
-            canvas.getBoundingClientRect();
-
-        mouse.x=
-            (e.clientX-r.left)*
-            W/r.width;
-
-        mouse.y=
-            (e.clientY-r.top)*
-            H/r.height;
-
-    }
-);
-
-canvas.addEventListener(
-    "mousedown",
-    e=>{
-
-        if(e.button===0){
-
-            mouse.down=true;
-
-        }
-
-    }
-);
-
-window.addEventListener(
-    "mouseup",
-    e=>{
-
-        if(e.button===0){
-
-            mouse.down=false;
-
-        }
-
-    }
-);
-
-/* =========================================================
-   MENU BUTTONS
-========================================================= */
-
-$("playBtn").onclick=()=>{
-
-    resetGame();
-
-};
-
-$("loadoutBtn").onclick=()=>{
-
-    showScreen("loadout");
-
-};
-
-$("settingsBtn").onclick=()=>{
-
-    showScreen("settings");
-
-};
-
-$("exitBtn").onclick=()=>{
-
-    /*
-        Games page is one folder above:
-        /games/paytime/ -> /games/
-    */
-
-    window.location.href="../";
-
-};
-
-$("loadoutBack").onclick=()=>{
-
-    showScreen("main");
-
-};
-
-$("settingsBack").onclick=()=>{
-
-    showScreen("main");
-
-};
-
-$("resumeBtn").onclick=()=>{
-
-    paused=false;
-
-    showScreen("game");
-
-};
-
-$("restartBtn").onclick=()=>{
-
-    resetGame();
-
-};
-
-$("pauseMenuBtn").onclick=()=>{
-
-    paused=false;
-
-    showScreen("main");
-
-};
-
-$("resultRestart").onclick=()=>{
-
-    resetGame();
-
-};
-
-$("resultMenu").onclick=()=>{
-
-    showScreen("main");
-
-};
-
-/* =========================================================
-   LOADOUT
-========================================================= */
-
-function updateLoadout(){
-
-    $("supOn")
-        .classList.toggle(
-            "active",
-            suppressor
-        );
-
-    $("supOff")
-        .classList.toggle(
-            "active",
-            !suppressor
-        );
-
-    $("noiseBar").style.width=
-        suppressor
-        ?"38%"
-        :"88%";
-
-}
-
-$("supOn").onclick=()=>{
-
-    suppressor=true;
-
-    updateLoadout();
-
-};
-
-$("supOff").onclick=()=>{
-
-    suppressor=false;
-
-    updateLoadout();
-
-};
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-$("shakeBtn").onclick=()=>{
-
-    screenShake=!screenShake;
-
-    $("shakeBtn").textContent=
-        "SCREEN SHAKE: "+
-        (
-            screenShake
-            ?"ON"
-            :"OFF"
-        );
-
-};
-
-$("pixelBtn").onclick=()=>{
-
-    retro=!retro;
-
-    $("pixelBtn").textContent=
-        "RETRO FILTER: "+
-        (
-            retro
-            ?"ON"
-            :"OFF"
-        );
-
-};
-
-/* =========================================================
-   UPDATE
-========================================================= */
-
-function update(dt){
-
-    if(screen!=="game"){
-        return;
-    }
-
-    if(paused){
-        return;
-    }
-
-    updateMessage(dt);
-
-    updatePlayer(dt);
-
-    updateWeapon(dt);
-
-    updateBullets(dt);
-
-    updateGuards(dt);
-
-    updateCameras(dt);
-
-    updateParticles(dt);
-
-    updateDrill(dt);
-
-    if(lockpick.active){
-
-        lockpick.cursor+=
-            lockpick.direction*
-            lockpick.speed*
-            dt;
-
-        if(lockpick.cursor>=1){
-
-            lockpick.cursor=1;
-            lockpick.direction=-1;
-
-        }
-
-        if(lockpick.cursor<=0){
-
-            lockpick.cursor=0;
-            lockpick.direction=1;
-
-        }
-
-        updateLockUI();
-
-    }
-
-    stageLogic();
+    maskHUD.textContent="UNMASKED";
 
     updateHUD();
 
 }
 
 /* =========================================================
-   RENDER
+   COMPLETE / FAIL
 ========================================================= */
 
-function render(){
+function completeHeist(){
 
-    ctx.clearRect(
+    state.playing=false;
+    state.escaped=true;
+
+    hud.classList.add("hidden");
+
+    const seconds=
+        Math.floor(
+            (performance.now()-state.startTime)/1000
+        );
+
+    const mins=
+        Math.floor(seconds/60);
+
+    const secs=
+        String(seconds%60).padStart(2,"0");
+
+    document.getElementById("resultTitle").textContent=
+        "HEIST COMPLETE";
+
+    document.getElementById("resultCash").textContent=
+        "$"+state.cash.toLocaleString();
+
+    document.getElementById("resultStats").innerHTML=
+        "TIME: "+mins+":"+secs+
+        "<br>KILLS: "+state.kills+
+        "<br>LOOT: $"+state.loot.toLocaleString();
+
+    showScreen("result");
+
+}
+
+function failHeist(){
+
+    state.playing=false;
+
+    hud.classList.add("hidden");
+
+    document.getElementById("resultTitle").textContent=
+        "HEIST FAILED";
+
+    document.getElementById("resultCash").textContent=
+        "$0";
+
+    document.getElementById("resultStats").innerHTML=
+        "YOU GOT CAUGHT.<br>"+
+        "KILLS: "+state.kills;
+
+    showScreen("result");
+
+}
+
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD(){
+
+    healthHUD.textContent=
+        Math.max(0,Math.floor(player.health));
+
+    armorHUD.textContent=
+        Math.max(0,Math.floor(player.armor));
+
+    cashHUD.textContent=
+        "$"+state.cash.toLocaleString();
+
+    ammoHUD.textContent=
+        state.reloadTimer>0
+        ? "RELOADING..."
+        : state.ammo+" / "+state.reserve;
+
+    if(state.masked){
+
+        maskHUD.textContent="MASK ON";
+
+    }else{
+
+        maskHUD.textContent="UNMASKED";
+
+    }
+
+}
+
+/* =========================================================
+   DRAW WORLD
+========================================================= */
+
+function drawWorld(){
+
+    ctx.clearRect(0,0,W,H);
+
+    /* floor */
+
+    ctx.fillStyle="#28352f";
+    ctx.fillRect(0,0,W,H);
+
+    /* park */
+
+    ctx.fillStyle="#47664f";
+    ctx.fillRect(
+        park.x,
+        park.y,
+        park.w,
+        park.h+70
+    );
+
+    /* grass details */
+
+    for(let x=70;x<1340;x+=55){
+
+        ctx.fillStyle="#557458";
+
+        ctx.fillRect(
+            x,
+            700+(x%3)*7,
+            22,
+            4
+        );
+
+    }
+
+    /* bank floor */
+
+    ctx.fillStyle="#303a36";
+    ctx.fillRect(
+        58,
+        58,
+        1284,
+        602
+    );
+
+    /* tiles */
+
+    for(let x=70;x<1330;x+=45){
+
+        for(let y=70;y<650;y+=45){
+
+            ctx.strokeStyle="rgba(255,255,255,.025)";
+            ctx.strokeRect(
+                x,
+                y,
+                45,
+                45
+            );
+
+        }
+
+    }
+
+    /* lobby carpet */
+
+    ctx.fillStyle="#384944";
+    ctx.fillRect(
+        110,
+        125,
+        450,
+        190
+    );
+
+    /* vault room */
+
+    ctx.fillStyle="#242b29";
+    ctx.fillRect(
+        990,
+        505,
+        190,
+        105
+    );
+
+    /* office */
+
+    ctx.fillStyle="#333c38";
+    ctx.fillRect(
+        650,
+        120,
+        100,
+        100
+    );
+
+    /* security room */
+
+    ctx.fillStyle="#202725";
+    ctx.fillRect(
+        800,
+        120,
+        150,
+        120
+    );
+
+    /* walls */
+
+    for(const wall of walls){
+
+        ctx.fillStyle="#111615";
+
+        ctx.fillRect(
+            wall.x,
+            wall.y,
+            wall.w,
+            wall.h
+        );
+
+        ctx.fillStyle="#46514c";
+
+        ctx.fillRect(
+            wall.x,
+            wall.y,
+            wall.w,
+            3
+        );
+
+    }
+
+    /* doors */
+
+    for(const door of doors){
+
+        if(door.open){
+
+            ctx.fillStyle="#3d493f";
+
+            ctx.fillRect(
+                door.x,
+                door.y,
+                door.w,
+                door.h
+            );
+
+        }else{
+
+            /* BROWN LOCKED DOOR */
+
+            ctx.fillStyle="#68452e";
+
+            ctx.fillRect(
+                door.x,
+                door.y,
+                door.w,
+                door.h
+            );
+
+            ctx.fillStyle="#96623e";
+
+            ctx.fillRect(
+                door.x+4,
+                door.y+3,
+                door.w-8,
+                4
+            );
+
+            ctx.fillStyle="#c49a65";
+
+            ctx.fillRect(
+                door.x+door.w/2-3,
+                door.y+door.h/2-3,
+                6,
+                6
+            );
+
+        }
+
+    }
+
+    drawFurniture();
+    drawCameras();
+    drawVan();
+    drawLoot();
+    drawKeycard();
+    drawGuards();
+    drawBullets();
+    drawPlayer();
+    drawParticles();
+
+}
+
+/* =========================================================
+   FURNITURE
+========================================================= */
+
+function drawFurniture(){
+
+    /* lobby desk */
+
+    ctx.fillStyle="#171c1a";
+    ctx.fillRect(180,170,230,55);
+
+    ctx.fillStyle="#66513b";
+    ctx.fillRect(190,158,210,15);
+
+    /* desks */
+
+    const desks=[
+        [410,115],
+        [455,115],
+        [410,450],
+        [470,450],
+        [820,150],
+        [1060,330]
+    ];
+
+    for(const d of desks){
+
+        ctx.fillStyle="#554434";
+        ctx.fillRect(
+            d[0],
+            d[1],
+            70,
+            35
+        );
+
+        ctx.fillStyle="#202523";
+        ctx.fillRect(
+            d[0]+8,
+            d[1]+8,
+            25,
+            16
+        );
+
+    }
+
+    /* vault */
+
+    ctx.fillStyle="#555c58";
+    ctx.fillRect(
+        1030,
+        520,
+        145,
+        90
+    );
+
+    ctx.fillStyle="#858d88";
+    ctx.fillRect(
+        1050,
+        535,
+        105,
+        60
+    );
+
+    ctx.fillStyle="#202523";
+
+    ctx.beginPath();
+    ctx.arc(
+        1102,
+        565,
+        20,
+        0,
+        Math.PI*2
+    );
+    ctx.fill();
+
+    for(let i=0;i<8;i++){
+
+        const a=i*Math.PI/4;
+
+        ctx.strokeStyle="#b1b6b2";
+        ctx.lineWidth=4;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            1102+Math.cos(a)*8,
+            565+Math.sin(a)*8
+        );
+
+        ctx.lineTo(
+            1102+Math.cos(a)*17,
+            565+Math.sin(a)*17
+        );
+
+        ctx.stroke();
+
+    }
+
+    ctx.lineWidth=1;
+
+}
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function drawPlayer(){
+
+    ctx.save();
+
+    ctx.translate(
+        player.x,
+        player.y
+    );
+
+    ctx.rotate(player.angle);
+
+    /* shadow */
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+
+    ctx.beginPath();
+    ctx.ellipse(
+        0,
+        12,
+        20,
+        8,
+        0,
+        0,
+        Math.PI*2
+    );
+    ctx.fill();
+
+    /* body */
+
+    ctx.fillStyle=
+        state.masked
+        ? "#4b5c67"
+        : "#62706a";
+
+    ctx.fillRect(
+        -14,
+        -13,
+        28,
+        29
+    );
+
+    /* head */
+
+    ctx.fillStyle=
+        state.masked
+        ? "#242a2e"
+        : "#c39a78";
+
+    ctx.fillRect(
+        -11,
+        -29,
+        22,
+        18
+    );
+
+    /* mask */
+
+    if(state.masked){
+
+        ctx.fillStyle="#15191b";
+
+        ctx.fillRect(
+            -12,
+            -29,
+            24,
+            13
+        );
+
+        ctx.fillStyle="#c6d0cb";
+
+        ctx.fillRect(
+            -7,
+            -25,
+            4,
+            3
+        );
+
+        ctx.fillRect(
+            3,
+            -25,
+            4,
+            3
+        );
+
+    }
+
+    /* weapon ONLY while masked */
+
+    if(state.masked || state.crimeCommitted){
+
+        ctx.fillStyle="#151719";
+
+        ctx.fillRect(
+            7,
+            -4,
+            30,
+            8
+        );
+
+        ctx.fillStyle="#737b78";
+
+        ctx.fillRect(
+            28,
+            -2,
+            12,
+            4
+        );
+
+    }
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   GUARDS
+========================================================= */
+
+function drawGuards(){
+
+    for(const g of guards){
+
+        if(!g.alive) continue;
+
+        ctx.save();
+
+        ctx.translate(
+            g.x,
+            g.y
+        );
+
+        ctx.rotate(g.angle);
+
+        /* shadow */
+
+        ctx.fillStyle="rgba(0,0,0,.3)";
+
+        ctx.beginPath();
+        ctx.ellipse(
+            0,
+            12,
+            19,
+            7,
+            0,
+            0,
+            Math.PI*2
+        );
+        ctx.fill();
+
+        /* body */
+
+        ctx.fillStyle=
+            g.state==="combat"
+            ? "#7c3938"
+            : "#4c5a55";
+
+        ctx.fillRect(
+            -13,
+            -12,
+            26,
+            27
+        );
+
+        /* head */
+
+        ctx.fillStyle="#c19876";
+
+        ctx.fillRect(
+            -10,
+            -27,
+            20,
+            16
+        );
+
+        /* cap */
+
+        ctx.fillStyle="#222927";
+
+        ctx.fillRect(
+            -11,
+            -29,
+            22,
+            6
+        );
+
+        /* weapon */
+
+        ctx.fillStyle="#151718";
+
+        ctx.fillRect(
+            8,
+            -3,
+            25,
+            7
+        );
+
+        ctx.restore();
+
+        /* health */
+
+        if(g.health<100){
+
+            ctx.fillStyle="#171b19";
+            ctx.fillRect(
+                g.x-20,
+                g.y-39,
+                40,
+                5
+            );
+
+            ctx.fillStyle="#9b5e58";
+            ctx.fillRect(
+                g.x-20,
+                g.y-39,
+                40*(g.health/100),
+                5
+            );
+
+        }
+
+    }
+
+}
+
+/* =========================================================
+   CAMERAS
+========================================================= */
+
+function drawCameras(){
+
+    for(const c of cameras){
+
+        ctx.save();
+
+        ctx.translate(c.x,c.y);
+
+        ctx.fillStyle=
+            c.disabled
+            ? "#38413d"
+            : "#151918";
+
+        ctx.fillRect(
+            -10,
+            -7,
+            20,
+            14
+        );
+
+        ctx.fillStyle=
+            c.disabled
+            ? "#52605a"
+            : "#bd5a51";
+
+        ctx.fillRect(
+            2,
+            -3,
+            5,
+            5
+        );
+
+        if(!c.disabled){
+
+            ctx.globalAlpha=.07;
+
+            ctx.fillStyle="#d76a5d";
+
+            ctx.beginPath();
+
+            ctx.moveTo(0,0);
+
+            ctx.arc(
+                0,
+                0,
+                170,
+                c.angle-.35,
+                c.angle+.35
+            );
+
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.globalAlpha=1;
+
+        }
+
+        ctx.restore();
+
+    }
+
+}
+
+/* =========================================================
+   LOOT
+========================================================= */
+
+function drawLoot(){
+
+    for(const bag of lootBags){
+
+        if(bag.taken) continue;
+
+        ctx.save();
+
+        ctx.translate(
+            bag.x,
+            bag.y
+        );
+
+        ctx.fillStyle="#8b7047";
+
+        ctx.fillRect(
+            -18,
+            -13,
+            36,
+            28
+        );
+
+        ctx.fillStyle="#b89a63";
+
+        ctx.fillRect(
+            -12,
+            -18,
+            24,
+            7
+        );
+
+        ctx.fillStyle="#252b28";
+
+        ctx.fillRect(
+            -8,
+            -5,
+            16,
+            4
+        );
+
+        ctx.restore();
+
+    }
+
+}
+
+/* =========================================================
+   KEYCARD
+========================================================= */
+
+function drawKeycard(){
+
+    if(!keycardItem.active) return;
+
+    ctx.save();
+
+    ctx.translate(
+        keycardItem.x,
+        keycardItem.y
+    );
+
+    ctx.rotate(-.2);
+
+    ctx.fillStyle="#d6d9cf";
+
+    ctx.fillRect(
+        -15,
+        -9,
+        30,
+        18
+    );
+
+    ctx.fillStyle="#3c555e";
+
+    ctx.fillRect(
+        -10,
+        -5,
+        20,
+        4
+    );
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   VAN
+========================================================= */
+
+function drawVan(){
+
+    ctx.save();
+
+    ctx.translate(
+        van.x,
+        van.y
+    );
+
+    /* shadow */
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+
+    ctx.fillRect(
+        -5,
+        20,
+        van.w+10,
+        10
+    );
+
+    /* body */
+
+    ctx.fillStyle="#c6c8c3";
+
+    ctx.fillRect(
+        0,
+        0,
+        van.w,
+        van.h
+    );
+
+    /* cabin */
+
+    ctx.fillStyle="#3b4c50";
+
+    ctx.fillRect(
+        72,
+        7,
+        55,
+        22
+    );
+
+    /* windshield */
+
+    ctx.fillStyle="#151c1d";
+
+    ctx.fillRect(
+        102,
+        9,
+        20,
+        17
+    );
+
+    /* wheels */
+
+    ctx.fillStyle="#121515";
+
+    ctx.beginPath();
+    ctx.arc(25,45,11,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(117,45,11,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="#5e6764";
+
+    ctx.beginPath();
+    ctx.arc(25,45,5,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(117,45,5,0,Math.PI*2);
+    ctx.fill();
+
+    /* PAYTIME */
+
+    ctx.fillStyle="#252b29";
+    ctx.font="bold 12px Arial";
+    ctx.fillText(
+        "PAYTIME",
+        12,
+        21
+    );
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   BULLETS DRAW
+========================================================= */
+
+function drawBullets(){
+
+    for(const b of bullets){
+
+        ctx.fillStyle="#e3d7ad";
+
+        ctx.fillRect(
+            b.x-3,
+            b.y-2,
+            6,
+            4
+        );
+
+    }
+
+}
+
+/* =========================================================
+   PARTICLES DRAW
+========================================================= */
+
+function drawParticles(){
+
+    for(const p of particles){
+
+        ctx.globalAlpha=
+            Math.max(
+                0,
+                p.life/p.maxLife
+            );
+
+        ctx.fillStyle="#c5c9b7";
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            p.size,
+            p.size
+        );
+
+    }
+
+    ctx.globalAlpha=1;
+
+}
+
+/* =========================================================
+   LIGHTING
+========================================================= */
+
+function drawLighting(){
+
+    const gradient=
+        ctx.createRadialGradient(
+            player.x,
+            player.y,
+            50,
+            player.x,
+            player.y,
+            400
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(0,0,0,0)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(0,0,0,.32)"
+    );
+
+    ctx.fillStyle=gradient;
+    ctx.fillRect(
         0,
         0,
         W,
         H
     );
 
-    ctx.save();
+    if(state.alarm){
 
-    if(
-        screenShake &&
-        shake>0
-    ){
+        const pulse=
+            (Math.sin(performance.now()/100)+1)/2;
 
-        ctx.translate(
-            random(-shake,shake),
-            random(-shake,shake)
+        ctx.fillStyle=
+            "rgba(150,30,30,"+
+            (.025*pulse)+")";
+
+        ctx.fillRect(
+            0,
+            0,
+            W,
+            H
         );
-
-        shake*=.84;
 
     }
 
-    drawWorld();
+}
 
-    ctx.restore();
+/* =========================================================
+   CROSSHAIR
+========================================================= */
 
-    drawRetro();
+function updateCrosshair(){
+
+    const crosshair=
+        document.getElementById("crosshair");
+
+    crosshair.style.left=
+        (mouse.x/W*100)+"%";
+
+    crosshair.style.top=
+        (mouse.y/H*100)+"%";
+
+}
+
+/* =========================================================
+   MAIN UPDATE
+========================================================= */
+
+function update(){
+
+    if(state.playing && !state.paused){
+
+        updatePlayer();
+        updateGuards();
+        updateBullets();
+        updateParticles();
+        stageLogic();
+
+        /* camera alarm */
+
+        if(
+            state.masked &&
+            !state.camerasDisabled
+        ){
+
+            for(const c of cameras){
+
+                if(c.disabled) continue;
+
+                const d=
+                    Math.hypot(
+                        player.x-c.x,
+                        player.y-c.y
+                    );
+
+                if(d<160){
+
+                    state.alarm=true;
+
+                }
+
+            }
+
+        }
+
+        /* gunfire alarm */
+
+        if(
+            state.crimeCommitted &&
+            !state.suppressor
+        ){
+
+            state.alarm=true;
+
+        }
+
+    }
+
+    updateHUD();
+    updateCrosshair();
+
+}
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function draw(){
+
+    if(state.playing){
+
+        drawWorld();
+        drawLighting();
+
+    }else{
+
+        /* background behind menus */
+
+        ctx.fillStyle="#111815";
+        ctx.fillRect(
+            0,
+            0,
+            W,
+            H
+        );
+
+        /* decorative bank silhouette */
+
+        ctx.fillStyle="#18211d";
+
+        ctx.fillRect(
+            150,
+            150,
+            1100,
+            480
+        );
+
+        ctx.fillStyle="#202b26";
+
+        for(let x=190;x<1220;x+=120){
+
+            ctx.fillRect(
+                x,
+                210,
+                75,
+                180
+            );
+
+        }
+
+    }
 
 }
 
@@ -4786,45 +3652,37 @@ function render(){
    LOOP
 ========================================================= */
 
-function loop(now){
+function loop(){
 
-    const dt=
-        Math.min(
-            .033,
-            (now-lastTime)/1000
-        );
+    update();
+    draw();
 
-    lastTime=now;
-
-    update(dt);
-
-    render();
-
-    requestAnimationFrame(
-        loop
-    );
+    requestAnimationFrame(loop);
 
 }
 
 /* =========================================================
-   START
+   INITIAL STATE
 ========================================================= */
 
-updateLoadout();
+updateLoadoutUI();
 
-resetGuards();
-
-resetCameras();
+scanlines.style.display=
+    state.retro
+    ? "block"
+    : "none";
 
 /*
-    IMPORTANT:
-    We start at the MENU.
-    We DO NOT call resetGame() here.
+   IMPORTANT:
+   DO NOT START THE HEIST HERE.
+
+   The game intentionally starts at the
+   MAIN MENU. PLAY starts the heist.
 */
 
 showScreen("main");
 
-requestAnimationFrame(loop);
+loop();
 
 </script>
 

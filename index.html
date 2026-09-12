@@ -1,10 +1,665 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Game Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Websiteorsumthin | Game Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #08090d;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 9, 13, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #20232c;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #7c5cff;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #aeb2c0;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        /* HERO */
+
+        .hero {
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 25px 70px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(45px, 8vw, 85px);
+            line-height: 0.95;
+            font-weight: 900;
+            letter-spacing: -4px;
+        }
+
+        .hero h1 span {
+            color: #7c5cff;
+        }
+
+        .hero p {
+            max-width: 600px;
+            margin: 25px auto;
+            color: #9da2b1;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .hero-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 15px 30px;
+            background: #7c5cff;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.25s;
+            box-shadow: 0 0 30px rgba(124, 92, 255, 0.25);
+        }
+
+        .hero-button:hover {
+            transform: translateY(-3px);
+            background: #8c70ff;
+            box-shadow: 0 0 40px rgba(124, 92, 255, 0.45);
+        }
+
+        /* SEARCH */
+
+        .search-container {
+            max-width: 650px;
+            margin: 0 auto 60px;
+            padding: 0 25px;
+        }
+
+        .search {
+            width: 100%;
+            padding: 17px 20px;
+            border-radius: 12px;
+            border: 1px solid #292d38;
+            background: #11131a;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search:focus {
+            border-color: #7c5cff;
+            box-shadow: 0 0 20px rgba(124, 92, 255, 0.15);
+        }
+
+        /* MAIN */
+
+        main {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 25px 80px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            font-size: 30px;
+        }
+
+        .section-title p {
+            color: #777d8d;
+        }
+
+        /* GAME GRID */
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .game-card {
+            background: #11131a;
+            border: 1px solid #242832;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.25s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-7px);
+            border-color: #7c5cff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .game-image {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+            background: linear-gradient(135deg, #171923, #252936);
+        }
+
+        .game-info {
+            padding: 20px;
+        }
+
+        .game-info h3 {
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .game-info p {
+            color: #858b9a;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        .game-tag {
+            display: inline-block;
+            background: #1c1f2a;
+            color: #a9a1ff;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .play-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 9px;
+            background: #7c5cff;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .play-button:hover {
+            background: #8c70ff;
+            transform: scale(1.02);
+        }
+
+        /* EMPTY SEARCH */
+
+        .no-results {
+            display: none;
+            text-align: center;
+            color: #777d8d;
+            padding: 50px;
+            grid-column: 1 / -1;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid #20232c;
+            padding: 35px 25px;
+            text-align: center;
+            color: #666b78;
+        }
+
+        footer strong {
+            color: #7c5cff;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .games {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .games {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 60px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>🎮 Welcome to My Game Website!</h1>
-    <p>Games coming soon...</p>
-</body>
-</html>
+
+    <!-- HEADER -->
+
+    <header>
+        <div class="navbar">
+
+            <div class="logo">
+                🎮 Website<span>orsumthin</span>
+            </div>
+
+            <nav>
+                <a href="#">Home</a>
+                <a href="#games">Games</a>
+                <a href="#about">About</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>
+            PLAY.<br>
+            <span>HAVE FUN.</span>
+        </h1>
+
+        <p>
+            Welcome to Websiteorsumthin — a place to find
+            cool games and waste way too much time playing them.
+        </p>
+
+        <a class="hero-button" href="#games">
+            🎮 Browse Games
+        </a>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-container">
+
+        <input
+            id="search"
+            class="search"
+            type="text"
+            placeholder="🔎 Search games..."
+        >
+
+    </div>
+
+
+    <!-- GAMES -->
+
+    <main id="games">
+
+        <div class="section-title">
+
+            <div>
+                <h2>🔥 Featured Games</h2>
+                <p>Pick something and start playing.</p>
+            </div>
+
+        </div>
+
+
+        <div class="games" id="gameGrid">
+
+
+            <!-- GAME 1 -->
+
+            <div class="game-card" data-name="Flappy Bird">
+
+                <div class="game-image">
+                    🐦
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">ARCADE</span>
+
+                    <h3>Flappy Bird</h3>
+
+                    <p>
+                        Dodge the pipes and see how high
+                        you can get.
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="playGame('Flappy Bird')"
+                    >
+                        ▶ PLAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 2 -->
+
+            <div class="game-card" data-name="Snake">
+
+                <div class="game-image">
+                    🐍
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">CLASSIC</span>
+
+                    <h3>Snake</h3>
+
+                    <p>
+                        Eat the food, grow bigger,
+                        and don't hit yourself.
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="playGame('Snake')"
+                    >
+                        ▶ PLAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 3 -->
+
+            <div class="game-card" data-name="Space Shooter">
+
+                <div class="game-image">
+                    🚀
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">ACTION</span>
+
+                    <h3>Space Shooter</h3>
+
+                    <p>
+                        Blast enemies and survive
+                        the endless waves.
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="playGame('Space Shooter')"
+                    >
+                        ▶ PLAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 4 -->
+
+            <div class="game-card" data-name="2048">
+
+                <div class="game-image">
+                    🔢
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">PUZZLE</span>
+
+                    <h3>2048</h3>
+
+                    <p>
+                        Combine the numbers and try
+                        to reach 2048.
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="playGame('2048')"
+                    >
+                        ▶ PLAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 5 -->
+
+            <div class="game-card" data-name="Tetris">
+
+                <div class="game-image">
+                    🧱
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">CLASSIC</span>
+
+                    <h3>Tetris</h3>
+
+                    <p>
+                        Stack the blocks and clear
+                        as many lines as possible.
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="playGame('Tetris')"
+                    >
+                        ▶ PLAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 6 -->
+
+            <div class="game-card" data-name="Coming Soon">
+
+                <div class="game-image">
+                    ❓
+                </div>
+
+                <div class="game-info">
+
+                    <span class="game-tag">COMING SOON</span>
+
+                    <h3>Something Cool</h3>
+
+                    <p>
+                        A new game is coming soon...
+                    </p>
+
+                    <button
+                        class="play-button"
+                        onclick="comingSoon()"
+                    >
+                        🔒 SOON
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="no-results" id="noResults">
+                😭 No games found.
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ABOUT -->
+
+    <section id="about" style="
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px 25px 80px;
+        text-align: center;
+    ">
+
+        <h2 style="font-size: 30px; margin-bottom: 15px;">
+            About Websiteorsumthin
+        </h2>
+
+        <p style="
+            color: #858b9a;
+            line-height: 1.7;
+        ">
+            This is a free gaming website made for people
+            who just want to play some games.
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 <strong>Websiteorsumthin</strong>
+            · Made with ❤️ and way too much gaming
+        </p>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        /* PLAY BUTTON */
+
+        function playGame(game) {
+
+            alert(
+                "🎮 " + game +
+                " is coming soon!\n\n" +
+                "We'll add the actual game here."
+            );
+
+        }
+
+
+        /* COMING SOON */
+
+        function comingSoon() {
+
+            alert(
+                "👀 This game isn't ready yet..."
+            );
+
+        }
+
+
+        /* SEARCH */
+
+        const search = document.getElementById("search");
+        const cards = document.querySelectorAll(".game-card");
+        const noResults = document.getElementById("noResults");
+
+        search.addEventListener("input", function () {
+
+            const searchText =
+                search.value.toLowerCase().trim();
+
+            let found = false;
+
+            cards.forEach(function (card) {
+
+                const name =
+                    card.dataset.name.toLowerCase();
+
+                if (name.includes(searchText)) {
+
+                    card.style.display = "block";
+                    found = true;
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+            if (found) {
+
+                noResults.style.display = "none";
+
+            } else {
+
+                no

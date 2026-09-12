@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PAYTIME</title>
+<title>Supermarket Tycoon</title>
 
 <style>
 *{
@@ -16,712 +16,668 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#090b0d;
+    background:#10151b;
     font-family:Arial,Helvetica,sans-serif;
-    color:white;
 }
 
 body{
+    color:#fff;
+}
+
+button{
+    font:inherit;
+    border:0;
+    cursor:pointer;
+}
+
+#app{
+    width:100vw;
+    height:100vh;
+    position:relative;
+}
+
+.screen{
+    position:absolute;
+    inset:0;
+    display:none;
+}
+
+.screen.active{
     display:flex;
+}
+
+/* ================= MENU ================= */
+
+#menu{
     align-items:center;
     justify-content:center;
+    background:
+        radial-gradient(circle at 50% 35%,#31536a 0%,#17232c 38%,#0c1116 100%);
 }
 
-#gameWrap{
-    position:relative;
-    width:min(1400px,100vw);
-    aspect-ratio:16/9;
-    max-height:100vh;
-    overflow:hidden;
-    background:#111;
-    box-shadow:0 0 60px #000;
+.menu-card{
+    width:min(520px,90vw);
+    padding:48px;
+    border-radius:24px;
+    background:rgba(16,23,29,.94);
+    border:2px solid #536976;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);
+    text-align:center;
 }
 
-canvas{
+.logo{
+    font-size:52px;
+    font-weight:1000;
+    letter-spacing:-4px;
+    color:#f5d76e;
+    text-shadow:5px 5px 0 #6d5722;
+    margin-bottom:4px;
+}
+
+.subtitle{
+    color:#aebbc3;
+    margin-bottom:34px;
+    letter-spacing:2px;
+    font-size:13px;
+}
+
+.menu-btn{
+    width:100%;
+    margin:8px 0;
+    padding:16px;
+    border-radius:12px;
+    background:#263640;
+    color:white;
+    font-weight:800;
+    border:2px solid #40515b;
+    transition:.15s;
+}
+
+.menu-btn:hover{
+    transform:translateY(-2px);
+    background:#334954;
+    border-color:#6e8490;
+}
+
+.menu-btn.primary{
+    background:#e0b83f;
+    color:#17130a;
+    border-color:#f4d56a;
+}
+
+.menu-btn.primary:hover{
+    background:#f1cc55;
+}
+
+/* ================= GAME ================= */
+
+#game{
+    background:#182027;
+}
+
+#canvas{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
     image-rendering:auto;
-    background:#17201c;
 }
 
-.hidden{
-    display:none !important;
-}
-
-/* =========================
-   MENUS
-========================= */
-
-.screen{
+#topbar{
     position:absolute;
-    inset:0;
+    left:14px;
+    right:14px;
+    top:12px;
+    height:66px;
     display:flex;
     align-items:center;
-    justify-content:center;
-    background:
-        radial-gradient(circle at 50% 35%,rgba(80,100,90,.22),transparent 35%),
-        linear-gradient(180deg,rgba(5,7,8,.35),rgba(5,7,8,.92));
-    z-index:20;
-}
-
-.menuBox{
-    width:min(620px,85%);
-    padding:55px 65px;
-    text-align:center;
-    background:rgba(13,17,18,.93);
-    border:3px solid #52615b;
-    box-shadow:
-        0 0 0 5px rgba(0,0,0,.35),
-        0 20px 80px rgba(0,0,0,.8);
-}
-
-.logo{
-    font-size:72px;
-    line-height:.9;
-    font-weight:1000;
-    letter-spacing:8px;
-    color:#e9eee9;
-    text-shadow:
-        5px 5px 0 #28312d,
-        9px 9px 0 rgba(0,0,0,.7);
-    margin-bottom:12px;
-}
-
-.subtitle{
-    color:#89948f;
-    letter-spacing:5px;
-    font-weight:bold;
-    font-size:13px;
-    margin-bottom:42px;
-}
-
-.menuButtons{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-}
-
-.menuButton{
-    width:100%;
-    min-height:64px;
-    border:2px solid #59655f;
-    background:#29332f;
-    color:#eef2ef;
-    font-size:21px;
-    font-weight:900;
-    letter-spacing:3px;
-    cursor:pointer;
-    transition:.12s;
-    box-shadow:inset 0 -5px 0 rgba(0,0,0,.25);
-}
-
-.menuButton:hover{
-    transform:translateY(-2px);
-    background:#39453f;
-    border-color:#aab7b0;
-}
-
-.menuButton:active{
-    transform:translateY(2px);
-    box-shadow:none;
-}
-
-.menuButton.primary{
-    background:#55685e;
-    border-color:#a9b9ae;
-}
-
-.menuButton.danger{
-    background:#422d2d;
-    border-color:#765151;
-}
-
-.smallText{
-    color:#78817d;
-    font-size:12px;
-    margin-top:25px;
-    letter-spacing:1px;
-}
-
-/* LOADOUT */
-
-.panelTitle{
-    font-size:42px;
-    font-weight:1000;
-    letter-spacing:5px;
-    margin-bottom:30px;
-}
-
-.loadoutCard{
-    text-align:left;
-    background:#1a211e;
-    border:2px solid #4e5b55;
-    padding:22px;
-    margin-bottom:20px;
-}
-
-.weaponName{
-    font-size:26px;
-    font-weight:1000;
-    letter-spacing:2px;
-}
-
-.weaponType{
-    color:#84918a;
-    margin-top:4px;
-    margin-bottom:18px;
+    gap:10px;
+    pointer-events:none;
 }
 
 .stat{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin:8px 0;
-    font-size:13px;
-    color:#b5beb9;
+    min-width:120px;
+    height:52px;
+    padding:8px 13px;
+    background:rgba(12,18,23,.92);
+    border:1px solid #465963;
+    border-radius:12px;
+    box-shadow:0 5px 20px rgba(0,0,0,.3);
 }
 
-.statBar{
-    height:8px;
-    flex:1;
-    background:#0d100f;
-    border:1px solid #3c4541;
-}
-
-.statFill{
-    height:100%;
-    background:#9caea2;
-}
-
-.toggleRow{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-top:20px;
-    padding-top:18px;
-    border-top:1px solid #39433e;
-}
-
-.toggleButtons{
-    display:flex;
-    gap:7px;
-}
-
-.toggle{
-    padding:9px 16px;
-    border:2px solid #48534e;
-    background:#171c1a;
-    color:#aab3ae;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.toggle.active{
-    background:#687a6e;
-    color:white;
-    border-color:#aebbb1;
-}
-
-/* SETTINGS */
-
-.settingRow{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 0;
-    border-bottom:1px solid #36403b;
-    color:#ccd2ce;
-}
-
-.checkbox{
-    width:48px;
-    height:25px;
-    border-radius:20px;
-    background:#29312e;
-    border:2px solid #56615b;
-    cursor:pointer;
-    position:relative;
-}
-
-.checkbox::after{
-    content:"";
-    position:absolute;
-    top:3px;
-    left:3px;
-    width:15px;
-    height:15px;
-    background:#8d9892;
-    border-radius:50%;
-    transition:.15s;
-}
-
-.checkbox.on{
-    background:#66776c;
-}
-
-.checkbox.on::after{
-    left:26px;
-    background:white;
-}
-
-/* PAUSE */
-
-.pauseBox{
-    width:500px;
-    padding:45px;
-    background:rgba(10,13,12,.96);
-    border:3px solid #536059;
-    text-align:center;
-}
-
-.pauseTitle{
-    font-size:50px;
-    font-weight:1000;
-    letter-spacing:6px;
-    margin-bottom:30px;
-}
-
-/* HUD */
-
-#hud{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    z-index:5;
-}
-
-#objective{
-    position:absolute;
-    top:20px;
-    left:25px;
-    padding:13px 18px;
-    background:rgba(7,10,9,.82);
-    border-left:5px solid #b9c6bd;
-    font-size:15px;
-    font-weight:bold;
-    letter-spacing:1px;
-    max-width:560px;
-}
-
-#objective span{
-    display:block;
-    color:#7f8d85;
+.stat-label{
     font-size:10px;
-    letter-spacing:3px;
-    margin-bottom:5px;
+    color:#91a1aa;
+    text-transform:uppercase;
+    letter-spacing:1px;
 }
 
-#stats{
-    position:absolute;
-    bottom:22px;
-    left:25px;
-    display:flex;
-    gap:10px;
-}
-
-.statBox{
-    background:rgba(7,10,9,.86);
-    border:2px solid #3e4843;
-    padding:9px 14px;
-    min-width:100px;
-}
-
-.statLabel{
-    color:#748079;
-    font-size:9px;
-    letter-spacing:2px;
-    font-weight:bold;
-}
-
-.statValue{
-    font-size:20px;
-    font-weight:1000;
+.stat-value{
+    font-size:18px;
+    font-weight:900;
     margin-top:3px;
 }
 
-#weaponHUD{
+#objective{
+    flex:1;
+    min-width:180px;
+    max-width:500px;
+}
+
+#objectiveText{
+    color:#f5d76e;
+}
+
+#buildPanel{
     position:absolute;
-    right:25px;
-    bottom:22px;
-    text-align:right;
-    background:rgba(7,10,9,.86);
-    border:2px solid #3e4843;
-    padding:12px 18px;
+    left:15px;
+    bottom:15px;
+    width:270px;
+    padding:13px;
+    background:rgba(12,18,23,.95);
+    border:1px solid #4a5d67;
+    border-radius:15px;
+    box-shadow:0 8px 30px rgba(0,0,0,.4);
 }
 
-#weaponNameHUD{
-    font-size:14px;
-    letter-spacing:2px;
-    font-weight:bold;
-}
-
-#ammoHUD{
-    font-size:34px;
-    font-weight:1000;
-}
-
-#maskHUD{
-    position:absolute;
-    top:20px;
-    right:25px;
-    background:rgba(7,10,9,.82);
-    border:2px solid #3e4843;
-    padding:10px 15px;
+.panel-title{
     font-size:12px;
-    font-weight:bold;
-    letter-spacing:2px;
+    color:#9eabb2;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin-bottom:9px;
 }
 
-#lockpickUI,
-#drillUI{
+.build-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+}
+
+.build-btn{
+    padding:9px 6px;
+    border-radius:8px;
+    background:#26353d;
+    color:#fff;
+    border:1px solid #41535d;
+    font-size:12px;
+    font-weight:700;
+}
+
+.build-btn:hover{
+    background:#344954;
+}
+
+.build-btn.selected{
+    background:#d7ae3a;
+    color:#15120b;
+}
+
+#buildHint{
+    font-size:10px;
+    color:#81919a;
+    margin-top:9px;
+    line-height:1.4;
+}
+
+#sidePanel{
+    position:absolute;
+    right:15px;
+    bottom:15px;
+    width:260px;
+    padding:13px;
+    background:rgba(12,18,23,.95);
+    border:1px solid #4a5d67;
+    border-radius:15px;
+    box-shadow:0 8px 30px rgba(0,0,0,.4);
+}
+
+.side-btn{
+    width:100%;
+    margin:4px 0;
+    padding:10px;
+    text-align:left;
+    background:#26353d;
+    color:white;
+    border-radius:8px;
+    border:1px solid #40525c;
+    font-weight:700;
+}
+
+.side-btn:hover{
+    background:#344954;
+}
+
+#message{
     position:absolute;
     left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:470px;
-    padding:28px;
-    background:rgba(8,11,10,.96);
-    border:3px solid #67736c;
-    text-align:center;
-    z-index:15;
-}
-
-.qteTitle{
-    font-size:28px;
-    font-weight:1000;
-    letter-spacing:3px;
-    margin-bottom:10px;
-}
-
-.qteHelp{
-    color:#88928d;
-    font-size:13px;
-    margin-bottom:22px;
-}
-
-.qteBar{
-    position:relative;
-    height:35px;
-    background:#171c1a;
-    border:2px solid #59635e;
-    overflow:hidden;
-}
-
-.qteSweet{
-    position:absolute;
-    top:0;
-    height:100%;
-    background:#657f6c;
-}
-
-.qteCursor{
-    position:absolute;
-    top:-5px;
-    width:6px;
-    height:45px;
-    background:#fff;
-    box-shadow:0 0 10px #fff;
-}
-
-#qteSuccess{
-    margin-top:14px;
-    font-weight:bold;
-    color:#aebbb1;
-}
-
-#drillProgressOuter{
-    height:24px;
-    border:2px solid #59635e;
-    background:#151917;
-    margin-top:20px;
-}
-
-#drillProgress{
-    height:100%;
-    width:0%;
-    background:#7b8c81;
-}
-
-#crosshair{
-    position:absolute;
-    width:18px;
-    height:18px;
-    transform:translate(-50%,-50%);
+    top:90px;
+    transform:translateX(-50%);
+    padding:10px 18px;
+    background:rgba(13,19,24,.95);
+    border:1px solid #637680;
+    border-radius:20px;
+    opacity:0;
     pointer-events:none;
-    z-index:6;
+    transition:.2s;
+    font-weight:700;
 }
 
-#crosshair::before,
-#crosshair::after{
-    content:"";
-    position:absolute;
-    background:#fff;
-    opacity:.85;
+#message.show{
+    opacity:1;
 }
 
-#crosshair::before{
-    width:18px;
-    height:2px;
-    top:8px;
-    left:0;
-}
+/* ================= PANELS ================= */
 
-#crosshair::after{
-    width:2px;
-    height:18px;
-    top:0;
-    left:8px;
-}
-
-/* RESULT */
-
-.resultCash{
-    font-size:50px;
-    font-weight:1000;
-    margin:15px 0;
-}
-
-.resultStats{
-    color:#9ba69f;
-    line-height:2;
-    margin-bottom:25px;
-}
-
-/* retro effect */
-
-#scanlines{
+.modal{
     position:absolute;
     inset:0;
-    pointer-events:none;
-    z-index:30;
-    background:repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.018) 0px,
-        rgba(255,255,255,.018) 1px,
-        transparent 1px,
-        transparent 4px
-    );
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.62);
+    z-index:20;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-card{
+    width:min(900px,92vw);
+    max-height:85vh;
+    overflow:auto;
+    padding:25px;
+    border-radius:18px;
+    background:#151e24;
+    border:2px solid #4b606b;
+    box-shadow:0 25px 80px rgba(0,0,0,.7);
+}
+
+.modal-card h2{
+    margin:0 0 18px;
+    color:#f1ce63;
+}
+
+.close{
+    float:right;
+    background:#344650;
+    color:white;
+    border-radius:8px;
+    padding:8px 12px;
+}
+
+.close:hover{
+    background:#4a5d68;
+}
+
+.product-row{
+    display:grid;
+    grid-template-columns:1.5fr .8fr .8fr .9fr .8fr;
+    gap:8px;
+    align-items:center;
+    padding:9px;
+    border-bottom:1px solid #29363e;
+}
+
+.product-row.header{
+    color:#81929c;
+    font-size:11px;
+    text-transform:uppercase;
+}
+
+.small-input{
+    width:90px;
+    padding:7px;
+    border-radius:7px;
+    border:1px solid #566a75;
+    background:#202c33;
+    color:white;
+}
+
+.action{
+    padding:7px 10px;
+    border-radius:7px;
+    background:#d3ad3d;
+    color:#16130a;
+    font-weight:800;
+}
+
+.action:hover{
+    background:#efd15f;
+}
+
+.report{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.report-box{
+    padding:15px;
+    background:#202b32;
+    border:1px solid #394b55;
+    border-radius:12px;
+}
+
+.report-big{
+    font-size:28px;
+    font-weight:900;
+    margin-top:5px;
+}
+
+/* ================= TOAST ================= */
+
+#toast{
+    position:absolute;
+    left:50%;
+    bottom:100px;
+    transform:translateX(-50%);
+    background:#f1d061;
+    color:#19150a;
+    font-weight:900;
+    padding:12px 20px;
+    border-radius:20px;
+    opacity:0;
+    transition:.2s;
+    z-index:50;
+}
+
+#toast.show{
+    opacity:1;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:850px){
+    #sidePanel{
+        display:none;
+    }
+
+    #buildPanel{
+        width:230px;
+    }
+
+    .stat{
+        min-width:85px;
+    }
+
+    .stat:nth-child(4){
+        display:none;
+    }
+
+    .logo{
+        font-size:42px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div id="gameWrap">
+<div id="app">
 
-<canvas id="game" width="1400" height="800"></canvas>
+<!-- ================= MAIN MENU ================= -->
 
-<div id="hud" class="hidden">
-    <div id="objective">
-        <span>OBJECTIVE</span>
-        <b id="objectiveText">PUT ON YOUR MASK — PRESS M</b>
-    </div>
+<div id="menu" class="screen active">
+    <div class="menu-card">
 
-    <div id="maskHUD">UNMASKED</div>
+        <div class="logo">SUPERMARKET</div>
+        <div class="subtitle">TYCOON</div>
 
-    <div id="stats">
-        <div class="statBox">
-            <div class="statLabel">HEALTH</div>
-            <div class="statValue" id="healthHUD">100</div>
+        <button id="newGameBtn" class="menu-btn primary">
+            🛒 NEW GAME
+        </button>
+
+        <button id="continueBtn" class="menu-btn">
+            ▶ CONTINUE
+        </button>
+
+        <button id="settingsBtn" class="menu-btn">
+            ⚙ SETTINGS
+        </button>
+
+        <button id="wipeBtn" class="menu-btn">
+            🗑 RESET SAVE
+        </button>
+
+        <div style="margin-top:20px;color:#687982;font-size:11px;">
+            Build your store. Stock the shelves. Make money.
         </div>
 
-        <div class="statBox">
-            <div class="statLabel">ARMOR</div>
-            <div class="statValue" id="armorHUD">100</div>
-        </div>
-
-        <div class="statBox">
-            <div class="statLabel">CASH</div>
-            <div class="statValue" id="cashHUD">$0</div>
-        </div>
-    </div>
-
-    <div id="weaponHUD">
-        <div id="weaponNameHUD">ASSAULT RIFLE</div>
-        <div id="ammoHUD">30 / 120</div>
-    </div>
-
-    <div id="crosshair"></div>
-</div>
-
-<!-- MAIN MENU -->
-
-<div id="mainScreen" class="screen">
-    <div class="menuBox">
-        <div class="logo">PAYTIME</div>
-        <div class="subtitle">A 2D HEIST EXPERIENCE</div>
-
-        <div class="menuButtons">
-            <button id="playBtn" class="menuButton primary">▶ PLAY</button>
-            <button id="loadoutBtn" class="menuButton">LOADOUT</button>
-            <button id="settingsBtn" class="menuButton">SETTINGS</button>
-            <button id="exitBtn" class="menuButton danger">EXIT</button>
-        </div>
-
-        <div class="smallText">
-            ROB THE BANK. GET THE LOOT. GET OUT.
-        </div>
     </div>
 </div>
 
-<!-- LOADOUT -->
+<!-- ================= GAME ================= -->
 
-<div id="loadoutScreen" class="screen hidden">
-    <div class="menuBox">
+<div id="game" class="screen">
 
-        <div class="panelTitle">LOADOUT</div>
+    <canvas id="canvas"></canvas>
 
-        <div class="loadoutCard">
-            <div class="weaponName">ASSAULT RIFLE</div>
-            <div class="weaponType">PRIMARY WEAPON</div>
+    <div id="topbar">
 
-            <div class="stat">
-                DAMAGE
-                <div class="statBar">
-                    <div class="statFill" style="width:78%"></div>
-                </div>
-            </div>
+        <div class="stat">
+            <div class="stat-label">Cash</div>
+            <div id="cashText" class="stat-value">$10,000</div>
+        </div>
 
-            <div class="stat">
-                FIRE RATE
-                <div class="statBar">
-                    <div class="statFill" style="width:86%"></div>
-                </div>
-            </div>
+        <div class="stat">
+            <div class="stat-label">Rating</div>
+            <div id="ratingText" class="stat-value">3.5 ⭐</div>
+        </div>
 
-            <div class="stat">
-                ACCURACY
-                <div class="statBar">
-                    <div class="statFill" style="width:70%"></div>
-                </div>
-            </div>
+        <div class="stat">
+            <div class="stat-label">Day</div>
+            <div id="dayText" class="stat-value">1</div>
+        </div>
 
-            <div class="stat">
-                MAGAZINE
-                <div class="statBar">
-                    <div class="statFill" style="width:60%"></div>
-                </div>
-            </div>
+        <div class="stat">
+            <div class="stat-label">Level</div>
+            <div id="levelText" class="stat-value">1</div>
+        </div>
 
-            <div class="toggleRow">
-                <b>SUPPRESSOR</b>
-
-                <div class="toggleButtons">
-                    <button id="suppressorOff" class="toggle active">OFF</button>
-                    <button id="suppressorOn" class="toggle">ON</button>
-                </div>
+        <div id="objective" class="stat">
+            <div class="stat-label">Objective</div>
+            <div id="objectiveText" class="stat-value">
+                STOCK YOUR STORE
             </div>
         </div>
 
-        <button id="loadoutBackBtn" class="menuButton">BACK</button>
-
-    </div>
-</div>
-
-<!-- SETTINGS -->
-
-<div id="settingsScreen" class="screen hidden">
-    <div class="menuBox">
-
-        <div class="panelTitle">SETTINGS</div>
-
-        <div class="settingRow">
-            <span>SCREEN SHAKE</span>
-            <div id="shakeToggle" class="checkbox on"></div>
-        </div>
-
-        <div class="settingRow">
-            <span>RETRO SCANLINES</span>
-            <div id="retroToggle" class="checkbox on"></div>
-        </div>
-
-        <br>
-
-        <button id="settingsBackBtn" class="menuButton">BACK</button>
-
-    </div>
-</div>
-
-<!-- PAUSE -->
-
-<div id="pauseScreen" class="screen hidden">
-    <div class="pauseBox">
-
-        <div class="pauseTitle">PAUSED</div>
-
-        <div class="menuButtons">
-            <button id="resumeBtn" class="menuButton primary">RESUME</button>
-            <button id="restartBtn" class="menuButton">RESTART HEIST</button>
-            <button id="pauseMenuBtn" class="menuButton">MAIN MENU</button>
+        <div class="stat">
+            <div class="stat-label">Customers</div>
+            <div id="customersText" class="stat-value">0</div>
         </div>
 
     </div>
-</div>
 
-<!-- LOCKPICK -->
+    <div id="buildPanel">
 
-<div id="lockpickUI" class="hidden">
+        <div class="panel-title">Build</div>
 
-    <div class="qteTitle">LOCKPICK</div>
+        <div class="build-grid">
 
-    <div class="qteHelp">
-        PRESS SPACE WHEN THE CURSOR IS IN THE GREEN ZONE
-    </div>
+            <button class="build-btn" data-build="shelf">
+                📦 Shelf<br>$150
+            </button>
 
-    <div class="qteBar">
-        <div id="qteSweet" class="qteSweet"></div>
-        <div id="qteCursor" class="qteCursor"></div>
-    </div>
+            <button class="build-btn" data-build="fridge">
+                🧊 Fridge<br>$450
+            </button>
 
-    <div id="qteSuccess">
-        SUCCESS: 0 / 4
-    </div>
+            <button class="build-btn" data-build="checkout">
+                🧾 Checkout<br>$500
+            </button>
 
-</div>
+            <button class="build-btn" data-build="storage">
+                📚 Storage<br>$200
+            </button>
 
-<!-- DRILL -->
+            <button class="build-btn" data-build="cart">
+                🛒 Carts<br>$250
+            </button>
 
-<div id="drillUI" class="hidden">
+            <button class="build-btn" data-build="light">
+                💡 Light<br>$75
+            </button>
 
-    <div class="qteTitle">VAULT DRILL</div>
+            <button class="build-btn" data-build="decor">
+                🌿 Decor<br>$100
+            </button>
 
-    <div class="qteHelp">
-        HOLD E TO DRILL THROUGH THE VAULT
-    </div>
+            <button class="build-btn" data-build="delete">
+                ❌ Delete
+            </button>
 
-    <div id="drillProgressOuter">
-        <div id="drillProgress"></div>
-    </div>
-
-    <div id="drillPercent">0%</div>
-
-</div>
-
-<!-- RESULTS -->
-
-<div id="resultScreen" class="screen hidden">
-    <div class="menuBox">
-
-        <div class="panelTitle" id="resultTitle">HEIST COMPLETE</div>
-
-        <div class="resultCash" id="resultCash">$0</div>
-
-        <div class="resultStats" id="resultStats">
-            TIME: 0:00<br>
-            KILLS: 0<br>
-            LOOT: $0
         </div>
 
-        <button id="resultMenuBtn" class="menuButton primary">
-            MAIN MENU
+        <div id="buildHint">
+            Click an item, then click a grid tile to place it.
+            Press ESC to cancel.
+        </div>
+
+    </div>
+
+    <div id="sidePanel">
+
+        <div class="panel-title">Management</div>
+
+        <button class="side-btn" id="productsBtn">
+            📦 Products & Pricing
+        </button>
+
+        <button class="side-btn" id="inventoryBtn">
+            📋 Inventory
+        </button>
+
+        <button class="side-btn" id="expandBtn">
+            🏗️ Expand Store
+        </button>
+
+        <button class="side-btn" id="reportBtn">
+            📊 Daily Report
+        </button>
+
+        <button class="side-btn" id="openBtn">
+            🔓 OPEN STORE
+        </button>
+
+        <button class="side-btn" id="saveBtn">
+            💾 Save Game
+        </button>
+
+        <button class="side-btn" id="menuBtn">
+            🏠 Main Menu
         </button>
 
     </div>
+
+    <div id="message"></div>
+    <div id="toast"></div>
+
 </div>
 
-<div id="scanlines"></div>
+<!-- ================= PRODUCTS ================= -->
+
+<div id="productsModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="productsModal">X</button>
+
+        <h2>📦 Products & Pricing</h2>
+
+        <div class="product-row header">
+            <div>Product</div>
+            <div>Cost</div>
+            <div>Price</div>
+            <div>Profit</div>
+            <div>Stock</div>
+        </div>
+
+        <div id="productList"></div>
+
+    </div>
+
+</div>
+
+<!-- ================= INVENTORY ================= -->
+
+<div id="inventoryModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="inventoryModal">X</button>
+
+        <h2>📋 Inventory Orders</h2>
+
+        <div id="inventoryList"></div>
+
+    </div>
+
+</div>
+
+<!-- ================= EXPANSION ================= -->
+
+<div id="expandModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="expandModal">X</button>
+
+        <h2>🏗️ Expand Your Store</h2>
+
+        <p id="expandDescription"></p>
+
+        <button id="confirmExpand" class="action">
+            PURCHASE EXPANSION
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= REPORT ================= -->
+
+<div id="reportModal" class="modal">
+
+    <div class="modal-card">
+
+        <button class="close" data-close="reportModal">X</button>
+
+        <h2>📊 Daily Report</h2>
+
+        <div class="report">
+
+            <div class="report-box">
+                Revenue
+                <div id="reportRevenue" class="report-big">$0</div>
+            </div>
+
+            <div class="report-box">
+                Product Costs
+                <div id="reportCosts" class="report-big">$0</div>
+            </div>
+
+            <div class="report-box">
+                Customer Count
+                <div id="reportCustomers" class="report-big">0</div>
+            </div>
+
+            <div class="report-box">
+                Net Profit
+                <div id="reportProfit" class="report-big">$0</div>
+            </div>
+
+        </div>
+
+        <div style="margin-top:18px;color:#9baab2;">
+            Store rating:
+            <strong id="reportRating">3.5 ⭐</strong>
+        </div>
+
+    </div>
+
+</div>
 
 </div>
 
@@ -729,2960 +685,2539 @@ canvas{
 "use strict";
 
 /* =========================================================
-   PAYTIME
-   COMPLETE SINGLE FILE
-========================================================= */
+   SUPERMARKET TYCOON V1
+   ========================================================= */
 
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const W = canvas.width;
-const H = canvas.height;
+let W = 1400;
+let H = 800;
 
-/* =========================================================
-   UI
-========================================================= */
+canvas.width = W;
+canvas.height = H;
 
-const screens = {
-    main: document.getElementById("mainScreen"),
-    loadout: document.getElementById("loadoutScreen"),
-    settings: document.getElementById("settingsScreen"),
-    pause: document.getElementById("pauseScreen"),
-    result: document.getElementById("resultScreen")
+/* ================= CONSTANTS ================= */
+
+const TILE = 32;
+
+const COLORS = {
+    floor:"#d9c8a4",
+    floorAlt:"#d2be96",
+    wall:"#5a6267",
+    wallTop:"#78838a",
+    outside:"#55765c",
+    road:"#42484b",
+    parking:"#707579",
+    yellow:"#e3bd43",
+    shelf:"#875b36",
+    shelfTop:"#b77d47",
+    fridge:"#548ca1",
+    checkout:"#6b7074",
+    wood:"#754c2e",
+    white:"#f4f0df",
+    black:"#182027",
+    red:"#c84e45",
+    green:"#5db36c"
 };
 
-const hud = document.getElementById("hud");
-const lockpickUI = document.getElementById("lockpickUI");
-const drillUI = document.getElementById("drillUI");
-const scanlines = document.getElementById("scanlines");
+/* ================= PRODUCTS ================= */
 
-const objectiveText = document.getElementById("objectiveText");
-const healthHUD = document.getElementById("healthHUD");
-const armorHUD = document.getElementById("armorHUD");
-const cashHUD = document.getElementById("cashHUD");
-const ammoHUD = document.getElementById("ammoHUD");
-const maskHUD = document.getElementById("maskHUD");
+const PRODUCTS = [
+    {
+        id:"bread",
+        name:"Bread",
+        category:"Food",
+        cost:1.20,
+        price:2.49,
+        stock:20,
+        max:60
+    },
+    {
+        id:"cereal",
+        name:"Cereal",
+        category:"Food",
+        cost:2.40,
+        price:4.49,
+        stock:15,
+        max:60
+    },
+    {
+        id:"chips",
+        name:"Chips",
+        category:"Food",
+        cost:1.10,
+        price:2.29,
+        stock:20,
+        max:60
+    },
+    {
+        id:"cookies",
+        name:"Cookies",
+        category:"Food",
+        cost:1.30,
+        price:2.79,
+        stock:15,
+        max:60
+    },
+    {
+        id:"pasta",
+        name:"Pasta",
+        category:"Food",
+        cost:.90,
+        price:1.99,
+        stock:20,
+        max:60
+    },
+    {
+        id:"water",
+        name:"Water",
+        category:"Drinks",
+        cost:.30,
+        price:.99,
+        stock:30,
+        max:80
+    },
+    {
+        id:"soda",
+        name:"Soda",
+        category:"Drinks",
+        cost:.70,
+        price:1.79,
+        stock:25,
+        max:80
+    },
+    {
+        id:"juice",
+        name:"Juice",
+        category:"Drinks",
+        cost:1.10,
+        price:2.49,
+        stock:15,
+        max:60
+    },
+    {
+        id:"apples",
+        name:"Apples",
+        category:"Produce",
+        cost:.45,
+        price:.99,
+        stock:25,
+        max:80
+    },
+    {
+        id:"bananas",
+        name:"Bananas",
+        category:"Produce",
+        cost:.35,
+        price:.89,
+        stock:25,
+        max:80
+    }
+];
 
-const suppressorOff = document.getElementById("suppressorOff");
-const suppressorOn = document.getElementById("suppressorOn");
+/* ================= GAME STATE ================= */
 
-const shakeToggle = document.getElementById("shakeToggle");
-const retroToggle = document.getElementById("retroToggle");
+let state = {
+    cash:10000,
+    day:1,
+    level:1,
+    xp:0,
+    rating:3.5,
 
-const qteSweet = document.getElementById("qteSweet");
-const qteCursor = document.getElementById("qteCursor");
-const qteSuccess = document.getElementById("qteSuccess");
+    storeOpen:false,
 
-const drillProgress = document.getElementById("drillProgress");
-const drillPercent = document.getElementById("drillPercent");
+    width:20,
+    height:15,
 
-/* =========================================================
-   MENU SYSTEM
-========================================================= */
+    revenueToday:0,
+    costsToday:0,
+    customersToday:0,
 
-function hideAllScreens(){
-    Object.values(screens).forEach(screen=>{
-        screen.classList.add("hidden");
-    });
+    totalCustomers:0,
+    totalSales:0,
+
+    buildings:[],
+    customers:[],
+    particles:[],
+
+    selectedBuild:null,
+
+    clock:8*60,
+    lastTime:performance.now(),
+
+    expansionLevel:0,
+
+    settings:{
+        speed:1
+    }
+};
+
+/* ================= PLAYER ================= */
+
+let player = {
+    x:10,
+    y:14,
+    speed:5,
+    moving:false
+};
+
+/* ================= BUILDING PRICES ================= */
+
+const BUILD_PRICES = {
+    shelf:150,
+    fridge:450,
+    checkout:500,
+    storage:200,
+    cart:250,
+    light:75,
+    decor:100
+};
+
+/* ================= SAVE ================= */
+
+function saveGame(){
+    try{
+        localStorage.setItem(
+            "supermarket_tycoon_v1",
+            JSON.stringify({
+                state:{
+                    ...state,
+                    customers:[],
+                    particles:[]
+                },
+                products:PRODUCTS
+            })
+        );
+
+        toast("Game saved!");
+    }catch(e){
+        console.error(e);
+        toast("Could not save game.");
+    }
 }
+
+function loadGame(){
+    try{
+        const raw=localStorage.getItem("supermarket_tycoon_v1");
+
+        if(!raw){
+            toast("No save found.");
+            return false;
+        }
+
+        const data=JSON.parse(raw);
+
+        state={
+            ...state,
+            ...data.state,
+            customers:[],
+            particles:[]
+        };
+
+        if(data.products){
+            for(const saved of data.products){
+                const p=PRODUCTS.find(x=>x.id===saved.id);
+
+                if(p){
+                    p.price=saved.price;
+                    p.stock=saved.stock;
+                }
+            }
+        }
+
+        return true;
+
+    }catch(e){
+        console.error(e);
+        toast("Save file is corrupted.");
+        return false;
+    }
+}
+
+/* ================= UI ================= */
 
 function showScreen(name){
-    hideAllScreens();
 
-    if(screens[name]){
-        screens[name].classList.remove("hidden");
+    document.querySelectorAll(".screen").forEach(x=>{
+        x.classList.remove("active");
+    });
+
+    document.getElementById(name).classList.add("active");
+}
+
+function openModal(id){
+    document.getElementById(id).classList.add("active");
+}
+
+function closeModal(id){
+    document.getElementById(id).classList.remove("active");
+}
+
+document.querySelectorAll("[data-close]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        closeModal(btn.dataset.close);
+    });
+});
+
+/* ================= TOAST ================= */
+
+let toastTimer=0;
+
+function toast(text){
+
+    const el=document.getElementById("toast");
+
+    el.textContent=text;
+    el.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer=setTimeout(()=>{
+        el.classList.remove("show");
+    },1800);
+}
+
+/* ================= START ================= */
+
+function newGame(){
+
+    localStorage.removeItem("supermarket_tycoon_v1");
+
+    state.cash=10000;
+    state.day=1;
+    state.level=1;
+    state.xp=0;
+    state.rating=3.5;
+    state.storeOpen=false;
+    state.width=20;
+    state.height=15;
+    state.revenueToday=0;
+    state.costsToday=0;
+    state.customersToday=0;
+    state.totalCustomers=0;
+    state.totalSales=0;
+    state.buildings=[];
+    state.customers=[];
+    state.particles=[];
+    state.expansionLevel=0;
+
+    PRODUCTS.forEach(p=>{
+        const original={
+            bread:[1.20,2.49,20],
+            cereal:[2.40,4.49,15],
+            chips:[1.10,2.29,20],
+            cookies:[1.30,2.79,15],
+            pasta:[.90,1.99,20],
+            water:[.30,.99,30],
+            soda:[.70,1.79,25],
+            juice:[1.10,2.49,15],
+            apples:[.45,.99,25],
+            bananas:[.35,.89,25]
+        }[p.id];
+
+        p.cost=original[0];
+        p.price=original[1];
+        p.stock=original[2];
+    });
+
+    state.buildings=[
+        {type:"shelf",x:4,y:5},
+        {type:"shelf",x:7,y:5},
+        {type:"shelf",x:10,y:5},
+
+        {type:"fridge",x:14,y:5},
+
+        {type:"checkout",x:14,y:11},
+
+        {type:"storage",x:4,y:10},
+        {type:"storage",x:6,y:10},
+
+        {type:"cart",x:2,y:13},
+
+        {type:"light",x:3,y:2},
+        {type:"light",x:8,y:2},
+        {type:"light",x:13,y:2},
+        {type:"light",x:17,y:2}
+    ];
+
+    player.x=10;
+    player.y=14;
+
+    showScreen("game");
+
+    updateUI();
+
+    toast("Welcome to your supermarket!");
+
+    saveGame();
+}
+
+function continueGame(){
+
+    if(loadGame()){
+        showScreen("game");
+        updateUI();
+        toast("Welcome back!");
+    }
+}
+
+/* ================= MENU BUTTONS ================= */
+
+document.getElementById("newGameBtn").addEventListener("click",newGame);
+
+document.getElementById("continueBtn").addEventListener("click",continueGame);
+
+document.getElementById("settingsBtn").addEventListener("click",()=>{
+    toast("Settings coming in a later version.");
+});
+
+document.getElementById("wipeBtn").addEventListener("click",()=>{
+
+    if(confirm("Delete your supermarket save?")){
+        localStorage.removeItem("supermarket_tycoon_v1");
+        toast("Save deleted.");
     }
 
-    if(name === "main"){
-        hud.classList.add("hidden");
-        lockpickUI.classList.add("hidden");
-        drillUI.classList.add("hidden");
+});
+
+/* ================= BUILDING ================= */
+
+document.querySelectorAll("[data-build]").forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        const type=btn.dataset.build;
+
+        state.selectedBuild=type;
+
+        document.querySelectorAll(".build-btn").forEach(b=>{
+            b.classList.remove("selected");
+        });
+
+        btn.classList.add("selected");
+
+        toast(
+            type==="delete"
+            ? "Click something to delete it."
+            : "Click a grid tile to place it."
+        );
+    });
+
+});
+
+function occupied(x,y){
+    return state.buildings.some(b=>b.x===x && b.y===y);
+}
+
+function insideStore(x,y){
+    return (
+        x>=0 &&
+        y>=0 &&
+        x<state.width &&
+        y<state.height
+    );
+}
+
+function buildAt(x,y){
+
+    if(!state.selectedBuild){
+        return;
     }
+
+    if(!insideStore(x,y)){
+        return;
+    }
+
+    if(state.selectedBuild==="delete"){
+
+        const index=state.buildings.findIndex(
+            b=>b.x===x && b.y===y
+        );
+
+        if(index>=0){
+
+            state.buildings.splice(index,1);
+
+            toast("Object removed.");
+            updateUI();
+
+        }else{
+            toast("Nothing there.");
+        }
+
+        return;
+    }
+
+    if(occupied(x,y)){
+        toast("That tile is occupied.");
+        return;
+    }
+
+    const type=state.selectedBuild;
+    const price=BUILD_PRICES[type];
+
+    if(state.cash<price){
+        toast("Not enough money.");
+        return;
+    }
+
+    state.cash-=price;
+
+    state.buildings.push({
+        type,
+        x,
+        y
+    });
+
+    addXP(10);
+
+    toast(
+        type.charAt(0).toUpperCase()+type.slice(1)
+        +" built!"
+    );
+
+    updateUI();
 }
 
-function openLoadout(){
-    showScreen("loadout");
-}
+/* ================= CANVAS INPUT ================= */
 
-function openSettings(){
-    showScreen("settings");
-}
+canvas.addEventListener("click",e=>{
 
-function startHeist(){
-    resetGame();
-    hideAllScreens();
-    hud.classList.remove("hidden");
-    state.playing = true;
-    state.paused = false;
-}
+    const rect=canvas.getBoundingClientRect();
 
-function pauseGame(){
-    if(!state.playing) return;
+    const mx=(e.clientX-rect.left)*(canvas.width/rect.width);
+    const my=(e.clientY-rect.top)*(canvas.height/rect.height);
 
-    state.paused = true;
-    screens.pause.classList.remove("hidden");
-}
+    const tile=screenToTile(mx,my);
 
-function resumeGame(){
-    screens.pause.classList.add("hidden");
-    state.paused = false;
-}
-
-function restartHeist(){
-    screens.pause.classList.add("hidden");
-    startHeist();
-}
-
-function returnToMenu(){
-    state.playing = false;
-    state.paused = false;
-    lockpickUI.classList.add("hidden");
-    drillUI.classList.add("hidden");
-    showScreen("main");
-}
-
-/* =========================================================
-   BUTTON EVENTS
-   THESE ARE REAL HTML BUTTON EVENTS
-========================================================= */
-
-document.getElementById("playBtn").addEventListener("click", startHeist);
-
-document.getElementById("loadoutBtn").addEventListener("click", openLoadout);
-
-document.getElementById("settingsBtn").addEventListener("click", openSettings);
-
-document.getElementById("exitBtn").addEventListener("click", ()=>{
-    /*
-       Goes from /games/paytime/ back to /games/
-    */
-    window.location.href = "../";
+    if(tile){
+        buildAt(tile.x,tile.y);
+    }
 });
 
-document.getElementById("loadoutBackBtn").addEventListener("click", ()=>{
-    showScreen("main");
-});
+function screenToTile(mx,my){
 
-document.getElementById("settingsBackBtn").addEventListener("click", ()=>{
-    showScreen("main");
-});
+    const store=storeRect();
 
-document.getElementById("resumeBtn").addEventListener("click", resumeGame);
+    if(
+        mx<store.x ||
+        my<store.y ||
+        mx>=store.x+store.w ||
+        my>=store.y+store.h
+    ){
+        return null;
+    }
 
-document.getElementById("restartBtn").addEventListener("click", restartHeist);
-
-document.getElementById("pauseMenuBtn").addEventListener("click", returnToMenu);
-
-document.getElementById("resultMenuBtn").addEventListener("click", returnToMenu);
-
-/* suppressor */
-
-suppressorOff.addEventListener("click", ()=>{
-    state.suppressor = false;
-    updateLoadoutUI();
-});
-
-suppressorOn.addEventListener("click", ()=>{
-    state.suppressor = true;
-    updateLoadoutUI();
-});
-
-function updateLoadoutUI(){
-
-    suppressorOff.classList.toggle("active", !state.suppressor);
-    suppressorOn.classList.toggle("active", state.suppressor);
-
+    return {
+        x:Math.floor((mx-store.x)/TILE),
+        y:Math.floor((my-store.y)/TILE)
+    };
 }
 
-/* settings */
+/* ================= STORE GEOMETRY ================= */
 
-shakeToggle.addEventListener("click", ()=>{
-    state.screenShake = !state.screenShake;
-    shakeToggle.classList.toggle("on",state.screenShake);
-});
+function storeRect(){
 
-retroToggle.addEventListener("click", ()=>{
-    state.retro = !state.retro;
-    retroToggle.classList.toggle("on",state.retro);
-    scanlines.style.display = state.retro ? "block" : "none";
-});
+    const w=state.width*TILE;
+    const h=state.height*TILE;
 
-/* =========================================================
-   GAME STATE
-========================================================= */
+    return {
+        x:(W-w)/2,
+        y:(H-h)/2+20,
+        w,
+        h
+    };
+}
 
-const state = {
+/* ================= PLAYER ================= */
 
-    playing:false,
-    paused:false,
-
-    stage:0,
-
-    masked:false,
-    crimeCommitted:false,
-
-    suppressor:false,
-
-    screenShake:true,
-    retro:true,
-
-    alarm:false,
-
-    cash:0,
-    loot:0,
-    kills:0,
-
-    startTime:0,
-
-    ammo:30,
-    reserve:120,
-    maxAmmo:30,
-
-    reloadTimer:0,
-
-    lockpick:false,
-    lockSuccess:0,
-    lockCursor:0,
-    lockDirection:1,
-
-    drilling:false,
-    drillAmount:0,
-
-    escaped:false,
-
-    keycard:false,
-
-    camerasDisabled:false
-};
-
-/* =========================================================
-   PLAYER
-========================================================= */
-
-const player = {
-
-    x:190,
-    y:570,
-
-    radius:17,
-
-    speed:2.7,
-    sprint:4.4,
-
-    health:100,
-    armor:100,
-
-    angle:0,
-
-    fireCooldown:0,
-
-    stamina:100
-};
-
-/* =========================================================
-   INPUT
-========================================================= */
-
-const keys = {};
-const mouse = {
-    x:700,
-    y:400,
-    down:false
-};
+const keys={};
 
 window.addEventListener("keydown",e=>{
 
-    keys[e.code] = true;
+    keys[e.key.toLowerCase()]=true;
 
-    if(e.code === "Escape"){
+    if(e.key==="Escape"){
+        state.selectedBuild=null;
 
-        if(state.playing){
-
-            if(state.paused){
-                resumeGame();
-            }else if(
-                !state.lockpick &&
-                !state.drilling
-            ){
-                pauseGame();
-            }
-
-        }
-
-        e.preventDefault();
-    }
-
-    if(
-        e.code === "KeyM" &&
-        state.playing &&
-        !state.masked &&
-        state.stage === 0
-    ){
-        putMaskOn();
-    }
-
-    if(
-        e.code === "Space" &&
-        state.lockpick
-    ){
-        lockpickHit();
-        e.preventDefault();
-    }
-
-    if(
-        e.code === "KeyE" &&
-        state.playing &&
-        !state.lockpick
-    ){
-        keys.KeyE = true;
+        document.querySelectorAll(".build-btn").forEach(b=>{
+            b.classList.remove("selected");
+        });
     }
 
 });
 
 window.addEventListener("keyup",e=>{
-    keys[e.code] = false;
+    keys[e.key.toLowerCase()]=false;
 });
 
-canvas.addEventListener("mousemove",e=>{
+function updatePlayer(dt){
 
-    const rect = canvas.getBoundingClientRect();
-
-    mouse.x =
-        (e.clientX - rect.left) *
-        W / rect.width;
-
-    mouse.y =
-        (e.clientY - rect.top) *
-        H / rect.height;
-
-});
-
-canvas.addEventListener("mousedown",e=>{
-    if(e.button===0){
-        mouse.down=true;
-    }
-});
-
-window.addEventListener("mouseup",e=>{
-    if(e.button===0){
-        mouse.down=false;
-    }
-});
-
-/* =========================================================
-   MAP
-========================================================= */
-
-const walls = [
-
-    /* outside border */
-
-    {x:40,y:40,w:1320,h:18},
-    {x:40,y:40,w:18,h:720},
-    {x:1342,y:40,w:18,h:720},
-    {x:40,y:742,w:520,h:18},
-    {x:840,y:742,w:520,h:18},
-
-    /* bank bottom walls - PARK EXIT GAP */
-
-    {x:90,y:660,w:460,h:18},
-    {x:760,y:660,w:580,h:18},
-
-    /* lobby */
-
-    {x:90,y:110,w:500,h:18},
-    {x:90,y:110,w:18,h:220},
-    {x:90,y:330,w:180,h:18},
-
-    /* offices */
-
-    {x:620,y:100,w:18,h:230},
-    {x:620,y:330,w:150,h:18},
-
-    /* security */
-
-    {x:770,y:100,w:18,h:150},
-    {x:770,y:250,w:200,h:18},
-    {x:970,y:100,w:18,h:168},
-
-    /* vault corridor */
-
-    {x:970,y:300,w:18,h:190},
-    {x:970,y:490,w:220,h:18},
-
-    /* vault */
-
-    {x:1190,y:490,w:18,h:130},
-    {x:1030,y:620,w:178,h:18},
-    {x:1030,y:490,w:18,h:90},
-
-    /* offices lower */
-
-    {x:350,y:400,w:18,h:170},
-    {x:350,y:570,w:250,h:18},
-
-    /* decorative inner wall */
-
-    {x:600,y:430,w:150,h:18}
-
-];
-
-/* =========================================================
-   DOORS
-========================================================= */
-
-const doors = [
-
-    {
-        x:600,
-        y:330,
-        w:55,
-        h:18,
-        locked:true,
-        open:false,
-        type:"lockpick"
-    },
-
-    {
-        x:965,
-        y:250,
-        w:55,
-        h:18,
-        locked:true,
-        open:false,
-        type:"keycard"
-    },
-
-    {
-        x:970,
-        y:490,
-        w:18,
-        h:55,
-        locked:true,
-        open:false,
-        type:"lockpick"
-    }
-
-];
-
-/* =========================================================
-   CAMERA
-========================================================= */
-
-const cameras = [
-
-    {x:690,y:160,angle:0.8,disabled:false},
-    {x:880,y:180,angle:2.1,disabled:false},
-    {x:1100,y:420,angle:3.0,disabled:false}
-
-];
-
-/* =========================================================
-   KEYCARD
-========================================================= */
-
-const keycardItem = {
-    x:0,
-    y:0,
-    active:false
-};
-
-/* =========================================================
-   LOOT
-========================================================= */
-
-const lootBags = [
-
-    {
-        x:1110,
-        y:550,
-        taken:false,
-        value:35000
-    },
-
-    {
-        x:1160,
-        y:550,
-        taken:false,
-        value:45000
-    }
-
-];
-
-/* =========================================================
-   VAN
-========================================================= */
-
-const van = {
-    x:700,
-    y:720,
-    w:145,
-    h:48
-};
-
-/* =========================================================
-   PARK
-========================================================= */
-
-const park = {
-    x:58,
-    y:678,
-    w:1284,
-    h:64
-};
-
-/* =========================================================
-   GUARDS
-========================================================= */
-
-let guards = [];
-
-function createGuards(){
-
-    guards = [
-
-        {
-            x:430,
-            y:190,
-            homeX:430,
-            homeY:190,
-            angle:0,
-            speed:1.1,
-            health:100,
-            state:"patrol",
-            kind:"employee",
-            alive:true,
-            patrolOffset:0
-        },
-
-        {
-            x:540,
-            y:510,
-            homeX:540,
-            homeY:510,
-            angle:Math.PI,
-            speed:1.15,
-            health:100,
-            state:"patrol",
-            kind:"employee",
-            alive:true,
-            patrolOffset:2
-        },
-
-        {
-            x:830,
-            y:170,
-            homeX:830,
-            homeY:170,
-            angle:0,
-            speed:1.2,
-            health:100,
-            state:"patrol",
-            kind:"security",
-            alive:true,
-            patrolOffset:4
-        },
-
-        {
-            x:1060,
-            y:380,
-            homeX:1060,
-            homeY:380,
-            angle:Math.PI,
-            speed:1.25,
-            health:100,
-            state:"patrol",
-            kind:"security",
-            alive:true,
-            patrolOffset:6
-        },
-
-        {
-            x:1180,
-            y:390,
-            homeX:1180,
-            homeY:390,
-            angle:Math.PI,
-            speed:1.2,
-            health:100,
-            state:"patrol",
-            kind:"security",
-            alive:true,
-            patrolOffset:8
-        }
-
-    ];
-
-}
-
-/* =========================================================
-   PARTICLES
-========================================================= */
-
-let particles = [];
-
-function particle(x,y,vx,vy,life,size){
-
-    particles.push({
-        x,y,vx,vy,
-        life,
-        maxLife:life,
-        size
-    });
-
-}
-
-function burst(x,y,count=8){
-
-    for(let i=0;i<count;i++){
-
-        const a=Math.random()*Math.PI*2;
-        const s=Math.random()*3+1;
-
-        particle(
-            x,
-            y,
-            Math.cos(a)*s,
-            Math.sin(a)*s,
-            25+Math.random()*20,
-            2+Math.random()*3
-        );
-
-    }
-
-}
-
-/* =========================================================
-   BULLETS
-========================================================= */
-
-let bullets = [];
-
-function shoot(){
-
-    if(!state.playing || state.paused) return;
-    if(!state.masked) return;
-    if(state.lockpick || state.drilling) return;
-    if(state.stage===0) return;
-
-    if(state.ammo<=0){
-
-        reload();
+    if(state.storeOpen){
         return;
-
-    }
-
-    if(player.fireCooldown>0) return;
-
-    player.fireCooldown = 7;
-
-    state.ammo--;
-
-    const dx=mouse.x-player.x;
-    const dy=mouse.y-player.y;
-
-    const len=Math.hypot(dx,dy)||1;
-
-    const speed=12;
-
-    bullets.push({
-
-        x:player.x,
-        y:player.y,
-
-        vx:dx/len*speed,
-        vy:dy/len*speed,
-
-        life:90,
-
-        damage:34
-
-    });
-
-    burst(
-        player.x+dx/len*25,
-        player.y+dy/len*25,
-        5
-    );
-
-    if(!state.suppressor){
-        state.crimeCommitted=true;
-    }
-
-}
-
-function reload(){
-
-    if(state.ammo>=state.maxAmmo) return;
-    if(state.reserve<=0) return;
-    if(state.reloadTimer>0) return;
-
-    state.reloadTimer=75;
-
-}
-
-/* =========================================================
-   COLLISION
-========================================================= */
-
-function circleRectCollision(cx,cy,r,rect){
-
-    const closestX=Math.max(rect.x,Math.min(cx,rect.x+rect.w));
-    const closestY=Math.max(rect.y,Math.min(cy,rect.y+rect.h));
-
-    const dx=cx-closestX;
-    const dy=cy-closestY;
-
-    return dx*dx+dy*dy<r*r;
-
-}
-
-function blocked(x,y,r=player.radius){
-
-    for(const wall of walls){
-
-        if(circleRectCollision(x,y,r,wall)){
-            return true;
-        }
-
-    }
-
-    for(const door of doors){
-
-        if(!door.open &&
-           circleRectCollision(x,y,r,door)){
-            return true;
-        }
-
-    }
-
-    return false;
-
-}
-
-function movePlayer(dx,dy){
-
-    let nx=player.x+dx;
-
-    if(!blocked(nx,player.y)){
-        player.x=nx;
-    }
-
-    let ny=player.y+dy;
-
-    if(!blocked(player.x,ny)){
-        player.y=ny;
-    }
-
-}
-
-/* =========================================================
-   LINE OF SIGHT
-========================================================= */
-
-function lineIntersectsRect(x1,y1,x2,y2,r){
-
-    const steps=Math.ceil(
-        Math.hypot(x2-x1,y2-y1)/8
-    );
-
-    for(let i=0;i<=steps;i++){
-
-        const t=i/steps;
-
-        const x=x1+(x2-x1)*t;
-        const y=y1+(y2-y1)*t;
-
-        if(
-            x>=r.x &&
-            x<=r.x+r.w &&
-            y>=r.y &&
-            y<=r.y+r.h
-        ){
-            return true;
-        }
-
-    }
-
-    return false;
-
-}
-
-function lineBlocked(x1,y1,x2,y2){
-
-    for(const wall of walls){
-
-        if(lineIntersectsRect(
-            x1,y1,x2,y2,wall
-        )){
-            return true;
-        }
-
-    }
-
-    for(const door of doors){
-
-        if(!door.open){
-
-            if(lineIntersectsRect(
-                x1,y1,x2,y2,door
-            )){
-                return true;
-            }
-
-        }
-
-    }
-
-    return false;
-
-}
-
-function canSee(g){
-
-    const dx=player.x-g.x;
-    const dy=player.y-g.y;
-
-    const dist=Math.hypot(dx,dy);
-
-    if(dist>330) return false;
-
-    const angle=Math.atan2(dy,dx);
-
-    let diff=Math.atan2(
-        Math.sin(angle-g.angle),
-        Math.cos(angle-g.angle)
-    );
-
-    if(Math.abs(diff)>1.05){
-        return false;
-    }
-
-    if(lineBlocked(
-        g.x,g.y,
-        player.x,player.y
-    )){
-        return false;
-    }
-
-    return true;
-
-}
-
-/* =========================================================
-   ZONES
-========================================================= */
-
-function getZone(){
-
-    /* park is always safe */
-
-    if(player.y>675){
-        return "safe";
-    }
-
-    /* lobby before masking */
-
-    if(
-        !state.masked &&
-        player.x<600 &&
-        player.y<330
-    ){
-        return "safe";
-    }
-
-    /* employee areas */
-
-    if(
-        !state.masked &&
-        player.x>360 &&
-        player.x<720
-    ){
-        return "escort";
-    }
-
-    /* everything else */
-
-    return "illegal";
-
-}
-
-/* =========================================================
-   MASK
-========================================================= */
-
-function putMaskOn(){
-
-    if(state.masked) return;
-
-    state.masked=true;
-    state.crimeCommitted=true;
-    state.stage=1;
-
-    maskHUD.textContent="MASK ON";
-    maskHUD.style.color="#e8eee9";
-
-    objectiveText.textContent="FIND THE KEYCARD";
-
-}
-
-/* =========================================================
-   INTERACTIONS
-========================================================= */
-
-function distance(a,b){
-
-    return Math.hypot(
-        a.x-b.x,
-        a.y-b.y
-    );
-
-}
-
-function interaction(){
-
-    if(!state.playing) return;
-    if(state.paused) return;
-    if(state.lockpick) return;
-    if(state.drilling) return;
-
-    /* keycard */
-
-    if(
-        state.stage===1 &&
-        !state.keycard
-    ){
-
-        const guard=getKeycardGuard();
-
-        if(
-            guard &&
-            !guard.alive &&
-            distance(player,guard)<65
-        ){
-
-            state.keycard=true;
-            state.stage=2;
-
-            objectiveText.textContent=
-                "REACH THE SECURITY ROOM";
-
-            burst(guard.x,guard.y,15);
-
-        }
-
-    }
-
-    /* security door */
-
-    if(
-        state.stage===2 &&
-        state.keycard
-    ){
-
-        const door=doors[1];
-
-        if(
-            distance(
-                player,
-                {x:door.x,y:door.y}
-            )<75
-        ){
-
-            door.open=true;
-            state.stage=3;
-
-            objectiveText.textContent=
-                "DISABLE THE SECURITY CAMERAS";
-
-        }
-
-    }
-
-    /* security terminal */
-
-    if(state.stage===3){
-
-        const terminal={
-            x:850,
-            y:200
-        };
-
-        if(distance(player,terminal)<65){
-
-            state.camerasDisabled=true;
-
-            cameras.forEach(c=>{
-                c.disabled=true;
-            });
-
-            state.stage=4;
-
-            objectiveText.textContent=
-                "REACH THE VAULT";
-
-        }
-
-    }
-
-    /* vault lockpick */
-
-    if(state.stage===4){
-
-        const vaultDoor=doors[2];
-
-        if(
-            distance(
-                player,
-                {x:vaultDoor.x,y:vaultDoor.y}
-            )<75
-        ){
-
-            beginLockpick();
-
-        }
-
-    }
-
-    /* loot */
-
-    if(state.stage===7){
-
-        for(const bag of lootBags){
-
-            if(
-                !bag.taken &&
-                distance(player,bag)<55
-            ){
-
-                bag.taken=true;
-
-                state.loot+=bag.value;
-                state.cash+=bag.value;
-
-                burst(
-                    bag.x,
-                    bag.y,
-                    20
-                );
-
-            }
-
-        }
-
-        if(
-            lootBags.every(b=>b.taken)
-        ){
-
-            state.stage=8;
-
-            objectiveText.textContent=
-                "ESCAPE THROUGH THE PARK";
-
-        }
-
-    }
-
-    /* van */
-
-    if(state.stage===9){
-
-        if(
-            player.x>van.x-100 &&
-            player.x<van.x+van.w+100 &&
-            player.y>van.y-70
-        ){
-
-            state.stage=10;
-
-            objectiveText.textContent=
-                "PRESS E TO ESCAPE";
-
-        }
-
-    }
-
-    /* escape */
-
-    if(state.stage===10){
-
-        if(
-            keys.KeyE &&
-            player.x>van.x-120 &&
-            player.x<van.x+van.w+120 &&
-            player.y>van.y-80
-        ){
-
-            completeHeist();
-
-        }
-
-    }
-
-}
-
-function getKeycardGuard(){
-
-    return guards.find(
-        g=>g.kind==="security" || g.kind==="employee"
-    );
-
-}
-
-/* =========================================================
-   LOCKPICK
-========================================================= */
-
-function beginLockpick(){
-
-    state.lockpick=true;
-    state.lockSuccess=0;
-    state.lockCursor=0;
-    state.lockDirection=1;
-
-    lockpickUI.classList.remove("hidden");
-
-    updateLockpickUI();
-
-}
-
-function updateLockpickUI(){
-
-    qteCursor.style.left=
-        state.lockCursor+"%";
-
-    qteSweet.style.left="68%";
-    qteSweet.style.width="15%";
-
-    qteSuccess.textContent=
-        "SUCCESS: "+
-        state.lockSuccess+
-        " / 4";
-
-}
-
-function lockpickHit(){
-
-    if(!state.lockpick) return;
-
-    if(
-        state.lockCursor>=68 &&
-        state.lockCursor<=83
-    ){
-
-        state.lockSuccess++;
-
-        burst(
-            player.x,
-            player.y,
-            5
-        );
-
-        if(state.lockSuccess>=4){
-
-            finishLockpick();
-
-        }
-
-    }else{
-
-        state.lockSuccess=Math.max(
-            0,
-            state.lockSuccess-1
-        );
-
-    }
-
-    updateLockpickUI();
-
-}
-
-function finishLockpick(){
-
-    state.lockpick=false;
-
-    lockpickUI.classList.add("hidden");
-
-    doors[2].open=true;
-
-    state.stage=5;
-
-    objectiveText.textContent=
-        "DRILL THE VAULT";
-
-}
-
-/* =========================================================
-   DRILL
-========================================================= */
-
-function beginDrill(){
-
-    state.drilling=true;
-    state.drillAmount=0;
-
-    drillUI.classList.remove("hidden");
-
-}
-
-function updateDrill(){
-
-    if(!state.drilling) return;
-
-    if(keys.KeyE){
-
-        state.drillAmount+=0.32;
-
-        burst(
-            1060+Math.random()*30,
-            510+Math.random()*30,
-            1
-        );
-
-    }else{
-
-        state.drillAmount-=0.12;
-
-    }
-
-    state.drillAmount=
-        Math.max(
-            0,
-            Math.min(
-                100,
-                state.drillAmount
-            )
-        );
-
-    drillProgress.style.width=
-        state.drillAmount+"%";
-
-    drillPercent.textContent=
-        Math.floor(state.drillAmount)+"%";
-
-    if(state.drillAmount>=100){
-
-        state.drilling=false;
-
-        drillUI.classList.add("hidden");
-
-        state.stage=7;
-
-        objectiveText.textContent=
-            "GRAB THE LOOT";
-
-        state.alarm=true;
-
-    }
-
-}
-
-/* =========================================================
-   PLAYER UPDATE
-========================================================= */
-
-function updatePlayer(){
-
-    if(!state.playing || state.paused) return;
-
-    if(player.fireCooldown>0){
-        player.fireCooldown--;
-    }
-
-    if(state.reloadTimer>0){
-
-        state.reloadTimer--;
-
-        if(state.reloadTimer===0){
-
-            const needed=
-                state.maxAmmo-state.ammo;
-
-            const amount=
-                Math.min(
-                    needed,
-                    state.reserve
-                );
-
-            state.ammo+=amount;
-            state.reserve-=amount;
-
-        }
-
-    }
-
-    if(state.lockpick){
-
-        state.lockCursor +=
-            state.lockDirection*1.7;
-
-        if(state.lockCursor>=100){
-
-            state.lockCursor=100;
-            state.lockDirection=-1;
-
-        }
-
-        if(state.lockCursor<=0){
-
-            state.lockCursor=0;
-            state.lockDirection=1;
-
-        }
-
-        updateLockpickUI();
-
-        return;
-
-    }
-
-    if(state.drilling){
-
-        updateDrill();
-        return;
-
     }
 
     let dx=0;
     let dy=0;
 
-    if(keys.KeyW) dy--;
-    if(keys.KeyS) dy++;
-    if(keys.KeyA) dx--;
-    if(keys.KeyD) dx++;
+    if(keys.w || keys.arrowup)dy--;
+    if(keys.s || keys.arrowdown)dy++;
+    if(keys.a || keys.arrowleft)dx--;
+    if(keys.d || keys.arrowright)dx++;
 
-    if(dx!==0 || dy!==0){
+    if(dx||dy){
 
         const len=Math.hypot(dx,dy);
 
         dx/=len;
         dy/=len;
 
-        let speed=player.speed;
+        const speed=player.speed*dt;
 
-        if(
-            keys.ShiftLeft ||
-            keys.ShiftRight
-        ){
+        player.x+=dx*speed;
+        player.y+=dy*speed;
 
-            if(player.stamina>0){
+        player.x=Math.max(.5,Math.min(state.width-.5,player.x));
+        player.y=Math.max(.5,Math.min(state.height-.5,player.y));
 
-                speed=player.sprint;
-                player.stamina-=0.8;
+        player.moving=true;
 
-            }
-
-        }else{
-
-            player.stamina=
-                Math.min(
-                    100,
-                    player.stamina+0.45
-                );
-
-        }
-
-        movePlayer(
-            dx*speed,
-            dy*speed
-        );
-
+    }else{
+        player.moving=false;
     }
-
-    player.angle=
-        Math.atan2(
-            mouse.y-player.y,
-            mouse.x-player.x
-        );
-
-    if(mouse.down){
-
-        shoot();
-
-    }
-
-    /* interactions */
-
-    if(keys.KeyE){
-
-        interaction();
-
-    }
-
-    /* stage progression */
-
-    if(
-        state.stage===5 &&
-        distance(
-            player,
-            {x:1100,y:550}
-        )<100
-    ){
-
-        beginDrill();
-
-    }
-
-    if(
-        state.stage===7 &&
-        player.y>665
-    ){
-
-        /* don't leave until loot is taken */
-
-    }
-
-    if(
-        state.stage===8 &&
-        player.y>680
-    ){
-
-        state.stage=9;
-
-        objectiveText.textContent=
-            "REACH THE GETAWAY VAN";
-
-    }
-
 }
 
-/* =========================================================
-   GUARD UPDATE
-========================================================= */
+/* ================= CUSTOMERS ================= */
 
-function updateGuards(){
+function spawnCustomer(){
 
-    if(!state.playing || state.paused) return;
-
-    for(const g of guards){
-
-        if(!g.alive) continue;
-
-        const sees=canSee(g);
-
-        const d=distance(player,g);
-
-        if(!state.masked){
-
-            if(
-                getZone()==="safe"
-            ){
-
-                g.state="patrol";
-
-            }else if(
-                getZone()==="escort" &&
-                d<260
-            ){
-
-                g.state="escort";
-
-            }
-
-        }else{
-
-            if(
-                sees ||
-                state.alarm ||
-                state.crimeCommitted
-            ){
-
-                if(d<420){
-
-                    g.state="combat";
-
-                }
-
-            }
-
-        }
-
-        if(g.state==="patrol"){
-
-            const t=
-                performance.now()/1200+
-                g.patrolOffset;
-
-            g.x=
-                g.homeX+
-                Math.cos(t)*65;
-
-            g.y=
-                g.homeY+
-                Math.sin(t)*45;
-
-            g.angle=
-                t+Math.PI/2;
-
-        }
-
-        else if(g.state==="escort"){
-
-            const dx=player.x-g.x;
-            const dy=player.y-g.y;
-            const len=Math.hypot(dx,dy)||1;
-
-            g.x-=dx/len*g.speed;
-            g.y-=dy/len*g.speed;
-
-            g.angle=
-                Math.atan2(
-                    dy,
-                    dx
-                );
-
-        }
-
-        else if(g.state==="combat"){
-
-            const dx=player.x-g.x;
-            const dy=player.y-g.y;
-
-            const len=Math.hypot(dx,dy)||1;
-
-            g.angle=
-                Math.atan2(dy,dx);
-
-            if(len>130){
-
-                g.x+=dx/len*g.speed;
-                g.y+=dy/len*g.speed;
-
-            }
-
-            if(
-                len<330 &&
-                Math.random()<0.018
-            ){
-
-                damagePlayer(7);
-
-            }
-
-        }
-
+    if(!state.storeOpen){
+        return;
     }
 
+    if(state.customers.length>=25){
+        return;
+    }
+
+    const entrance={
+        x:state.width/2,
+        y:state.height-.4
+    };
+
+    const personality=[
+        "budget",
+        "impatient",
+        "rich",
+        "family",
+        "health",
+        "snack",
+        "oneItem",
+        "bigShopper"
+    ];
+
+    const type=
+        personality[
+            Math.floor(Math.random()*personality.length)
+        ];
+
+    const c={
+        x:entrance.x,
+        y:entrance.y,
+
+        targetX:entrance.x,
+        targetY:entrance.y,
+
+        speed:1.0+Math.random()*.35,
+
+        type,
+
+        state:"enter",
+
+        shoppingTime:0,
+
+        products:[],
+
+        money:5+Math.random()*55,
+
+        color:randomCustomerColor(),
+
+        satisfaction:1,
+
+        queueTime:0,
+
+        pathIndex:0
+    };
+
+    createShoppingList(c);
+
+    state.customers.push(c);
+
+    state.customersToday++;
+    state.totalCustomers++;
+
+    updateUI();
 }
 
-/* =========================================================
-   DAMAGE
-========================================================= */
+function randomCustomerColor(){
 
-function damagePlayer(amount){
+    const colors=[
+        "#e87d72",
+        "#72a7e8",
+        "#e8c772",
+        "#9c72e8",
+        "#72d69a",
+        "#d77ac1"
+    ];
 
-    if(player.armor>0){
+    return colors[
+        Math.floor(Math.random()*colors.length)
+    ];
+}
 
-        const armorDamage=
-            Math.min(
-                player.armor,
-                amount*0.65
-            );
+function createShoppingList(c){
 
-        player.armor-=armorDamage;
-        amount-=armorDamage;
+    let count;
 
+    switch(c.type){
+
+        case"oneItem":
+            count=1;
+            break;
+
+        case"bigShopper":
+            count=7+Math.floor(Math.random()*4);
+            break;
+
+        case"family":
+            count=6+Math.floor(Math.random()*4);
+            break;
+
+        case"snack":
+            count=3+Math.floor(Math.random()*3);
+            break;
+
+        default:
+            count=3+Math.floor(Math.random()*4);
     }
 
-    player.health-=amount;
+    const shuffled=[...PRODUCTS]
+        .sort(()=>Math.random()-.5);
 
-    burst(
-        player.x,
-        player.y,
-        5
+    for(let i=0;i<count;i++){
+
+        const p=shuffled[i%shuffled.length];
+
+        c.products.push({
+            id:p.id,
+            bought:false
+        });
+    }
+}
+
+function chooseShelfTarget(c){
+
+    const desired=
+        c.products.find(x=>!x.bought);
+
+    if(!desired){
+        c.state="checkout";
+        return;
+    }
+
+    const product=PRODUCTS.find(
+        p=>p.id===desired.id
     );
 
-    if(player.health<=0){
+    const shelves=state.buildings.filter(
+        b=>b.type==="shelf" || b.type==="fridge"
+    );
 
-        failHeist();
-
+    if(!shelves.length){
+        c.state="leave";
+        return;
     }
 
+    const target=
+        shelves[
+            Math.floor(Math.random()*shelves.length)
+        ];
+
+    c.targetX=target.x+.5;
+    c.targetY=target.y+.5;
+
+    c.state="shopping";
 }
 
-/* =========================================================
-   BULLET UPDATE
-========================================================= */
+function updateCustomers(dt){
 
-function updateBullets(){
+    if(!state.storeOpen){
+        return;
+    }
 
-    for(let i=bullets.length-1;i>=0;i--){
+    for(let i=state.customers.length-1;i>=0;i--){
 
-        const b=bullets[i];
+        const c=state.customers[i];
 
-        b.x+=b.vx;
-        b.y+=b.vy;
-        b.life--;
+        c.shoppingTime+=dt;
 
-        let remove=false;
-
-        if(
-            b.x<0 ||
-            b.x>W ||
-            b.y<0 ||
-            b.y>H ||
-            b.life<=0
-        ){
-
-            remove=true;
-
+        if(c.state==="enter"){
+            chooseShelfTarget(c);
         }
 
-        for(const wall of walls){
+        if(c.state==="shopping"){
 
-            if(
-                b.x>=wall.x &&
-                b.x<=wall.x+wall.w &&
-                b.y>=wall.y &&
-                b.y<=wall.y+wall.h
-            ){
+            moveCustomer(c,dt);
 
-                burst(b.x,b.y,5);
-                remove=true;
-                break;
+            if(distance(c.x,c.y,c.targetX,c.targetY)<.5){
 
-            }
+                const desired=
+                    c.products.find(x=>!x.bought);
 
-        }
+                if(desired){
 
-        if(remove){
+                    const product=
+                        PRODUCTS.find(
+                            p=>p.id===desired.id
+                        );
 
-            bullets.splice(i,1);
-            continue;
+                    if(product.stock>0){
 
-        }
+                        const markup=
+                            product.price/product.cost;
 
-        for(const g of guards){
+                        let chance=.72;
 
-            if(!g.alive) continue;
+                        if(c.type==="budget"){
+                            chance-=Math.max(
+                                0,
+                                markup-1.8
+                            )*.2;
+                        }
 
-            const d=Math.hypot(
-                b.x-g.x,
-                b.y-g.y
-            );
+                        if(c.type==="rich"){
+                            chance+=.15;
+                        }
 
-            if(d<20){
+                        if(c.type==="snack" &&
+                           product.category==="Food"){
+                            chance+=.15;
+                        }
 
-                g.health-=b.damage;
+                        if(Math.random()<chance){
 
-                burst(
-                    g.x,
-                    g.y,
-                    8
-                );
+                            product.stock--;
 
-                bullets.splice(i,1);
+                            desired.bought=true;
 
-                if(g.health<=0){
+                            state.totalSales++;
 
-                    g.alive=false;
-                    state.kills++;
+                            c.money-=product.price;
 
-                    if(
-                        state.stage===1 &&
-                        getKeycardGuard()===g
-                    ){
+                            createMoneyParticle(
+                                c.x,
+                                c.y,
+                                product.price
+                            );
 
-                        keycardItem.x=g.x;
-                        keycardItem.y=g.y;
-                        keycardItem.active=true;
+                            addXP(2);
 
+                        }else{
+
+                            c.satisfaction-=.08;
+
+                            desired.bought=true;
+                        }
+
+                    }else{
+
+                        c.satisfaction-=.18;
+
+                        desired.bought=true;
                     }
 
                 }
 
-                break;
-
+                chooseShelfTarget(c);
             }
 
+            if(c.shoppingTime>45){
+                c.state="checkout";
+            }
         }
 
-    }
+        if(c.state==="checkout"){
 
-}
+            const checkout=
+                state.buildings.find(
+                    b=>b.type==="checkout"
+                );
 
-/* =========================================================
-   PARTICLE UPDATE
-========================================================= */
+            if(!checkout){
 
-function updateParticles(){
+                c.satisfaction-=.4;
+                c.state="leave";
 
-    for(let i=particles.length-1;i>=0;i--){
+            }else{
 
-        const p=particles[i];
+                c.targetX=checkout.x+.5;
+                c.targetY=checkout.y+.5;
 
-        p.x+=p.vx;
-        p.y+=p.vy;
+                moveCustomer(c,dt);
 
-        p.vx*=0.96;
-        p.vy*=0.96;
+                if(
+                    distance(
+                        c.x,
+                        c.y,
+                        c.targetX,
+                        c.targetY
+                    )<.65
+                ){
 
-        p.life--;
+                    c.queueTime+=dt;
 
-        if(p.life<=0){
+                    const checkoutSpeed=
+                        8;
 
-            particles.splice(i,1);
+                    if(c.queueTime>checkoutSpeed){
 
+                        completePurchase(c);
+
+                        c.state="leave";
+                    }
+                }
+            }
         }
 
-    }
+        if(c.state==="leave"){
 
+            c.targetX=state.width/2;
+            c.targetY=state.height+.5;
+
+            moveCustomer(c,dt);
+
+            if(c.y>state.height){
+
+                state.customers.splice(i,1);
+            }
+        }
+
+        if(c.shoppingTime>90){
+
+            c.satisfaction-=.2;
+            c.state="leave";
+        }
+    }
 }
 
-/* =========================================================
-   STAGE LOGIC
-========================================================= */
+function completePurchase(c){
 
-function stageLogic(){
+    let spent=0;
 
-    if(!state.playing) return;
+    for(const item of c.products){
 
-    /* keycard pickup from actual dropped card */
+        if(item.bought){
 
-    if(
-        state.stage===1 &&
-        keycardItem.active &&
-        distance(
-            player,
-            keycardItem
-        )<45
-    ){
+            const p=
+                PRODUCTS.find(
+                    x=>x.id===item.id
+                );
 
-        keycardItem.active=false;
-        state.keycard=true;
-        state.stage=2;
-
-        objectiveText.textContent=
-            "REACH THE SECURITY ROOM";
-
+            if(p){
+                spent+=p.price;
+            }
+        }
     }
 
-    /* vault approach */
-
-    if(
-        state.stage===4 &&
-        player.x>880 &&
-        player.y>400
-    ){
-
-        objectiveText.textContent=
-            "LOCKPICK THE VAULT DOOR — PRESS E";
-
+    if(spent<=0){
+        return;
     }
 
-    /* drill approach */
+    state.cash+=spent;
+    state.revenueToday+=spent;
 
-    if(
-        state.stage===5 &&
-        player.x>1020 &&
-        player.y>500
-    ){
+    const profit=spent;
 
-        objectiveText.textContent=
-            "PRESS E TO START THE DRILL";
+    createMoneyParticle(
+        c.x,
+        c.y,
+        profit
+    );
 
-    }
-
-}
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function resetGame(){
-
-    state.playing=true;
-    state.paused=false;
-
-    state.stage=0;
-
-    state.masked=false;
-    state.crimeCommitted=false;
-
-    state.alarm=false;
-
-    state.cash=0;
-    state.loot=0;
-    state.kills=0;
-
-    state.startTime=performance.now();
-
-    state.ammo=30;
-    state.reserve=120;
-    state.reloadTimer=0;
-
-    state.lockpick=false;
-    state.lockSuccess=0;
-    state.lockCursor=0;
-
-    state.drilling=false;
-    state.drillAmount=0;
-
-    state.escaped=false;
-
-    state.keycard=false;
-    state.camerasDisabled=false;
-
-    player.x=190;
-    player.y=570;
-    player.health=100;
-    player.armor=100;
-    player.stamina=100;
-
-    doors.forEach(d=>{
-        d.open=false;
-    });
-
-    cameras.forEach(c=>{
-        c.disabled=false;
-    });
-
-    lootBags.forEach(b=>{
-        b.taken=false;
-    });
-
-    keycardItem.active=false;
-
-    bullets=[];
-    particles=[];
-
-    createGuards();
-
-    objectiveText.textContent=
-        "PUT ON YOUR MASK — PRESS M";
-
-    maskHUD.textContent="UNMASKED";
-
-    updateHUD();
-
-}
-
-/* =========================================================
-   COMPLETE / FAIL
-========================================================= */
-
-function completeHeist(){
-
-    state.playing=false;
-    state.escaped=true;
-
-    hud.classList.add("hidden");
-
-    const seconds=
-        Math.floor(
-            (performance.now()-state.startTime)/1000
+    const priceScore=
+        Math.max(
+            0,
+            1-
+            averagePriceRatio(c)
         );
 
-    const mins=
-        Math.floor(seconds/60);
+    c.satisfaction+=priceScore*.15;
 
-    const secs=
-        String(seconds%60).padStart(2,"0");
-
-    document.getElementById("resultTitle").textContent=
-        "HEIST COMPLETE";
-
-    document.getElementById("resultCash").textContent=
-        "$"+state.cash.toLocaleString();
-
-    document.getElementById("resultStats").innerHTML=
-        "TIME: "+mins+":"+secs+
-        "<br>KILLS: "+state.kills+
-        "<br>LOOT: $"+state.loot.toLocaleString();
-
-    showScreen("result");
-
-}
-
-function failHeist(){
-
-    state.playing=false;
-
-    hud.classList.add("hidden");
-
-    document.getElementById("resultTitle").textContent=
-        "HEIST FAILED";
-
-    document.getElementById("resultCash").textContent=
-        "$0";
-
-    document.getElementById("resultStats").innerHTML=
-        "YOU GOT CAUGHT.<br>"+
-        "KILLS: "+state.kills;
-
-    showScreen("result");
-
-}
-
-/* =========================================================
-   HUD
-========================================================= */
-
-function updateHUD(){
-
-    healthHUD.textContent=
-        Math.max(0,Math.floor(player.health));
-
-    armorHUD.textContent=
-        Math.max(0,Math.floor(player.armor));
-
-    cashHUD.textContent=
-        "$"+state.cash.toLocaleString();
-
-    ammoHUD.textContent=
-        state.reloadTimer>0
-        ? "RELOADING..."
-        : state.ammo+" / "+state.reserve;
-
-    if(state.masked){
-
-        maskHUD.textContent="MASK ON";
-
-    }else{
-
-        maskHUD.textContent="UNMASKED";
-
+    if(c.satisfaction>=.8){
+        addXP(5);
     }
 
+    updateRating();
+
+    updateUI();
 }
 
-/* =========================================================
-   DRAW WORLD
-========================================================= */
+function averagePriceRatio(c){
 
-function drawWorld(){
+    let total=0;
+    let count=0;
+
+    for(const item of c.products){
+
+        if(item.bought){
+
+            const p=PRODUCTS.find(
+                x=>x.id===item.id
+            );
+
+            if(p){
+
+                const recommended=
+                    p.cost*2;
+
+                total+=
+                    Math.max(
+                        0,
+                        (p.price-recommended)/
+                        recommended
+                    );
+
+                count++;
+            }
+        }
+    }
+
+    return count?
+        Math.min(1,total/count):
+        0;
+}
+
+function moveCustomer(c,dt){
+
+    const dx=c.targetX-c.x;
+    const dy=c.targetY-c.y;
+
+    const d=Math.hypot(dx,dy);
+
+    if(d<.01){
+        return;
+    }
+
+    c.x+=(dx/d)*c.speed*dt;
+    c.y+=(dy/d)*c.speed*dt;
+}
+
+/* ================= RATING ================= */
+
+function updateRating(){
+
+    let stockScore=1;
+
+    let empty=0;
+
+    for(const p of PRODUCTS){
+
+        if(p.stock<=0){
+            empty++;
+        }
+    }
+
+    stockScore=
+        Math.max(
+            0,
+            1-empty/PRODUCTS.length
+        );
+
+    let checkoutScore=1;
+
+    const checkout=
+        state.buildings.some(
+            b=>b.type==="checkout"
+        );
+
+    if(!checkout){
+        checkoutScore=.2;
+    }
+
+    let priceScore=1;
+
+    for(const p of PRODUCTS){
+
+        const recommended=p.cost*2;
+
+        const ratio=p.price/recommended;
+
+        if(ratio>1.5){
+            priceScore-=.05;
+        }
+
+        if(ratio<.8){
+            priceScore-=.01;
+        }
+    }
+
+    priceScore=Math.max(0,priceScore);
+
+    const buildScore=
+        Math.min(
+            1,
+            state.buildings.length/12
+        );
+
+    const target=
+        2+
+        stockScore*.9+
+        priceScore*.9+
+        checkoutScore*.6+
+        buildScore*.3;
+
+    state.rating+=
+        (target-state.rating)*.015;
+
+    state.rating=
+        Math.max(
+            1,
+            Math.min(5,state.rating)
+        );
+}
+
+/* ================= TIME ================= */
+
+let spawnTimer=0;
+
+function updateDay(dt){
+
+    if(!state.storeOpen){
+        return;
+    }
+
+    state.clock+=dt*12;
+
+    if(state.clock>=20*60){
+
+        closeStore();
+
+        return;
+    }
+
+    spawnTimer-=dt;
+
+    const hour=state.clock/60;
+
+    let traffic=1;
+
+    if(hour<10){
+        traffic=.6;
+    }else if(hour<14){
+        traffic=.8;
+    }else if(hour<17){
+        traffic=1;
+    }else if(hour<19){
+        traffic=1.4;
+    }else{
+        traffic=1.1;
+    }
+
+    if(spawnTimer<=0){
+
+        spawnCustomer();
+
+        spawnTimer=
+            Math.max(
+                1.1,
+                3.5/traffic
+            );
+    }
+}
+
+/* ================= OPEN / CLOSE ================= */
+
+function openStore(){
+
+    if(state.storeOpen){
+        return;
+    }
+
+    const shelfCount=
+        state.buildings.filter(
+            b=>b.type==="shelf"||b.type==="fridge"
+        ).length;
+
+    const checkout=
+        state.buildings.some(
+            b=>b.type==="checkout"
+        );
+
+    const stocked=
+        PRODUCTS.some(
+            p=>p.stock>0
+        );
+
+    if(shelfCount<1){
+        toast("Build at least one shelf!");
+        return;
+    }
+
+    if(!checkout){
+        toast("You need a checkout!");
+        return;
+    }
+
+    if(!stocked){
+        toast("You need inventory!");
+        return;
+    }
+
+    state.storeOpen=true;
+
+    state.clock=8*60;
+
+    state.customers=[];
+
+    toast("STORE OPEN! 🛒");
+
+    updateUI();
+}
+
+function closeStore(){
+
+    if(!state.storeOpen){
+        return;
+    }
+
+    state.storeOpen=false;
+
+    state.customers=[];
+
+    const wages=0;
+
+    state.costsToday+=wages;
+
+    addXP(
+        Math.max(
+            0,
+            Math.floor(
+                state.revenueToday/10
+            )
+        )
+    );
+
+    updateRating();
+
+    openReport();
+
+    state.day++;
+
+    state.clock=8*60;
+
+    state.revenueToday=0;
+    state.costsToday=0;
+    state.customersToday=0;
+
+    saveGame();
+}
+
+document.getElementById("openBtn")
+    .addEventListener("click",openStore);
+
+/* ================= PRODUCTS UI ================= */
+
+function renderProducts(){
+
+    const list=
+        document.getElementById("productList");
+
+    list.innerHTML="";
+
+    for(const p of PRODUCTS){
+
+        const profit=p.price-p.cost;
+
+        const row=document.createElement("div");
+
+        row.className="product-row";
+
+        row.innerHTML=`
+            <div>
+                <strong>${p.name}</strong>
+                <div style="font-size:10px;color:#74848c">
+                    ${p.category}
+                </div>
+            </div>
+
+            <div>$${p.cost.toFixed(2)}</div>
+
+            <div>
+                <input
+                    class="small-input"
+                    type="number"
+                    min="${p.cost.toFixed(2)}"
+                    step=".01"
+                    value="${p.price.toFixed(2)}"
+                    data-price="${p.id}"
+                >
+            </div>
+
+            <div>
+                $${profit.toFixed(2)}
+            </div>
+
+            <div>
+                ${p.stock}
+            </div>
+        `;
+
+        list.appendChild(row);
+    }
+
+    list.querySelectorAll("[data-price]").forEach(input=>{
+
+        input.addEventListener("change",()=>{
+
+            const p=
+                PRODUCTS.find(
+                    x=>x.id===input.dataset.price
+                );
+
+            let value=parseFloat(input.value);
+
+            if(!Number.isFinite(value)){
+                value=p.cost;
+            }
+
+            value=Math.max(p.cost,value);
+
+            p.price=value;
+
+            toast(
+                `${p.name}: $${value.toFixed(2)}`
+            );
+
+            renderProducts();
+        });
+
+    });
+}
+
+document.getElementById("productsBtn")
+    .addEventListener("click",()=>{
+        renderProducts();
+        openModal("productsModal");
+    });
+
+/* ================= INVENTORY ================= */
+
+function renderInventory(){
+
+    const list=
+        document.getElementById("inventoryList");
+
+    list.innerHTML="";
+
+    for(const p of PRODUCTS){
+
+        const row=document.createElement("div");
+
+        row.style.display="flex";
+        row.style.justifyContent="space-between";
+        row.style.alignItems="center";
+        row.style.padding="12px";
+        row.style.borderBottom="1px solid #29363e";
+
+        row.innerHTML=`
+            <div>
+                <strong>${p.name}</strong>
+                <div style="color:#81929c;font-size:11px">
+                    ${p.stock} / ${p.max} in stock
+                </div>
+            </div>
+
+            <button class="action">
+                ORDER 10 — $${(p.cost*10).toFixed(2)}
+            </button>
+        `;
+
+        row.querySelector("button")
+            .addEventListener("click",()=>{
+
+                const amount=10;
+
+                if(
+                    p.stock+amount>
+                    p.max
+                ){
+                    toast("Storage is full.");
+                    return;
+                }
+
+                const cost=p.cost*amount;
+
+                if(state.cash<cost){
+                    toast("Not enough money.");
+                    return;
+                }
+
+                state.cash-=cost;
+
+                state.costsToday+=cost;
+
+                p.stock+=amount;
+
+                toast(
+                    `Ordered 10 ${p.name}.`
+                );
+
+                renderInventory();
+                updateUI();
+            });
+
+        list.appendChild(row);
+    }
+}
+
+document.getElementById("inventoryBtn")
+    .addEventListener("click",()=>{
+        renderInventory();
+        openModal("inventoryModal");
+    });
+
+/* ================= EXPANSION ================= */
+
+function expansionCost(){
+
+    return [
+        5000,
+        12500,
+        30000,
+        75000,
+        200000
+    ][state.expansionLevel] || 500000;
+}
+
+function renderExpansion(){
+
+    const cost=expansionCost();
+
+    const nextWidth=
+        state.width+
+        (state.expansionLevel<2?10:15);
+
+    const nextHeight=
+        state.height+
+        (state.expansionLevel<2?0:5);
+
+    document.getElementById(
+        "expandDescription"
+    ).innerHTML=`
+        <strong>Current size:</strong>
+        ${state.width} × ${state.height} tiles
+        <br><br>
+        <strong>New size:</strong>
+        ${nextWidth} × ${nextHeight} tiles
+        <br><br>
+        <strong>Cost:</strong>
+        $${cost.toLocaleString()}
+        <br><br>
+        More floor space means more room for shelves,
+        products and customers.
+    `;
+}
+
+document.getElementById("expandBtn")
+    .addEventListener("click",()=>{
+        renderExpansion();
+        openModal("expandModal");
+    });
+
+document.getElementById("confirmExpand")
+    .addEventListener("click",()=>{
+
+        const cost=expansionCost();
+
+        if(state.cash<cost){
+            toast("Not enough money!");
+            return;
+        }
+
+        state.cash-=cost;
+
+        state.expansionLevel++;
+
+        state.width+=
+            state.expansionLevel<3
+            ?10
+            :15;
+
+        if(state.expansionLevel>=3){
+            state.height+=5;
+        }
+
+        addXP(250);
+
+        closeModal("expandModal");
+
+        toast("STORE EXPANDED! 🏗️");
+
+        updateUI();
+    });
+
+/* ================= REPORT ================= */
+
+function openReport(){
+
+    document.getElementById("reportRevenue")
+        .textContent=
+        "$"+state.revenueToday.toLocaleString(
+            undefined,
+            {maximumFractionDigits:0}
+        );
+
+    document.getElementById("reportCosts")
+        .textContent=
+        "-$"+state.costsToday.toLocaleString(
+            undefined,
+            {maximumFractionDigits:0}
+        );
+
+    document.getElementById("reportCustomers")
+        .textContent=
+        state.customersToday;
+
+    document.getElementById("reportProfit")
+        .textContent=
+        "$"+
+        Math.max(
+            0,
+            state.revenueToday-
+            state.costsToday
+        ).toLocaleString(
+            undefined,
+            {maximumFractionDigits:0}
+        );
+
+    document.getElementById("reportRating")
+        .textContent=
+        state.rating.toFixed(1)+" ⭐";
+
+    openModal("reportModal");
+}
+
+document.getElementById("reportBtn")
+    .addEventListener("click",openReport);
+
+/* ================= XP ================= */
+
+function xpNeeded(){
+
+    return [
+        0,
+        1000,
+        2500,
+        5000,
+        10000,
+        20000,
+        40000,
+        75000,
+        125000,
+        200000
+    ][state.level] || 300000;
+}
+
+function addXP(amount){
+
+    state.xp+=amount;
+
+    const needed=xpNeeded();
+
+    if(
+        state.level<10 &&
+        state.xp>=needed
+    ){
+
+        state.level++;
+
+        toast(
+            `LEVEL UP! You reached Level ${state.level}!`
+        );
+
+        unlockCheck();
+    }
+}
+
+function unlockCheck(){
+
+    if(state.level===2){
+        toast("NEW: Meat & Household coming soon!");
+    }
+
+    if(state.level===3){
+        toast("NEW DEPARTMENT: Bakery!");
+    }
+}
+
+/* ================= PARTICLES ================= */
+
+function createMoneyParticle(x,y,value){
+
+    state.particles.push({
+        x,
+        y,
+        text:"+$"+value.toFixed(2),
+        life:1,
+        vy:-.7
+    });
+}
+
+function updateParticles(dt){
+
+    for(let i=state.particles.length-1;i>=0;i--){
+
+        const p=state.particles[i];
+
+        p.y+=p.vy*dt*60;
+
+        p.life-=dt;
+
+        if(p.life<=0){
+            state.particles.splice(i,1);
+        }
+    }
+}
+
+/* ================= DRAWING ================= */
+
+function draw(){
 
     ctx.clearRect(0,0,W,H);
 
-    /* floor */
-
-    ctx.fillStyle="#28352f";
-    ctx.fillRect(0,0,W,H);
-
-    /* park */
-
-    ctx.fillStyle="#47664f";
-    ctx.fillRect(
-        park.x,
-        park.y,
-        park.w,
-        park.h+70
-    );
-
-    /* grass details */
-
-    for(let x=70;x<1340;x+=55){
-
-        ctx.fillStyle="#557458";
-
-        ctx.fillRect(
-            x,
-            700+(x%3)*7,
-            22,
-            4
-        );
-
-    }
-
-    /* bank floor */
-
-    ctx.fillStyle="#303a36";
-    ctx.fillRect(
-        58,
-        58,
-        1284,
-        602
-    );
-
-    /* tiles */
-
-    for(let x=70;x<1330;x+=45){
-
-        for(let y=70;y<650;y+=45){
-
-            ctx.strokeStyle="rgba(255,255,255,.025)";
-            ctx.strokeRect(
-                x,
-                y,
-                45,
-                45
-            );
-
-        }
-
-    }
-
-    /* lobby carpet */
-
-    ctx.fillStyle="#384944";
-    ctx.fillRect(
-        110,
-        125,
-        450,
-        190
-    );
-
-    /* vault room */
-
-    ctx.fillStyle="#242b29";
-    ctx.fillRect(
-        990,
-        505,
-        190,
-        105
-    );
-
-    /* office */
-
-    ctx.fillStyle="#333c38";
-    ctx.fillRect(
-        650,
-        120,
-        100,
-        100
-    );
-
-    /* security room */
-
-    ctx.fillStyle="#202725";
-    ctx.fillRect(
-        800,
-        120,
-        150,
-        120
-    );
-
-    /* walls */
-
-    for(const wall of walls){
-
-        ctx.fillStyle="#111615";
-
-        ctx.fillRect(
-            wall.x,
-            wall.y,
-            wall.w,
-            wall.h
-        );
-
-        ctx.fillStyle="#46514c";
-
-        ctx.fillRect(
-            wall.x,
-            wall.y,
-            wall.w,
-            3
-        );
-
-    }
-
-    /* doors */
-
-    for(const door of doors){
-
-        if(door.open){
-
-            ctx.fillStyle="#3d493f";
-
-            ctx.fillRect(
-                door.x,
-                door.y,
-                door.w,
-                door.h
-            );
-
-        }else{
-
-            /* BROWN LOCKED DOOR */
-
-            ctx.fillStyle="#68452e";
-
-            ctx.fillRect(
-                door.x,
-                door.y,
-                door.w,
-                door.h
-            );
-
-            ctx.fillStyle="#96623e";
-
-            ctx.fillRect(
-                door.x+4,
-                door.y+3,
-                door.w-8,
-                4
-            );
-
-            ctx.fillStyle="#c49a65";
-
-            ctx.fillRect(
-                door.x+door.w/2-3,
-                door.y+door.h/2-3,
-                6,
-                6
-            );
-
-        }
-
-    }
-
-    drawFurniture();
-    drawCameras();
-    drawVan();
-    drawLoot();
-    drawKeycard();
-    drawGuards();
-    drawBullets();
+    drawWorld();
+    drawStore();
+    drawBuildings();
+    drawCustomers();
     drawPlayer();
     drawParticles();
 
-}
-
-/* =========================================================
-   FURNITURE
-========================================================= */
-
-function drawFurniture(){
-
-    /* lobby desk */
-
-    ctx.fillStyle="#171c1a";
-    ctx.fillRect(180,170,230,55);
-
-    ctx.fillStyle="#66513b";
-    ctx.fillRect(190,158,210,15);
-
-    /* desks */
-
-    const desks=[
-        [410,115],
-        [455,115],
-        [410,450],
-        [470,450],
-        [820,150],
-        [1060,330]
-    ];
-
-    for(const d of desks){
-
-        ctx.fillStyle="#554434";
-        ctx.fillRect(
-            d[0],
-            d[1],
-            70,
-            35
-        );
-
-        ctx.fillStyle="#202523";
-        ctx.fillRect(
-            d[0]+8,
-            d[1]+8,
-            25,
-            16
-        );
-
+    if(state.selectedBuild){
+        drawBuildCursor();
     }
 
-    /* vault */
+    if(state.storeOpen){
+        drawClock();
+    }
+}
 
-    ctx.fillStyle="#555c58";
+function drawWorld(){
+
+    ctx.fillStyle=COLORS.outside;
+    ctx.fillRect(0,0,W,H);
+
+    const store=storeRect();
+
+    /* road */
+
+    ctx.fillStyle=COLORS.road;
+
     ctx.fillRect(
-        1030,
-        520,
-        145,
-        90
-    );
-
-    ctx.fillStyle="#858d88";
-    ctx.fillRect(
-        1050,
-        535,
-        105,
-        60
-    );
-
-    ctx.fillStyle="#202523";
-
-    ctx.beginPath();
-    ctx.arc(
-        1102,
-        565,
-        20,
         0,
-        Math.PI*2
+        store.y+store.h+30,
+        W,
+        H-(store.y+store.h+30)
     );
-    ctx.fill();
 
-    for(let i=0;i<8;i++){
+    /* parking */
 
-        const a=i*Math.PI/4;
+    ctx.fillStyle=COLORS.parking;
 
-        ctx.strokeStyle="#b1b6b2";
-        ctx.lineWidth=4;
+    ctx.fillRect(
+        0,
+        store.y+store.h,
+        W,
+        80
+    );
+
+    /* parking stripes */
+
+    ctx.strokeStyle="#a7aa9f";
+    ctx.lineWidth=2;
+
+    for(let x=40;x<W;x+=80){
 
         ctx.beginPath();
 
         ctx.moveTo(
-            1102+Math.cos(a)*8,
-            565+Math.sin(a)*8
+            x,
+            store.y+store.h+8
         );
 
         ctx.lineTo(
-            1102+Math.cos(a)*17,
-            565+Math.sin(a)*17
+            x,
+            store.y+store.h+62
         );
 
         ctx.stroke();
-
     }
 
-    ctx.lineWidth=1;
+    /* trees */
 
+    for(let x=30;x<W;x+=130){
+
+        if(
+            x>store.x-80 &&
+            x<store.x+store.w+80
+        ){
+            continue;
+        }
+
+        drawTree(
+            x,
+            120+(x%170)
+        );
+    }
 }
 
-/* =========================================================
-   PLAYER
-========================================================= */
+function drawTree(x,y){
 
-function drawPlayer(){
+    ctx.fillStyle="#664832";
 
-    ctx.save();
-
-    ctx.translate(
-        player.x,
-        player.y
+    ctx.fillRect(
+        x-4,
+        y+15,
+        8,
+        24
     );
 
-    ctx.rotate(player.angle);
-
-    /* shadow */
-
-    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillStyle="#356744";
 
     ctx.beginPath();
-    ctx.ellipse(
-        0,
-        12,
-        20,
-        8,
-        0,
+
+    ctx.arc(
+        x,
+        y,
+        22,
         0,
         Math.PI*2
     );
+
     ctx.fill();
 
-    /* body */
+    ctx.fillStyle="#477e52";
 
-    ctx.fillStyle=
-        state.masked
-        ? "#4b5c67"
-        : "#62706a";
+    ctx.beginPath();
 
-    ctx.fillRect(
-        -14,
-        -13,
-        28,
-        29
+    ctx.arc(
+        x-10,
+        y-8,
+        14,
+        0,
+        Math.PI*2
     );
 
-    /* head */
+    ctx.fill();
+}
 
-    ctx.fillStyle=
-        state.masked
-        ? "#242a2e"
-        : "#c39a78";
+function drawStore(){
+
+    const r=storeRect();
+
+    /* shadow */
+
+    ctx.fillStyle="rgba(0,0,0,.25)";
 
     ctx.fillRect(
-        -11,
-        -29,
-        22,
-        18
+        r.x+8,
+        r.y+10,
+        r.w,
+        r.h
     );
 
-    /* mask */
+    /* walls */
 
-    if(state.masked){
+    ctx.fillStyle=COLORS.wall;
 
-        ctx.fillStyle="#15191b";
+    ctx.fillRect(
+        r.x-10,
+        r.y-10,
+        r.w+20,
+        10
+    );
+
+    ctx.fillRect(
+        r.x-10,
+        r.y-10,
+        10,
+        r.h+20
+    );
+
+    ctx.fillRect(
+        r.x+r.w,
+        r.y-10,
+        10,
+        r.h+20
+    );
+
+    ctx.fillRect(
+        r.x-10,
+        r.y+r.h,
+        r.w+20,
+        10
+    );
+
+    /* floor */
+
+    for(let y=0;y<state.height;y++){
+
+        for(let x=0;x<state.width;x++){
+
+            ctx.fillStyle=
+                (x+y)%2===0
+                ?COLORS.floor
+                :COLORS.floorAlt;
+
+            ctx.fillRect(
+                r.x+x*TILE,
+                r.y+y*TILE,
+                TILE,
+                TILE
+            );
+        }
+    }
+
+    /* entrance */
+
+    ctx.fillStyle="#d6a936";
+
+    ctx.fillRect(
+        r.x+r.w/2-35,
+        r.y+r.h-4,
+        70,
+        8
+    );
+
+    ctx.fillStyle="#fff";
+
+    ctx.font="bold 12px Arial";
+
+    ctx.textAlign="center";
+
+    ctx.fillText(
+        "ENTRANCE",
+        r.x+r.w/2,
+        r.y+r.h+27
+    );
+
+    ctx.textAlign="left";
+}
+
+function drawBuildings(){
+
+    const r=storeRect();
+
+    for(const b of state.buildings){
+
+        const x=r.x+b.x*TILE;
+        const y=r.y+b.y*TILE;
+
+        if(b.type==="shelf"){
+            drawShelf(x,y);
+        }
+
+        if(b.type==="fridge"){
+            drawFridge(x,y);
+        }
+
+        if(b.type==="checkout"){
+            drawCheckout(x,y);
+        }
+
+        if(b.type==="storage"){
+            drawStorage(x,y);
+        }
+
+        if(b.type==="cart"){
+            drawCartStation(x,y);
+        }
+
+        if(b.type==="light"){
+            drawLight(x,y);
+        }
+
+        if(b.type==="decor"){
+            drawDecor(x,y);
+        }
+    }
+}
+
+function drawShelf(x,y){
+
+    ctx.fillStyle="rgba(0,0,0,.18)";
+    ctx.fillRect(x+3,y+5,26,25);
+
+    ctx.fillStyle=COLORS.shelf;
+    ctx.fillRect(x+4,y+3,24,25);
+
+    ctx.fillStyle=COLORS.shelfTop;
+    ctx.fillRect(x+5,y+4,22,5);
+
+    ctx.fillStyle="#e6c27b";
+
+    for(let i=0;i<4;i++){
 
         ctx.fillRect(
-            -12,
-            -29,
-            24,
-            13
-        );
-
-        ctx.fillStyle="#c6d0cb";
-
-        ctx.fillRect(
-            -7,
-            -25,
-            4,
-            3
-        );
-
-        ctx.fillRect(
+            x+7+i*5,
+            y+12,
             3,
-            -25,
-            4,
-            3
-        );
-
-    }
-
-    /* weapon ONLY while masked */
-
-    if(state.masked || state.crimeCommitted){
-
-        ctx.fillStyle="#151719";
-
-        ctx.fillRect(
-            7,
-            -4,
-            30,
-            8
-        );
-
-        ctx.fillStyle="#737b78";
-
-        ctx.fillRect(
-            28,
-            -2,
-            12,
-            4
-        );
-
-    }
-
-    ctx.restore();
-
-}
-
-/* =========================================================
-   GUARDS
-========================================================= */
-
-function drawGuards(){
-
-    for(const g of guards){
-
-        if(!g.alive) continue;
-
-        ctx.save();
-
-        ctx.translate(
-            g.x,
-            g.y
-        );
-
-        ctx.rotate(g.angle);
-
-        /* shadow */
-
-        ctx.fillStyle="rgba(0,0,0,.3)";
-
-        ctx.beginPath();
-        ctx.ellipse(
-            0,
-            12,
-            19,
-            7,
-            0,
-            0,
-            Math.PI*2
-        );
-        ctx.fill();
-
-        /* body */
-
-        ctx.fillStyle=
-            g.state==="combat"
-            ? "#7c3938"
-            : "#4c5a55";
-
-        ctx.fillRect(
-            -13,
-            -12,
-            26,
-            27
-        );
-
-        /* head */
-
-        ctx.fillStyle="#c19876";
-
-        ctx.fillRect(
-            -10,
-            -27,
-            20,
-            16
-        );
-
-        /* cap */
-
-        ctx.fillStyle="#222927";
-
-        ctx.fillRect(
-            -11,
-            -29,
-            22,
-            6
-        );
-
-        /* weapon */
-
-        ctx.fillStyle="#151718";
-
-        ctx.fillRect(
-            8,
-            -3,
-            25,
             7
         );
-
-        ctx.restore();
-
-        /* health */
-
-        if(g.health<100){
-
-            ctx.fillStyle="#171b19";
-            ctx.fillRect(
-                g.x-20,
-                g.y-39,
-                40,
-                5
-            );
-
-            ctx.fillStyle="#9b5e58";
-            ctx.fillRect(
-                g.x-20,
-                g.y-39,
-                40*(g.health/100),
-                5
-            );
-
-        }
-
     }
 
+    ctx.fillStyle="#d7a85a";
+
+    ctx.fillRect(
+        x+5,
+        y+22,
+        22,
+        3
+    );
 }
 
-/* =========================================================
-   CAMERAS
-========================================================= */
+function drawFridge(x,y){
 
-function drawCameras(){
+    ctx.fillStyle="rgba(0,0,0,.18)";
+    ctx.fillRect(x+3,y+4,26,27);
 
-    for(const c of cameras){
+    ctx.fillStyle=COLORS.fridge;
+    ctx.fillRect(x+3,y+2,26,27);
 
-        ctx.save();
+    ctx.fillStyle="#a7d4df";
+    ctx.fillRect(x+7,y+6,18,17);
 
-        ctx.translate(c.x,c.y);
+    ctx.strokeStyle="#4a7180";
 
-        ctx.fillStyle=
-            c.disabled
-            ? "#38413d"
-            : "#151918";
+    ctx.strokeRect(
+        x+7,
+        y+6,
+        18,
+        17
+    );
 
-        ctx.fillRect(
-            -10,
-            -7,
-            20,
-            14
-        );
+    ctx.fillStyle="#fff";
 
-        ctx.fillStyle=
-            c.disabled
-            ? "#52605a"
-            : "#bd5a51";
-
-        ctx.fillRect(
-            2,
-            -3,
-            5,
-            5
-        );
-
-        if(!c.disabled){
-
-            ctx.globalAlpha=.07;
-
-            ctx.fillStyle="#d76a5d";
-
-            ctx.beginPath();
-
-            ctx.moveTo(0,0);
-
-            ctx.arc(
-                0,
-                0,
-                170,
-                c.angle-.35,
-                c.angle+.35
-            );
-
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.globalAlpha=1;
-
-        }
-
-        ctx.restore();
-
-    }
-
+    ctx.fillRect(
+        x+23,
+        y+9,
+        2,
+        9
+    );
 }
 
-/* =========================================================
-   LOOT
-========================================================= */
+function drawCheckout(x,y){
 
-function drawLoot(){
+    ctx.fillStyle="rgba(0,0,0,.18)";
+    ctx.fillRect(x+2,y+5,28,25);
 
-    for(const bag of lootBags){
+    ctx.fillStyle=COLORS.checkout;
+    ctx.fillRect(x+3,y+7,26,20);
 
-        if(bag.taken) continue;
+    ctx.fillStyle="#2a3135";
 
-        ctx.save();
+    ctx.fillRect(
+        x+8,
+        y+3,
+        16,
+        7
+    );
 
-        ctx.translate(
-            bag.x,
-            bag.y
-        );
+    ctx.fillStyle="#8ed3a0";
 
-        ctx.fillStyle="#8b7047";
+    ctx.fillRect(
+        x+10,
+        y+4,
+        12,
+        4
+    );
+
+    ctx.fillStyle="#e0b83f";
+
+    ctx.fillRect(
+        x+6,
+        y+20,
+        20,
+        3
+    );
+}
+
+function drawStorage(x,y){
+
+    ctx.fillStyle=COLORS.wood;
+    ctx.fillRect(x+4,y+4,24,25);
+
+    ctx.fillStyle="#a67445";
+
+    for(let i=0;i<3;i++){
 
         ctx.fillRect(
-            -18,
-            -13,
-            36,
-            28
-        );
-
-        ctx.fillStyle="#b89a63";
-
-        ctx.fillRect(
-            -12,
-            -18,
-            24,
-            7
-        );
-
-        ctx.fillStyle="#252b28";
-
-        ctx.fillRect(
-            -8,
-            -5,
-            16,
+            x+7,
+            y+7+i*7,
+            18,
             4
         );
-
-        ctx.restore();
-
     }
-
 }
 
-/* =========================================================
-   KEYCARD
-========================================================= */
+function drawCartStation(x,y){
 
-function drawKeycard(){
-
-    if(!keycardItem.active) return;
-
-    ctx.save();
-
-    ctx.translate(
-        keycardItem.x,
-        keycardItem.y
-    );
-
-    ctx.rotate(-.2);
-
-    ctx.fillStyle="#d6d9cf";
+    ctx.fillStyle="#303a40";
 
     ctx.fillRect(
-        -15,
-        -9,
-        30,
-        18
-    );
-
-    ctx.fillStyle="#3c555e";
-
-    ctx.fillRect(
-        -10,
-        -5,
+        x+6,
+        y+11,
         20,
         4
     );
 
-    ctx.restore();
+    ctx.strokeStyle="#71818a";
+    ctx.lineWidth=2;
 
+    ctx.strokeRect(
+        x+7,
+        y+15,
+        14,
+        9
+    );
+
+    ctx.beginPath();
+    ctx.arc(x+10,y+26,2,0,Math.PI*2);
+    ctx.arc(x+22,y+26,2,0,Math.PI*2);
+    ctx.stroke();
 }
 
-/* =========================================================
-   VAN
-========================================================= */
+function drawLight(x,y){
 
-function drawVan(){
+    ctx.fillStyle="#f7e9aa";
 
-    ctx.save();
+    ctx.beginPath();
 
-    ctx.translate(
-        van.x,
-        van.y
+    ctx.arc(
+        x+16,
+        y+16,
+        8,
+        0,
+        Math.PI*2
     );
+
+    ctx.fill();
+
+    ctx.strokeStyle="rgba(255,235,150,.15)";
+    ctx.lineWidth=12;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+16,
+        y+16,
+        12,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+}
+
+function drawDecor(x,y){
+
+    ctx.fillStyle="#356644";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+16,
+        y+13,
+        8,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle="#684932";
+
+    ctx.fillRect(
+        x+13,
+        y+19,
+        6,
+        8
+    );
+}
+
+function drawCustomers(){
+
+    const r=storeRect();
+
+    for(const c of state.customers){
+
+        const x=r.x+c.x*TILE;
+        const y=r.y+c.y*TILE;
+
+        /* shadow */
+
+        ctx.fillStyle="rgba(0,0,0,.18)";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            x,
+            y+9,
+            8,
+            4,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* body */
+
+        ctx.fillStyle=c.color;
+
+        ctx.fillRect(
+            x-7,
+            y,
+            14,
+            15
+        );
+
+        /* head */
+
+        ctx.fillStyle="#e7b27d";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y-6,
+            6,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        /* hair */
+
+        ctx.fillStyle="#342a26";
+
+        ctx.fillRect(
+            x-5,
+            y-11,
+            10,
+            3
+        );
+
+        /* feet */
+
+        ctx.fillStyle="#292d30";
+
+        ctx.fillRect(
+            x-6,
+            y+14,
+            4,
+            5
+        );
+
+        ctx.fillRect(
+            x+2,
+            y+14,
+            4,
+            5
+        );
+
+        /* shopping basket */
+
+        if(c.products.length>0){
+
+            ctx.strokeStyle="#38464c";
+            ctx.lineWidth=2;
+
+            ctx.strokeRect(
+                x+8,
+                y+5,
+                8,
+                7
+            );
+        }
+    }
+}
+
+function drawPlayer(){
+
+    const r=storeRect();
+
+    const x=r.x+player.x*TILE;
+    const y=r.y+player.y*TILE;
 
     /* shadow */
 
-    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillStyle="rgba(0,0,0,.25)";
 
-    ctx.fillRect(
-        -5,
-        20,
-        van.w+10,
-        10
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y+10,
+        9,
+        4,
+        0,
+        0,
+        Math.PI*2
     );
+
+    ctx.fill();
 
     /* body */
 
-    ctx.fillStyle="#c6c8c3";
+    ctx.fillStyle="#3e78a4";
 
     ctx.fillRect(
-        0,
-        0,
-        van.w,
-        van.h
+        x-8,
+        y,
+        16,
+        16
     );
 
-    /* cabin */
+    /* head */
 
-    ctx.fillStyle="#3b4c50";
+    ctx.fillStyle="#e5ad78";
 
-    ctx.fillRect(
-        72,
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-7,
         7,
-        55,
-        22
+        0,
+        Math.PI*2
     );
 
-    /* windshield */
+    ctx.fill();
 
-    ctx.fillStyle="#151c1d";
+    /* hair */
+
+    ctx.fillStyle="#302521";
 
     ctx.fillRect(
-        102,
-        9,
-        20,
-        17
-    );
-
-    /* wheels */
-
-    ctx.fillStyle="#121515";
-
-    ctx.beginPath();
-    ctx.arc(25,45,11,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(117,45,11,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle="#5e6764";
-
-    ctx.beginPath();
-    ctx.arc(25,45,5,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(117,45,5,0,Math.PI*2);
-    ctx.fill();
-
-    /* PAYTIME */
-
-    ctx.fillStyle="#252b29";
-    ctx.font="bold 12px Arial";
-    ctx.fillText(
-        "PAYTIME",
+        x-6,
+        y-13,
         12,
-        21
+        4
     );
 
-    ctx.restore();
+    /* legs */
 
+    ctx.fillStyle="#24292d";
+
+    ctx.fillRect(
+        x-6,
+        y+15,
+        5,
+        6
+    );
+
+    ctx.fillRect(
+        x+1,
+        y+15,
+        5,
+        6
+    );
+
+    /* name */
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px Arial";
+    ctx.textAlign="center";
+
+    ctx.fillText(
+        "YOU",
+        x,
+        y-18
+    );
+
+    ctx.textAlign="left";
 }
 
-/* =========================================================
-   BULLETS DRAW
-========================================================= */
+function drawBuildCursor(){
 
-function drawBullets(){
+    const mouseX=lastMouse.x;
+    const mouseY=lastMouse.y;
 
-    for(const b of bullets){
+    const tile=screenToTile(mouseX,mouseY);
 
-        ctx.fillStyle="#e3d7ad";
-
-        ctx.fillRect(
-            b.x-3,
-            b.y-2,
-            6,
-            4
-        );
-
+    if(!tile){
+        return;
     }
 
+    const r=storeRect();
+
+    const x=r.x+tile.x*TILE;
+    const y=r.y+tile.y*TILE;
+
+    const good=
+        !occupied(tile.x,tile.y) &&
+        state.selectedBuild!=="delete";
+
+    ctx.fillStyle=
+        good
+        ?"rgba(95,190,115,.35)"
+        :"rgba(210,75,65,.35)";
+
+    ctx.fillRect(
+        x,
+        y,
+        TILE,
+        TILE
+    );
+
+    ctx.strokeStyle=
+        good
+        ?"#77d68a"
+        :"#e36c63";
+
+    ctx.lineWidth=2;
+
+    ctx.strokeRect(
+        x+1,
+        y+1,
+        TILE-2,
+        TILE-2
+    );
 }
 
-/* =========================================================
-   PARTICLES DRAW
-========================================================= */
+let lastMouse={x:0,y:0};
+
+canvas.addEventListener("mousemove",e=>{
+
+    const rect=canvas.getBoundingClientRect();
+
+    lastMouse.x=
+        (e.clientX-rect.left)*
+        (canvas.width/rect.width);
+
+    lastMouse.y=
+        (e.clientY-rect.top)*
+        (canvas.height/rect.height);
+});
 
 function drawParticles(){
 
-    for(const p of particles){
+    ctx.textAlign="center";
+
+    for(const p of state.particles){
 
         ctx.globalAlpha=
-            Math.max(
-                0,
-                p.life/p.maxLife
-            );
+            Math.max(0,p.life);
 
-        ctx.fillStyle="#c5c9b7";
+        ctx.fillStyle="#f3d15d";
 
-        ctx.fillRect(
-            p.x,
-            p.y,
-            p.size,
-            p.size
+        ctx.font="bold 13px Arial";
+
+        const r=storeRect();
+
+        ctx.fillText(
+            p.text,
+            r.x+p.x*TILE,
+            r.y+p.y*TILE
         );
-
     }
 
     ctx.globalAlpha=1;
-
+    ctx.textAlign="left";
 }
 
-/* =========================================================
-   LIGHTING
-========================================================= */
+function drawClock(){
 
-function drawLighting(){
+    const hour=Math.floor(state.clock/60);
+    const minute=Math.floor(state.clock%60);
 
-    const gradient=
-        ctx.createRadialGradient(
-            player.x,
-            player.y,
-            50,
-            player.x,
-            player.y,
-            400
-        );
+    const hh=
+        hour.toString().padStart(2,"0");
 
-    gradient.addColorStop(
-        0,
-        "rgba(0,0,0,0)"
-    );
+    const mm=
+        minute.toString().padStart(2,"0");
 
-    gradient.addColorStop(
-        1,
-        "rgba(0,0,0,.32)"
-    );
+    ctx.fillStyle="rgba(10,15,18,.85)";
 
-    ctx.fillStyle=gradient;
     ctx.fillRect(
-        0,
-        0,
-        W,
-        H
+        W/2-70,
+        H-60,
+        140,
+        34
     );
 
-    if(state.alarm){
+    ctx.fillStyle="#fff";
 
-        const pulse=
-            (Math.sin(performance.now()/100)+1)/2;
+    ctx.font="bold 15px Arial";
 
-        ctx.fillStyle=
-            "rgba(150,30,30,"+
-            (.025*pulse)+")";
+    ctx.textAlign="center";
 
-        ctx.fillRect(
-            0,
-            0,
-            W,
-            H
+    ctx.fillText(
+        `${hh}:${mm}`,
+        W/2,
+        H-38
+    );
+
+    ctx.textAlign="left";
+}
+
+/* ================= UPDATE UI ================= */
+
+function updateUI(){
+
+    document.getElementById("cashText")
+        .textContent=
+        "$"+Math.floor(state.cash).toLocaleString();
+
+    document.getElementById("ratingText")
+        .textContent=
+        state.rating.toFixed(1)+" ⭐";
+
+    document.getElementById("dayText")
+        .textContent=
+        state.day;
+
+    document.getElementById("levelText")
+        .textContent=
+        state.level;
+
+    document.getElementById("customersText")
+        .textContent=
+        state.customers.length;
+
+    let objective="STOCK YOUR STORE";
+
+    const shelfCount=
+        state.buildings.filter(
+            b=>b.type==="shelf"||b.type==="fridge"
+        ).length;
+
+    const checkout=
+        state.buildings.some(
+            b=>b.type==="checkout"
         );
 
-    }
+    const totalStock=
+        PRODUCTS.reduce(
+            (sum,p)=>sum+p.stock,
+            0
+        );
 
-}
+    if(state.storeOpen){
 
-/* =========================================================
-   CROSSHAIR
-========================================================= */
+        objective=
+            "STORE OPEN — KEEP CUSTOMERS HAPPY";
+    }else if(shelfCount<1){
 
-function updateCrosshair(){
+        objective=
+            "BUILD A SHELF";
+    }else if(!checkout){
 
-    const crosshair=
-        document.getElementById("crosshair");
+        objective=
+            "BUILD A CHECKOUT";
+    }else if(totalStock<20){
 
-    crosshair.style.left=
-        (mouse.x/W*100)+"%";
-
-    crosshair.style.top=
-        (mouse.y/H*100)+"%";
-
-}
-
-/* =========================================================
-   MAIN UPDATE
-========================================================= */
-
-function update(){
-
-    if(state.playing && !state.paused){
-
-        updatePlayer();
-        updateGuards();
-        updateBullets();
-        updateParticles();
-        stageLogic();
-
-        /* camera alarm */
-
-        if(
-            state.masked &&
-            !state.camerasDisabled
-        ){
-
-            for(const c of cameras){
-
-                if(c.disabled) continue;
-
-                const d=
-                    Math.hypot(
-                        player.x-c.x,
-                        player.y-c.y
-                    );
-
-                if(d<160){
-
-                    state.alarm=true;
-
-                }
-
-            }
-
-        }
-
-        /* gunfire alarm */
-
-        if(
-            state.crimeCommitted &&
-            !state.suppressor
-        ){
-
-            state.alarm=true;
-
-        }
-
-    }
-
-    updateHUD();
-    updateCrosshair();
-
-}
-
-/* =========================================================
-   DRAW
-========================================================= */
-
-function draw(){
-
-    if(state.playing){
-
-        drawWorld();
-        drawLighting();
-
+        objective=
+            "ORDER MORE INVENTORY";
     }else{
 
-        /* background behind menus */
-
-        ctx.fillStyle="#111815";
-        ctx.fillRect(
-            0,
-            0,
-            W,
-            H
-        );
-
-        /* decorative bank silhouette */
-
-        ctx.fillStyle="#18211d";
-
-        ctx.fillRect(
-            150,
-            150,
-            1100,
-            480
-        );
-
-        ctx.fillStyle="#202b26";
-
-        for(let x=190;x<1220;x+=120){
-
-            ctx.fillRect(
-                x,
-                210,
-                75,
-                180
-            );
-
-        }
-
+        objective=
+            "OPEN YOUR STORE";
     }
 
+    document.getElementById("objectiveText")
+        .textContent=
+        objective;
 }
 
-/* =========================================================
-   LOOP
-========================================================= */
+/* ================= UTILITIES ================= */
 
-function loop(){
+function distance(x1,y1,x2,y2){
 
-    update();
-    draw();
-
-    requestAnimationFrame(loop);
-
+    return Math.hypot(
+        x2-x1,
+        y2-y1
+    );
 }
 
-/* =========================================================
-   INITIAL STATE
-========================================================= */
+/* ================= SAVE / MENU ================= */
 
-updateLoadoutUI();
+document.getElementById("saveBtn")
+    .addEventListener("click",saveGame);
 
-scanlines.style.display=
-    state.retro
-    ? "block"
-    : "none";
+document.getElementById("menuBtn")
+    .addEventListener("click",()=>{
 
-/*
-   IMPORTANT:
-   DO NOT START THE HEIST HERE.
+        if(state.storeOpen){
+            toast("Close the store before leaving.");
+            return;
+        }
 
-   The game intentionally starts at the
-   MAIN MENU. PLAY starts the heist.
-*/
+        saveGame();
 
-showScreen("main");
+        showScreen("menu");
+    });
 
-loop();
+/* ================= MAIN LOOP ================= */
+
+function gameLoop(now){
+
+    const dt=
+        Math.min(
+            .05,
+            (now-state.lastTime)/1000
+        );
+
+    state.lastTime=now;
+
+    if(
+        document.getElementById("game")
+            .classList.contains("active")
+    ){
+
+        updatePlayer(dt);
+        updateDay(dt);
+        updateCustomers(dt);
+        updateParticles(dt);
+        updateRating();
+
+        draw();
+        updateUI();
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+/* ================= AUTOSAVE ================= */
+
+setInterval(()=>{
+
+    if(
+        document.getElementById("game")
+            .classList.contains("active")
+    ){
+        saveGame();
+    }
+
+},30000);
+
+/* ================= INITIALIZE ================= */
+
+showScreen("menu");
+
+requestAnimationFrame(gameLoop);
 
 </script>
 

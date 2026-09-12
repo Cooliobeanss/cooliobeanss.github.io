@@ -3,382 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAYTIME — Downtown Bank</title>
+<title>PAYTIME</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    user-select: none;
+*{
+    box-sizing:border-box;
+    user-select:none;
 }
 
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #08090c;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
+body{
+    margin:0;
+    background:#08090c;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    overflow:hidden;
 }
 
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#gameWrap{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+        radial-gradient(circle at center,#171a20 0%,#08090c 70%);
 }
 
-#gameWrap {
-    position: relative;
-    width: min(1400px, 100vw);
-    aspect-ratio: 16 / 9;
-    max-height: 100vh;
-    overflow: hidden;
-    background: #111;
+canvas{
+    width:min(1400px,100vw);
+    height:auto;
+    max-height:100vh;
+    image-rendering:auto;
+    background:#111;
+    box-shadow:0 0 60px rgba(0,0,0,.8);
 }
 
-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-    background: #17191d;
-    cursor: crosshair;
+.screen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
 }
 
-.screen {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(5, 6, 9, .88);
-    z-index: 20;
+.panel{
+    pointer-events:auto;
+    width:min(620px,90vw);
+    padding:42px;
+    background:
+        linear-gradient(145deg,rgba(25,28,34,.97),rgba(9,10,13,.97));
+    border:1px solid #3c424d;
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.75),
+        inset 0 1px rgba(255,255,255,.04);
+    border-radius:8px;
 }
 
-.hidden {
-    display: none !important;
+.logo{
+    font-size:70px;
+    font-weight:900;
+    letter-spacing:8px;
+    text-align:center;
+    margin-bottom:4px;
 }
 
-.menu {
-    width: min(760px, 90%);
-    text-align: center;
+.subtitle{
+    text-align:center;
+    color:#8e96a3;
+    letter-spacing:4px;
+    margin-bottom:35px;
+    font-size:13px;
 }
 
-.logo {
-    font-size: clamp(55px, 9vw, 120px);
-    font-weight: 1000;
-    letter-spacing: 12px;
-    color: #f2f2f2;
-    text-shadow: 5px 5px 0 #7d1515;
+.menuButton{
+    width:100%;
+    padding:17px;
+    margin:8px 0;
+    border:1px solid #454c58;
+    background:#171a20;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    letter-spacing:2px;
+    cursor:pointer;
+    border-radius:4px;
+    transition:.15s;
 }
 
-.subtitle {
-    color: #aaa;
-    letter-spacing: 4px;
-    margin-top: -10px;
-    margin-bottom: 35px;
+.menuButton:hover{
+    background:#272c35;
+    border-color:#858e9d;
+    transform:translateX(3px);
 }
 
-button {
-    border: 0;
-    padding: 15px 30px;
-    margin: 7px;
-    background: #c72828;
-    color: white;
-    font-weight: 900;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: .15s;
+.menuButton.primary{
+    background:#d7d9dc;
+    color:#111;
+    border-color:#fff;
 }
 
-button:hover {
-    background: #ed3a3a;
-    transform: translateY(-2px);
+.menuButton.primary:hover{
+    background:#fff;
 }
 
-button.secondary {
-    background: #292d34;
+.hidden{
+    display:none!important;
 }
 
-button.secondary:hover {
-    background: #3b414b;
+.loadoutTitle{
+    text-align:center;
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:4px;
+    margin-bottom:30px;
 }
 
-.difficulty {
-    margin: 20px auto;
-    padding: 16px;
-    background: #15181d;
-    border: 1px solid #30343b;
-    max-width: 500px;
+.weaponBox{
+    padding:25px;
+    border:1px solid #3e444e;
+    background:#11141a;
+    margin-bottom:22px;
 }
 
-.diffButtons button {
-    padding: 10px 14px;
-    font-size: 13px;
+.weaponName{
+    font-size:24px;
+    font-weight:900;
+    margin-bottom:18px;
 }
 
-.diffButtons button.selected {
-    outline: 2px solid #e33;
-    background: #8e2020;
+.weaponPreview{
+    height:130px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:80px;
+    background:#0b0d11;
+    border:1px solid #282d35;
+    margin-bottom:20px;
 }
 
-.controls {
-    color: #aaa;
-    line-height: 1.8;
-    font-size: 13px;
-    margin-top: 25px;
+.attachment{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0;
+    border-top:1px solid #292e36;
 }
 
-#hud {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
+.toggle{
+    display:flex;
+    gap:5px;
 }
 
-#objective {
-    position: absolute;
-    top: 18px;
-    left: 20px;
-    padding: 12px 16px;
-    background: rgba(8,9,12,.86);
-    border-left: 4px solid #d52c2c;
-    min-width: 330px;
+.toggle button{
+    padding:8px 17px;
+    border:1px solid #4b525d;
+    background:#181b21;
+    color:#aaa;
+    cursor:pointer;
 }
 
-#objectiveTitle {
-    font-size: 12px;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.toggle button.active{
+    background:#ddd;
+    color:#111;
 }
 
-#objectiveText {
-    font-size: 18px;
-    font-weight: 900;
-    margin-top: 3px;
+.stat{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    align-items:center;
+    margin:8px 0;
+    font-size:12px;
+    color:#9da5b1;
 }
 
-#stats {
-    position: absolute;
-    right: 20px;
-    top: 18px;
-    text-align: right;
-    background: rgba(8,9,12,.82);
-    padding: 12px 15px;
-    min-width: 180px;
+.bar{
+    height:7px;
+    background:#252a31;
+    overflow:hidden;
 }
 
-.stat {
-    margin: 4px 0;
+.bar i{
+    display:block;
+    height:100%;
+    background:#d7d9dc;
 }
 
-#ammo {
-    font-size: 28px;
-    font-weight: 900;
+#notice{
+    position:absolute;
+    left:50%;
+    top:30px;
+    transform:translateX(-50%);
+    padding:12px 22px;
+    background:rgba(5,6,8,.9);
+    border:1px solid #555d68;
+    font-weight:bold;
+    letter-spacing:1px;
+    opacity:0;
+    transition:.2s;
+    pointer-events:none;
 }
 
-#health {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: 300px;
-}
-
-.bar {
-    height: 17px;
-    background: #252930;
-    margin-top: 5px;
-    border: 1px solid #444;
-}
-
-.bar > div {
-    height: 100%;
-    transition: width .1s;
-}
-
-#healthFill {
-    background: #d62f2f;
-}
-
-#armorFill {
-    background: #4e8bdc;
-}
-
-#detectionBox {
-    position: absolute;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    text-align: center;
-    opacity: 0;
-}
-
-#detectionBox.active {
-    opacity: 1;
-}
-
-#detectText {
-    font-weight: 900;
-    color: #ffb020;
-}
-
-#detectBar {
-    height: 8px;
-    background: #222;
-    border: 1px solid #555;
-}
-
-#detectFill {
-    height: 100%;
-    width: 0;
-    background: #ffb020;
-}
-
-#alarm {
-    position: absolute;
-    inset: 0;
-    border: 7px solid transparent;
-    pointer-events: none;
-}
-
-#alarm.active {
-    animation: alarmFlash .5s infinite alternate;
-}
-
-@keyframes alarmFlash {
-    from { border-color: rgba(255,0,0,.05); }
-    to { border-color: rgba(255,0,0,.65); }
-}
-
-#lootStatus {
-    position: absolute;
-    bottom: 25px;
-    right: 25px;
-    padding: 13px 17px;
-    background: rgba(8,9,12,.9);
-    font-weight: 900;
-    display: none;
-}
-
-#interact {
-    position: absolute;
-    bottom: 125px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 18px;
-    background: rgba(0,0,0,.78);
-    border: 1px solid #555;
-    font-weight: 900;
-    display: none;
-}
-
-#message {
-    position: absolute;
-    bottom: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,.82);
-    padding: 10px 20px;
-    font-weight: 900;
-    opacity: 0;
-    transition: opacity .2s;
-}
-
-#message.show {
-    opacity: 1;
-}
-
-#drill {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 450px;
-    padding: 25px;
-    background: rgba(8,9,12,.96);
-    border: 2px solid #555;
-    text-align: center;
-    display: none;
-    z-index: 15;
-}
-
-#drill h2 {
-    margin-top: 0;
-}
-
-#drillBar {
-    height: 22px;
-    background: #252830;
-    margin: 20px 0;
-}
-
-#drillFill {
-    height: 100%;
-    width: 0%;
-    background: #d52c2c;
-}
-
-#pauseScreen, #resultScreen {
-    z-index: 30;
-}
-
-.resultBox {
-    background: #111419;
-    border: 1px solid #3c414a;
-    width: min(650px, 90%);
-    padding: 35px;
-    text-align: center;
-}
-
-.resultBox h1 {
-    font-size: 55px;
-    margin: 0 0 20px;
-}
-
-.resultStats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 25px 0;
-}
-
-.resultStat {
-    background: #1b1e24;
-    padding: 15px;
-}
-
-.resultStat span {
-    display: block;
-    color: #999;
-    font-size: 12px;
-}
-
-.resultStat strong {
-    font-size: 25px;
-}
-
-#tutorial {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: min(650px, 90%);
-    padding: 25px;
-    background: rgba(8,9,12,.95);
-    border: 1px solid #555;
-    z-index: 18;
-}
-
-#tutorial h2 {
-    margin-top: 0;
-    color: #e23;
-}
-
-.tutorialSteps {
-    line-height: 1.8;
-    color: #ddd;
+#controls{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#7e8794;
+    font-size:11px;
+    letter-spacing:1px;
+    pointer-events:none;
 }
 </style>
 </head>
@@ -386,568 +221,508 @@ button.secondary:hover {
 <body>
 
 <div id="gameWrap">
-
 <canvas id="game" width="1400" height="800"></canvas>
-
-<div id="hud" class="hidden">
-
-    <div id="objective">
-        <div id="objectiveTitle">OBJECTIVE</div>
-        <div id="objectiveText">Infiltrate the bank</div>
-    </div>
-
-    <div id="stats">
-        <div id="ammo">30 / 120</div>
-        <div class="stat">💵 $<span id="cash">0</span></div>
-        <div class="stat">☠ Kills: <span id="kills">0</span></div>
-        <div class="stat">⏱ <span id="timer">0:00</span></div>
-    </div>
-
-    <div id="detectionBox">
-        <div id="detectText">DETECTED</div>
-        <div id="detectBar"><div id="detectFill"></div></div>
-    </div>
-
-    <div id="health">
-        <div>HEALTH <span id="healthText">100</span></div>
-        <div class="bar"><div id="healthFill"></div></div>
-        <div>ARMOR <span id="armorText">100</span></div>
-        <div class="bar"><div id="armorFill"></div></div>
-    </div>
-
-    <div id="lootStatus">💰 CARRYING LOOT</div>
-
-    <div id="interact">[E] INTERACT</div>
-
-    <div id="message"></div>
-
-    <div id="alarm"></div>
 </div>
 
-<!-- MAIN MENU -->
-<div id="menuScreen" class="screen">
-    <div class="menu">
+<div id="notice"></div>
 
-        <div class="logo">PAYTIME</div>
-        <div class="subtitle">DOWNTOWN BANK</div>
+<div id="mainMenu" class="screen">
+<div class="panel">
+    <div class="logo">PAYTIME</div>
+    <div class="subtitle">NO PLAN SURVIVES CONTACT</div>
 
-        <div class="difficulty">
-            <b>DIFFICULTY</b>
+    <button class="menuButton primary" id="playBtn">PLAY</button>
+    <button class="menuButton" id="loadoutBtn">LOADOUT</button>
+    <button class="menuButton" id="settingsBtn">SETTINGS</button>
+    <button class="menuButton" id="exitBtn">EXIT</button>
+</div>
+</div>
 
-            <div class="diffButtons">
-                <button class="selected" data-diff="normal">NORMAL</button>
-                <button data-diff="hard">HARD</button>
-                <button data-diff="veryhard">VERY HARD</button>
-                <button data-diff="extreme">EXTREME</button>
-                <button data-diff="overkill">OVERKILL</button>
+<div id="loadoutMenu" class="screen hidden">
+<div class="panel">
+    <div class="loadoutTitle">LOADOUT</div>
+
+    <div class="weaponBox">
+        <div class="weaponName">ASSAULT RIFLE</div>
+
+        <div class="weaponPreview">🔫</div>
+
+        <div class="attachment">
+            <span>SUPPRESSOR</span>
+
+            <div class="toggle">
+                <button id="supOff" class="active">OFF</button>
+                <button id="supOn">ON</button>
             </div>
         </div>
 
-        <button id="startButton">START HEIST</button>
-
-        <div class="controls">
-            WASD — Move<br>
-            Mouse — Aim<br>
-            Left Click — Shoot<br>
-            R — Reload<br>
-            E — Interact<br>
-            Q — Equipment<br>
-            G — Drop / throw loot<br>
-            SHIFT — Sprint<br>
-            ESC — Pause
+        <div class="stat">
+            <span>DAMAGE</span>
+            <div class="bar"><i style="width:78%"></i></div>
         </div>
 
-    </div>
-</div>
-
-<!-- TUTORIAL -->
-<div id="tutorial" class="hidden">
-    <h2>THE JOB</h2>
-
-    <div class="tutorialSteps">
-        <b>1.</b> Get inside the bank.<br>
-        <b>2.</b> Find the guard carrying the <b>KEYCARD</b>.<br>
-        <b>3.</b> Take the keycard to the security room.<br>
-        <b>4.</b> Disable the cameras and unlock the vault corridor.<br>
-        <b>5.</b> Start the vault drill.<br>
-        <b>6.</b> Grab the loot bags.<br>
-        <b>7.</b> Get to the extraction zone.<br>
-        <b>8.</b> Survive the extraction countdown.
-    </div>
-
-    <button id="tutorialButton">LET'S GO</button>
-</div>
-
-<!-- DRILL -->
-<div id="drill">
-    <h2>VAULT DRILL</h2>
-    <div>Hold <b>E</b> to drill.</div>
-    <div id="drillBar">
-        <div id="drillFill"></div>
-    </div>
-    <div id="drillPercent">0%</div>
-    <button id="cancelDrill" class="secondary">STOP</button>
-</div>
-
-<!-- PAUSE -->
-<div id="pauseScreen" class="screen hidden">
-    <div class="menu">
-        <div class="logo" style="font-size:70px;">PAUSED</div>
-        <button id="resumeButton">RESUME</button>
-        <button id="restartButton" class="secondary">RESTART HEIST</button>
-        <button id="menuButton" class="secondary">MAIN MENU</button>
-    </div>
-</div>
-
-<!-- RESULT -->
-<div id="resultScreen" class="screen hidden">
-    <div class="resultBox">
-        <h1 id="resultTitle">HEIST COMPLETE</h1>
-
-        <div class="resultStats">
-            <div class="resultStat">
-                <span>CASH</span>
-                <strong id="resultCash">$0</strong>
-            </div>
-
-            <div class="resultStat">
-                <span>XP</span>
-                <strong id="resultXP">0</strong>
-            </div>
-
-            <div class="resultStat">
-                <span>KILLS</span>
-                <strong id="resultKills">0</strong>
-            </div>
-
-            <div class="resultStat">
-                <span>TIME</span>
-                <strong id="resultTime">0:00</strong>
-            </div>
+        <div class="stat">
+            <span>ACCURACY</span>
+            <div class="bar"><i style="width:65%"></i></div>
         </div>
 
-        <button id="againButton">RUN IT AGAIN</button>
-        <button id="resultMenuButton" class="secondary">MAIN MENU</button>
+        <div class="stat">
+            <span>RECOIL</span>
+            <div class="bar"><i style="width:52%"></i></div>
+        </div>
+
+        <div class="stat">
+            <span>FIRE RATE</span>
+            <div class="bar"><i style="width:82%"></i></div>
+        </div>
     </div>
+
+    <button class="menuButton primary" id="loadoutPlay">PLAY</button>
+    <button class="menuButton" id="loadoutBack">BACK</button>
+</div>
 </div>
 
+<div id="settingsMenu" class="screen hidden">
+<div class="panel">
+    <div class="loadoutTitle">SETTINGS</div>
+
+    <div style="color:#999;text-align:center;margin-bottom:25px">
+        PAYTIME SETTINGS
+    </div>
+
+    <button class="menuButton" id="settingsBack">BACK</button>
+</div>
+</div>
+
+<div id="controls">
+WASD MOVE · SHIFT SPRINT · LMB SHOOT · R RELOAD · E INTERACT · M MASK
 </div>
 
 <script>
-/* =========================================================
-   PAYTIME — DOWNTOWN BANK
-   ========================================================= */
-
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const W = canvas.width;
 const H = canvas.height;
 
-const keys = {};
-const mouse = {
-    x: W / 2,
-    y: H / 2,
-    down: false
-};
-
-let gameRunning = false;
+let gameStarted = false;
 let paused = false;
-let lastTime = 0;
-let elapsed = 0;
 
-let difficulty = "normal";
+let suppressor = false;
+let mask = false;
+let maskAnimation = 0;
 
-const difficulties = {
-    normal: {
-        guardHP: 45,
-        guardDamage: 8,
-        guardSpeed: 1.15,
-        fireRate: 900,
-        reinforcementDelay: 18000,
-        reward: 1
-    },
-
-    hard: {
-        guardHP: 55,
-        guardDamage: 10,
-        guardSpeed: 1.35,
-        fireRate: 760,
-        reinforcementDelay: 15000,
-        reward: 1.3
-    },
-
-    veryhard: {
-        guardHP: 65,
-        guardDamage: 12,
-        guardSpeed: 1.55,
-        fireRate: 650,
-        reinforcementDelay: 12000,
-        reward: 1.7
-    },
-
-    extreme: {
-        guardHP: 80,
-        guardDamage: 15,
-        guardSpeed: 1.8,
-        fireRate: 550,
-        reinforcementDelay: 9500,
-        reward: 2.2
-    },
-
-    overkill: {
-        guardHP: 100,
-        guardDamage: 20,
-        guardSpeed: 2.05,
-        fireRate: 450,
-        reinforcementDelay: 7000,
-        reward: 3
-    }
+let keys = {};
+let mouse = {
+    x:700,
+    y:400,
+    down:false
 };
 
-let missionStage = 0;
+document.addEventListener("keydown",e=>{
+    keys[e.key.toLowerCase()] = true;
 
-const stages = [
-    "Infiltrate the bank",
-    "Find the keycard",
-    "Reach the security room",
-    "Disable the cameras",
-    "Reach the vault",
-    "Drill the vault",
-    "Grab the loot",
-    "Escape the bank"
-];
+    if(e.key.toLowerCase()==="m"){
+        toggleMask();
+    }
 
-let alarmTriggered = false;
-let alarmLevel = 0;
+    if(e.key.toLowerCase()==="r"){
+        reload();
+    }
 
-let kills = 0;
-let cash = 0;
-let xp = 0;
+    if(e.key.toLowerCase()==="e"){
+        interact();
+    }
 
-let extractionActive = false;
-let extractionProgress = 0;
+    if(e.key==="Escape"){
+        togglePause();
+    }
+});
 
-let drillActive = false;
-let drillProgress = 0;
+document.addEventListener("keyup",e=>{
+    keys[e.key.toLowerCase()] = false;
+});
 
-let carryingLoot = false;
-let lootValue = 0;
+canvas.addEventListener("mousemove",e=>{
+    const r=canvas.getBoundingClientRect();
 
-let hasKeycard = false;
-let camerasDisabled = false;
-let vaultUnlocked = false;
+    mouse.x=(e.clientX-r.left)*(W/r.width);
+    mouse.y=(e.clientY-r.top)*(H/r.height);
+});
 
-let messageTimer = 0;
+canvas.addEventListener("mousedown",()=>{
+    mouse.down=true;
+});
 
-let bullets = [];
-let enemyBullets = [];
-let particles = [];
-let guards = [];
-let cameras = [];
-let lootBags = [];
+canvas.addEventListener("mouseup",()=>{
+    mouse.down=false;
+});
 
-let extractionZone = null;
+function showMenu(id){
+    document.querySelectorAll(".screen").forEach(x=>x.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+}
 
-let player = {
-    x: 180,
-    y: 650,
-    radius: 16,
-    health: 100,
-    armor: 100,
-    stamina: 100,
-
-    speed: 2.8,
-    sprintSpeed: 4.5,
-
-    angle: 0,
-
-    weapon: "rifle",
-
-    ammo: 30,
-    reserve: 120,
-
-    fireCooldown: 0,
-    reloadTimer: 0,
-
-    equipment: 2,
-
-    invincible: 0
+document.getElementById("playBtn").onclick=()=>{
+    startGame();
 };
 
-const weapons = {
-    rifle: {
-        damage: 28,
-        fireRate: 110,
-        mag: 30,
-        reload: 1250,
-        spread: .035,
-        range: 900
-    },
-
-    pistol: {
-        damage: 40,
-        fireRate: 260,
-        mag: 12,
-        reload: 950,
-        spread: .02,
-        range: 700
-    }
+document.getElementById("loadoutBtn").onclick=()=>{
+    showMenu("loadoutMenu");
 };
 
-/* =========================================================
-   MAP
-   ========================================================= */
+document.getElementById("settingsBtn").onclick=()=>{
+    showMenu("settingsMenu");
+};
 
-const walls = [
-    // outside walls
-    {x:40,y:40,w:1320,h:20},
-    {x:40,y:740,w:1320,h:20},
-    {x:40,y:40,w:20,h:720},
-    {x:1340,y:40,w:20,h:720},
+document.getElementById("loadoutBack").onclick=()=>{
+    showMenu("mainMenu");
+};
 
-    // lobby
-    {x:450,y:160,w:20,h:190},
-    {x:450,y:450,w:20,h:190},
+document.getElementById("settingsBack").onclick=()=>{
+    showMenu("mainMenu");
+};
 
-    // offices
-    {x:700,y:60,w:20,h:130},
-    {x:700,y:300,w:20,h:150},
-    {x:700,y:560,w:20,h:180},
+document.getElementById("loadoutPlay").onclick=()=>{
+    startGame();
+};
 
-    // security
-    {x:950,y:60,w:20,h:150},
-    {x:950,y:340,w:20,h:180},
-    {x:950,y:650,w:20,h:90},
+document.getElementById("supOff").onclick=()=>{
+    suppressor=false;
+    document.getElementById("supOff").classList.add("active");
+    document.getElementById("supOn").classList.remove("active");
+};
 
-    // vault corridor
-    {x:1120,y:60,w:20,h:220},
-    {x:1120,y:430,w:20,h:310},
+document.getElementById("supOn").onclick=()=>{
+    suppressor=true;
+    document.getElementById("supOn").classList.add("active");
+    document.getElementById("supOff").classList.remove("active");
+};
 
-    // interior horizontal
-    {x:720,y:220,w:180,h:20},
-    {x:1000,y:220,w:110,h:20},
+document.getElementById("exitBtn").onclick=()=>{
+    window.location.href="../../";
+};
 
-    {x:720,y:520,w:180,h:20},
-    {x:1000,y:520,w:110,h:20},
+function notify(text){
+    const n=document.getElementById("notice");
 
-    // vault
-    {x:1160,y:240,w:150,h:20},
-    {x:1160,y:560,w:150,h:20},
-    {x:1290,y:240,w:20,h:320},
+    n.textContent=text;
+    n.style.opacity=1;
 
-    // parking obstacles
-    {x:180,y:150,w:130,h:20},
-    {x:180,y:260,w:130,h:20},
-    {x:180,y:480,w:130,h:20},
-    {x:180,y:590,w:130,h:20}
-];
+    clearTimeout(notify.timer);
 
-/* =========================================================
-   UTILS
-   ========================================================= */
-
-function distance(a,b) {
-    return Math.hypot(a.x-b.x, a.y-b.y);
+    notify.timer=setTimeout(()=>{
+        n.style.opacity=0;
+    },2400);
 }
 
-function clamp(v,min,max) {
-    return Math.max(min, Math.min(max,v));
+/* =========================
+   WORLD
+========================= */
+
+const walls=[];
+
+function wall(x,y,w,h){
+    walls.push({x,y,w,h});
 }
 
-function rand(min,max) {
-    return Math.random() * (max-min) + min;
+/* OUTER BANK */
+
+wall(80,80,1240,20);
+wall(80,700,1240,20);
+wall(80,80,20,640);
+wall(1300,80,20,640);
+
+/* BANK / PARK BORDER */
+
+wall(80,80,1240,20);
+
+/* lobby divider */
+
+wall(510,80,20,170);
+wall(510,330,20,370);
+
+/* office divider */
+
+wall(780,80,20,120);
+wall(780,280,20,210);
+wall(780,570,20,130);
+
+/* security divider */
+
+wall(1000,80,20,170);
+wall(1000,370,20,330);
+
+/* vault room */
+
+wall(1080,250,210,20);
+wall(1080,530,210,20);
+wall(1280,250,20,280);
+
+/* interior vault */
+
+wall(1120,300,160,20);
+wall(1120,480,160,20);
+wall(1280,300,20,180);
+wall(1120,300,20,65);
+wall(1120,415,20,65);
+
+/* office partitions */
+
+wall(530,250,230,20);
+wall(530,500,230,20);
+
+/* security room */
+
+wall(800,250,200,20);
+wall(800,500,200,20);
+
+/* =========================
+   DOORS
+========================= */
+
+const doors=[];
+
+function addDoor(x,y,w,h,name,locked=true,keycard=false){
+    doors.push({
+        x,y,w,h,
+        name,
+        locked,
+        open:false,
+        keycard,
+        progress:0
+    });
 }
 
-function randomChoice(arr) {
-    return arr[Math.floor(Math.random()*arr.length)];
+addDoor(510,250,20,80,"Employee Door",true,false);
+addDoor(780,200,20,80,"Security Door",true,true);
+addDoor(1000,250,20,120,"Vault Corridor Door",true,true);
+addDoor(1120,365,20,50,"Vault Door",true,true);
+
+function rectContains(r,x,y){
+    return x>=r.x &&
+           x<=r.x+r.w &&
+           y>=r.y &&
+           y<=r.y+r.h;
 }
 
-function showMessage(text, time=2200) {
-    const el = document.getElementById("message");
-    el.textContent = text;
-    el.classList.add("show");
+function circleRectCollision(cx,cy,cr,r){
+    const nx=Math.max(r.x,Math.min(cx,r.x+r.w));
+    const ny=Math.max(r.y,Math.min(cy,r.y+r.h));
 
-    messageTimer = time;
+    const dx=cx-nx;
+    const dy=cy-ny;
+
+    return dx*dx+dy*dy<cr*cr;
 }
 
-function formatTime(seconds) {
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60).toString().padStart(2,"0");
-    return `${m}:${s}`;
+function solidObjects(){
+    return [
+        ...walls,
+        ...doors.filter(d=>!d.open)
+    ];
 }
 
-function circleRectCollision(circle, rect) {
-    const cx = clamp(circle.x, rect.x, rect.x+rect.w);
-    const cy = clamp(circle.y, rect.y, rect.y+rect.h);
-
-    const dx = circle.x-cx;
-    const dy = circle.y-cy;
-
-    return dx*dx+dy*dy < circle.radius*circle.radius;
-}
-
-function collidesWithWalls(obj) {
-    return walls.some(w => circleRectCollision(obj,w));
-}
-
-function moveEntity(entity,dx,dy) {
-
-    entity.x += dx;
-
-    if (
-        entity.x - entity.radius < 60 ||
-        entity.x + entity.radius > 1340 ||
-        collidesWithWalls(entity)
-    ) {
-        entity.x -= dx;
-    }
-
-    entity.y += dy;
-
-    if (
-        entity.y - entity.radius < 60 ||
-        entity.y + entity.radius > 740 ||
-        collidesWithWalls(entity)
-    ) {
-        entity.y -= dy;
-    }
-}
-
-function lineBlocked(x1,y1,x2,y2) {
-
-    const steps = Math.ceil(Math.hypot(x2-x1,y2-y1)/15);
-
-    for(let i=0;i<=steps;i++) {
-
-        const t=i/steps;
-
-        const x=x1+(x2-x1)*t;
-        const y=y1+(y2-y1)*t;
-
-        if(walls.some(w =>
-            x>=w.x &&
-            x<=w.x+w.w &&
-            y>=w.y &&
-            y<=w.y+w.h
-        )) {
-            return true;
-        }
+function blocked(x,y,r=15){
+    for(const o of solidObjects()){
+        if(circleRectCollision(x,y,r,o)) return true;
     }
 
     return false;
 }
 
-function angleDifference(a,b) {
-    let d = a-b;
+/* =========================
+   ZONES
+========================= */
 
-    while(d > Math.PI) d -= Math.PI*2;
-    while(d < -Math.PI) d += Math.PI*2;
+const zones=[
+    {
+        name:"PUBLIC LOBBY",
+        type:"safe",
+        x:100,y:100,w:390,h:590
+    },
 
-    return Math.abs(d);
+    {
+        name:"OFFICE AREA",
+        type:"escort",
+        x:530,y:100,w:230,h:140
+    },
+
+    {
+        name:"EMPLOYEE AREA",
+        type:"escort",
+        x:530,y:270,w:230,h:220
+    },
+
+    {
+        name:"BACK OFFICE",
+        type:"escort",
+        x:530,y:520,w:230,h:160
+    },
+
+    {
+        name:"SECURITY",
+        type:"illegal",
+        x:800,y:100,w:190,h:140
+    },
+
+    {
+        name:"SECURITY",
+        type:"illegal",
+        x:800,y:270,w:190,h:220
+    },
+
+    {
+        name:"SECURITY",
+        type:"illegal",
+        x:800,y:520,w:190,h:160
+    },
+
+    {
+        name:"VAULT",
+        type:"illegal",
+        x:1020,y:100,w:260,h:580
+    },
+
+    {
+        name:"PARK",
+        type:"safe",
+        x:100,y:710,w:1180,h:70
+    }
+];
+
+function getZone(x,y){
+    for(const z of zones){
+        if(rectContains(z,x,y)) return z;
+    }
+
+    return null;
 }
 
-/* =========================================================
-   INITIALIZATION
-   ========================================================= */
+/* =========================
+   PLAYER
+========================= */
 
-function resetGame() {
+const player={
+    x:280,
+    y:400,
+    radius:15,
 
-    missionStage = 0;
+    health:100,
+    armor:75,
 
-    alarmTriggered = false;
-    alarmLevel = 0;
+    speed:2.5,
+    sprint:4,
 
-    kills = 0;
-    cash = 0;
-    xp = 0;
+    stamina:100,
 
-    elapsed = 0;
+    angle:0,
 
-    extractionActive = false;
-    extractionProgress = 0;
+    rifleAmmo:30,
+    rifleMax:30,
+    reserve:150,
 
-    drillActive = false;
-    drillProgress = 0;
+    fireCooldown:0,
+    reloadTimer:0,
 
-    carryingLoot = false;
-    lootValue = 0;
+    carrying:null,
 
-    hasKeycard = false;
-    camerasDisabled = false;
-    vaultUnlocked = false;
+    kills:0
+};
 
-    bullets = [];
-    enemyBullets = [];
-    particles = [];
-    guards = [];
-    cameras = [];
-    lootBags = [];
+let hasKeycard=false;
+let alarm=false;
+let crimeCommitted=false;
 
-    player = {
-        x: 180,
-        y: 650,
-        radius: 16,
-        health: 100,
-        armor: 100,
-        stamina: 100,
+let missionStage=0;
 
-        speed: 2.8,
-        sprintSpeed: 4.5,
+const missionText=[
+    "GET INTO POSITION",
+    "FIND THE KEYCARD",
+    "REACH SECURITY",
+    "DISABLE SECURITY",
+    "REACH THE VAULT",
+    "DRILL THE VAULT",
+    "GRAB THE LOOT",
+    "ESCAPE TO THE PARK",
+    "REACH THE GETAWAY VAN"
+];
 
-        angle: 0,
+function startGame(){
 
-        weapon: "rifle",
+    document.querySelectorAll(".screen")
+        .forEach(x=>x.classList.add("hidden"));
 
-        ammo: 30,
-        reserve: 120,
+    gameStarted=true;
+    paused=false;
 
-        fireCooldown: 0,
-        reloadTimer: 0,
+    resetGame();
 
-        equipment: 2,
+    notify("GET INTO POSITION · YOU ARE UNMASKED");
+}
 
-        invincible: 0
-    };
+function resetGame(){
+
+    player.x=280;
+    player.y=400;
+
+    player.health=100;
+    player.armor=75;
+    player.stamina=100;
+
+    player.rifleAmmo=30;
+    player.reserve=150;
+
+    player.carrying=null;
+    player.kills=0;
+
+    hasKeycard=false;
+    alarm=false;
+    crimeCommitted=false;
+
+    mask=false;
+    maskAnimation=0;
+
+    missionStage=0;
+
+    guards.length=0;
+    cameras.forEach(c=>c.disabled=false);
+
+    doors.forEach(d=>{
+        d.open=false;
+        d.progress=0;
+    });
 
     spawnGuards();
-    spawnCameras();
-    spawnVaultLoot();
-
-    extractionZone = randomChoice([
-        {x:125,y:105,name:"FRONT EXIT"},
-        {x:1260,y:675,name:"PARKING EXIT"}
-    ]);
-
-    updateObjective();
-    updateHUD();
+    spawnLoot();
 }
 
-function spawnGuards() {
+/* =========================
+   GUARDS
+========================= */
 
-    const spots = [
-        [570,130],
-        [580,400],
-        [820,140],
-        [850,370],
-        [1050,130],
-        [1050,400],
-        [1190,150],
-        [1240,640],
-        [370,680]
+const guards=[];
+
+function spawnGuards(){
+
+    const positions=[
+        [620,160],
+        [680,380],
+        [680,620],
+        [875,170],
+        [920,430],
+        [1080,180],
+        [1180,600]
     ];
 
-    spots.forEach((p,i) => {
-
+    positions.forEach((p,i)=>{
         guards.push({
             x:p[0],
             y:p[1],
 
-            radius:15,
+            radius:14,
 
-            hp:difficulties[difficulty].guardHP,
-
-            speed:difficulties[difficulty].guardSpeed,
+            health:70,
 
             angle:Math.random()*Math.PI*2,
 
@@ -956,279 +731,806 @@ function spawnGuards() {
             patrolX:p[0],
             patrolY:p[1],
 
-            targetX:p[0],
-            targetY:p[1],
+            vision:420,
+            fov:Math.PI*.55,
 
-            fireTimer:rand(0,500),
+            cooldown:0,
 
-            alertTimer:0,
+            escortTimer:0,
+            escortTarget:null,
 
-            hasKeycard:i===1,
-
-            elite:false
+            keycard:i===1
         });
     });
+}
 
-    // chance of elite
-    if(difficulty === "extreme" || difficulty === "overkill") {
+function distance(a,b){
+    return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function lineBlocked(x1,y1,x2,y2){
+
+    const d=Math.hypot(x2-x1,y2-y1);
+    const steps=Math.ceil(d/8);
+
+    for(let i=0;i<=steps;i++){
+
+        const t=i/steps;
+
+        const x=x1+(x2-x1)*t;
+        const y=y1+(y2-y1)*t;
+
+        for(const o of solidObjects()){
+
+            if(rectContains(o,x,y)){
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function canSeePlayer(g){
+
+    const dx=player.x-g.x;
+    const dy=player.y-g.y;
+
+    const d=Math.hypot(dx,dy);
+
+    let vision=g.vision;
+
+    if(suppressor && !mask){
+        vision*=.75;
+    }
+
+    if(d>vision) return false;
+
+    const targetAngle=Math.atan2(dy,dx);
+
+    let diff=Math.atan2(
+        Math.sin(targetAngle-g.angle),
+        Math.cos(targetAngle-g.angle)
+    );
+
+    if(Math.abs(diff)>g.fov/2) return false;
+
+    if(lineBlocked(g.x,g.y,player.x,player.y)){
+        return false;
+    }
+
+    return true;
+}
+
+/* =========================
+   MASK
+========================= */
+
+function toggleMask(){
+
+    if(!gameStarted || paused) return;
+
+    /* PERMANENT */
+    if(mask || maskAnimation>0){
+        notify("THE MASK STAYS ON.");
+        return;
+    }
+
+    maskAnimation=70;
+
+    crimeCommitted=true;
+
+    notify("PUTTING ON MASK...");
+}
+
+function updateMask(){
+
+    if(maskAnimation>0){
+
+        maskAnimation--;
+
+        if(maskAnimation===1){
+
+            mask=true;
+
+            notify("MASK ON · YOU ARE NOW A CRIMINAL");
+
+            missionStage=1;
+        }
+    }
+}
+
+/* =========================
+   LOCKPICK
+========================= */
+
+let lockpick=null;
+
+function nearestDoor(){
+
+    let best=null;
+    let bestD=70;
+
+    for(const d of doors){
+
+        if(d.open) continue;
+
+        const cx=d.x+d.w/2;
+        const cy=d.y+d.h/2;
+
+        const dd=Math.hypot(player.x-cx,player.y-cy);
+
+        if(dd<bestD){
+            best=d;
+            bestD=dd;
+        }
+    }
+
+    return best;
+}
+
+function startLockpick(d){
+
+    if(lockpick) return;
+
+    if(d.keycard && !hasKeycard){
+
+        notify("KEYCARD REQUIRED");
+
+        return;
+    }
+
+    if(d.keycard && hasKeycard){
+
+        d.open=true;
+
+        notify(d.name+" OPENED");
+
+        return;
+    }
+
+    lockpick={
+        door:d,
+        cursor:0,
+        direction:1,
+        success:0,
+        misses:0
+    };
+
+    notify("LOCKPICK · PRESS SPACE IN THE GREEN ZONE");
+}
+
+function lockpickHit(){
+
+    if(!lockpick) return;
+
+    const lp=lockpick;
+
+    if(lp.cursor>40 && lp.cursor<60){
+
+        lp.success++;
+
+        lp.cursor=0;
+
+        if(lp.success>=4){
+
+            lp.door.open=true;
+
+            notify(lp.door.name+" UNLOCKED");
+
+            lockpick=null;
+        }else{
+
+            notify("PIN "+lp.success+"/4");
+        }
+
+    }else{
+
+        lp.misses++;
+
+        alarm=true;
+
+        notify("MISS · SECURITY ALERT");
+
+        if(lp.misses>=3){
+
+            lockpick=null;
+
+            triggerAlarm();
+        }
+    }
+}
+
+document.addEventListener("keydown",e=>{
+
+    if(e.code==="Space" && lockpick){
+
+        e.preventDefault();
+
+        lockpickHit();
+    }
+});
+
+function updateLockpick(){
+
+    if(!lockpick) return;
+
+    lockpick.cursor+=lockpick.direction*2;
+
+    if(lockpick.cursor>=100){
+
+        lockpick.cursor=100;
+        lockpick.direction=-1;
+    }
+
+    if(lockpick.cursor<=0){
+
+        lockpick.cursor=0;
+        lockpick.direction=1;
+    }
+}
+
+/* =========================
+   INTERACTION
+========================= */
+
+function interact(){
+
+    if(!gameStarted || paused) return;
+
+    if(lockpick) return;
+
+    const d=nearestDoor();
+
+    if(d){
+
+        startLockpick(d);
+
+        return;
+    }
+
+    /* keycard */
+
+    for(const g of guards){
+
+        if(g.dead) continue;
+
+        if(g.keycard &&
+           Math.hypot(player.x-g.x,player.y-g.y)<45){
+
+            hasKeycard=true;
+            g.keycard=false;
+
+            missionStage=2;
+
+            notify("KEYCARD ACQUIRED");
+
+            return;
+        }
+    }
+
+    /* cameras */
+
+    for(const c of cameras){
+
+        if(c.disabled) continue;
+
+        if(Math.hypot(player.x-c.x,player.y-c.y)<55){
+
+            c.disabled=true;
+
+            notify("SECURITY CAMERA DISABLED");
+
+            missionStage=4;
+
+            return;
+        }
+    }
+
+    /* drill */
+
+    if(missionStage===5){
+
+        const d=Math.hypot(player.x-1150,player.y-390);
+
+        if(d<80){
+
+            drillProgress+=1;
+
+            if(drillProgress>=600){
+
+                missionStage=6;
+
+                notify("VAULT OPEN · GRAB THE LOOT");
+            }
+        }
+    }
+
+    /* loot */
+
+    if(missionStage===6){
+
+        for(const l of loot){
+
+            if(l.collected) continue;
+
+            if(Math.hypot(player.x-l.x,player.y-l.y)<50){
+
+                l.collected=true;
+
+                player.carrying=l;
+
+                missionStage=7;
+
+                notify("LOOT BAG SECURED · ESCAPE");
+            }
+        }
+    }
+
+    /* van */
+
+    if(missionStage===8){
+
+        if(player.x>1120 &&
+           player.y>715){
+
+            finishHeist();
+        }
+    }
+}
+
+/* =========================
+   CAMERAS
+========================= */
+
+const cameras=[
+    {x:470,y:170,angle:0,disabled:false},
+    {x:740,y:320,angle:Math.PI/2,disabled:false},
+    {x:950,y:350,angle:Math.PI,disabled:false},
+    {x:1100,y:180,angle:Math.PI/2,disabled:false}
+];
+
+function updateCameras(){
+
+    if(!mask) return;
+
+    for(const c of cameras){
+
+        if(c.disabled) continue;
+
+        const dx=player.x-c.x;
+        const dy=player.y-c.y;
+
+        const d=Math.hypot(dx,dy);
+
+        if(d>280) continue;
+
+        if(lineBlocked(c.x,c.y,player.x,player.y)){
+            continue;
+        }
+
+        const a=Math.atan2(dy,dx);
+
+        let diff=Math.atan2(
+            Math.sin(a-c.angle),
+            Math.cos(a-c.angle)
+        );
+
+        if(Math.abs(diff)<.45){
+
+            triggerAlarm();
+
+            notify("CAMERA DETECTED YOU");
+
+            return;
+        }
+    }
+}
+
+/* =========================
+   ALARM
+========================= */
+
+function triggerAlarm(){
+
+    if(alarm) return;
+
+    alarm=true;
+
+    crimeCommitted=true;
+
+    notify("🚨 ALARM ACTIVATED");
+
+    for(let i=0;i<4;i++){
 
         guards.push({
-            x:1030,
-            y:610,
-            radius:18,
-            hp:difficulties[difficulty].guardHP*1.8,
-            speed:difficulties[difficulty].guardSpeed*.8,
-            angle:0,
-            state:"patrol",
-            patrolX:1030,
-            patrolY:610,
-            targetX:1030,
-            targetY:610,
-            fireTimer:0,
-            alertTimer:0,
-            hasKeycard:false,
-            elite:true
+            x:1250,
+            y:150+i*120,
+
+            radius:15,
+
+            health:100,
+
+            angle:Math.PI,
+
+            state:"combat",
+
+            patrolX:1250,
+            patrolY:150+i*120,
+
+            vision:500,
+            fov:Math.PI*.7,
+
+            cooldown:0,
+
+            escortTimer:0,
+
+            keycard:false
         });
     }
 }
 
-function spawnCameras() {
+/* =========================
+   GUARD ZONE LOGIC
+========================= */
 
-    cameras = [
-        {x:410,y:100,angle:Math.PI/2,range:250,disabled:false},
-        {x:650,y:250,angle:0,range:250,disabled:false},
-        {x:900,y:280,angle:Math.PI/2,range:260,disabled:false},
-        {x:1100,y:360,angle:0,range:250,disabled:false},
-        {x:1250,y:620,angle:-Math.PI/2,range:220,disabled:false}
-    ];
-}
+function updateGuardBehavior(g){
 
-function spawnVaultLoot() {
+    if(g.dead) return;
 
-    const values = [18000,22000,28000,32000];
+    const d=Math.hypot(
+        player.x-g.x,
+        player.y-g.y
+    );
 
-    for(let i=0;i<4;i++) {
+    const zone=getZone(player.x,player.y);
 
-        lootBags.push({
-            x:1190 + (i%2)*70,
-            y:330 + Math.floor(i/2)*100,
-            value:randomChoice(values),
-            collected:false,
-            carried:false
-        });
+    /*
+       MASKED:
+       EVERYWHERE IS ILLEGAL.
+    */
+
+    if(mask){
+
+        if(canSeePlayer(g)){
+
+            g.state="combat";
+            triggerAlarm();
+        }
+
+        return;
+    }
+
+    /*
+       BEFORE THE MASK:
+       SAFE = IGNORE
+       ESCORT = ESCORT OUT
+       ILLEGAL = HOSTILE
+    */
+
+    if(!zone) return;
+
+    if(zone.type==="safe"){
+
+        if(g.state==="escort"){
+            g.state="patrol";
+        }
+
+        return;
+    }
+
+    if(zone.type==="escort"){
+
+        if(canSeePlayer(g)){
+
+            if(g.state!=="escort"){
+
+                g.state="escort";
+                g.escortTimer=0;
+
+                notify("GUARD: THIS AREA IS RESTRICTED. PLEASE LEAVE.");
+            }
+        }
+
+        return;
+    }
+
+    if(zone.type==="illegal"){
+
+        if(canSeePlayer(g)){
+
+            g.state="combat";
+
+            crimeCommitted=true;
+
+            triggerAlarm();
+
+            notify("GUARD: GET OUT OF HERE!");
+
+            return;
+        }
     }
 }
 
-/* =========================================================
-   MISSION
-   ========================================================= */
+/* =========================
+   GUARD UPDATE
+========================= */
 
-function updateObjective() {
+function updateGuards(){
 
-    document.getElementById("objectiveText").textContent =
-        stages[missionStage];
+    for(const g of guards){
 
-    if(missionStage === 0) {
-        document.getElementById("objectiveText").textContent =
-            "Enter the bank";
-    }
+        if(g.dead) continue;
 
-    if(missionStage === 1) {
-        document.getElementById("objectiveText").textContent =
-            "Find the guard carrying the keycard";
-    }
+        g.cooldown=Math.max(0,g.cooldown-1);
 
-    if(missionStage === 2) {
-        document.getElementById("objectiveText").textContent =
-            "Take the keycard to security";
-    }
+        updateGuardBehavior(g);
 
-    if(missionStage === 3) {
-        document.getElementById("objectiveText").textContent =
-            "Disable the security cameras";
-    }
+        if(g.state==="combat"){
 
-    if(missionStage === 4) {
-        document.getElementById("objectiveText").textContent =
-            "Reach the vault";
-    }
+            g.angle=Math.atan2(
+                player.y-g.y,
+                player.x-g.x
+            );
 
-    if(missionStage === 5) {
-        document.getElementById("objectiveText").textContent =
-            "Drill the vault";
-    }
+            const d=distance(g,player);
 
-    if(missionStage === 6) {
-        document.getElementById("objectiveText").textContent =
-            "Grab the loot";
-    }
+            if(d>190){
 
-    if(missionStage === 7) {
-        document.getElementById("objectiveText").textContent =
-            `Escape via ${extractionZone.name}`;
+                const vx=Math.cos(g.angle)*1.2;
+                const vy=Math.sin(g.angle)*1.2;
+
+                const nx=g.x+vx;
+                const ny=g.y+vy;
+
+                if(!blocked(nx,ny,g.radius)){
+
+                    g.x=nx;
+                    g.y=ny;
+                }
+            }
+
+            if(d<330 && g.cooldown<=0 && canSeePlayer(g)){
+
+                enemyShoot(g);
+
+                g.cooldown=55;
+            }
+
+        }else if(g.state==="escort"){
+
+            const safe=findNearestSafeZone();
+
+            if(safe){
+
+                const tx=safe.x+safe.w/2;
+                const ty=safe.y+safe.h/2;
+
+                g.angle=Math.atan2(
+                    player.y-g.y,
+                    player.x-g.x
+                );
+
+                /*
+                  Guard stays behind the player
+                  while pushing them toward safety.
+                */
+
+                const px=player.x-Math.cos(g.angle)*55;
+                const py=player.y-Math.sin(g.angle)*55;
+
+                const vx=Math.cos(
+                    Math.atan2(ty-g.y,tx-g.x)
+                )*.8;
+
+                const vy=Math.sin(
+                    Math.atan2(ty-g.y,tx-g.x)
+                )*.8;
+
+                if(!blocked(g.x+vx,g.y+vy,g.radius)){
+
+                    g.x+=vx;
+                    g.y+=vy;
+                }
+
+                if(zoneAtSafe(player.x,player.y)){
+
+                    g.state="patrol";
+
+                    notify("GUARD: THANK YOU. HAVE A NICE DAY.");
+                }
+            }
+
+        }else{
+
+            /*
+               Simple patrol movement.
+            */
+
+            const dx=g.patrolX-g.x;
+            const dy=g.patrolY-g.y;
+
+            if(Math.hypot(dx,dy)<15){
+
+                g.patrolX+=
+                    (Math.random()-.5)*140;
+
+                g.patrolY+=
+                    (Math.random()-.5)*140;
+
+                g.patrolX=Math.max(130,Math.min(1260,g.patrolX));
+                g.patrolY=Math.max(110,Math.min(680,g.patrolY));
+            }
+
+            const a=Math.atan2(dy,dx);
+
+            g.angle=a;
+
+            const vx=Math.cos(a)*.45;
+            const vy=Math.sin(a)*.45;
+
+            if(!blocked(g.x+vx,g.y+vy,g.radius)){
+
+                g.x+=vx;
+                g.y+=vy;
+            }
+        }
     }
 }
 
-/* =========================================================
-   INPUT
-   ========================================================= */
+function findNearestSafeZone(){
 
-window.addEventListener("keydown",e => {
+    let best=null;
+    let bestD=Infinity;
 
-    keys[e.key.toLowerCase()] = true;
+    for(const z of zones){
 
-    if(e.key.toLowerCase() === "escape") {
+        if(z.type!=="safe") continue;
 
-        if(gameRunning && !drillActive) {
-            togglePause();
+        const x=z.x+z.w/2;
+        const y=z.y+z.h/2;
+
+        const d=Math.hypot(player.x-x,player.y-y);
+
+        if(d<bestD){
+
+            bestD=d;
+            best=z;
         }
     }
 
-    if(!gameRunning || paused) return;
+    return best;
+}
 
-    if(e.key.toLowerCase() === "r") {
-        reload();
-    }
+function zoneAtSafe(x,y){
 
-    if(e.key.toLowerCase() === "e") {
+    const z=getZone(x,y);
 
-        if(missionStage === 5 && nearVault()) {
-            startDrill();
+    return z && z.type==="safe";
+}
+
+/* =========================
+   ENEMY SHOOTING
+========================= */
+
+function enemyShoot(g){
+
+    const angle=Math.atan2(
+        player.y-g.y,
+        player.x-g.x
+    );
+
+    const hit=Math.random()<.58;
+
+    particles.push({
+        type:"shot",
+        x:g.x,
+        y:g.y,
+        tx:player.x,
+        ty:player.y,
+        life:7
+    });
+
+    if(hit){
+
+        let damage=10;
+
+        if(player.armor>0){
+
+            const absorbed=Math.min(
+                player.armor,
+                damage*.6
+            );
+
+            player.armor-=absorbed;
+
+            damage-=absorbed;
         }
 
-        interact();
+        player.health-=damage;
+
+        if(player.health<=0){
+
+            player.health=0;
+
+            endGame(false);
+        }
     }
+}
 
-    if(e.key.toLowerCase() === "g") {
-        dropLoot();
-    }
+/* =========================
+   PLAYER MOVEMENT
+========================= */
 
-    if(e.key.toLowerCase() === "q") {
-        useEquipment();
-    }
-
-    if(e.key === "1") {
-        player.weapon = "rifle";
-        player.ammo = Math.min(player.ammo,weapons.rifle.mag);
-    }
-
-    if(e.key === "2") {
-        player.weapon = "pistol";
-        player.ammo = Math.min(player.ammo,weapons.pistol.mag);
-    }
-});
-
-window.addEventListener("keyup",e => {
-    keys[e.key.toLowerCase()] = false;
-});
-
-canvas.addEventListener("mousemove",e => {
-
-    const rect = canvas.getBoundingClientRect();
-
-    mouse.x = (e.clientX-rect.left) * W/rect.width;
-    mouse.y = (e.clientY-rect.top) * H/rect.height;
-});
-
-canvas.addEventListener("mousedown",e => {
-
-    if(e.button === 0) {
-        mouse.down = true;
-    }
-});
-
-window.addEventListener("mouseup",e => {
-
-    if(e.button === 0) {
-        mouse.down = false;
-    }
-});
-
-/* =========================================================
-   PLAYER
-   ========================================================= */
-
-function updatePlayer(dt) {
+function updatePlayer(){
 
     let dx=0;
     let dy=0;
 
-    if(keys["w"]) dy--;
-    if(keys["s"]) dy++;
-    if(keys["a"]) dx--;
-    if(keys["d"]) dx++;
+    if(keys.w) dy--;
+    if(keys.s) dy++;
+    if(keys.a) dx--;
+    if(keys.d) dx++;
 
     const len=Math.hypot(dx,dy);
 
-    if(len) {
+    if(len){
+
         dx/=len;
         dy/=len;
     }
 
-    let speed=player.speed;
+    const sprinting=
+        keys.shift &&
+        len>0 &&
+        player.stamina>0;
 
-    if(keys["shift"] && player.stamina>0 && len) {
+    const speed=sprinting ?
+        player.sprint :
+        player.speed;
 
-        speed=player.sprintSpeed;
+    if(sprinting){
 
-        player.stamina-=.5*dt;
+        player.stamina-=.65;
+    }else{
 
-    } else {
-
-        player.stamina+=.7*dt;
+        player.stamina=Math.min(
+            100,
+            player.stamina+.35
+        );
     }
 
-    player.stamina=clamp(player.stamina,0,100);
+    let nx=player.x+dx*speed;
+    let ny=player.y+dy*speed;
 
-    if(carryingLoot) {
-        speed*=.62;
+    if(!blocked(nx,player.y,player.radius)){
+        player.x=nx;
     }
 
-    moveEntity(player,dx*speed*dt,dy*speed*dt);
-
-    player.angle=Math.atan2(mouse.y-player.y,mouse.x-player.x);
-
-    if(player.fireCooldown>0) {
-        player.fireCooldown-=dt*16.67;
+    if(!blocked(player.x,ny,player.radius)){
+        player.y=ny;
     }
 
-    if(player.reloadTimer>0) {
+    player.x=Math.max(105,Math.min(1290,player.x));
+    player.y=Math.max(95,Math.min(775,player.y));
 
-        player.reloadTimer-=dt*16.67;
-
-        if(player.reloadTimer<=0) {
-            finishReload();
-        }
-    }
-
-    if(player.invincible>0) {
-        player.invincible-=dt*16.67;
-    }
-
-    if(mouse.down) {
-        shoot();
-    }
-
-    if(missionStage === 0 && player.x > 300) {
-
-        missionStage=1;
-        updateObjective();
-
-        showMessage("You're inside. Find the keycard.");
-    }
+    player.angle=Math.atan2(
+        mouse.y-player.y,
+        mouse.x-player.x
+    );
 }
 
-/* =========================================================
-   SHOOTING
-   ========================================================= */
+/* =========================
+   WEAPON
+========================= */
 
-function shoot() {
+const bullets=[];
+
+function shoot(){
 
     if(player.reloadTimer>0) return;
 
-    const gun=weapons[player.weapon];
-
-    if(player.ammo<=0) {
+    if(player.rifleAmmo<=0){
 
         reload();
 
@@ -1237,1623 +1539,1234 @@ function shoot() {
 
     if(player.fireCooldown>0) return;
 
-    player.ammo--;
-    player.fireCooldown=gun.fireRate;
+    player.rifleAmmo--;
 
-    const spread=(Math.random()-.5)*gun.spread;
+    player.fireCooldown=suppressor ? 7 : 5;
 
-    const angle=player.angle+spread;
+    const spread=suppressor ? .04 : .075;
+
+    const a=
+        player.angle+
+        (Math.random()-.5)*spread;
 
     bullets.push({
-        x:player.x+Math.cos(angle)*22,
-        y:player.y+Math.sin(angle)*22,
-        vx:Math.cos(angle)*14,
-        vy:Math.sin(angle)*14,
-        damage:gun.damage,
-        life:gun.range/14
+        x:player.x,
+        y:player.y,
+        vx:Math.cos(a)*12,
+        vy:Math.sin(a)*12,
+        life:45
     });
 
-    muzzleFlash(
-        player.x+Math.cos(angle)*22,
-        player.y+Math.sin(angle)*22
-    );
+    particles.push({
+        type:"muzzle",
+        x:player.x+Math.cos(a)*20,
+        y:player.y+Math.sin(a)*20,
+        life:5
+    });
 
-    if(player.ammo===0) {
-        showMessage("MAG EMPTY — PRESS R");
+    /*
+       Unsuppressed shooting is much louder.
+    */
+
+    if(!suppressor){
+
+        for(const g of guards){
+
+            if(g.dead) continue;
+
+            const d=Math.hypot(
+                g.x-player.x,
+                g.y-player.y
+            );
+
+            if(d<500){
+
+                g.state="combat";
+                crimeCommitted=true;
+                triggerAlarm();
+            }
+        }
     }
 }
 
-function reload() {
+function reload(){
 
     if(player.reloadTimer>0) return;
 
-    const gun=weapons[player.weapon];
+    if(player.rifleAmmo>=player.rifleMax) return;
 
-    if(player.ammo>=gun.mag || player.reserve<=0) return;
+    if(player.reserve<=0) return;
 
-    player.reloadTimer=gun.reload;
-
-    showMessage("RELOADING...");
+    player.reloadTimer=75;
 }
 
-function finishReload() {
+function updateWeapon(){
 
-    const gun=weapons[player.weapon];
+    player.fireCooldown=
+        Math.max(0,player.fireCooldown-1);
 
-    const needed=gun.mag-player.ammo;
+    if(player.reloadTimer>0){
 
-    const amount=Math.min(needed,player.reserve);
+        player.reloadTimer--;
 
-    player.ammo+=amount;
-    player.reserve-=amount;
+        if(player.reloadTimer===0){
+
+            const needed=
+                player.rifleMax-player.rifleAmmo;
+
+            const take=
+                Math.min(needed,player.reserve);
+
+            player.rifleAmmo+=take;
+            player.reserve-=take;
+        }
+    }
+
+    if(mouse.down){
+
+        shoot();
+    }
 }
 
-/* =========================================================
-   BULLETS
-   ========================================================= */
+function updateBullets(){
 
-function updateBullets(dt) {
+    for(let i=bullets.length-1;i>=0;i--){
 
-    bullets.forEach(b => {
+        const b=bullets[i];
 
-        b.x+=b.vx*dt;
-        b.y+=b.vy*dt;
-        b.life-=dt;
+        b.x+=b.vx;
+        b.y+=b.vy;
+        b.life--;
 
-        if(b.life<=0) return;
+        let remove=false;
 
-        if(
-            b.x<50 ||
-            b.x>1350 ||
-            b.y<50 ||
-            b.y>750 ||
-            walls.some(w =>
-                b.x>w.x &&
-                b.x<w.x+w.w &&
-                b.y>w.y &&
-                b.y<w.y+w.h
-            )
-        ) {
-
-            b.life=0;
-
-            impact(b.x,b.y);
-
-            return;
+        if(b.x<0||b.x>W||b.y<0||b.y>H){
+            remove=true;
         }
 
-        guards.forEach(g => {
+        for(const o of solidObjects()){
 
-            if(g.hp<=0) return;
+            if(rectContains(o,b.x,b.y)){
 
-            if(Math.hypot(b.x-g.x,b.y-g.y)<g.radius+4) {
+                particles.push({
+                    type:"impact",
+                    x:b.x,
+                    y:b.y,
+                    life:15
+                });
 
-                g.hp-=b.damage;
-                b.life=0;
-
-                impact(b.x,b.y);
-
-                if(g.hp<=0) {
-
-                    killGuard(g);
-
-                } else {
-
-                    g.state="combat";
-                    g.alertTimer=3000;
-                }
+                remove=true;
+                break;
             }
-        });
-    });
-
-    bullets=bullets.filter(b=>b.life>0);
-}
-
-function updateEnemyBullets(dt) {
-
-    enemyBullets.forEach(b => {
-
-        b.x+=b.vx*dt;
-        b.y+=b.vy*dt;
-        b.life-=dt;
-
-        if(b.life<=0) return;
-
-        if(
-            b.x<50 ||
-            b.x>1350 ||
-            b.y<50 ||
-            b.y>750 ||
-            walls.some(w =>
-                b.x>w.x &&
-                b.x<w.x+w.w &&
-                b.y>w.y &&
-                b.y<w.y+w.h
-            )
-        ) {
-
-            b.life=0;
-            return;
         }
 
-        if(
-            Math.hypot(b.x-player.x,b.y-player.y)<
-            player.radius+4
-        ) {
+        if(!remove){
 
-            b.life=0;
-            damagePlayer(b.damage);
-        }
-    });
+            for(const g of guards){
 
-    enemyBullets=enemyBullets.filter(b=>b.life>0);
-}
+                if(g.dead) continue;
 
-function impact(x,y) {
+                if(Math.hypot(
+                    b.x-g.x,
+                    b.y-g.y
+                )<g.radius){
 
-    for(let i=0;i<4;i++) {
+                    g.health-=35;
 
-        particles.push({
-            x,
-            y,
-            vx:rand(-2,2),
-            vy:rand(-2,2),
-            life:rand(150,350),
-            size:rand(2,5),
-            type:"impact"
-        });
-    }
-}
+                    particles.push({
+                        type:"blood",
+                        x:g.x,
+                        y:g.y,
+                        life:20
+                    });
 
-function muzzleFlash(x,y) {
+                    remove=true;
 
-    for(let i=0;i<5;i++) {
+                    if(g.health<=0){
 
-        particles.push({
-            x,
-            y,
-            vx:rand(-2,2),
-            vy:rand(-2,2),
-            life:rand(60,120),
-            size:rand(3,7),
-            type:"flash"
-        });
-    }
-}
+                        g.dead=true;
 
-/* =========================================================
-   GUARDS
-   ========================================================= */
+                        player.kills++;
 
-function killGuard(g) {
+                        if(g.keycard){
 
-    kills++;
+                            g.keycard=true;
+                        }
+                    }
 
-    g.hp=0;
-    g.state="dead";
-
-    if(g.hasKeycard) {
-
-        g.hasKeycard=false;
-
-        lootBags.push({
-            x:g.x,
-            y:g.y,
-            value:0,
-            keycard:true,
-            collected:false,
-            carried:false
-        });
-
-        if(missionStage===1) {
-
-            showMessage("KEYCARD DROPPED");
-
-        }
-    }
-
-    for(let i=0;i<10;i++) {
-
-        particles.push({
-            x:g.x,
-            y:g.y,
-            vx:rand(-3,3),
-            vy:rand(-3,3),
-            life:rand(300,600),
-            size:rand(2,6),
-            type:"blood"
-        });
-    }
-
-    if(alarmTriggered) {
-        alarmLevel++;
-    }
-}
-
-function updateGuards(dt) {
-
-    guards.forEach(g => {
-
-        if(g.hp<=0) return;
-
-        const d=distance(g,player);
-
-        const canSee =
-            d<430 &&
-            !lineBlocked(g.x,g.y,player.x,player.y);
-
-        if(canSee && !alarmTriggered) {
-
-            const desired=Math.atan2(
-                player.y-g.y,
-                player.x-g.x
-            );
-
-            g.angle=desired;
-
-            if(d<300) {
-
-                if(g.state!=="combat") {
-                    g.state="suspicious";
+                    break;
                 }
             }
         }
 
-        if(alarmTriggered || g.state==="combat") {
+        if(remove || b.life<=0){
 
-            g.state="combat";
-
-            if(d>230) {
-
-                const a=Math.atan2(
-                    player.y-g.y,
-                    player.x-g.x
-                );
-
-                moveEntity(
-                    g,
-                    Math.cos(a)*g.speed*dt,
-                    Math.sin(a)*g.speed*dt
-                );
-
-            } else {
-
-                g.fireTimer-=dt*16.67;
-
-                if(g.fireTimer<=0 && !lineBlocked(
-                    g.x,g.y,player.x,player.y
-                )) {
-
-                    enemyShoot(g);
-
-                    g.fireTimer=difficulties[difficulty].fireRate;
-                }
-            }
-
-            return;
-        }
-
-        // normal patrol
-        if(g.state==="patrol") {
-
-            const d2=Math.hypot(
-                g.x-g.targetX,
-                g.y-g.targetY
-            );
-
-            if(d2<10) {
-
-                g.targetX=g.patrolX+rand(-90,90);
-                g.targetY=g.patrolY+rand(-90,90);
-
-                g.targetX=clamp(g.targetX,80,1320);
-                g.targetY=clamp(g.targetY,80,720);
-            }
-
-            const a=Math.atan2(
-                g.targetY-g.y,
-                g.targetX-g.x
-            );
-
-            g.angle=a;
-
-            moveEntity(
-                g,
-                Math.cos(a)*g.speed*.45*dt,
-                Math.sin(a)*g.speed*.45*dt
-            );
-        }
-
-        if(g.state==="suspicious") {
-
-            g.alertTimer+=dt*16.67;
-
-            if(d<250) {
-
-                triggerAlarm("A guard spotted you!");
-                g.state="combat";
-
-            } else if(g.alertTimer>1500) {
-
-                g.state="patrol";
-                g.alertTimer=0;
-            }
-        }
-    });
-}
-
-function enemyShoot(g) {
-
-    const angle=Math.atan2(
-        player.y-g.y,
-        player.x-g.x
-    ) + rand(-.07,.07);
-
-    enemyBullets.push({
-        x:g.x+Math.cos(angle)*18,
-        y:g.y+Math.sin(angle)*18,
-        vx:Math.cos(angle)*7,
-        vy:Math.sin(angle)*7,
-        damage:difficulties[difficulty].guardDamage,
-        life:120
-    });
-
-    muzzleFlash(
-        g.x+Math.cos(angle)*18,
-        g.y+Math.sin(angle)*18
-    );
-}
-
-/* =========================================================
-   CAMERAS / STEALTH
-   ========================================================= */
-
-function updateCameras(dt) {
-
-    if(camerasDisabled) return;
-
-    let detected=false;
-
-    cameras.forEach(c => {
-
-        if(c.disabled) return;
-
-        c.angle+=.003*dt;
-
-        const d=Math.hypot(
-            player.x-c.x,
-            player.y-c.y
-        );
-
-        if(d>c.range) return;
-
-        const a=Math.atan2(
-            player.y-c.y,
-            player.x-c.x
-        );
-
-        if(angleDifference(a,c.angle)<.65 &&
-           !lineBlocked(c.x,c.y,player.x,player.y)) {
-
-            detected=true;
-        }
-    });
-
-    const box=document.getElementById("detectionBox");
-
-    if(detected && !alarmTriggered) {
-
-        box.classList.add("active");
-
-        alarmLevel += .15*dt;
-
-        document.getElementById("detectFill").style.width =
-            clamp(alarmLevel,0,100)+"%";
-
-        if(alarmLevel>=100) {
-
-            triggerAlarm("CAMERA ALERT — POLICE CALLED");
-        }
-
-    } else if(!alarmTriggered) {
-
-        alarmLevel=Math.max(0,alarmLevel-.35*dt);
-
-        document.getElementById("detectFill").style.width =
-            clamp(alarmLevel,0,100)+"%";
-
-        if(alarmLevel<=0) {
-            box.classList.remove("active");
+            bullets.splice(i,1);
         }
     }
 }
 
-function disableCameras() {
+/* =========================
+   LOOT
+========================= */
 
-    cameras.forEach(c=>c.disabled=true);
+const loot=[];
 
-    camerasDisabled=true;
+function spawnLoot(){
 
-    alarmLevel=0;
+    loot.length=0;
 
-    missionStage=4;
-
-    updateObjective();
-
-    showMessage("SECURITY DISABLED — VAULT ACCESS UNLOCKED");
-}
-
-/* =========================================================
-   ALARM
-   ========================================================= */
-
-function triggerAlarm(reason) {
-
-    if(alarmTriggered) return;
-
-    alarmTriggered=true;
-
-    alarmLevel=100;
-
-    document.getElementById("alarm").classList.add("active");
-
-    showMessage(reason);
-
-    guards.forEach(g=>{
-
-        if(g.hp>0) {
-            g.state="combat";
-        }
+    loot.push({
+        x:1170,
+        y:390,
+        collected:false,
+        value:85000
     });
-
-    missionStage=Math.max(missionStage,2);
-
-    updateObjective();
-
-    spawnReinforcements(4);
 }
 
-function spawnReinforcements(count) {
+function updateLoot(){
 
-    const spots=[
-        {x:80,y:400},
-        {x:1320,y:400},
-        {x:700,y:80},
-        {x:700,y:720}
-    ];
+    if(player.carrying){
 
-    for(let i=0;i<count;i++) {
-
-        const p=spots[i%spots.length];
-
-        guards.push({
-            x:p.x,
-            y:p.y,
-
-            radius:15,
-
-            hp:difficulties[difficulty].guardHP,
-
-            speed:difficulties[difficulty].guardSpeed*1.05,
-
-            angle:0,
-
-            state:"combat",
-
-            patrolX:p.x,
-            patrolY:p.y,
-
-            targetX:player.x,
-            targetY:player.y,
-
-            fireTimer:500,
-
-            alertTimer:0,
-
-            hasKeycard:false,
-
-            elite:false
-        });
+        player.carrying.x=player.x;
+        player.carrying.y=player.y;
     }
 }
 
-let reinforcementTimer=0;
+/* =========================
+   DRILL
+========================= */
 
-function updateReinforcements(dt) {
+let drillProgress=0;
 
-    if(!alarmTriggered) return;
+/* =========================
+   MISSION
+========================= */
 
-    reinforcementTimer+=dt*16.67;
+function updateMission(){
 
-    if(reinforcementTimer>=difficulties[difficulty].reinforcementDelay) {
+    if(missionStage===0){
 
-        reinforcementTimer=0;
+        if(mask){
 
-        const count =
-            difficulty==="overkill" ? 5 :
-            difficulty==="extreme" ? 4 :
-            3;
-
-        spawnReinforcements(count);
-
-        showMessage("REINFORCEMENTS INCOMING!");
+            missionStage=1;
+        }
     }
-}
 
-/* =========================================================
-   INTERACTION
-   ========================================================= */
+    if(missionStage===1){
 
-function interact() {
-
-    // Keycard pickup
-    if(missionStage===1) {
-
-        const card=lootBags.find(
-            l=>l.keycard &&
-            !l.collected &&
-            distance(l,player)<45
-        );
-
-        if(card) {
-
-            card.collected=true;
-            hasKeycard=true;
+        if(hasKeycard){
 
             missionStage=2;
-
-            updateObjective();
-
-            showMessage("KEYCARD ACQUIRED");
-            return;
         }
     }
 
-    // Security room
-    if(missionStage===2 && hasKeycard) {
+    if(missionStage===2){
 
-        if(player.x>950 &&
-           player.x<1120 &&
-           player.y>60 &&
-           player.y<220) {
+        if(player.x>800){
 
             missionStage=3;
 
-            updateObjective();
-
-            showMessage("Security room accessed");
-            return;
+            notify("DISABLE THE SECURITY SYSTEM");
         }
     }
 
-    // Disable cameras
-    if(missionStage===3 && hasKeycard) {
+    if(missionStage===3){
 
-        if(player.x>950 &&
-           player.x<1120 &&
-           player.y>60 &&
-           player.y<220) {
+        let disabled=0;
 
-            disableCameras();
-            return;
+        for(const c of cameras){
+
+            if(c.disabled) disabled++;
+        }
+
+        if(disabled>=2){
+
+            missionStage=4;
+
+            notify("REACH THE VAULT");
         }
     }
 
-    // Vault unlock
-    if(missionStage===4 && hasKeycard) {
+    if(missionStage===4){
 
-        if(player.x>1120 &&
-           player.y>250 &&
-           player.y<550) {
+        if(player.x>1080){
 
-            vaultUnlocked=true;
             missionStage=5;
 
-            updateObjective();
-
-            showMessage("VAULT LOCK RELEASED — START THE DRILL");
-            return;
+            notify("DRILL THE VAULT · HOLD E");
         }
     }
 
-    // loot pickup
-    if(missionStage===6 && !carryingLoot) {
+    if(missionStage===5){
 
-        const bag=lootBags.find(
-            l=>!l.collected &&
-            !l.keycard &&
-            distance(l,player)<40
-        );
+        if(keys.e){
 
-        if(bag) {
+            if(
+                Math.hypot(
+                    player.x-1150,
+                    player.y-390
+                )<100
+            ){
 
-            carryingLoot=true;
-            lootValue=bag.value;
+                drillProgress++;
 
-            bag.collected=true;
-            bag.carried=true;
+                if(drillProgress>=600){
 
-            document.getElementById("lootStatus").style.display="block";
+                    missionStage=6;
 
-            showMessage(
-                `LOOT SECURED — $${bag.value.toLocaleString()}`
-            );
-
-            return;
+                    notify("VAULT OPEN · GRAB THE LOOT");
+                }
+            }
         }
     }
 
-    // escape
-    if(missionStage===7 &&
-       extractionActive &&
-       distance(player,extractionZone)<70) {
+    if(missionStage===6){
 
-        startExtraction();
-    }
-}
+        for(const l of loot){
 
-/* =========================================================
-   VAULT
-   ========================================================= */
+            if(
+                !l.collected &&
+                Math.hypot(
+                    player.x-l.x,
+                    player.y-l.y
+                )<55
+            ){
 
-function nearVault() {
+                l.collected=true;
+                player.carrying=l;
 
-    return (
-        player.x>1120 &&
-        player.x<1320 &&
-        player.y>250 &&
-        player.y<550
-    );
-}
+                missionStage=7;
 
-function startDrill() {
-
-    if(drillActive) return;
-
-    drillActive=true;
-    drillProgress=0;
-
-    document.getElementById("drill").style.display="block";
-
-    showMessage("HOLD E TO DRILL");
-}
-
-function updateDrill(dt) {
-
-    if(!drillActive) return;
-
-    if(keys["e"] && nearVault()) {
-
-        drillProgress += .018*dt;
-
-        document.getElementById("drillFill").style.width =
-            clamp(drillProgress,0,100)+"%";
-
-        document.getElementById("drillPercent").textContent =
-            Math.floor(clamp(drillProgress,0,100))+"%";
-
-        if(drillProgress>=100) {
-
-            completeDrill();
+                notify("LOOT BAG ACQUIRED · GET TO THE PARK");
+            }
         }
-
-    } else {
-
-        drillProgress=Math.max(0,drillProgress-.008*dt);
-
-        document.getElementById("drillFill").style.width =
-            clamp(drillProgress,0,100)+"%";
-    }
-}
-
-function completeDrill() {
-
-    drillActive=false;
-
-    document.getElementById("drill").style.display="none";
-
-    missionStage=6;
-
-    updateObjective();
-
-    showMessage("VAULT OPEN — GRAB THE GOODS!");
-
-    if(!alarmTriggered) {
-
-        triggerAlarm(
-            "THE DRILL WAS LOUD — SECURITY RESPONDING"
-        );
-    }
-}
-
-document.getElementById("cancelDrill").onclick=()=>{
-
-    drillActive=false;
-
-    document.getElementById("drill").style.display="none";
-};
-
-/* =========================================================
-   LOOT
-   ========================================================= */
-
-function dropLoot() {
-
-    if(!carryingLoot) return;
-
-    lootBags.push({
-        x:player.x+Math.cos(player.angle)*40,
-        y:player.y+Math.sin(player.angle)*40,
-        value:lootValue,
-        collected:false,
-        carried:false
-    });
-
-    carryingLoot=false;
-
-    document.getElementById("lootStatus").style.display="none";
-
-    showMessage("LOOT BAG DROPPED");
-}
-
-function checkLootProgress() {
-
-    if(missionStage!==6) return;
-
-    const remaining=lootBags.filter(
-        l=>!l.keycard && !l.collected
-    );
-
-    if(remaining.length===0 && !carryingLoot) {
-
-        missionStage=7;
-        extractionActive=true;
-
-        updateObjective();
-
-        showMessage(
-            `GET TO ${extractionZone.name}!`
-        );
-    }
-}
-
-/* =========================================================
-   EQUIPMENT
-   ========================================================= */
-
-function useEquipment() {
-
-    if(player.equipment<=0) {
-
-        showMessage("NO EQUIPMENT LEFT");
-        return;
     }
 
-    player.equipment--;
+    if(missionStage===7){
 
-    player.health=Math.min(100,player.health+40);
-    player.armor=Math.min(100,player.armor+20);
+        if(player.y>700){
 
-    for(let i=0;i<25;i++) {
+            missionStage=8;
 
-        particles.push({
-            x:player.x,
-            y:player.y,
-            vx:rand(-3,3),
-            vy:rand(-3,3),
-            life:rand(300,700),
-            size:rand(3,7),
-            type:"heal"
-        });
-    }
-
-    showMessage("MEDKIT USED");
-}
-
-/* =========================================================
-   DAMAGE
-   ========================================================= */
-
-function damagePlayer(amount) {
-
-    if(player.invincible>0) return;
-
-    player.invincible=200;
-
-    let remaining=amount;
-
-    if(player.armor>0) {
-
-        const armorDamage=Math.min(
-            player.armor,
-            remaining*.7
-        );
-
-        player.armor-=armorDamage;
-        remaining-=armorDamage;
-    }
-
-    player.health-=remaining;
-
-    if(player.health<=0) {
-
-        player.health=0;
-
-        endGame(false);
-    }
-}
-
-/* =========================================================
-   EXTRACTION
-   ========================================================= */
-
-function startExtraction() {
-
-    if(!extractionActive) return;
-
-    extractionProgress=0;
-
-    showMessage("EXTRACTION STARTED — HOLD POSITION");
-
-    const interval=setInterval(()=>{
-
-        if(!gameRunning || paused) return;
-
-        if(distance(player,extractionZone)>75) {
-
-            extractionProgress=0;
-
-            showMessage("EXTRACTION CANCELLED");
-            clearInterval(interval);
-
-            return;
+            notify("GET TO THE VAN");
         }
-
-        extractionProgress+=.1;
-
-        if(extractionProgress>=100) {
-
-            clearInterval(interval);
-
-            endGame(true);
-        }
-
-    },100);
+    }
 }
 
-/* =========================================================
+/* =========================
    PARTICLES
-   ========================================================= */
+========================= */
 
-function updateParticles(dt) {
+const particles=[];
 
-    particles.forEach(p=>{
+function updateParticles(){
 
-        p.x+=p.vx*dt;
-        p.y+=p.vy*dt;
+    for(let i=particles.length-1;i>=0;i--){
 
-        p.vx*=.97;
-        p.vy*=.97;
+        particles[i].life--;
 
-        p.life-=dt*16.67;
-    });
+        if(particles[i].type==="blood"){
+            particles[i].x+=(Math.random()-.5)*2;
+            particles[i].y+=(Math.random()-.5)*2;
+        }
 
-    particles=particles.filter(p=>p.life>0);
-}
+        if(particles[i].life<=0){
 
-/* =========================================================
-   HUD
-   ========================================================= */
-
-function updateHUD() {
-
-    document.getElementById("ammo").textContent =
-        `${player.ammo} / ${player.reserve}`;
-
-    document.getElementById("cash").textContent =
-        cash.toLocaleString();
-
-    document.getElementById("kills").textContent =
-        kills;
-
-    document.getElementById("timer").textContent =
-        formatTime(elapsed);
-
-    document.getElementById("healthText").textContent =
-        Math.ceil(player.health);
-
-    document.getElementById("armorText").textContent =
-        Math.ceil(player.armor);
-
-    document.getElementById("healthFill").style.width =
-        clamp(player.health,0,100)+"%";
-
-    document.getElementById("armorFill").style.width =
-        clamp(player.armor,0,100)+"%";
-
-    const interact=document.getElementById("interact");
-
-    let text="";
-
-    if(missionStage===1) {
-
-        const card=lootBags.find(
-            l=>l.keycard &&
-            !l.collected &&
-            distance(l,player)<45
-        );
-
-        if(card) text="[E] PICK UP KEYCARD";
-    }
-
-    if(missionStage===2 &&
-       hasKeycard &&
-       player.x>950 &&
-       player.x<1120 &&
-       player.y>60 &&
-       player.y<220) {
-
-        text="[E] ACCESS SECURITY";
-    }
-
-    if(missionStage===3 &&
-       player.x>950 &&
-       player.x<1120 &&
-       player.y>60 &&
-       player.y<220) {
-
-        text="[E] DISABLE CAMERAS";
-    }
-
-    if(missionStage===4 && nearVault()) {
-
-        text="[E] UNLOCK VAULT";
-    }
-
-    if(missionStage===5 && nearVault() && !drillActive) {
-
-        text="[E] START DRILL";
-    }
-
-    if(missionStage===6 && !carryingLoot) {
-
-        const bag=lootBags.find(
-            l=>!l.keycard &&
-            !l.collected &&
-            distance(l,player)<40
-        );
-
-        if(bag) text="[E] PICK UP LOOT";
-    }
-
-    if(missionStage===7 &&
-       extractionActive &&
-       distance(player,extractionZone)<75) {
-
-        text="[E] START EXTRACTION";
-    }
-
-    if(text) {
-
-        interact.textContent=text;
-        interact.style.display="block";
-
-    } else {
-
-        interact.style.display="none";
+            particles.splice(i,1);
+        }
     }
 }
 
-/* =========================================================
-   DRAWING
-   ========================================================= */
+/* =========================
+   DRAW WORLD
+========================= */
 
-function draw() {
+function drawBackground(){
 
-    ctx.clearRect(0,0,W,H);
-
-    drawFloor();
-    drawWalls();
-    drawRooms();
-    drawCameras();
-    drawLoot();
-    drawExtraction();
-    drawGuards();
-    drawPlayer();
-    drawBullets();
-    drawEnemyBullets();
-    drawParticles();
-
-    if(alarmTriggered) {
-
-        ctx.fillStyle="rgba(255,0,0,.035)";
-        ctx.fillRect(0,0,W,H);
-    }
-}
-
-function drawFloor() {
-
-    ctx.fillStyle="#15171b";
+    ctx.fillStyle="#17191d";
     ctx.fillRect(0,0,W,H);
 
-    // floor tiles
-    ctx.strokeStyle="rgba(255,255,255,.025)";
+    /* park */
+
+    ctx.fillStyle="#263326";
+    ctx.fillRect(100,710,1180,70);
+
+    ctx.fillStyle="#303d30";
+
+    for(let x=130;x<1250;x+=70){
+
+        ctx.fillRect(x,730,45,5);
+    }
+
+    /* street */
+
+    ctx.fillStyle="#1b1c20";
+    ctx.fillRect(100,80,1180,55);
+
+    ctx.strokeStyle="#676b70";
+    ctx.setLineDash([30,25]);
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(100,107);
+    ctx.lineTo(1280,107);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* floors */
+
+    ctx.fillStyle="#303238";
+    ctx.fillRect(100,135,390,555);
+
+    ctx.fillStyle="#3a3834";
+    ctx.fillRect(530,100,230,590);
+
+    ctx.fillStyle="#25282d";
+    ctx.fillRect(800,100,190,590);
+
+    ctx.fillStyle="#292a2e";
+    ctx.fillRect(1020,100,260,590);
+
+    /* floor patterns */
+
+    ctx.strokeStyle="rgba(255,255,255,.035)";
     ctx.lineWidth=1;
 
-    for(let x=60;x<1340;x+=40) {
+    for(let x=110;x<1290;x+=40){
 
         ctx.beginPath();
-        ctx.moveTo(x,60);
-        ctx.lineTo(x,740);
+        ctx.moveTo(x,140);
+        ctx.lineTo(x,690);
         ctx.stroke();
     }
 
-    for(let y=60;y<740;y+=40) {
+    for(let y=150;y<690;y+=40){
 
         ctx.beginPath();
-        ctx.moveTo(60,y);
-        ctx.lineTo(1340,y);
+        ctx.moveTo(110,y);
+        ctx.lineTo(1290,y);
         ctx.stroke();
     }
 
-    // lobby
-    ctx.fillStyle="#22252b";
-    ctx.fillRect(70,70,350,620);
+    /* walls */
 
-    // offices
-    ctx.fillStyle="#1d2025";
-    ctx.fillRect(470,70,230,620);
+    ctx.fillStyle="#555b64";
 
-    // security
-    ctx.fillStyle="#25282e";
-    ctx.fillRect(720,70,210,620);
+    for(const w of walls){
 
-    // vault area
-    ctx.fillStyle="#202329";
-    ctx.fillRect(970,70,350,620);
-
-    // labels
-    ctx.fillStyle="#555";
-    ctx.font="bold 14px Arial";
-
-    ctx.fillText("LOBBY",100,100);
-    ctx.fillText("OFFICES",500,100);
-    ctx.fillText("SECURITY",750,100);
-    ctx.fillText("VAULT",1150,100);
-    ctx.fillText("PARKING",90,710);
-}
-
-function drawRooms() {
-
-    // desk shapes
-    ctx.fillStyle="#30343b";
-
-    for(let i=0;i<4;i++) {
-
-        ctx.fillRect(
-            500,
-            140+i*125,
-            100,
-            45
-        );
-
-        ctx.fillRect(
-            620,
-            140+i*125,
-            50,
-            45
-        );
-    }
-
-    // security monitors
-    ctx.fillStyle="#0b0e12";
-
-    for(let i=0;i<5;i++) {
-
-        ctx.fillRect(
-            750+i*30,
-            150,
-            22,
-            18
-        );
-    }
-
-    // vault door
-    ctx.fillStyle="#08090b";
-
-    ctx.beginPath();
-    ctx.arc(1235,400,125,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.strokeStyle="#555";
-    ctx.lineWidth=12;
-
-    ctx.beginPath();
-    ctx.arc(1235,400,112,0,Math.PI*2);
-    ctx.stroke();
-
-    ctx.fillStyle="#888";
-    ctx.font="bold 18px Arial";
-    ctx.textAlign="center";
-    ctx.fillText("VAULT",1235,405);
-    ctx.textAlign="left";
-}
-
-function drawWalls() {
-
-    walls.forEach(w=>{
-
-        ctx.fillStyle="#3a3e45";
         ctx.fillRect(w.x,w.y,w.w,w.h);
+    }
 
-        ctx.strokeStyle="#575c65";
-        ctx.strokeRect(w.x,w.y,w.w,w.h);
-    });
-}
+    /* doors */
 
-function drawCameras() {
+    for(const d of doors){
 
-    cameras.forEach(c=>{
+        if(d.open){
 
-        if(c.disabled) return;
+            ctx.strokeStyle="#80603d";
+            ctx.lineWidth=3;
+            ctx.strokeRect(
+                d.x,
+                d.y,
+                d.w,
+                d.h
+            );
 
-        ctx.save();
+        }else{
 
-        ctx.translate(c.x,c.y);
-        ctx.rotate(c.angle);
+            ctx.fillStyle="#6f482c";
 
-        ctx.fillStyle="rgba(255,40,40,.12)";
+            ctx.fillRect(
+                d.x,
+                d.y,
+                d.w,
+                d.h
+            );
 
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.arc(0,0,c.range,-.65,.65);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.restore();
-
-        ctx.fillStyle="#e52b2b";
-        ctx.beginPath();
-        ctx.arc(c.x,c.y,7,0,Math.PI*2);
-        ctx.fill();
-    });
-}
-
-function drawLoot() {
-
-    lootBags.forEach(l=>{
-
-        if(l.collected) return;
-
-        if(l.keycard) {
-
-            ctx.fillStyle="#e6c64a";
-            ctx.fillRect(l.x-8,l.y-5,16,10);
-
-            ctx.fillStyle="#fff";
-            ctx.fillRect(l.x+7,l.y-2,8,4);
-
-        } else {
-
-            ctx.fillStyle="#b69a61";
-            ctx.fillRect(l.x-14,l.y-12,28,24);
-
-            ctx.strokeStyle="#e0c27e";
-            ctx.strokeRect(l.x-14,l.y-12,28,24);
-
-            ctx.fillStyle="#5e4b2b";
-            ctx.fillRect(l.x-3,l.y-12,6,24);
+            ctx.strokeStyle="#a8794e";
+            ctx.strokeRect(
+                d.x+2,
+                d.y+2,
+                d.w-4,
+                d.h-4
+            );
         }
-    });
+    }
 
-    if(carryingLoot) {
+    drawFurniture();
+    drawPark();
+    drawVan();
+}
 
-        ctx.fillStyle="#b69a61";
+function drawFurniture(){
+
+    /* lobby desk */
+
+    ctx.fillStyle="#5c4634";
+    ctx.fillRect(170,260,220,60);
+
+    ctx.fillStyle="#80654b";
+    ctx.fillRect(180,250,200,20);
+
+    /* couches */
+
+    drawCouch(150,390);
+    drawCouch(390,390);
+
+    /* offices */
+
+    for(let i=0;i<4;i++){
+
+        const x=560+(i%2)*100;
+        const y=150+Math.floor(i/2)*280;
+
+        ctx.fillStyle="#493a2e";
+        ctx.fillRect(x,y,65,35);
+
+        ctx.fillStyle="#111820";
+        ctx.fillRect(x+12,y-25,40,25);
+    }
+
+    /* security monitors */
+
+    for(let i=0;i<4;i++){
+
+        ctx.fillStyle="#10151b";
         ctx.fillRect(
-            player.x-12,
-            player.y-32,
-            24,
-            18
+            830+(i%2)*70,
+            150+Math.floor(i/2)*280,
+            50,
+            35
         );
+
+        ctx.fillStyle="#46525f";
+        ctx.fillRect(
+            835+(i%2)*70,
+            155+Math.floor(i/2)*280,
+            40,
+            25
+        );
+    }
+
+    /* vault */
+
+    ctx.fillStyle="#111318";
+
+    ctx.beginPath();
+    ctx.arc(1200,390,85,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="#777d85";
+    ctx.lineWidth=10;
+
+    ctx.beginPath();
+    ctx.arc(1200,390,70,0,Math.PI*2);
+    ctx.stroke();
+
+    ctx.strokeStyle="#30353d";
+    ctx.lineWidth=3;
+
+    for(let i=0;i<8;i++){
+
+        const a=i*Math.PI/4;
+
+        ctx.beginPath();
+        ctx.moveTo(
+            1200+Math.cos(a)*35,
+            390+Math.sin(a)*35
+        );
+        ctx.lineTo(
+            1200+Math.cos(a)*65,
+            390+Math.sin(a)*65
+        );
+        ctx.stroke();
     }
 }
 
-function drawExtraction() {
+function drawCouch(x,y){
 
-    if(!extractionActive) return;
+    ctx.fillStyle="#25282d";
+    ctx.fillRect(x,y,75,35);
 
-    const z=extractionZone;
-
-    ctx.strokeStyle="#33e38a";
-    ctx.lineWidth=5;
-
-    ctx.beginPath();
-    ctx.arc(z.x,z.y,55,0,Math.PI*2);
-    ctx.stroke();
-
-    ctx.fillStyle="rgba(51,227,138,.1)";
-    ctx.fill();
-
-    ctx.fillStyle="#33e38a";
-    ctx.font="bold 13px Arial";
-    ctx.textAlign="center";
-    ctx.fillText(z.name,z.x,z.y-68);
-    ctx.textAlign="left";
+    ctx.fillStyle="#363b42";
+    ctx.fillRect(x+8,y-15,59,20);
 }
 
-function drawGuards() {
+function drawPark(){
 
-    guards.forEach(g=>{
+    /* trees */
 
-        if(g.hp<=0) {
+    for(const p of [
+        [170,745],
+        [310,755],
+        [470,740],
+        [640,755],
+        [800,740],
+        [960,755]
+    ]){
 
-            ctx.fillStyle="#581f22";
-            ctx.beginPath();
-            ctx.arc(g.x,g.y,12,0,Math.PI*2);
-            ctx.fill();
+        ctx.fillStyle="#46382c";
+        ctx.fillRect(p[0]-5,p[1],10,25);
 
-            return;
+        ctx.fillStyle="#334d35";
+        ctx.beginPath();
+        ctx.arc(p[0],p[1],22,0,Math.PI*2);
+        ctx.fill();
+
+        ctx.fillStyle="#3f5b40";
+        ctx.beginPath();
+        ctx.arc(p[0]-8,p[1]-7,14,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    /* benches */
+
+    for(const x of [560,880]){
+
+        ctx.fillStyle="#664b35";
+        ctx.fillRect(x,748,70,7);
+        ctx.fillRect(x,765,8,12);
+        ctx.fillRect(x+62,765,8,12);
+    }
+}
+
+function drawVan(){
+
+    const x=1130;
+    const y=728;
+
+    ctx.fillStyle="#111419";
+    ctx.fillRect(x,y,110,42);
+
+    ctx.fillStyle="#2c3036";
+    ctx.fillRect(x+18,y-17,65,22);
+
+    ctx.fillStyle="#111820";
+    ctx.fillRect(x+28,y-12,22,15);
+    ctx.fillRect(x+54,y-12,22,15);
+
+    ctx.fillStyle="#22262b";
+
+    ctx.beginPath();
+    ctx.arc(x+20,y+43,10,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x+88,y+43,10,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="#ddd";
+    ctx.font="bold 11px Arial";
+    ctx.fillText("ESCAPE",x+28,y+10);
+}
+
+/* =========================
+   DRAW ZONES
+========================= */
+
+function drawZones(){
+
+    if(!gameStarted) return;
+
+    for(const z of zones){
+
+        if(z.type==="safe"){
+
+            ctx.fillStyle="rgba(70,150,80,.035)";
+
+        }else if(z.type==="escort"){
+
+            ctx.fillStyle="rgba(220,170,70,.035)";
+
+        }else{
+
+            ctx.fillStyle="rgba(190,55,45,.035)";
         }
+
+        ctx.fillRect(z.x,z.y,z.w,z.h);
+    }
+}
+
+/* =========================
+   DRAW CAMERAS
+========================= */
+
+function drawCameras(){
+
+    for(const c of cameras){
+
+        ctx.fillStyle=c.disabled ?
+            "#42484f":
+            "#8d3232";
+
+        ctx.beginPath();
+        ctx.arc(c.x,c.y,8,0,Math.PI*2);
+        ctx.fill();
+
+        if(!c.disabled){
+
+            ctx.fillStyle="rgba(210,40,40,.055)";
+
+            ctx.beginPath();
+
+            ctx.moveTo(c.x,c.y);
+
+            ctx.arc(
+                c.x,
+                c.y,
+                180,
+                c.angle-.45,
+                c.angle+.45
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+        }
+    }
+}
+
+/* =========================
+   DRAW GUARDS
+========================= */
+
+function drawGuards(){
+
+    for(const g of guards){
+
+        if(g.dead) continue;
 
         ctx.save();
 
         ctx.translate(g.x,g.y);
         ctx.rotate(g.angle);
 
-        ctx.fillStyle=g.elite ? "#8e45c8" : "#c83c3c";
+        ctx.fillStyle=
+            g.state==="combat" ?
+            "#b43737":
+            g.state==="escort" ?
+            "#c29a48":
+            "#52606d";
 
         ctx.beginPath();
-        ctx.arc(0,0,g.radius,0,Math.PI*2);
+        ctx.arc(0,0,14,0,Math.PI*2);
         ctx.fill();
 
-        ctx.fillStyle="#222";
-        ctx.fillRect(5,-4,18,8);
+        ctx.fillStyle="#111";
+        ctx.fillRect(7,-3,13,6);
 
         ctx.restore();
 
-        // health bar
-        ctx.fillStyle="#222";
+        /* health */
+
+        ctx.fillStyle="#111";
         ctx.fillRect(g.x-18,g.y-25,36,4);
 
-        ctx.fillStyle="#e33";
+        ctx.fillStyle="#d54b4b";
         ctx.fillRect(
             g.x-18,
             g.y-25,
-            36*clamp(g.hp/difficulties[difficulty].guardHP,0,1),
+            36*Math.max(0,g.health/70),
             4
         );
 
-        // keycard hint
-        if(g.hasKeycard && missionStage===1) {
+        if(g.keycard){
 
-            ctx.fillStyle="#e5c34a";
-            ctx.font="bold 11px Arial";
-            ctx.textAlign="center";
-            ctx.fillText("KEYCARD",g.x,g.y-32);
-            ctx.textAlign="left";
+            ctx.fillStyle="#55c6e8";
+            ctx.fillRect(g.x-4,g.y+18,8,5);
         }
-    });
+    }
 }
 
-function drawPlayer() {
+/* =========================
+   DRAW PLAYER
+========================= */
+
+function drawPlayer(){
 
     ctx.save();
 
     ctx.translate(player.x,player.y);
     ctx.rotate(player.angle);
 
-    // shadow
-    ctx.fillStyle="rgba(0,0,0,.4)";
-    ctx.beginPath();
-    ctx.ellipse(2,7,19,10,0,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.fillStyle=player.invincible>0 ? "#fff" : "#4287e8";
+    ctx.fillStyle=mask ?
+        "#18191d":
+        "#6e7580";
 
     ctx.beginPath();
-    ctx.arc(0,0,player.radius,0,Math.PI*2);
+    ctx.arc(0,0,15,0,Math.PI*2);
     ctx.fill();
 
-    ctx.fillStyle="#ddd";
-    ctx.fillRect(7,-5,23,10);
+    ctx.fillStyle="#111";
+    ctx.fillRect(8,-4,21,8);
+
+    if(mask){
+
+        ctx.strokeStyle="#e0e0e0";
+        ctx.lineWidth=2;
+
+        ctx.beginPath();
+        ctx.arc(0,0,18,0,Math.PI*2);
+        ctx.stroke();
+    }
 
     ctx.restore();
 
-    // armor ring
-    ctx.strokeStyle="rgba(80,150,255,.8)";
-    ctx.lineWidth=3;
+    if(player.carrying){
 
-    ctx.beginPath();
-    ctx.arc(
-        player.x,
-        player.y,
-        player.radius+4,
-        -Math.PI/2,
-        -Math.PI/2+
-        Math.PI*2*(player.armor/100)
-    );
-    ctx.stroke();
+        ctx.fillStyle="#b18a52";
+        ctx.fillRect(
+            player.x-10,
+            player.y-30,
+            20,
+            16
+        );
+    }
 }
 
-function drawBullets() {
+/* =========================
+   DRAW PARTICLES
+========================= */
 
-    ctx.fillStyle="#ffe17a";
+function drawParticles(){
 
-    bullets.forEach(b=>{
+    for(const p of particles){
 
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,3,0,Math.PI*2);
-        ctx.fill();
-    });
-}
+        if(p.type==="muzzle"){
 
-function drawEnemyBullets() {
+            ctx.fillStyle="#ffd76a";
 
-    ctx.fillStyle="#ff4b4b";
-
-    enemyBullets.forEach(b=>{
-
-        ctx.beginPath();
-        ctx.arc(b.x,b.y,3,0,Math.PI*2);
-        ctx.fill();
-    });
-}
-
-function drawParticles() {
-
-    particles.forEach(p=>{
-
-        if(p.type==="blood") {
-            ctx.fillStyle="#b51f28";
-        } else if(p.type==="heal") {
-            ctx.fillStyle="#4fe08c";
-        } else if(p.type==="flash") {
-            ctx.fillStyle="#ffd75a";
-        } else {
-            ctx.fillStyle="#aaa";
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,6,0,Math.PI*2);
+            ctx.fill();
         }
 
-        ctx.globalAlpha=clamp(p.life/400,0,1);
+        else if(p.type==="impact"){
 
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-        ctx.fill();
+            ctx.fillStyle="#d6b46a";
 
-        ctx.globalAlpha=1;
-    });
-}
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,3,0,Math.PI*2);
+            ctx.fill();
+        }
 
-/* =========================================================
-   GAME LOOP
-   ========================================================= */
+        else if(p.type==="blood"){
 
-function update(dt) {
+            ctx.fillStyle="#bd3b3b";
 
-    if(!gameRunning || paused) return;
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,3,0,Math.PI*2);
+            ctx.fill();
+        }
 
-    elapsed+=dt;
+        else if(p.type==="shot"){
 
-    updatePlayer(dt);
-    updateBullets(dt);
-    updateEnemyBullets(dt);
-    updateGuards(dt);
-    updateCameras(dt);
-    updateReinforcements(dt);
-    updateParticles(dt);
-    updateDrill(dt);
+            ctx.strokeStyle="#e3c66c";
+            ctx.lineWidth=2;
 
-    checkLootProgress();
-
-    if(messageTimer>0) {
-
-        messageTimer-=dt*16.67;
-
-        if(messageTimer<=0) {
-
-            document
-                .getElementById("message")
-                .classList.remove("show");
+            ctx.beginPath();
+            ctx.moveTo(p.x,p.y);
+            ctx.lineTo(p.tx,p.ty);
+            ctx.stroke();
         }
     }
-
-    // extraction countdown is intentionally handled in startExtraction
-    updateHUD();
 }
 
-function loop(timestamp) {
+/* =========================
+   HUD
+========================= */
 
-    if(!lastTime) lastTime=timestamp;
+function drawHUD(){
 
-    const dt=Math.min(
-        (timestamp-lastTime)/16.67,
-        2
+    ctx.fillStyle="rgba(7,8,10,.88)";
+    ctx.fillRect(20,20,370,110);
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 16px Arial";
+
+    ctx.fillText(
+        missionText[missionStage],
+        35,
+        47
     );
 
-    lastTime=timestamp;
+    ctx.font="12px Arial";
+    ctx.fillStyle="#8d96a3";
 
-    update(dt);
+    ctx.fillText(
+        "LOCATION: "+(getZone(player.x,player.y)?.name||"UNKNOWN"),
+        35,
+        68
+    );
+
+    ctx.fillText(
+        mask ?
+        "STATUS: MASKED / WANTED":
+        "STATUS: UNMASKED",
+        35,
+        87
+    );
+
+    ctx.fillText(
+        hasKeycard ?
+        "KEYCARD: ACQUIRED":
+        "KEYCARD: NOT ACQUIRED",
+        35,
+        106
+    );
+
+    /* health */
+
+    ctx.fillStyle="#16191e";
+    ctx.fillRect(20,145,230,15);
+
+    ctx.fillStyle="#b73e43";
+    ctx.fillRect(
+        20,
+        145,
+        230*(player.health/100),
+        15
+    );
+
+    /* armor */
+
+    ctx.fillStyle="#16191e";
+    ctx.fillRect(20,165,230,10);
+
+    ctx.fillStyle="#6d9fca";
+    ctx.fillRect(
+        20,
+        165,
+        230*(player.armor/75),
+        10
+    );
+
+    /* stamina */
+
+    ctx.fillStyle="#16191e";
+    ctx.fillRect(20,182,230,7);
+
+    ctx.fillStyle="#b9a04b";
+    ctx.fillRect(
+        20,
+        182,
+        230*(player.stamina/100),
+        7
+    );
+
+    /* ammo */
+
+    ctx.textAlign="right";
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 26px Arial";
+
+    ctx.fillText(
+        player.rifleAmmo+
+        " / "+
+        player.reserve,
+        W-30,
+        H-42
+    );
+
+    ctx.font="11px Arial";
+    ctx.fillStyle="#89919d";
+
+    ctx.fillText(
+        suppressor ?
+        "SUPPRESSED":
+        "UNSUPPRESSED",
+        W-30,
+        H-20
+    );
+
+    ctx.textAlign="left";
+
+    if(alarm){
+
+        ctx.fillStyle="#d44242";
+        ctx.font="bold 20px Arial";
+        ctx.fillText(
+            "🚨 ALARM",
+            W/2-55,
+            35
+        );
+    }
+
+    if(lockpick){
+
+        drawLockpick();
+    }
+
+    if(maskAnimation>0){
+
+        ctx.fillStyle="rgba(0,0,0,.75)";
+        ctx.fillRect(0,0,W,H);
+
+        ctx.fillStyle="#fff";
+        ctx.textAlign="center";
+
+        ctx.font="bold 28px Arial";
+        ctx.fillText(
+            "PUTTING ON MASK",
+            W/2,
+            H/2-20
+        );
+
+        ctx.fillStyle="#252a31";
+        ctx.fillRect(
+            W/2-180,
+            H/2+15,
+            360,
+            14
+        );
+
+        ctx.fillStyle="#ddd";
+        ctx.fillRect(
+            W/2-180,
+            H/2+15,
+            360*(1-maskAnimation/70),
+            14
+        );
+
+        ctx.textAlign="left";
+    }
+}
+
+/* =========================
+   LOCKPICK UI
+========================= */
+
+function drawLockpick(){
+
+    ctx.fillStyle="rgba(0,0,0,.78)";
+    ctx.fillRect(
+        W/2-250,
+        H/2-90,
+        500,
+        180
+    );
+
+    ctx.fillStyle="#fff";
+    ctx.textAlign="center";
+
+    ctx.font="bold 20px Arial";
+
+    ctx.fillText(
+        "LOCKPICK",
+        W/2,
+        H/2-45
+    );
+
+    ctx.font="12px Arial";
+
+    ctx.fillStyle="#929aa5";
+
+    ctx.fillText(
+        "PRESS SPACE WHEN THE PIN IS GREEN",
+        W/2,
+        H/2-20
+    );
+
+    ctx.fillStyle="#22272e";
+
+    ctx.fillRect(
+        W/2-190,
+        H/2+5,
+        380,
+        24
+    );
+
+    ctx.fillStyle="#4da866";
+
+    ctx.fillRect(
+        W/2-190+380*.4,
+        H/2+5,
+        380*.2,
+        24
+    );
+
+    ctx.fillStyle="#eee";
+
+    ctx.fillRect(
+        W/2-190+380*(lockpick.cursor/100)-3,
+        H/2-3,
+        6,
+        40
+    );
+
+    ctx.fillStyle="#fff";
+
+    ctx.fillText(
+        "PINS: "+lockpick.success+"/4",
+        W/2,
+        H/2+60
+    );
+
+    ctx.textAlign="left";
+}
+
+/* =========================
+   PAUSE
+========================= */
+
+function togglePause(){
+
+    if(!gameStarted) return;
+
+    paused=!paused;
+
+    if(paused){
+
+        notify("PAUSED");
+
+    }else{
+
+        notify("RESUMED");
+    }
+}
+
+/* =========================
+   RESULT
+========================= */
+
+function finishHeist(){
+
+    gameStarted=false;
+
+    setTimeout(()=>{
+
+        alert(
+            "HEIST COMPLETE!\n\n"+
+            "Cash Secured: $85,000\n"+
+            "Kills: "+player.kills
+        );
+
+        showMenu("mainMenu");
+
+    },50);
+}
+
+function endGame(success){
+
+    gameStarted=false;
+
+    setTimeout(()=>{
+
+        alert(
+            success ?
+            "HEIST COMPLETE!" :
+            "HEIST FAILED"
+        );
+
+        showMenu("mainMenu");
+
+    },50);
+}
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(){
+
+    drawBackground();
+    drawZones();
+    drawCameras();
+
+    for(const l of loot){
+
+        if(l.collected) continue;
+
+        ctx.fillStyle="#c99d52";
+
+        ctx.fillRect(
+            l.x-12,
+            l.y-10,
+            24,
+            20
+        );
+
+        ctx.fillStyle="#e3c776";
+        ctx.fillRect(
+            l.x-8,
+            l.y-14,
+            16,
+            5
+        );
+    }
+
+    drawGuards();
+    drawPlayer();
+    drawParticles();
+
+    if(gameStarted){
+
+        drawHUD();
+
+        if(paused){
+
+            ctx.fillStyle="rgba(0,0,0,.72)";
+            ctx.fillRect(0,0,W,H);
+
+            ctx.fillStyle="#fff";
+            ctx.textAlign="center";
+
+            ctx.font="bold 48px Arial";
+            ctx.fillText(
+                "PAUSED",
+                W/2,
+                H/2
+            );
+
+            ctx.font="13px Arial";
+            ctx.fillStyle="#999";
+
+            ctx.fillText(
+                "PRESS ESC TO RESUME",
+                W/2,
+                H/2+35
+            );
+
+            ctx.textAlign="left";
+        }
+    }
+}
+
+/* =========================
+   MAIN LOOP
+========================= */
+
+function update(){
+
+    if(gameStarted && !paused){
+
+        updateMask();
+        updateLockpick();
+
+        updatePlayer();
+        updateWeapon();
+        updateBullets();
+
+        updateGuards();
+        updateCameras();
+
+        updateLoot();
+        updateMission();
+
+        updateParticles();
+    }
+}
+
+function loop(){
+
+    update();
     draw();
 
     requestAnimationFrame(loop);
 }
 
-requestAnimationFrame(loop);
-
-/* =========================================================
-   MENUS
-   ========================================================= */
-
-document.querySelectorAll(".diffButtons button").forEach(button=>{
-
-    button.addEventListener("click",()=>{
-
-        document.querySelectorAll(".diffButtons button")
-            .forEach(b=>b.classList.remove("selected"));
-
-        button.classList.add("selected");
-
-        difficulty=button.dataset.diff;
-    });
-});
-
-document.getElementById("startButton").onclick=()=>{
-
-    resetGame();
-
-    document.getElementById("menuScreen")
-        .classList.add("hidden");
-
-    document.getElementById("tutorial")
-        .classList.remove("hidden");
-};
-
-document.getElementById("tutorialButton").onclick=()=>{
-
-    document.getElementById("tutorial")
-        .classList.add("hidden");
-
-    document.getElementById("hud")
-        .classList.remove("hidden");
-
-    gameRunning=true;
-    paused=false;
-
-    showMessage("GET INSIDE. KEEP IT QUIET... IF YOU CAN.");
-};
-
-function togglePause() {
-
-    paused=!paused;
-
-    document.getElementById("pauseScreen")
-        .classList.toggle("hidden",!paused);
-}
-
-document.getElementById("resumeButton").onclick=()=>{
-
-    paused=false;
-
-    document.getElementById("pauseScreen")
-        .classList.add("hidden");
-};
-
-document.getElementById("restartButton").onclick=()=>{
-
-    resetGame();
-
-    paused=false;
-
-    document.getElementById("pauseScreen")
-        .classList.add("hidden");
-
-    gameRunning=true;
-};
-
-document.getElementById("menuButton").onclick=()=>{
-
-    gameRunning=false;
-    paused=false;
-
-    document.getElementById("pauseScreen")
-        .classList.add("hidden");
-
-    document.getElementById("hud")
-        .classList.add("hidden");
-
-    document.getElementById("menuScreen")
-        .classList.remove("hidden");
-};
-
-document.getElementById("againButton").onclick=()=>{
-
-    resetGame();
-
-    document.getElementById("resultScreen")
-        .classList.add("hidden");
-
-    document.getElementById("hud")
-        .classList.remove("hidden");
-
-    gameRunning=true;
-};
-
-document.getElementById("resultMenuButton").onclick=()=>{
-
-    gameRunning=false;
-
-    document.getElementById("resultScreen")
-        .classList.add("hidden");
-
-    document.getElementById("hud")
-        .classList.add("hidden");
-
-    document.getElementById("menuScreen")
-        .classList.remove("hidden");
-};
-
-/* =========================================================
-   RESULTS
-   ========================================================= */
-
-function endGame(success) {
-
-    gameRunning=false;
-
-    if(success) {
-
-        const multiplier=difficulties[difficulty].reward;
-
-        const lootReward=Math.floor(
-            lootValue*multiplier
-        );
-
-        cash=lootReward;
-
-        xp=Math.floor(
-            500*difficulties[difficulty].reward +
-            kills*25
-        );
-
-        document.getElementById("resultTitle")
-            .textContent="HEIST COMPLETE";
-
-        document.getElementById("resultTitle")
-            .style.color="#42df88";
-
-    } else {
-
-        cash=0;
-
-        xp=Math.floor(kills*10);
-
-        document.getElementById("resultTitle")
-            .textContent="HEIST FAILED";
-
-        document.getElementById("resultTitle")
-            .style.color="#e33";
-    }
-
-    document.getElementById("resultCash")
-        .textContent="$"+cash.toLocaleString();
-
-    document.getElementById("resultXP")
-        .textContent=xp.toLocaleString();
-
-    document.getElementById("resultKills")
-        .textContent=kills;
-
-    document.getElementById("resultTime")
-        .textContent=formatTime(elapsed);
-
-    document.getElementById("resultScreen")
-        .classList.remove("hidden");
-}
-
-/* =========================================================
-   STARTUP
-   ========================================================= */
-
-resetGame();
+loop();
 </script>
 
 </body>

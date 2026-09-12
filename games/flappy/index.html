@@ -61,7 +61,8 @@ const bird = {
     y: 370,
     velocity: 0,
     rotation: 0,
-    wing: 0
+    wing: 0,
+    floatTimer: 0
 };
 
 let pipes = [];
@@ -73,12 +74,18 @@ let stars = [];
 // SETTINGS
 // --------------------------------------------------
 
-const gravity = 0.30;
-const flapPower = -6.7;
-const pipeSpeed = 3.1;
-const pipeGap = 180;
-const pipeWidth = 78;
-const pipeSpacing = 105;
+const gravity = 0.18;
+const flapPower = -5.8;
+const pipeSpeed = 2.7;
+
+// Bigger opening = easier
+const pipeGap = 205;
+
+// Much more distance between pipes
+const pipeSpacing = 400;
+
+// Tiny bit of float after flapping
+const floatTime = 7;
 
 // --------------------------------------------------
 // BACKGROUND
@@ -146,6 +153,7 @@ function flap() {
     }
 
     bird.velocity = flapPower;
+bird.floatTimer = floatTime;
 
     for (let i = 0; i < 7; i++) {
         particles.push({
@@ -306,8 +314,16 @@ function update() {
     }
 
     // Bird
+if (bird.floatTimer > 0) {
+    bird.floatTimer--;
+    
+    // Keep the bird floating briefly
+    bird.velocity *= 0.92;
+} else {
     bird.velocity += gravity;
-    bird.y += bird.velocity;
+}
+
+bird.y += bird.velocity;
 
     bird.rotation =
         Math.max(
@@ -366,6 +382,8 @@ function update() {
     if (bird.y - 16 < 0) {
         bird.y = 16;
         bird.velocity = 0;
+bird.rotation = 0;
+bird.floatTimer = 0;
     }
 
     // Ground

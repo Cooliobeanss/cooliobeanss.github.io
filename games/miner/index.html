@@ -1,50 +1,39 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Miner | CoolioBeans</title>
+<title>Miner</title>
 
 <style>
-
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background:
-        radial-gradient(circle at top, #26354d 0%, #111827 45%, #080b12 100%);
+    background: #101216;
     color: white;
-    min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* =========================
-   HEADER
-========================= */
-
 header {
-    height: 75px;
+    background: #171a20;
+    padding: 18px 30px;
+    border-bottom: 2px solid #292e38;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 35px;
-    background: rgba(8, 11, 18, 0.92);
-    border-bottom: 1px solid #293246;
+    align-items: center;
 }
 
-.logo {
-    font-size: 25px;
-    font-weight: 900;
+header h1 {
+    margin: 0;
+    font-size: 28px;
 }
 
 .back {
-    color: #cbd5e1;
+    color: #aaa;
     text-decoration: none;
     font-weight: bold;
 }
@@ -53,280 +42,280 @@ header {
     color: white;
 }
 
-/* =========================
-   GAME
-========================= */
-
-.game {
-    width: min(1200px, 94%);
-    margin: 30px auto;
-}
-
 .topbar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
+    justify-content: center;
+    gap: 30px;
+    padding: 18px;
+    background: #14171c;
+    border-bottom: 1px solid #292e38;
 }
 
-.title {
-    font-size: 38px;
-    font-weight: 900;
+.stat {
+    background: #1d2129;
+    padding: 12px 22px;
+    border-radius: 10px;
+    min-width: 130px;
+    text-align: center;
 }
 
-.money {
-    background: #172033;
-    border: 1px solid #34415a;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 20px;
+.stat-title {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 22px;
     font-weight: bold;
+    margin-top: 3px;
 }
 
-/* =========================
-   LAYOUT
-========================= */
-
-.layout {
+.main {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 20px;
+    max-width: 1400px;
+    margin: auto;
+    padding: 20px;
 }
 
-.mine-container {
-    background: #0d1320;
-    border: 1px solid #2b374d;
-    border-radius: 18px;
+.panel {
+    background: #181c23;
+    border: 1px solid #2b303a;
+    border-radius: 14px;
     padding: 18px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
 }
 
-.mine-header {
+.panel h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.mine {
+    min-height: 650px;
+}
+
+.mine-info {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
-    color: #aebbd0;
-    font-weight: bold;
 }
 
-.depth-warning {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 13px;
-    margin-bottom: 12px;
+.depth-label {
+    color: #aaa;
 }
 
-/* =========================
-   MINE
-========================= */
-
-#mine {
+.grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 4px;
-    width: 100%;
+    gap: 5px;
 }
 
 .block {
     position: relative;
-    border: 0;
+    border: 1px solid #252a32;
+    background: #111318;
+    aspect-ratio: 1;
     padding: 0;
-    aspect-ratio: 1 / 1;
-    border-radius: 5px;
-    overflow: hidden;
     cursor: pointer;
-    background: #222;
-
-    transition:
-        transform .08s,
-        filter .1s,
-        opacity .12s;
-
-    transform-origin: center;
-}
-
-.block:hover {
-    filter: brightness(1.25);
-    transform: scale(1.04);
-    z-index: 2;
-}
-
-.block:active {
-    transform: scale(.92);
+    overflow: hidden;
+    border-radius: 4px;
 }
 
 .block img {
     width: 100%;
     height: 100%;
-    display: block;
-    image-rendering: pixelated;
     object-fit: cover;
-    pointer-events: none;
+    image-rendering: pixelated;
+    display: block;
 }
 
-/* Block breaking animation */
+.block:hover {
+    transform: scale(1.05);
+    z-index: 2;
+    border-color: #777;
+}
 
 .block.breaking {
-    animation: blockBreak .16s ease forwards;
+    animation: breakBlock .16s ease-in-out;
 }
 
-@keyframes blockBreak {
-
+@keyframes breakBlock {
     0% {
         transform: scale(1);
-        opacity: 1;
+        filter: brightness(1);
     }
 
-    45% {
-        transform: scale(1.08) rotate(2deg);
-        opacity: .8;
+    50% {
+        transform: scale(.8);
+        filter: brightness(1.8);
     }
 
     100% {
-        transform: scale(.05) rotate(-8deg);
+        transform: scale(0);
         opacity: 0;
     }
-
 }
 
-/* =========================
-   PICKAXE CURSOR
-========================= */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+button {
+    font-family: inherit;
+}
+
+.action {
+    width: 100%;
+    border: 0;
+    border-radius: 9px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+    background: #303640;
+    color: white;
+}
+
+.action:hover {
+    background: #3c444f;
+}
+
+.action:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.sell {
+    background: #287a43;
+}
+
+.sell:hover {
+    background: #329650;
+}
+
+.upgrade {
+    background: #7957b7;
+}
+
+.upgrade:hover {
+    background: #8c67d0;
+}
+
+.depth {
+    background: #356ca8;
+}
+
+.depth:hover {
+    background: #407fbe;
+}
+
+.danger {
+    background: #8d3030;
+}
+
+.danger:hover {
+    background: #ae3a3a;
+}
+
+.progress {
+    width: 100%;
+    height: 10px;
+    background: #0d0f12;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #54b7ff;
+    transition: width .2s;
+}
+
+.ore-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ore {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111419;
+    padding: 8px;
+    border-radius: 7px;
+    font-size: 13px;
+}
+
+.ore-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ore img {
+    width: 26px;
+    height: 26px;
+    image-rendering: pixelated;
+}
+
+.message {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    background: #252a33;
+    border: 1px solid #3b424e;
+    padding: 12px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s;
+    z-index: 10000;
+}
+
+.message.show {
+    opacity: 1;
+}
 
 #pickaxeCursor {
     position: fixed;
     left: 0;
     top: 0;
-
-    width: 70px;
-    height: 70px;
-
+    width: 75px;
+    height: 75px;
     pointer-events: none;
     z-index: 9999;
-
     opacity: 0;
-
     transform:
         translate(-50%, -50%)
         rotate(-35deg);
-
     transform-origin: 50% 65%;
-
-    transition:
-        opacity .15s ease;
 }
 
-/*
-    Pickaxe handle
-*/
-
-.pickaxe-handle {
-    position: absolute;
-
-    width: 9px;
-    height: 58px;
-
-    left: 32px;
-    top: 14px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #6b4226,
-            #a86f3d,
-            #6b4226
-        );
-
-    border-radius: 6px;
-
-    transform: rotate(-10deg);
+#pickaxeCursor img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    display: block;
 }
-
-/*
-    Pickaxe head
-*/
-
-.pickaxe-head {
-    position: absolute;
-
-    width: 58px;
-    height: 13px;
-
-    left: 6px;
-    top: 10px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #e5e7eb,
-            #94a3b8,
-            #64748b
-        );
-
-    border-radius: 12px 12px 7px 7px;
-
-    transform: rotate(-12deg);
-
-    box-shadow:
-        0 2px 4px rgba(0,0,0,.5);
-}
-
-/*
-    Pointy ends
-*/
-
-.pickaxe-head::before {
-    content: "";
-
-    position: absolute;
-
-    width: 20px;
-    height: 13px;
-
-    left: -13px;
-    top: 0;
-
-    background: #94a3b8;
-
-    clip-path: polygon(
-        100% 0,
-        100% 100%,
-        0 50%
-    );
-}
-
-.pickaxe-head::after {
-    content: "";
-
-    position: absolute;
-
-    width: 20px;
-    height: 13px;
-
-    right: -13px;
-    top: 0;
-
-    background: #94a3b8;
-
-    clip-path: polygon(
-        0 0,
-        100% 50%,
-        0 100%
-    );
-}
-
-/*
-    Swing animation
-*/
 
 #pickaxeCursor.swing {
-    animation: pickaxeSwing .30s cubic-bezier(.22,.8,.35,1);
+    animation:
+        pickaxeSwing .30s cubic-bezier(.22,.8,.35,1);
 }
 
 @keyframes pickaxeSwing {
-
     0% {
         transform:
             translate(-50%, -50%)
@@ -354,686 +343,660 @@ header {
             rotate(-35deg)
             scale(1);
     }
-
 }
 
-/* =========================
-   SIDE
-========================= */
-
-.side {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.small {
+    color: #999;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
-.panel {
-    background: #111a2a;
-    border: 1px solid #2b374d;
-    border-radius: 15px;
-    padding: 18px;
-}
-
-.panel h2 {
-    font-size: 19px;
-    margin-bottom: 15px;
-}
-
-.stat {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-    color: #b9c5d8;
-}
-
-.stat strong {
-    color: white;
-}
-
-/* =========================
-   BACKPACK BAR
-========================= */
-
-.bar {
-    width: 100%;
-    height: 13px;
-    background: #202a3b;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-top: 8px;
-}
-
-#bagBar {
-    height: 100%;
-    width: 0%;
-    background: #4ade80;
-    transition: width .2s;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-button {
-    width: 100%;
-    border: 0;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 9px;
-
-    background: #26344b;
-
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: .15s;
-}
-
-button:hover {
-    background: #344663;
-    transform: translateY(-1px);
-}
-
-button:disabled {
-    opacity: .4;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.sell {
-    background: #198754;
-}
-
-.sell:hover {
-    background: #21a366;
-}
-
-.upgrade {
-    background: #6954d8;
-}
-
-.upgrade:hover {
-    background: #7964ed;
-}
-
-.depth-button {
-    background: #2563eb;
-}
-
-.depth-button:hover {
-    background: #3575ee;
-}
-
-.reset {
-    background: #8f1d2c;
-}
-
-.reset:hover {
-    background: #b42336;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-.message {
-    min-height: 24px;
-    margin-top: 15px;
-    text-align: center;
-    color: #aebbd0;
+.cost {
+    color: #ffd35a;
     font-weight: bold;
 }
 
-/* =========================
-   ORES
-========================= */
-
-.ores {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-}
-
-.ore-item {
-    background: #182235;
-    border-radius: 8px;
-    padding: 8px;
-
-    font-size: 12px;
-    color: #cbd5e1;
-
-    transition: .15s;
-}
-
-.ore-item:hover {
-    background: #22304a;
-    transform: translateY(-1px);
-}
-
-.ore-item img {
-    width: 28px;
-    height: 28px;
-
-    display: block;
-
-    margin-bottom: 4px;
-
-    image-rendering: pixelated;
-}
-
-.locked-text {
-    color: #64748b;
-}
-
-.danger-text {
-    color: #f87171;
-    font-size: 12px;
-    line-height: 1.4;
-    margin-top: 8px;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 850px) {
-
-    .layout {
+@media (max-width: 900px) {
+    .main {
         grid-template-columns: 1fr;
     }
 
-    #mine {
+    .grid {
         grid-template-columns: repeat(10, 1fr);
     }
-
 }
 
 @media (max-width: 550px) {
-
-    header {
-        padding: 0 15px;
-    }
-
-    .game {
-        width: 96%;
-    }
-
-    .title {
-        font-size: 30px;
-    }
-
-    #mine {
-        grid-template-columns: repeat(8, 1fr);
+    .grid {
+        grid-template-columns: repeat(7, 1fr);
     }
 
     #pickaxeCursor {
         display: none;
     }
 
-}
+    .topbar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 
+    .stat {
+        min-width: 100px;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-
-    <div class="logo">
-        ⛏️ CoolioBeans
-    </div>
-
-    <a class="back" href="../../">
-        ← Back to Games
-    </a>
-
+    <h1>⛏️ Miner</h1>
+    <a class="back" href="../../">← Back to Games</a>
 </header>
 
+<div class="topbar">
+    <div class="stat">
+        <div class="stat-title">Money</div>
+        <div class="stat-value">$<span id="money">0</span></div>
+    </div>
 
-<!-- CURSOR PICKAXE -->
+    <div class="stat">
+        <div class="stat-title">Depth</div>
+        <div class="stat-value"><span id="depth">1</span>m</div>
+    </div>
 
-<div id="pickaxeCursor">
+    <div class="stat">
+        <div class="stat-title">Pickaxe</div>
+        <div class="stat-value">Lv.<span id="pickLevel">1</span></div>
+    </div>
 
-    <div class="pickaxe-head"></div>
+    <div class="stat">
+        <div class="stat-title">Backpack</div>
+        <div class="stat-value">
+            <span id="bagCount">0</span>/<span id="bagMax">20</span>
+        </div>
+    </div>
+</div>
 
-    <div class="pickaxe-handle"></div>
+<div class="main">
+
+    <div class="panel mine">
+
+        <div class="mine-info">
+            <div>
+                <h2>⛏️ Mine</h2>
+                <div class="depth-label">
+                    Current depth: <b id="depthText">1m</b>
+                </div>
+            </div>
+
+            <div>
+                <span class="small">Break blocks to find ores</span>
+            </div>
+        </div>
+
+        <div class="grid" id="mineGrid"></div>
+
+    </div>
+
+    <div class="sidebar">
+
+        <div class="panel">
+
+            <h2>🎒 Backpack</h2>
+
+            <div class="progress">
+                <div class="progress-bar" id="bagProgress"></div>
+            </div>
+
+            <div class="small">
+                Sell everything in your backpack for cash.
+            </div>
+
+            <button class="action sell" id="sellButton">
+                💰 Sell Backpack
+            </button>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>⛏️ Pickaxe</h2>
+
+            <div>
+                Level:
+                <b id="pickLevel2">1</b>
+            </div>
+
+            <div class="small">
+                Higher levels let you break stronger ores.
+            </div>
+
+            <div class="small" style="margin-top:8px;">
+                Next level:
+                <span class="cost">$<span id="pickCost">50</span></span>
+            </div>
+
+            <button class="action upgrade" id="upgradeButton">
+                ⬆ Upgrade Pickaxe
+            </button>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>🕳️ Go Deeper</h2>
+
+            <div class="small">
+                Going deeper increases rare ore chances.
+            </div>
+
+            <div style="margin-top:10px;">
+                Next depth:
+                <b id="nextDepth">2m</b>
+            </div>
+
+            <div style="margin-top:5px;">
+                Cost:
+                <span class="cost">$<span id="depthCost">75</span></span>
+            </div>
+
+            <button class="action depth" id="depthButton">
+                ⬇ Go Deeper
+            </button>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>💎 Ore Values</h2>
+
+            <div class="ore-list">
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/dirt.png">
+                        Dirt
+                    </div>
+                    <b>$1</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/stone.png">
+                        Stone
+                    </div>
+                    <b>$2</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/coal.png">
+                        Coal
+                    </div>
+                    <b>$8</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/iron.png">
+                        Iron
+                    </div>
+                    <b>$15</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/gold.png">
+                        Gold
+                    </div>
+                    <b>$40</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/ruby.png">
+                        Ruby
+                    </div>
+                    <b>$100</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/emerald.png">
+                        Emerald
+                    </div>
+                    <b>$125</b>
+                </div>
+
+                <div class="ore">
+                    <div class="ore-left">
+                        <img src="assets/blocks/diamond.png">
+                        Diamond
+                    </div>
+                    <b>$150</b>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2>⚙️ Save</h2>
+
+            <div class="small">
+                Your progress automatically saves in your browser.
+            </div>
+
+            <button class="action danger" id="resetButton">
+                🗑 Reset Save
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
-
-<main class="game">
-
-    <div class="topbar">
-
-        <div class="title">
-            MINER
-        </div>
-
-        <div class="money">
-            $<span id="money">0</span>
-        </div>
-
-    </div>
-
-
-    <div class="layout">
-
-
-        <!-- MINING AREA -->
-
-        <section class="mine-container">
-
-            <div class="mine-header">
-
-                <span>
-                    Underground Mine
-                </span>
-
-                <span>
-                    Depth:
-                    <span id="depth">1</span>
-                </span>
-
-            </div>
-
-
-            <div class="depth-warning" id="depthWarning">
-                Surface Layer
-            </div>
-
-
-            <div id="mine"></div>
-
-
-            <div class="message" id="message">
-                Click a block to start mining!
-            </div>
-
-        </section>
-
-
-        <!-- SIDE PANEL -->
-
-        <aside class="side">
-
-
-            <!-- BACKPACK -->
-
-            <div class="panel">
-
-                <h2>
-                    Backpack
-                </h2>
-
-                <div class="stat">
-
-                    <span>
-                        Capacity
-                    </span>
-
-                    <strong>
-                        <span id="bagCount">0</span>
-                        /
-                        <span id="bagMax">20</span>
-                    </strong>
-
-                </div>
-
-
-                <div class="bar">
-
-                    <div id="bagBar"></div>
-
-                </div>
-
-
-                <button
-                    class="sell"
-                    onclick="sellAll()"
-                >
-                    Sell Everything
-                </button>
-
-            </div>
-
-
-            <!-- PICKAXE -->
-
-            <div class="panel">
-
-                <h2>
-                    Pickaxe
-                </h2>
-
-                <div class="stat">
-
-                    <span>
-                        Level
-                    </span>
-
-                    <strong id="pickLevel">
-                        1
-                    </strong>
-
-                </div>
-
-
-                <div class="stat">
-
-                    <span>
-                        Mining Power
-                    </span>
-
-                    <strong id="power">
-                        1
-                    </strong>
-
-                </div>
-
-
-                <button
-                    class="upgrade"
-                    id="upgradeButton"
-                    onclick="upgradePickaxe()"
-                >
-                    Upgrade — $50
-                </button>
-
-            </div>
-
-
-            <!-- DEPTH -->
-
-            <div class="panel">
-
-                <h2>
-                    Mine Depth
-                </h2>
-
-                <div class="stat">
-
-                    <span>
-                        Current
-                    </span>
-
-                    <strong id="depth2">
-                        1
-                    </strong>
-
-                </div>
-
-                <div class="stat">
-
-                    <span>
-                        Required Pickaxe
-                    </span>
-
-                    <strong id="depthRequirement">
-                        Level 1
-                    </strong>
-
-                </div>
-
-
-                <button
-                    class="depth-button"
-                    id="depthButton"
-                    onclick="goDeeper()"
-                >
-                    Dig Deeper
-                </button>
-
-            </div>
-
-
-            <!-- ORES -->
-
-            <div class="panel">
-
-                <h2>
-                    Ore Values
-                </h2>
-
-
-                <div class="ores">
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/dirt.png">
-                        Dirt — $1
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/stone.png">
-                        Stone — $2
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/coal.png">
-                        Coal — $8
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/iron.png">
-                        Iron — $15
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/gold.png">
-                        Gold — $40
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/ruby.png">
-                        Ruby — $100
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/emerald.png">
-                        Emerald — $125
-                    </div>
-
-
-                    <div class="ore-item">
-                        <img src="assets/blocks/diamond.png">
-                        Diamond — $150
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- RESET -->
-
-            <div class="panel">
-
-                <h2>
-                    Game Data
-                </h2>
-
-                <button
-                    class="reset"
-                    onclick="resetSave()"
-                >
-                    RESET SAVE
-                </button>
-
-                <div class="danger-text">
-                    ⚠️ This permanently deletes your money,
-                    ores, pickaxe upgrades, backpack upgrades,
-                    and depth.
-                </div>
-
-            </div>
-
-
-        </aside>
-
-    </div>
-
-</main>
-
+<div id="message" class="message"></div>
+
+<!-- YOUR PICKAXE -->
+<div id="pickaxeCursor">
+    <img src="assets/blocks/pickaxe.png" alt="Pickaxe">
+</div>
 
 <script>
 
-/* =========================
-   ELEMENTS
-========================= */
+const mineGrid = document.getElementById("mineGrid");
+const moneyEl = document.getElementById("money");
+const depthEl = document.getElementById("depth");
+const depthText = document.getElementById("depthText");
+const pickLevelEl = document.getElementById("pickLevel");
+const pickLevel2 = document.getElementById("pickLevel2");
+const bagCount = document.getElementById("bagCount");
+const bagMax = document.getElementById("bagMax");
+const bagProgress = document.getElementById("bagProgress");
+const pickCost = document.getElementById("pickCost");
+const depthCost = document.getElementById("depthCost");
+const nextDepth = document.getElementById("nextDepth");
+const message = document.getElementById("message");
+const pickaxeCursor = document.getElementById("pickaxeCursor");
 
-const mine =
-    document.getElementById("mine");
+let money = Number(localStorage.getItem("minerMoney")) || 0;
+let depth = Number(localStorage.getItem("minerDepth")) || 1;
+let pickLevel = Number(localStorage.getItem("minerPick")) || 1;
 
-const moneyDisplay =
-    document.getElementById("money");
+let bag = JSON.parse(localStorage.getItem("minerBag") || "{}");
 
-const bagCountDisplay =
-    document.getElementById("bagCount");
+const ores = [
 
-const bagMaxDisplay =
-    document.getElementById("bagMax");
-
-const bagBar =
-    document.getElementById("bagBar");
-
-const depthDisplay =
-    document.getElementById("depth");
-
-const depthDisplay2 =
-    document.getElementById("depth2");
-
-const depthRequirement =
-    document.getElementById("depthRequirement");
-
-const depthWarning =
-    document.getElementById("depthWarning");
-
-const pickLevelDisplay =
-    document.getElementById("pickLevel");
-
-const powerDisplay =
-    document.getElementById("power");
-
-const upgradeButton =
-    document.getElementById("upgradeButton");
-
-const depthButton =
-    document.getElementById("depthButton");
-
-const message =
-    document.getElementById("message");
-
-const pickaxeCursor =
-    document.getElementById("pickaxeCursor");
-
-
-/* =========================
-   SAVE DATA
-========================= */
-
-let money =
-    Number(localStorage.getItem("minerMoney")) || 0;
-
-let depth =
-    Number(localStorage.getItem("minerDepth")) || 1;
-
-let pickLevel =
-    Number(localStorage.getItem("minerPick")) || 1;
-
-let backpack =
-    JSON.parse(
-        localStorage.getItem("minerBag") || "{}"
-    );
-
-
-let bagMax =
-    20 + ((pickLevel - 1) * 5);
-
-
-/* =========================
-   ORES
-========================= */
-
-const ores = {
-
-    dirt: {
-        name: "Dirt",
+    {
+        name: "dirt",
         value: 1,
-        image: "assets/blocks/dirt.png",
-        chance: 45,
-        requiredPick: 1
+        pick: 1,
+        chance: 45
     },
 
-    stone: {
-        name: "Stone",
+    {
+        name: "stone",
         value: 2,
-        image: "assets/blocks/stone.png",
-        chance: 28,
-        requiredPick: 1
+        pick: 1,
+        chance: 28
     },
 
-    coal: {
-        name: "Coal",
+    {
+        name: "coal",
         value: 8,
-        image: "assets/blocks/coal.png",
-        chance: 14,
-        requiredPick: 1
+        pick: 1,
+        chance: 14
     },
 
-    iron: {
-        name: "Iron",
+    {
+        name: "iron",
         value: 15,
-        image: "assets/blocks/iron.png",
-        chance: 7,
-        requiredPick: 2
+        pick: 2,
+        chance: 7
     },
 
-    gold: {
-        name: "Gold",
+    {
+        name: "gold",
         value: 40,
-        image: "assets/blocks/gold.png",
-        chance: 3,
-        requiredPick: 3
+        pick: 3,
+        chance: 3
     },
 
-    ruby: {
-        name: "Ruby",
+    {
+        name: "ruby",
         value: 100,
-        image: "assets/blocks/ruby.png",
-        chance: 1.5,
-        requiredPick: 4
+        pick: 4,
+        chance: 1.5
     },
 
-    emerald: {
-        name: "Emerald",
+    {
+        name: "emerald",
         value: 125,
-        image: "assets/blocks/emerald.png",
-        chance: 0.8,
-        requiredPick: 4
+        pick: 4,
+        chance: 0.8
     },
 
-    diamond: {
-        name: "Diamond",
+    {
+        name: "diamond",
         value: 150,
-        image: "assets/blocks/diamond.png",
-        chance: 0.7,
-        requiredPick: 5
+        pick: 5,
+        chance: 0.7
     }
 
-};
+];
 
+function getBagMax() {
+    return 20 + ((pickLevel - 1) * 5);
+}
 
-/* =========================
-   SAVE
-========================= */
+function getBagCount() {
+    return Object.values(bag).reduce((a,b) => a + b, 0);
+}
+
+function getPickCost() {
+    return Math.floor(
+        50 * Math.pow(2.5, pickLevel - 1)
+    );
+}
+
+function getDepthCost() {
+    return Math.floor(
+        75 * Math.pow(1.65, depth - 1)
+    );
+}
+
+function getRequiredPickaxe() {
+    return Math.max(
+        1,
+        Math.ceil(depth / 4)
+    );
+}
+
+function getRandomOre() {
+
+    let available = ores.filter(
+        ore => ore.pick <= pickLevel
+    );
+
+    let total = 0;
+
+    available.forEach(ore => {
+
+        let chance = ore.chance;
+
+        if (ore.name === "iron" && depth >= 5)
+            chance *= 1.5;
+
+        if (ore.name === "gold" && depth >= 10)
+            chance *= 2;
+
+        if (
+            (ore.name === "ruby" ||
+             ore.name === "emerald") &&
+            depth >= 15
+        )
+            chance *= 2;
+
+        if (ore.name === "diamond" && depth >= 20)
+            chance *= 3;
+
+        total += chance;
+        ore.tempChance = chance;
+    });
+
+    let roll = Math.random() * total;
+
+    for (const ore of available) {
+
+        roll -= ore.tempChance;
+
+        if (roll <= 0)
+            return ore;
+    }
+
+    return available[0];
+}
+
+function createBlock() {
+
+    const ore = getRandomOre();
+
+    const button = document.createElement("button");
+
+    button.className = "block";
+    button.dataset.ore = ore.name;
+
+    const img = document.createElement("img");
+
+    img.src = `assets/blocks/${ore.name}.png`;
+    img.alt = ore.name;
+
+    button.appendChild(img);
+
+    button.addEventListener("click", () => {
+        mineBlock(button, ore);
+    });
+
+    return button;
+}
+
+function generateMine() {
+
+    mineGrid.innerHTML = "";
+
+    for (let i = 0; i < 96; i++) {
+        mineGrid.appendChild(createBlock());
+    }
+
+}
+
+function mineBlock(button, ore) {
+
+    if (getBagCount() >= getBagMax()) {
+
+        showMessage(
+            "🎒 Backpack full! Sell your ores."
+        );
+
+        return;
+    }
+
+    if (ore.pick > pickLevel) {
+
+        showMessage(
+            `⛏️ You need Pickaxe Level ${ore.pick}!`
+        );
+
+        return;
+    }
+
+    swingPickaxe();
+
+    bag[ore.name] =
+        (bag[ore.name] || 0) + 1;
+
+    button.classList.add("breaking");
+
+    setTimeout(() => {
+
+        button.replaceWith(
+            createBlock()
+        );
+
+    }, 160);
+
+    showMessage(
+        `⛏️ Found ${ore.name}! +$${ore.value} value`
+    );
+
+    updateUI();
+    saveGame();
+
+}
+
+function sellBackpack() {
+
+    let total = 0;
+
+    for (const oreName in bag) {
+
+        const ore = ores.find(
+            o => o.name === oreName
+        );
+
+        if (ore) {
+            total += bag[oreName] * ore.value;
+        }
+
+    }
+
+    if (total <= 0) {
+
+        showMessage(
+            "🎒 Your backpack is empty!"
+        );
+
+        return;
+    }
+
+    money += total;
+    bag = {};
+
+    showMessage(
+        `💰 Sold backpack for $${total}!`
+    );
+
+    updateUI();
+    saveGame();
+
+}
+
+function upgradePickaxe() {
+
+    const cost = getPickCost();
+
+    if (money < cost) {
+
+        showMessage(
+            `❌ You need $${cost}!`
+        );
+
+        return;
+    }
+
+    money -= cost;
+    pickLevel++;
+
+    showMessage(
+        `⛏️ Pickaxe upgraded to Level ${pickLevel}!`
+    );
+
+    updateUI();
+    saveGame();
+
+}
+
+function goDeeper() {
+
+    const cost = getDepthCost();
+
+    if (money < cost) {
+
+        showMessage(
+            `❌ You need $${cost}!`
+        );
+
+        return;
+    }
+
+    money -= cost;
+    depth++;
+
+    generateMine();
+
+    showMessage(
+        `⬇️ You reached depth ${depth}m!`
+    );
+
+    updateUI();
+    saveGame();
+
+}
+
+function showMessage(text) {
+
+    message.textContent = text;
+
+    message.classList.add("show");
+
+    clearTimeout(
+        showMessage.timeout
+    );
+
+    showMessage.timeout = setTimeout(() => {
+
+        message.classList.remove("show");
+
+    }, 1800);
+
+}
+
+function updateUI() {
+
+    moneyEl.textContent =
+        money.toLocaleString();
+
+    depthEl.textContent =
+        depth;
+
+    depthText.textContent =
+        depth + "m";
+
+    pickLevelEl.textContent =
+        pickLevel;
+
+    pickLevel2.textContent =
+        pickLevel;
+
+    const max =
+        getBagMax();
+
+    const count =
+        getBagCount();
+
+    bagCount.textContent =
+        count;
+
+    bagMax.textContent =
+        max;
+
+    bagProgress.style.width =
+        Math.min(100, (count / max) * 100) + "%";
+
+    pickCost.textContent =
+        getPickCost().toLocaleString();
+
+    depthCost.textContent =
+        getDepthCost().toLocaleString();
+
+    nextDepth.textContent =
+        (depth + 1) + "m";
+
+    document.getElementById(
+        "upgradeButton"
+    ).disabled =
+        money < getPickCost();
+
+    document.getElementById(
+        "depthButton"
+    ).disabled =
+        money < getDepthCost();
+
+}
 
 function saveGame() {
 
@@ -1054,523 +1017,20 @@ function saveGame() {
 
     localStorage.setItem(
         "minerBag",
-        JSON.stringify(backpack)
+        JSON.stringify(bag)
     );
 
 }
 
+function resetGame() {
 
-/* =========================
-   BACKPACK
-========================= */
-
-function getBagCount() {
-
-    return Object.values(backpack).reduce(
-        (total, amount) => total + amount,
-        0
-    );
-
-}
-
-
-/* =========================
-   ORE GENERATION
-========================= */
-
-function randomOre() {
-
-    let available = [];
-
-    for (const key in ores) {
-
-        const ore = ores[key];
-
-        let chance =
-            ore.chance;
-
-
-        /*
-            Deeper mines increase
-            rare ore chances.
-        */
-
-        if (depth >= 5 && key === "iron") {
-            chance *= 1.5;
-        }
-
-        if (depth >= 10 && key === "gold") {
-            chance *= 2;
-        }
-
-        if (depth >= 15 && key === "ruby") {
-            chance *= 2;
-        }
-
-        if (depth >= 15 && key === "emerald") {
-            chance *= 2;
-        }
-
-        if (depth >= 20 && key === "diamond") {
-            chance *= 3;
-        }
-
-
-        /*
-            Only show ores that
-            can actually be mined.
-        */
-
-        if (ore.requiredPick <= pickLevel) {
-
-            available.push({
-                key: key,
-                chance: chance
-            });
-
-        }
-
-    }
-
-
-    const total =
-        available.reduce(
-            (sum, ore) =>
-                sum + ore.chance,
-            0
-        );
-
-
-    let roll =
-        Math.random() * total;
-
-
-    for (const ore of available) {
-
-        roll -= ore.chance;
-
-        if (roll <= 0) {
-
-            return ore.key;
-
-        }
-
-    }
-
-
-    return "dirt";
-
-}
-
-
-/* =========================
-   DEPTH REQUIREMENT
-========================= */
-
-function getRequiredPickaxe() {
-
-    return Math.max(
-        1,
-        Math.ceil(depth / 4)
-    );
-
-}
-
-
-/* =========================
-   DEPTH COST
-========================= */
-
-function getDepthCost() {
-
-    return Math.floor(
-        75 * Math.pow(1.65, depth - 1)
-    );
-
-}
-
-
-/* =========================
-   PICKAXE COST
-========================= */
-
-function getPickaxeCost() {
-
-    return Math.floor(
-        50 * Math.pow(2.5, pickLevel - 1)
-    );
-
-}
-
-
-/* =========================
-   GENERATE MINE
-========================= */
-
-function generateMine() {
-
-    mine.innerHTML = "";
-
-
-    for (let i = 0; i < 96; i++) {
-
-        const block =
-            document.createElement("button");
-
-
-        block.className =
-            "block";
-
-
-        const type =
-            randomOre();
-
-
-        block.dataset.type =
-            type;
-
-
-        const image =
-            document.createElement("img");
-
-
-        image.src =
-            ores[type].image;
-
-
-        image.alt =
-            ores[type].name;
-
-
-        block.appendChild(image);
-
-
-        block.onclick = () => {
-
-            mineBlock(block);
-
-        };
-
-
-        mine.appendChild(block);
-
-    }
-
-}
-
-
-/* =========================
-   PICKAXE ANIMATION
-========================= */
-
-function swingPickaxe() {
-
-    /*
-        Remove the animation first so
-        rapid clicks can trigger it again.
-    */
-
-    pickaxeCursor.classList.remove("swing");
-
-    /*
-        Force browser to restart animation.
-    */
-
-    void pickaxeCursor.offsetWidth;
-
-    pickaxeCursor.classList.add("swing");
-
-}
-
-
-/* =========================
-   MINE BLOCK
-========================= */
-
-function mineBlock(block) {
-
-    if (getBagCount() >= bagMax) {
-
-        showMessage(
-            "Backpack full! Sell your ores first."
-        );
-
-        return;
-
-    }
-
-
-    const type =
-        block.dataset.type;
-
-
-    const ore =
-        ores[type];
-
-
-    if (pickLevel < ore.requiredPick) {
-
-        showMessage(
-            `${ore.name} requires Pickaxe Level ${ore.requiredPick}!`
-        );
-
-        swingPickaxe();
-
-        return;
-
-    }
-
-
-    /*
-        Swing the cursor pickaxe.
-    */
-
-    swingPickaxe();
-
-
-    /*
-        Add ore.
-    */
-
-    backpack[type] =
-        (backpack[type] || 0) + 1;
-
-
-    /*
-        Break animation.
-    */
-
-    block.classList.add("breaking");
-
-
-    setTimeout(() => {
-
-        const newType =
-            randomOre();
-
-
-        block.dataset.type =
-            newType;
-
-
-        block.innerHTML =
-            "";
-
-
-        const newImage =
-            document.createElement("img");
-
-
-        newImage.src =
-            ores[newType].image;
-
-
-        newImage.alt =
-            ores[newType].name;
-
-
-        block.appendChild(
-            newImage
-        );
-
-
-        block.classList.remove(
-            "breaking"
-        );
-
-
-    }, 160);
-
-
-    showMessage(
-        `You mined ${ore.name}! +$${ore.value} potential value`
-    );
-
-
-    updateUI();
-
-    saveGame();
-
-}
-
-
-/* =========================
-   SELL
-========================= */
-
-function sellAll() {
-
-    const amount =
-        getBagCount();
-
-
-    if (amount === 0) {
-
-        showMessage(
-            "Your backpack is empty!"
-        );
-
-        return;
-
-    }
-
-
-    let total = 0;
-
-
-    for (const type in backpack) {
-
-        if (ores[type]) {
-
-            total +=
-                backpack[type] *
-                ores[type].value;
-
-        }
-
-    }
-
-
-    backpack = {};
-
-    money += total;
-
-
-    showMessage(
-        `Sold ${amount} ores for $${total}!`
-    );
-
-
-    updateUI();
-
-    saveGame();
-
-}
-
-
-/* =========================
-   PICKAXE UPGRADE
-========================= */
-
-function upgradePickaxe() {
-
-    const cost =
-        getPickaxeCost();
-
-
-    if (money < cost) {
-
-        showMessage(
-            `You need $${cost.toLocaleString()} to upgrade your pickaxe!`
-        );
-
-        return;
-
-    }
-
-
-    money -= cost;
-
-    pickLevel++;
-
-
-    bagMax =
-        20 + ((pickLevel - 1) * 5);
-
-
-    showMessage(
-        `Pickaxe upgraded to Level ${pickLevel}!`
-    );
-
-
-    updateUI();
-
-    saveGame();
-
-    generateMine();
-
-}
-
-
-/* =========================
-   DIG DEEPER
-========================= */
-
-function goDeeper() {
-
-    const required =
-        getRequiredPickaxe();
-
-    const cost =
-        getDepthCost();
-
-
-    if (pickLevel < required) {
-
-        showMessage(
-            `You need Pickaxe Level ${required} to go deeper!`
-        );
-
-        return;
-
-    }
-
-
-    if (money < cost) {
-
-        showMessage(
-            `You need $${cost.toLocaleString()} to dig deeper!`
-        );
-
-        return;
-
-    }
-
-
-    money -= cost;
-
-    depth++;
-
-
-    showMessage(
-        `You reached Depth ${depth}!`
-    );
-
-
-    generateMine();
-
-    updateUI();
-
-    saveGame();
-
-}
-
-
-/* =========================
-   RESET SAVE
-========================= */
-
-function resetSave() {
-
-    const confirmed =
+    const confirmReset =
         confirm(
-            "⚠️ RESET EVERYTHING?\n\n" +
-            "This will permanently delete:\n" +
-            "• Money\n" +
-            "• Ores\n" +
-            "• Pickaxe upgrades\n" +
-            "• Backpack upgrades\n" +
-            "• Mine depth\n\n" +
-            "This cannot be undone."
+            "Are you sure you want to completely reset your Miner save?"
         );
 
-
-    if (!confirmed) {
-
+    if (!confirmReset)
         return;
-
-    }
-
 
     localStorage.removeItem(
         "minerMoney"
@@ -1588,126 +1048,51 @@ function resetSave() {
         "minerBag"
     );
 
-
     location.reload();
 
 }
 
+document
+    .getElementById("sellButton")
+    .addEventListener(
+        "click",
+        sellBackpack
+    );
 
-/* =========================
-   MESSAGE
-========================= */
+document
+    .getElementById("upgradeButton")
+    .addEventListener(
+        "click",
+        upgradePickaxe
+    );
 
-function showMessage(text) {
+document
+    .getElementById("depthButton")
+    .addEventListener(
+        "click",
+        goDeeper
+    );
 
-    message.textContent =
-        text;
+document
+    .getElementById("resetButton")
+    .addEventListener(
+        "click",
+        resetGame
+    );
 
-}
+function swingPickaxe() {
 
+    pickaxeCursor.classList.remove(
+        "swing"
+    );
 
-/* =========================
-   UI
-========================= */
+    void pickaxeCursor.offsetWidth;
 
-function updateUI() {
-
-    moneyDisplay.textContent =
-        money.toLocaleString();
-
-
-    bagCountDisplay.textContent =
-        getBagCount();
-
-
-    bagMaxDisplay.textContent =
-        bagMax;
-
-
-    depthDisplay.textContent =
-        depth;
-
-
-    depthDisplay2.textContent =
-        depth;
-
-
-    pickLevelDisplay.textContent =
-        pickLevel;
-
-
-    powerDisplay.textContent =
-        pickLevel;
-
-
-    const percentage =
-        Math.min(
-            100,
-            (getBagCount() / bagMax) * 100
-        );
-
-
-    bagBar.style.width =
-        percentage + "%";
-
-
-    const pickCost =
-        getPickaxeCost();
-
-
-    upgradeButton.textContent =
-        `Upgrade — $${pickCost.toLocaleString()}`;
-
-
-    const required =
-        getRequiredPickaxe();
-
-
-    depthRequirement.textContent =
-        `Level ${required}`;
-
-
-    const depthCost =
-        getDepthCost();
-
-
-    depthButton.textContent =
-        `Dig Deeper — $${depthCost.toLocaleString()}`;
-
-
-    if (depth <= 3) {
-
-        depthWarning.textContent =
-            "Surface Mine";
-
-    } else if (depth <= 7) {
-
-        depthWarning.textContent =
-            "🪨 Deeper Rock Layers";
-
-    } else if (depth <= 12) {
-
-        depthWarning.textContent =
-            "⚠️ Dangerous Depth";
-
-    } else if (depth <= 19) {
-
-        depthWarning.textContent =
-            "🔥 Deep Underground";
-
-    } else {
-
-        depthWarning.textContent =
-            "💎 THE DEEP";
-
-    }
+    pickaxeCursor.classList.add(
+        "swing"
+    );
 
 }
-
-
-/* =========================
-   CURSOR FOLLOW
-========================= */
 
 let mouseX = 0;
 let mouseY = 0;
@@ -1715,33 +1100,17 @@ let mouseY = 0;
 let pickaxeX = 0;
 let pickaxeY = 0;
 
-
-/*
-    Track mouse position.
-*/
-
 document.addEventListener(
     "mousemove",
-    (event) => {
+    event => {
 
-        mouseX =
-            event.clientX;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
 
-        mouseY =
-            event.clientY;
-
-        pickaxeCursor.style.opacity =
-            "1";
+        pickaxeCursor.style.opacity = "1";
 
     }
 );
-
-
-/*
-    Smoothly follow the cursor
-    using interpolation instead of
-    snapping directly.
-*/
 
 function animatePickaxe() {
 
@@ -1751,18 +1120,11 @@ function animatePickaxe() {
     pickaxeY +=
         (mouseY - pickaxeY) * 0.18;
 
-
-    /*
-        Keep CSS animation rotation
-        intact while moving.
-    */
-
     pickaxeCursor.style.left =
         pickaxeX + "px";
 
     pickaxeCursor.style.top =
         pickaxeY + "px";
-
 
     requestAnimationFrame(
         animatePickaxe
@@ -1770,33 +1132,17 @@ function animatePickaxe() {
 
 }
 
-
 animatePickaxe();
 
-
-/* =========================
-   START
-========================= */
-
 generateMine();
-
 updateUI();
 
-saveGame();
-
-
-/*
-    Autosave.
-*/
-
-setInterval(() => {
-
-    saveGame();
-
-}, 10000);
+setInterval(
+    saveGame,
+    10000
+);
 
 </script>
 
 </body>
 </html>
-```

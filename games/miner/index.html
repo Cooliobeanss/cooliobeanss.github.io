@@ -29,7 +29,7 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 0 35px;
-    background: rgba(8, 11, 18, 0.9);
+    background: rgba(8, 11, 18, 0.92);
     border-bottom: 1px solid #293246;
 }
 
@@ -98,6 +98,13 @@ header {
     font-weight: bold;
 }
 
+.depth-warning {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
 #mine {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -134,14 +141,13 @@ header {
     width: 100%;
     height: 100%;
     display: block;
-
-    /*
-        Keeps your pixel art sharp.
-    */
     image-rendering: pixelated;
-
     object-fit: cover;
     pointer-events: none;
+}
+
+.block.locked {
+    filter: grayscale(1) brightness(.35);
 }
 
 .side {
@@ -200,15 +206,18 @@ button {
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
+    transition: .15s;
 }
 
 button:hover {
     background: #344663;
+    transform: translateY(-1px);
 }
 
 button:disabled {
     opacity: .4;
     cursor: not-allowed;
+    transform: none;
 }
 
 .sell {
@@ -225,6 +234,22 @@ button:disabled {
 
 .upgrade:hover {
     background: #7964ed;
+}
+
+.depth-button {
+    background: #2563eb;
+}
+
+.depth-button:hover {
+    background: #3575ee;
+}
+
+.reset {
+    background: #8f1d2c;
+}
+
+.reset:hover {
+    background: #b42336;
 }
 
 .message {
@@ -245,18 +270,27 @@ button:disabled {
     background: #182235;
     border-radius: 8px;
     padding: 8px;
-    font-size: 13px;
+    font-size: 12px;
     color: #cbd5e1;
-
-    display: flex;
-    align-items: center;
-    gap: 7px;
 }
 
 .ore-item img {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
+    display: block;
+    margin-bottom: 4px;
     image-rendering: pixelated;
+}
+
+.locked-text {
+    color: #64748b;
+}
+
+.danger-text {
+    color: #f87171;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-top: 8px;
 }
 
 @media (max-width: 850px) {
@@ -342,6 +376,11 @@ button:disabled {
                     <span id="depth">1</span>
                 </span>
 
+            </div>
+
+
+            <div class="depth-warning" id="depthWarning">
+                Surface Layer
             </div>
 
 
@@ -445,6 +484,50 @@ button:disabled {
             </div>
 
 
+            <!-- DEPTH -->
+
+            <div class="panel">
+
+                <h2>
+                    Mine Depth
+                </h2>
+
+                <div class="stat">
+
+                    <span>
+                        Current
+                    </span>
+
+                    <strong id="depth2">
+                        1
+                    </strong>
+
+                </div>
+
+                <div class="stat">
+
+                    <span>
+                        Required Pickaxe
+                    </span>
+
+                    <strong id="depthRequirement">
+                        Level 1
+                    </strong>
+
+                </div>
+
+
+                <button
+                    class="depth-button"
+                    id="depthButton"
+                    onclick="goDeeper()"
+                >
+                    Dig Deeper
+                </button>
+
+            </div>
+
+
             <!-- ORES -->
 
             <div class="panel">
@@ -514,6 +597,30 @@ button:disabled {
             </div>
 
 
+            <!-- RESET -->
+
+            <div class="panel">
+
+                <h2>
+                    Game Data
+                </h2>
+
+                <button
+                    class="reset"
+                    onclick="resetSave()"
+                >
+                    RESET SAVE
+                </button>
+
+                <div class="danger-text">
+                    ⚠️ This permanently deletes your money,
+                    ores, pickaxe upgrades, backpack upgrades,
+                    and depth.
+                </div>
+
+            </div>
+
+
         </aside>
 
     </div>
@@ -523,6 +630,10 @@ button:disabled {
 
 <script>
 
+
+/* =========================
+   ELEMENTS
+========================= */
 
 const mine =
     document.getElementById("mine");
@@ -542,6 +653,15 @@ const bagBar =
 const depthDisplay =
     document.getElementById("depth");
 
+const depthDisplay2 =
+    document.getElementById("depth2");
+
+const depthRequirement =
+    document.getElementById("depthRequirement");
+
+const depthWarning =
+    document.getElementById("depthWarning");
+
 const pickLevelDisplay =
     document.getElementById("pickLevel");
 
@@ -551,9 +671,16 @@ const powerDisplay =
 const upgradeButton =
     document.getElementById("upgradeButton");
 
+const depthButton =
+    document.getElementById("depthButton");
+
 const message =
     document.getElementById("message");
 
+
+/* =========================
+   SAVE DATA
+========================= */
 
 let money =
     Number(localStorage.getItem("minerMoney")) || 0;
@@ -570,14 +697,18 @@ let backpack =
     );
 
 
+/*
+    Backpack gets bigger,
+    but not too quickly.
+*/
+
 let bagMax =
     20 + ((pickLevel - 1) * 5);
 
 
-/*
-    All of the textures are loaded from
-    your assets/blocks folder.
-*/
+/* =========================
+   ORES
+========================= */
 
 const ores = {
 
@@ -585,50 +716,56 @@ const ores = {
         name: "Dirt",
         value: 1,
         image: "assets/blocks/dirt.png",
-        chance: 50
+        chance: 45,
+        requiredPick: 1
     },
 
     stone: {
         name: "Stone",
         value: 2,
         image: "assets/blocks/stone.png",
-        chance: 30
+        chance: 30,
+        requiredPick: 1
     },
 
     coal: {
         name: "Coal",
         value: 8,
         image: "assets/blocks/coal.png",
-        chance: 12
+        chance: 15,
+        requiredPick: 1
     },
 
     iron: {
         name: "Iron",
         value: 15,
         image: "assets/blocks/iron.png",
-        chance: 5
+        chance: 7,
+        requiredPick: 2
     },
 
     gold: {
         name: "Gold",
         value: 40,
         image: "assets/blocks/gold.png",
-        chance: 2.5
+        chance: 2.5,
+        requiredPick: 3
     },
 
     diamond: {
         name: "Diamond",
         value: 150,
         image: "assets/blocks/diamond.png",
-        chance: 0.5
+        chance: 0.5,
+        requiredPick: 5
     }
 
 };
 
 
-/*
-    Save everything.
-*/
+/* =========================
+   SAVE
+========================= */
 
 function saveGame() {
 
@@ -655,9 +792,9 @@ function saveGame() {
 }
 
 
-/*
-    Count everything in the backpack.
-*/
+/* =========================
+   BACKPACK
+========================= */
 
 function getBagCount() {
 
@@ -669,25 +806,78 @@ function getBagCount() {
 }
 
 
-/*
-    Choose a random ore.
-*/
+/* =========================
+   ORE GENERATION
+========================= */
 
 function randomOre() {
 
-    let roll =
-        Math.random() * 100;
+    /*
+        Deeper levels make rare ores
+        more likely.
+    */
 
-    let total = 0;
-
+    let available = [];
 
     for (const key in ores) {
 
-        total += ores[key].chance;
+        const ore = ores[key];
 
-        if (roll <= total) {
+        /*
+            Ore becomes more common
+            deeper underground.
+        */
 
-            return key;
+        let chance =
+            ore.chance;
+
+        if (depth >= 5 && key === "iron") {
+            chance *= 1.5;
+        }
+
+        if (depth >= 10 && key === "gold") {
+            chance *= 2;
+        }
+
+        if (depth >= 20 && key === "diamond") {
+            chance *= 3;
+        }
+
+        /*
+            Don't spawn ores the player
+            isn't strong enough to mine.
+        */
+
+        if (ore.requiredPick <= pickLevel) {
+
+            available.push({
+                key: key,
+                chance: chance
+            });
+
+        }
+
+    }
+
+
+    let total =
+        available.reduce(
+            (sum, ore) => sum + ore.chance,
+            0
+        );
+
+
+    let roll =
+        Math.random() * total;
+
+
+    for (const ore of available) {
+
+        roll -= ore.chance;
+
+        if (roll <= 0) {
+
+            return ore.key;
 
         }
 
@@ -699,9 +889,69 @@ function randomOre() {
 }
 
 
-/*
-    Create the mine.
-*/
+/* =========================
+   DEPTH REQUIREMENT
+========================= */
+
+function getRequiredPickaxe() {
+
+    /*
+        Depth 1-3 = Level 1
+        Depth 4-7 = Level 2
+        Depth 8-12 = Level 3
+        Depth 13-19 = Level 4
+        Depth 20+ = Level 5+
+    */
+
+    return Math.max(
+        1,
+        Math.ceil(depth / 4)
+    );
+
+}
+
+
+/* =========================
+   DEPTH COST
+========================= */
+
+function getDepthCost() {
+
+    /*
+        Gets VERY expensive.
+    */
+
+    return Math.floor(
+        75 * Math.pow(1.65, depth - 1)
+    );
+
+}
+
+
+/* =========================
+   PICKAXE COST
+========================= */
+
+function getPickaxeCost() {
+
+    /*
+        $50
+        $150
+        $400
+        $1000
+        $2500...
+    */
+
+    return Math.floor(
+        50 * Math.pow(2.5, pickLevel - 1)
+    );
+
+}
+
+
+/* =========================
+   GENERATE MINE
+========================= */
 
 function generateMine() {
 
@@ -755,11 +1005,15 @@ function generateMine() {
 }
 
 
-/*
-    Mine a block.
-*/
+/* =========================
+   MINE BLOCK
+========================= */
 
 function mineBlock(block) {
+
+    /*
+        Backpack check.
+    */
 
     if (getBagCount() >= bagMax) {
 
@@ -781,16 +1035,13 @@ function mineBlock(block) {
 
 
     /*
-        Gold requires Pickaxe Level 2.
+        Pickaxe requirement.
     */
 
-    if (
-        type === "gold" &&
-        pickLevel < 2
-    ) {
+    if (pickLevel < ore.requiredPick) {
 
         showMessage(
-            "You need Pickaxe Level 2!"
+            `${ore.name} requires Pickaxe Level ${ore.requiredPick}!`
         );
 
         return;
@@ -799,29 +1050,15 @@ function mineBlock(block) {
 
 
     /*
-        Diamond requires Pickaxe Level 3.
+        Add ore.
     */
-
-    if (
-        type === "diamond" &&
-        pickLevel < 3
-    ) {
-
-        showMessage(
-            "You need Pickaxe Level 3!"
-        );
-
-        return;
-
-    }
-
 
     backpack[type] =
         (backpack[type] || 0) + 1;
 
 
     /*
-        Mine animation.
+        Mining animation.
     */
 
     block.style.transform =
@@ -841,7 +1078,8 @@ function mineBlock(block) {
             newType;
 
 
-        block.innerHTML = "";
+        block.innerHTML =
+            "";
 
 
         const newImage =
@@ -856,7 +1094,9 @@ function mineBlock(block) {
             ores[newType].name;
 
 
-        block.appendChild(newImage);
+        block.appendChild(
+            newImage
+        );
 
 
         block.style.transform =
@@ -869,7 +1109,7 @@ function mineBlock(block) {
 
 
     showMessage(
-        `You mined ${ore.name}!`
+        `You mined ${ore.name}! +$${ore.value} potential value`
     );
 
 
@@ -880,9 +1120,9 @@ function mineBlock(block) {
 }
 
 
-/*
-    Sell everything.
-*/
+/* =========================
+   SELL
+========================= */
 
 function sellAll() {
 
@@ -930,20 +1170,20 @@ function sellAll() {
 }
 
 
-/*
-    Upgrade pickaxe.
-*/
+/* =========================
+   PICKAXE UPGRADE
+========================= */
 
 function upgradePickaxe() {
 
     const cost =
-        50 * pickLevel;
+        getPickaxeCost();
 
 
     if (money < cost) {
 
         showMessage(
-            `You need $${cost} to upgrade!`
+            `You need $${cost.toLocaleString()} to upgrade your pickaxe!`
         );
 
         return;
@@ -955,6 +1195,10 @@ function upgradePickaxe() {
 
     pickLevel++;
 
+
+    /*
+        Bigger backpack.
+    */
 
     bagMax =
         20 + ((pickLevel - 1) * 5);
@@ -969,12 +1213,138 @@ function upgradePickaxe() {
 
     saveGame();
 
+
+    /*
+        Regenerate mine so new ores
+        can appear.
+    */
+
+    generateMine();
+
 }
 
 
-/*
-    Display messages.
-*/
+/* =========================
+   DIG DEEPER
+========================= */
+
+function goDeeper() {
+
+    const required =
+        getRequiredPickaxe();
+
+    const cost =
+        getDepthCost();
+
+
+    /*
+        Pickaxe requirement.
+    */
+
+    if (pickLevel < required) {
+
+        showMessage(
+            `You need Pickaxe Level ${required} to go deeper!`
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Money requirement.
+    */
+
+    if (money < cost) {
+
+        showMessage(
+            `You need $${cost.toLocaleString()} to dig deeper!`
+        );
+
+        return;
+
+    }
+
+
+    money -= cost;
+
+    depth++;
+
+
+    showMessage(
+        `You reached Depth ${depth}!`
+    );
+
+
+    generateMine();
+
+    updateUI();
+
+    saveGame();
+
+}
+
+
+/* =========================
+   RESET SAVE
+========================= */
+
+function resetSave() {
+
+    const confirmed =
+        confirm(
+            "⚠️ RESET EVERYTHING?\n\n" +
+            "This will permanently delete:\n" +
+            "• Money\n" +
+            "• Ores\n" +
+            "• Pickaxe upgrades\n" +
+            "• Backpack upgrades\n" +
+            "• Mine depth\n\n" +
+            "This cannot be undone."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    /*
+        Delete Miner save data.
+    */
+
+    localStorage.removeItem(
+        "minerMoney"
+    );
+
+    localStorage.removeItem(
+        "minerDepth"
+    );
+
+    localStorage.removeItem(
+        "minerPick"
+    );
+
+    localStorage.removeItem(
+        "minerBag"
+    );
+
+
+    /*
+        Reload the game.
+    */
+
+    location.reload();
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
 
 function showMessage(text) {
 
@@ -984,9 +1354,9 @@ function showMessage(text) {
 }
 
 
-/*
-    Update the GUI.
-*/
+/* =========================
+   UI
+========================= */
 
 function updateUI() {
 
@@ -1006,6 +1376,10 @@ function updateUI() {
         depth;
 
 
+    depthDisplay2.textContent =
+        depth;
+
+
     pickLevelDisplay.textContent =
         pickLevel;
 
@@ -1013,6 +1387,10 @@ function updateUI() {
     powerDisplay.textContent =
         pickLevel;
 
+
+    /*
+        Backpack percentage.
+    */
 
     const percentage =
         Math.min(
@@ -1025,25 +1403,96 @@ function updateUI() {
         percentage + "%";
 
 
-    const cost =
-        50 * pickLevel;
+    /*
+        Pickaxe upgrade button.
+    */
+
+    const pickCost =
+        getPickaxeCost();
 
 
     upgradeButton.textContent =
-        `Upgrade — $${cost}`;
+        `Upgrade — $${pickCost.toLocaleString()}`;
+
+
+    /*
+        Depth requirement.
+    */
+
+    const required =
+        getRequiredPickaxe();
+
+
+    depthRequirement.textContent =
+        `Level ${required}`;
+
+
+    /*
+        Depth cost.
+    */
+
+    const depthCost =
+        getDepthCost();
+
+
+    depthButton.textContent =
+        `Dig Deeper — $${depthCost.toLocaleString()}`;
+
+
+    /*
+        Depth description.
+    */
+
+    if (depth <= 3) {
+
+        depthWarning.textContent =
+            "Surface Mine";
+
+    } else if (depth <= 7) {
+
+        depthWarning.textContent =
+            "🪨 Deeper Rock Layers";
+
+    } else if (depth <= 12) {
+
+        depthWarning.textContent =
+            "⚠️ Dangerous Depth";
+
+    } else if (depth <= 19) {
+
+        depthWarning.textContent =
+            "🔥 Deep Underground";
+
+    } else {
+
+        depthWarning.textContent =
+            "💎 THE DEEP";
+
+    }
 
 }
 
 
-/*
-    Start the game.
-*/
+/* =========================
+   START
+========================= */
 
 generateMine();
 
 updateUI();
 
 saveGame();
+
+
+/*
+    Autosave every 10 seconds.
+*/
+
+setInterval(() => {
+
+    saveGame();
+
+}, 10000);
 
 </script>
 

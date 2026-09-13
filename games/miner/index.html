@@ -21,7 +21,12 @@ body {
         radial-gradient(circle at top, #26354d 0%, #111827 45%, #080b12 100%);
     color: white;
     min-height: 100vh;
+    overflow-x: hidden;
 }
+
+/* =========================
+   HEADER
+========================= */
 
 header {
     height: 75px;
@@ -47,6 +52,10 @@ header {
 .back:hover {
     color: white;
 }
+
+/* =========================
+   GAME
+========================= */
 
 .game {
     width: min(1200px, 94%);
@@ -75,6 +84,10 @@ header {
     font-size: 20px;
     font-weight: bold;
 }
+
+/* =========================
+   LAYOUT
+========================= */
 
 .layout {
     display: grid;
@@ -105,6 +118,10 @@ header {
     margin-bottom: 12px;
 }
 
+/* =========================
+   MINE
+========================= */
+
 #mine {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -121,10 +138,13 @@ header {
     overflow: hidden;
     cursor: pointer;
     background: #222;
+
     transition:
         transform .08s,
         filter .1s,
-        opacity .1s;
+        opacity .12s;
+
+    transform-origin: center;
 }
 
 .block:hover {
@@ -134,7 +154,7 @@ header {
 }
 
 .block:active {
-    transform: scale(.9);
+    transform: scale(.92);
 }
 
 .block img {
@@ -146,9 +166,200 @@ header {
     pointer-events: none;
 }
 
-.block.locked {
-    filter: grayscale(1) brightness(.35);
+/* Block breaking animation */
+
+.block.breaking {
+    animation: blockBreak .16s ease forwards;
 }
+
+@keyframes blockBreak {
+
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    45% {
+        transform: scale(1.08) rotate(2deg);
+        opacity: .8;
+    }
+
+    100% {
+        transform: scale(.05) rotate(-8deg);
+        opacity: 0;
+    }
+
+}
+
+/* =========================
+   PICKAXE CURSOR
+========================= */
+
+#pickaxeCursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 70px;
+    height: 70px;
+
+    pointer-events: none;
+    z-index: 9999;
+
+    opacity: 0;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-35deg);
+
+    transform-origin: 50% 65%;
+
+    transition:
+        opacity .15s ease;
+}
+
+/*
+    Pickaxe handle
+*/
+
+.pickaxe-handle {
+    position: absolute;
+
+    width: 9px;
+    height: 58px;
+
+    left: 32px;
+    top: 14px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6b4226,
+            #a86f3d,
+            #6b4226
+        );
+
+    border-radius: 6px;
+
+    transform: rotate(-10deg);
+}
+
+/*
+    Pickaxe head
+*/
+
+.pickaxe-head {
+    position: absolute;
+
+    width: 58px;
+    height: 13px;
+
+    left: 6px;
+    top: 10px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #e5e7eb,
+            #94a3b8,
+            #64748b
+        );
+
+    border-radius: 12px 12px 7px 7px;
+
+    transform: rotate(-12deg);
+
+    box-shadow:
+        0 2px 4px rgba(0,0,0,.5);
+}
+
+/*
+    Pointy ends
+*/
+
+.pickaxe-head::before {
+    content: "";
+
+    position: absolute;
+
+    width: 20px;
+    height: 13px;
+
+    left: -13px;
+    top: 0;
+
+    background: #94a3b8;
+
+    clip-path: polygon(
+        100% 0,
+        100% 100%,
+        0 50%
+    );
+}
+
+.pickaxe-head::after {
+    content: "";
+
+    position: absolute;
+
+    width: 20px;
+    height: 13px;
+
+    right: -13px;
+    top: 0;
+
+    background: #94a3b8;
+
+    clip-path: polygon(
+        0 0,
+        100% 50%,
+        0 100%
+    );
+}
+
+/*
+    Swing animation
+*/
+
+#pickaxeCursor.swing {
+    animation: pickaxeSwing .30s cubic-bezier(.22,.8,.35,1);
+}
+
+@keyframes pickaxeSwing {
+
+    0% {
+        transform:
+            translate(-50%, -50%)
+            rotate(-70deg)
+            scale(1);
+    }
+
+    35% {
+        transform:
+            translate(-50%, -50%)
+            rotate(18deg)
+            scale(1.05);
+    }
+
+    65% {
+        transform:
+            translate(-50%, -50%)
+            rotate(-48deg)
+            scale(.98);
+    }
+
+    100% {
+        transform:
+            translate(-50%, -50%)
+            rotate(-35deg)
+            scale(1);
+    }
+
+}
+
+/* =========================
+   SIDE
+========================= */
 
 .side {
     display: flex;
@@ -179,6 +390,10 @@ header {
     color: white;
 }
 
+/* =========================
+   BACKPACK BAR
+========================= */
+
 .bar {
     width: 100%;
     height: 13px;
@@ -195,17 +410,25 @@ header {
     transition: width .2s;
 }
 
+/* =========================
+   BUTTONS
+========================= */
+
 button {
     width: 100%;
     border: 0;
     border-radius: 10px;
     padding: 12px;
     margin-top: 9px;
+
     background: #26344b;
+
     color: white;
     font-size: 15px;
     font-weight: bold;
+
     cursor: pointer;
+
     transition: .15s;
 }
 
@@ -252,6 +475,10 @@ button:disabled {
     background: #b42336;
 }
 
+/* =========================
+   MESSAGE
+========================= */
+
 .message {
     min-height: 24px;
     margin-top: 15px;
@@ -259,6 +486,10 @@ button:disabled {
     color: #aebbd0;
     font-weight: bold;
 }
+
+/* =========================
+   ORES
+========================= */
 
 .ores {
     display: grid;
@@ -270,15 +501,26 @@ button:disabled {
     background: #182235;
     border-radius: 8px;
     padding: 8px;
+
     font-size: 12px;
     color: #cbd5e1;
+
+    transition: .15s;
+}
+
+.ore-item:hover {
+    background: #22304a;
+    transform: translateY(-1px);
 }
 
 .ore-item img {
     width: 28px;
     height: 28px;
+
     display: block;
+
     margin-bottom: 4px;
+
     image-rendering: pixelated;
 }
 
@@ -292,6 +534,10 @@ button:disabled {
     line-height: 1.4;
     margin-top: 8px;
 }
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 850px) {
 
@@ -323,6 +569,10 @@ button:disabled {
         grid-template-columns: repeat(8, 1fr);
     }
 
+    #pickaxeCursor {
+        display: none;
+    }
+
 }
 
 </style>
@@ -341,6 +591,17 @@ button:disabled {
     </a>
 
 </header>
+
+
+<!-- CURSOR PICKAXE -->
+
+<div id="pickaxeCursor">
+
+    <div class="pickaxe-head"></div>
+
+    <div class="pickaxe-handle"></div>
+
+</div>
 
 
 <main class="game">
@@ -540,56 +801,50 @@ button:disabled {
                 <div class="ores">
 
                     <div class="ore-item">
-
                         <img src="assets/blocks/dirt.png">
-
                         Dirt — $1
-
                     </div>
 
 
                     <div class="ore-item">
-
                         <img src="assets/blocks/stone.png">
-
                         Stone — $2
-
                     </div>
 
 
                     <div class="ore-item">
-
                         <img src="assets/blocks/coal.png">
-
                         Coal — $8
-
                     </div>
 
 
                     <div class="ore-item">
-
                         <img src="assets/blocks/iron.png">
-
                         Iron — $15
-
                     </div>
 
 
                     <div class="ore-item">
-
                         <img src="assets/blocks/gold.png">
-
                         Gold — $40
-
                     </div>
 
 
                     <div class="ore-item">
+                        <img src="assets/blocks/ruby.png">
+                        Ruby — $100
+                    </div>
 
+
+                    <div class="ore-item">
+                        <img src="assets/blocks/emerald.png">
+                        Emerald — $125
+                    </div>
+
+
+                    <div class="ore-item">
                         <img src="assets/blocks/diamond.png">
-
                         Diamond — $150
-
                     </div>
 
                 </div>
@@ -629,7 +884,6 @@ button:disabled {
 
 
 <script>
-
 
 /* =========================
    ELEMENTS
@@ -677,6 +931,9 @@ const depthButton =
 const message =
     document.getElementById("message");
 
+const pickaxeCursor =
+    document.getElementById("pickaxeCursor");
+
 
 /* =========================
    SAVE DATA
@@ -696,11 +953,6 @@ let backpack =
         localStorage.getItem("minerBag") || "{}"
     );
 
-
-/*
-    Backpack gets bigger,
-    but not too quickly.
-*/
 
 let bagMax =
     20 + ((pickLevel - 1) * 5);
@@ -724,7 +976,7 @@ const ores = {
         name: "Stone",
         value: 2,
         image: "assets/blocks/stone.png",
-        chance: 30,
+        chance: 28,
         requiredPick: 1
     },
 
@@ -732,7 +984,7 @@ const ores = {
         name: "Coal",
         value: 8,
         image: "assets/blocks/coal.png",
-        chance: 15,
+        chance: 14,
         requiredPick: 1
     },
 
@@ -748,15 +1000,31 @@ const ores = {
         name: "Gold",
         value: 40,
         image: "assets/blocks/gold.png",
-        chance: 2.5,
+        chance: 3,
         requiredPick: 3
+    },
+
+    ruby: {
+        name: "Ruby",
+        value: 100,
+        image: "assets/blocks/ruby.png",
+        chance: 1.5,
+        requiredPick: 4
+    },
+
+    emerald: {
+        name: "Emerald",
+        value: 125,
+        image: "assets/blocks/emerald.png",
+        chance: 0.8,
+        requiredPick: 4
     },
 
     diamond: {
         name: "Diamond",
         value: 150,
         image: "assets/blocks/diamond.png",
-        chance: 0.5,
+        chance: 0.7,
         requiredPick: 5
     }
 
@@ -812,24 +1080,20 @@ function getBagCount() {
 
 function randomOre() {
 
-    /*
-        Deeper levels make rare ores
-        more likely.
-    */
-
     let available = [];
 
     for (const key in ores) {
 
         const ore = ores[key];
 
-        /*
-            Ore becomes more common
-            deeper underground.
-        */
-
         let chance =
             ore.chance;
+
+
+        /*
+            Deeper mines increase
+            rare ore chances.
+        */
 
         if (depth >= 5 && key === "iron") {
             chance *= 1.5;
@@ -839,13 +1103,22 @@ function randomOre() {
             chance *= 2;
         }
 
+        if (depth >= 15 && key === "ruby") {
+            chance *= 2;
+        }
+
+        if (depth >= 15 && key === "emerald") {
+            chance *= 2;
+        }
+
         if (depth >= 20 && key === "diamond") {
             chance *= 3;
         }
 
+
         /*
-            Don't spawn ores the player
-            isn't strong enough to mine.
+            Only show ores that
+            can actually be mined.
         */
 
         if (ore.requiredPick <= pickLevel) {
@@ -860,9 +1133,10 @@ function randomOre() {
     }
 
 
-    let total =
+    const total =
         available.reduce(
-            (sum, ore) => sum + ore.chance,
+            (sum, ore) =>
+                sum + ore.chance,
             0
         );
 
@@ -895,14 +1169,6 @@ function randomOre() {
 
 function getRequiredPickaxe() {
 
-    /*
-        Depth 1-3 = Level 1
-        Depth 4-7 = Level 2
-        Depth 8-12 = Level 3
-        Depth 13-19 = Level 4
-        Depth 20+ = Level 5+
-    */
-
     return Math.max(
         1,
         Math.ceil(depth / 4)
@@ -917,10 +1183,6 @@ function getRequiredPickaxe() {
 
 function getDepthCost() {
 
-    /*
-        Gets VERY expensive.
-    */
-
     return Math.floor(
         75 * Math.pow(1.65, depth - 1)
     );
@@ -933,14 +1195,6 @@ function getDepthCost() {
 ========================= */
 
 function getPickaxeCost() {
-
-    /*
-        $50
-        $150
-        $400
-        $1000
-        $2500...
-    */
 
     return Math.floor(
         50 * Math.pow(2.5, pickLevel - 1)
@@ -1006,14 +1260,34 @@ function generateMine() {
 
 
 /* =========================
+   PICKAXE ANIMATION
+========================= */
+
+function swingPickaxe() {
+
+    /*
+        Remove the animation first so
+        rapid clicks can trigger it again.
+    */
+
+    pickaxeCursor.classList.remove("swing");
+
+    /*
+        Force browser to restart animation.
+    */
+
+    void pickaxeCursor.offsetWidth;
+
+    pickaxeCursor.classList.add("swing");
+
+}
+
+
+/* =========================
    MINE BLOCK
 ========================= */
 
 function mineBlock(block) {
-
-    /*
-        Backpack check.
-    */
 
     if (getBagCount() >= bagMax) {
 
@@ -1034,19 +1308,24 @@ function mineBlock(block) {
         ores[type];
 
 
-    /*
-        Pickaxe requirement.
-    */
-
     if (pickLevel < ore.requiredPick) {
 
         showMessage(
             `${ore.name} requires Pickaxe Level ${ore.requiredPick}!`
         );
 
+        swingPickaxe();
+
         return;
 
     }
+
+
+    /*
+        Swing the cursor pickaxe.
+    */
+
+    swingPickaxe();
 
 
     /*
@@ -1058,14 +1337,10 @@ function mineBlock(block) {
 
 
     /*
-        Mining animation.
+        Break animation.
     */
 
-    block.style.transform =
-        "scale(0)";
-
-    block.style.opacity =
-        "0";
+    block.classList.add("breaking");
 
 
     setTimeout(() => {
@@ -1099,13 +1374,12 @@ function mineBlock(block) {
         );
 
 
-        block.style.transform =
-            "";
+        block.classList.remove(
+            "breaking"
+        );
 
-        block.style.opacity =
-            "";
 
-    }, 100);
+    }, 160);
 
 
     showMessage(
@@ -1146,9 +1420,13 @@ function sellAll() {
 
     for (const type in backpack) {
 
-        total +=
-            backpack[type] *
-            ores[type].value;
+        if (ores[type]) {
+
+            total +=
+                backpack[type] *
+                ores[type].value;
+
+        }
 
     }
 
@@ -1196,10 +1474,6 @@ function upgradePickaxe() {
     pickLevel++;
 
 
-    /*
-        Bigger backpack.
-    */
-
     bagMax =
         20 + ((pickLevel - 1) * 5);
 
@@ -1212,12 +1486,6 @@ function upgradePickaxe() {
     updateUI();
 
     saveGame();
-
-
-    /*
-        Regenerate mine so new ores
-        can appear.
-    */
 
     generateMine();
 
@@ -1237,10 +1505,6 @@ function goDeeper() {
         getDepthCost();
 
 
-    /*
-        Pickaxe requirement.
-    */
-
     if (pickLevel < required) {
 
         showMessage(
@@ -1251,10 +1515,6 @@ function goDeeper() {
 
     }
 
-
-    /*
-        Money requirement.
-    */
 
     if (money < cost) {
 
@@ -1312,10 +1572,6 @@ function resetSave() {
     }
 
 
-    /*
-        Delete Miner save data.
-    */
-
     localStorage.removeItem(
         "minerMoney"
     );
@@ -1332,10 +1588,6 @@ function resetSave() {
         "minerBag"
     );
 
-
-    /*
-        Reload the game.
-    */
 
     location.reload();
 
@@ -1388,10 +1640,6 @@ function updateUI() {
         pickLevel;
 
 
-    /*
-        Backpack percentage.
-    */
-
     const percentage =
         Math.min(
             100,
@@ -1403,10 +1651,6 @@ function updateUI() {
         percentage + "%";
 
 
-    /*
-        Pickaxe upgrade button.
-    */
-
     const pickCost =
         getPickaxeCost();
 
@@ -1414,10 +1658,6 @@ function updateUI() {
     upgradeButton.textContent =
         `Upgrade — $${pickCost.toLocaleString()}`;
 
-
-    /*
-        Depth requirement.
-    */
 
     const required =
         getRequiredPickaxe();
@@ -1427,10 +1667,6 @@ function updateUI() {
         `Level ${required}`;
 
 
-    /*
-        Depth cost.
-    */
-
     const depthCost =
         getDepthCost();
 
@@ -1438,10 +1674,6 @@ function updateUI() {
     depthButton.textContent =
         `Dig Deeper — $${depthCost.toLocaleString()}`;
 
-
-    /*
-        Depth description.
-    */
 
     if (depth <= 3) {
 
@@ -1474,6 +1706,75 @@ function updateUI() {
 
 
 /* =========================
+   CURSOR FOLLOW
+========================= */
+
+let mouseX = 0;
+let mouseY = 0;
+
+let pickaxeX = 0;
+let pickaxeY = 0;
+
+
+/*
+    Track mouse position.
+*/
+
+document.addEventListener(
+    "mousemove",
+    (event) => {
+
+        mouseX =
+            event.clientX;
+
+        mouseY =
+            event.clientY;
+
+        pickaxeCursor.style.opacity =
+            "1";
+
+    }
+);
+
+
+/*
+    Smoothly follow the cursor
+    using interpolation instead of
+    snapping directly.
+*/
+
+function animatePickaxe() {
+
+    pickaxeX +=
+        (mouseX - pickaxeX) * 0.18;
+
+    pickaxeY +=
+        (mouseY - pickaxeY) * 0.18;
+
+
+    /*
+        Keep CSS animation rotation
+        intact while moving.
+    */
+
+    pickaxeCursor.style.left =
+        pickaxeX + "px";
+
+    pickaxeCursor.style.top =
+        pickaxeY + "px";
+
+
+    requestAnimationFrame(
+        animatePickaxe
+    );
+
+}
+
+
+animatePickaxe();
+
+
+/* =========================
    START
 ========================= */
 
@@ -1485,7 +1786,7 @@ saveGame();
 
 
 /*
-    Autosave every 10 seconds.
+    Autosave.
 */
 
 setInterval(() => {

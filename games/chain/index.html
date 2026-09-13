@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,187 +12,260 @@
     padding: 0;
 }
 
-body {
-    background: #08080d;
-    color: white;
-    font-family: Arial, sans-serif;
+html, body {
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #070812;
+    color: white;
 }
 
-#game {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background:
-        radial-gradient(circle at 50% 20%, #272040 0%, #0d0d15 45%, #050508 100%);
+body {
+    user-select: none;
 }
 
 canvas {
-    display: block;
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
-}
-
-.screen {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
-
-.panel {
-    width: min(92vw, 440px);
-    padding: 32px;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 24px;
-    background: rgba(15,15,25,.94);
-    box-shadow: 0 20px 70px rgba(0,0,0,.55);
-    text-align: center;
-}
-
-.logo {
-    font-size: 42px;
-    font-weight: 900;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    color: #aaa;
-    margin-bottom: 28px;
-}
-
-input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    border: 1px solid #333;
-    background: #101018;
-    color: white;
-    font-size: 17px;
-    outline: none;
-}
-
-input:focus {
-    border-color: #9b6cff;
-}
-
-button {
-    width: 100%;
-    padding: 15px;
-    margin-top: 10px;
-    border: 0;
-    border-radius: 12px;
-    background: #8b5cf6;
-    color: white;
-    font-size: 17px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-button:hover {
-    filter: brightness(1.15);
-}
-
-.secondary {
-    background: #20202c;
+    display: block;
 }
 
 .hidden {
     display: none !important;
 }
 
-.code {
-    font-size: 48px;
-    letter-spacing: 10px;
+/* =========================
+   MENU
+========================= */
+
+#menu {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(125, 70, 255, .25), transparent 40%),
+        linear-gradient(135deg, #080912, #11132a);
+}
+
+.menu-box {
+    width: min(480px, 92vw);
+    padding: 38px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 24px;
+    background: rgba(15,17,35,.82);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 30px 100px rgba(0,0,0,.55);
+    text-align: center;
+}
+
+.logo {
+    font-size: 46px;
     font-weight: 900;
-    margin: 18px 0;
+    letter-spacing: -2px;
+    background: linear-gradient(90deg,#ff4d6d,#8b5cf6,#3b82f6);
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #a7a9bb;
+    margin-bottom: 30px;
+}
+
+.menu-buttons {
+    display: grid;
+    gap: 12px;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.menu-btn {
+    padding: 16px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+    transition: .2s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
+}
+
+.menu-btn.secondary {
+    background: rgba(255,255,255,.08);
+}
+
+input {
+    width: 100%;
+    padding: 15px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    outline: none;
+    background: rgba(0,0,0,.3);
+    color: white;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+input:focus {
+    border-color: #8b5cf6;
+}
+
+.back-btn {
+    margin-top: 14px;
+    color: #aaa;
+    background: none;
+}
+
+/* =========================
+   LOBBY
+========================= */
+
+#lobby {
+    position: fixed;
+    inset: 0;
+    z-index: 19;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 50% 10%, rgba(139,92,246,.2), transparent 40%),
+        #080912;
+}
+
+.room-code {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    margin: 15px 0;
+    color: #fff;
 }
 
 .status {
+    margin: 15px 0 25px;
     color: #aaa;
-    margin: 10px 0 20px;
 }
 
-.players {
+.player-list {
+    display: grid;
+    gap: 8px;
     margin: 20px 0;
-    text-align: left;
 }
 
-.player {
+.player-entry {
     padding: 12px;
-    margin: 7px 0;
-    background: #191923;
     border-radius: 10px;
+    background: rgba(255,255,255,.06);
 }
 
-#hud {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    z-index: 5;
-    display: flex;
-    justify-content: space-between;
+.start-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+    color: white;
+    font-weight: 900;
+}
+
+.start-btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* =========================
+   GAME UI
+========================= */
+
+#gameUI {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
     pointer-events: none;
 }
 
-.hudBox {
-    background: rgba(10,10,16,.75);
-    border: 1px solid rgba(255,255,255,.1);
-    padding: 10px 15px;
-    border-radius: 12px;
-}
-
-#mobileControls {
+.topbar {
     position: absolute;
-    bottom: 70px;
-    left: 0;
-    right: 0;
-    display: none;
-    justify-content: space-between;
-    padding: 0 25px;
-    z-index: 6;
-}
-
-.controlGroup {
+    top: 18px;
+    left: 18px;
+    right: 18px;
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.control {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.2);
-    background: rgba(20,20,30,.8);
-    color: white;
+.ui-panel {
+    padding: 11px 15px;
+    border-radius: 12px;
+    background: rgba(10,12,25,.7);
+    border: 1px solid rgba(255,255,255,.1);
+    backdrop-filter: blur(10px);
+}
+
+.controls {
+    color: #bbb;
+    font-size: 13px;
+}
+
+.room-small {
+    font-weight: 800;
+}
+
+#message {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translateX(-50%);
+    padding: 20px 28px;
+    border-radius: 16px;
+    background: rgba(10,12,25,.9);
     font-size: 25px;
-    touch-action: none;
+    font-weight: 900;
+    text-align: center;
+    opacity: 0;
+    transition: .25s;
 }
 
-@media (max-width: 700px) {
+#message.show {
+    opacity: 1;
+}
 
-    #mobileControls {
-        display: flex;
-        bottom: 85px;
-        padding: 0 25px;
-    }
+/* =========================
+   FINISH
+========================= */
 
-    .control {
-        width: 75px;
-        height: 75px;
-        font-size: 28px;
-    }
+.finish-text {
+    color: #86efac;
+}
 
-    .panel {
-        padding: 24px;
+/* =========================
+   MOBILE DISABLED
+========================= */
+
+@media(max-width:700px) {
+    .menu-box {
+        padding: 25px;
     }
 
     .logo {
-        font-size: 34px;
+        font-size: 36px;
+    }
+
+    .controls {
+        display: none;
     }
 }
 </style>
@@ -201,797 +273,2783 @@ button:hover {
 
 <body>
 
-<div id="game">
+<canvas id="gameCanvas"></canvas>
 
-<canvas id="canvas"></canvas>
+<!-- =========================
+     MENU
+========================= -->
 
-<div id="hud" class="hidden">
-    <div class="hudBox" id="roomHud">ROOM: ----</div>
-    <div class="hudBox" id="playerHud">🔗 1 / 2</div>
-</div>
+<div id="menu">
 
-<div id="mobileControls" class="hidden">
-    <div class="controlGroup">
-        <button class="control" id="leftBtn">◀</button>
-        <button class="control" id="rightBtn">▶</button>
-    </div>
+    <div class="menu-box" id="mainMenu">
 
-    <button class="control" id="jumpBtn">⬆</button>
-</div>
+        <div class="logo">COOLIO CLIMB</div>
 
-<!-- MAIN MENU -->
-<div class="screen" id="mainMenu">
-    <div class="panel">
-        <div class="logo">🔗 Coolio Climb</div>
-        <div class="subtitle">Two players. One chain. Don't fall.</div>
-
-        <button id="hostBtn">HOST GAME</button>
-        <button id="joinBtn" class="secondary">JOIN GAME</button>
-    </div>
-</div>
-
-<!-- NAME MENU -->
-<div class="screen hidden" id="nameMenu">
-    <div class="panel">
-        <div class="logo">What's your name?</div>
-        <div class="subtitle">Your friend will see this name.</div>
-
-        <input id="nameInput" maxlength="16" placeholder="Enter your name">
-
-        <button id="continueHost" class="hidden">CREATE ROOM</button>
-        <button id="continueJoin" class="hidden">CONTINUE</button>
-
-        <button id="backName" class="secondary">BACK</button>
-    </div>
-</div>
-
-<!-- JOIN MENU -->
-<div class="screen hidden" id="joinMenu">
-    <div class="panel">
-        <div class="logo">Join Room</div>
-
-        <input id="codeInput"
-               maxlength="4"
-               placeholder="4-character code"
-               style="text-transform:uppercase;text-align:center;letter-spacing:5px;">
-
-        <button id="connectJoin">JOIN ROOM</button>
-        <button id="backJoin" class="secondary">BACK</button>
-    </div>
-</div>
-
-<!-- LOBBY -->
-<div class="screen hidden" id="lobby">
-    <div class="panel">
-        <div class="logo">🔗 Your Room</div>
-
-        <div class="code" id="roomCode">----</div>
-
-        <div class="status" id="lobbyStatus">
-            Waiting for your friend...
+        <div class="subtitle">
+            Two players. One chain. Absolutely terrible decisions.
         </div>
 
-        <div class="players" id="playersList"></div>
+        <div class="menu-buttons">
 
-        <button id="practiceBtn">🧗 PRACTICE PARKOUR</button>
+            <button class="menu-btn" id="hostBtn">
+                HOST GAME
+            </button>
 
-        <button id="startBtn" class="hidden">
+            <button class="menu-btn secondary" id="joinBtn">
+                JOIN GAME
+            </button>
+
+            <button class="menu-btn secondary" id="practiceBtn">
+                PRACTICE PARKOUR
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- HOST NAME -->
+
+    <div class="menu-box hidden" id="hostNameMenu">
+
+        <div class="logo">HOST GAME</div>
+
+        <p class="subtitle">
+            What's your name?
+        </p>
+
+        <input
+            id="hostName"
+            maxlength="16"
+            placeholder="Your name"
+        >
+
+        <button class="menu-btn" id="createRoomBtn">
+            CREATE ROOM
+        </button>
+
+        <button class="back-btn" id="hostBack">
+            ← Back
+        </button>
+
+    </div>
+
+    <!-- JOIN -->
+
+    <div class="menu-box hidden" id="joinMenu">
+
+        <div class="logo">JOIN GAME</div>
+
+        <input
+            id="joinName"
+            maxlength="16"
+            placeholder="Your name"
+        >
+
+        <input
+            id="roomInput"
+            maxlength="4"
+            placeholder="4-letter room code"
+            style="text-transform:uppercase"
+        >
+
+        <button class="menu-btn" id="joinRoomBtn">
+            JOIN ROOM
+        </button>
+
+        <button class="back-btn" id="joinBack">
+            ← Back
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     LOBBY
+========================= -->
+
+<div id="lobby" class="hidden">
+
+    <div class="menu-box">
+
+        <div class="logo">ROOM READY</div>
+
+        <div class="subtitle">
+            Give this code to your friend
+        </div>
+
+        <div class="room-code" id="roomCode">
+            ----
+        </div>
+
+        <div class="status" id="lobbyStatus">
+            Waiting for player...
+        </div>
+
+        <div class="player-list" id="playerList"></div>
+
+        <button
+            class="start-btn"
+            id="startBtn"
+            disabled
+        >
             START CLIMB
         </button>
 
-        <button id="leaveBtn" class="secondary">
-            LEAVE ROOM
+        <button class="back-btn" id="leaveBtn">
+            Leave room
         </button>
+
     </div>
+
 </div>
+
+<!-- =========================
+     GAME UI
+========================= -->
+
+<div id="gameUI" class="hidden">
+
+    <div class="topbar">
+
+        <div class="ui-panel room-small">
+            ROOM: <span id="roomDisplay">----</span>
+        </div>
+
+        <div class="ui-panel controls">
+            A / D or ← / → Move &nbsp; • &nbsp;
+            SHIFT Run &nbsp; • &nbsp;
+            SPACE Jump
+        </div>
+
+    </div>
+
+    <div id="message"></div>
 
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
+
+/* =========================================================
+   COOLIO CLIMB
+   COMPLETE REWRITE
+========================================================= */
+
+/* =========================
+   CANVAS
+========================= */
+
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let W = window.innerWidth;
-let H = window.innerHeight;
+let W = innerWidth;
+let H = innerHeight;
 
-canvas.width = W;
-canvas.height = H;
+function resize() {
+    W = innerWidth;
+    H = innerHeight;
 
-window.addEventListener("resize", () => {
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W;
-    canvas.height = H;
-});
+    canvas.width = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
 
-const SERVER = "wss://cooliobeans-multiplayer.onrender.com";
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+}
+
+resize();
+
+window.addEventListener("resize", resize);
+
+
+/* =========================
+   SERVER
+========================= */
+
+const SERVER =
+    "wss://cooliobeans-multiplayer.onrender.com";
 
 let socket = null;
+
 let myId = null;
-let myName = "";
+let roomCode = null;
 let myColor = "red";
-let roomCode = "";
+let myName = "Player";
+
 let isHost = false;
-let inGame = false;
-let practicing = false;
+
+
+/* =========================
+   PLAYER STATE
+========================= */
 
 const players = new Map();
 
-const keys = {
-    left: false,
-    right: false,
-    jump: false
-};
+function createPlayer(id, name, color) {
 
-let cameraX = 0;
-let cameraY = 0;
+    return {
 
-const gravity = 0.65;
-const moveSpeed = 4.2;
-const jumpPower = 12;
+        id,
+        name,
+        color,
 
-const level = [
-    {x: -500, y: 500, w: 900, h: 50},
-    {x: 500, y: 430, w: 260, h: 35},
-    {x: 850, y: 350, w: 260, h: 35},
-    {x: 1200, y: 280, w: 240, h: 35},
-    {x: 1500, y: 200, w: 280, h: 35},
-    {x: 1900, y: 320, w: 250, h: 35},
-    {x: 2250, y: 220, w: 260, h: 35},
-    {x: 2600, y: 130, w: 350, h: 35},
-    {x: 3050, y: 40, w: 400, h: 35}
-];
+        x: 250,
+        y: 500,
 
-function show(id) {
-    document.querySelectorAll(".screen").forEach(x => {
-        x.classList.add("hidden");
-    });
-
-    document.getElementById(id).classList.remove("hidden");
-}
-
-function send(data) {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(data));
-    }
-}
-
-function connect() {
-
-    socket = new WebSocket(SERVER);
-
-    socket.onopen = () => {
-        if (isHost) {
-            send({
-                type: "host",
-                name: myName
-            });
-        } else {
-            send({
-                type: "join",
-                room: roomCode,
-                name: myName
-            });
-        }
-    };
-
-    socket.onmessage = event => {
-
-        const data = JSON.parse(event.data);
-
-        if (data.type === "roomCreated") {
-
-            myId = data.id;
-            roomCode = data.room;
-            myColor = data.color;
-
-            createLocalPlayer();
-
-            document.getElementById("roomCode").textContent = roomCode;
-            document.getElementById("roomHud").textContent = "ROOM: " + roomCode;
-
-            updateLobby();
-
-            show("lobby");
-        }
-
-        if (data.type === "joined") {
-
-            myId = data.id;
-            myColor = data.color;
-
-            createLocalPlayer();
-
-            document.getElementById("roomCode").textContent = roomCode;
-            document.getElementById("roomHud").textContent = "ROOM: " + roomCode;
-
-            updateLobby();
-
-            show("lobby");
-        }
-
-        if (data.type === "playerJoined") {
-
-            players.set(data.id, {
-                id: data.id,
-                name: data.name || "Player",
-                color: data.color,
-                x: data.x || 0,
-                y: data.y || 0,
-                vx: 0,
-                vy: 0,
-                grounded: false
-            });
-
-            updateLobby();
-
-            if (players.size >= 2) {
-                document.getElementById("startBtn").classList.remove("hidden");
-                document.getElementById("lobbyStatus").textContent =
-                    "Your partner is ready!";
-            }
-        }
-
-        if (data.type === "playerMoved") {
-
-            const p = players.get(data.id);
-
-            if (p) {
-                p.x = data.x;
-                p.y = data.y;
-                p.vx = data.vx || 0;
-                p.vy = data.vy || 0;
-            }
-        }
-
-        if (data.type === "playerLeft") {
-
-            players.delete(data.id);
-
-            updateLobby();
-
-            document.getElementById("startBtn").classList.add("hidden");
-
-            document.getElementById("lobbyStatus").textContent =
-                "Your friend left the room.";
-        }
-
-        if (data.type === "error") {
-            alert(data.message);
-        }
-    };
-
-    socket.onclose = () => {
-        if (inGame) {
-            alert("Connection lost.");
-            location.reload();
-        }
-    };
-}
-
-function createLocalPlayer() {
-
-    players.set(myId, {
-        id: myId,
-        name: myName,
-        color: myColor,
-        x: 0,
-        y: 400,
         vx: 0,
         vy: 0,
-        grounded: false
-    });
+
+        width: 34,
+        height: 54,
+
+        grounded: false,
+
+        jumping: false,
+
+        facing: 1,
+
+        running: false,
+
+        dead: false,
+
+        /* remote interpolation */
+
+        targetX: 250,
+        targetY: 500,
+        targetVX: 0,
+        targetVY: 0,
+
+        spawnX: 250,
+        spawnY: 500,
+
+        lastGroundY: 500
+
+    };
+
 }
 
-function updateLobby() {
 
-    const list = document.getElementById("playersList");
+/* =========================
+   WORLD
+========================= */
 
-    list.innerHTML = "";
+const world = {
 
-    players.forEach(p => {
+    gravity: 1800,
 
-        const div = document.createElement("div");
+    groundY: 650,
 
-        div.className = "player";
+    width: 12000
 
-        div.innerHTML =
-            (p.color === "red" ? "🔴 " : "🔵 ") +
-            "<strong>" +
-            escapeHTML(p.name) +
-            "</strong>";
+};
 
-        list.appendChild(div);
-    });
 
-    document.getElementById("playerHud").textContent =
-        "🔗 " + players.size + " / 2";
-}
+/* =========================
+   PLATFORMS
+========================= */
 
-function escapeHTML(str) {
-    return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-}
+const platforms = [
 
-function startGame() {
+    {x:0, y:650, w:850, h:80},
 
-    inGame = true;
+    {x:1000, y:620, w:500, h:80},
 
-    document.querySelectorAll(".screen").forEach(x => {
-        x.classList.add("hidden");
-    });
+    {x:1600, y:560, w:400, h:80},
 
-    document.getElementById("hud").classList.remove("hidden");
-    document.getElementById("mobileControls").classList.remove("hidden");
+    {x:2100, y:680, w:700, h:80},
 
-    players.forEach((p, i) => {
+    {x:2950, y:600, w:350, h:80},
 
-        p.x = i === 0 ? 0 : 80;
-        p.y = 350;
-        p.vx = 0;
-        p.vy = 0;
-    });
+    {x:3500, y:530, w:500, h:80},
 
-    requestAnimationFrame(loop);
-}
+    {x:4150, y:650, w:900, h:80},
 
-function startPractice() {
+    {x:5200, y:570, w:350, h:80},
 
-    practicing = true;
-    inGame = true;
+    {x:5750, y:500, w:400, h:80},
 
-    document.querySelectorAll(".screen").forEach(x => {
-        x.classList.add("hidden");
-    });
+    {x:6350, y:650, w:700, h:80},
 
-    document.getElementById("hud").classList.remove("hidden");
-    document.getElementById("mobileControls").classList.remove("hidden");
+    {x:7200, y:560, w:500, h:80},
 
-    const me = players.get(myId);
+    {x:7900, y:460, w:400, h:80},
 
-    if (me) {
-        me.x = 0;
-        me.y = 350;
-        me.vx = 0;
-        me.vy = 0;
+    {x:8500, y:600, w:700, h:80},
+
+    {x:9500, y:520, w:400, h:80},
+
+    {x:10100, y:450, w:450, h:80},
+
+    {x:10800, y:600, w:900, h:80}
+
+];
+
+
+/* =========================
+   MOVING PLATFORMS
+========================= */
+
+const movingPlatforms = [
+
+    {
+        x: 880,
+        y: 530,
+        w: 130,
+        h: 25,
+        startX: 880,
+        range: 100,
+        speed: 1.5,
+        t: 0
+    },
+
+    {
+        x: 3050,
+        y: 450,
+        w: 140,
+        h: 25,
+        startX: 3050,
+        range: 160,
+        speed: 1.2,
+        t: 2
+    },
+
+    {
+        x: 6100,
+        y: 400,
+        w: 150,
+        h: 25,
+        startX: 6100,
+        range: 140,
+        speed: 1.4,
+        t: 4
     }
 
-    requestAnimationFrame(loop);
-}
+];
 
-function collide(p) {
 
-    p.grounded = false;
+/* =========================
+   OBSTACLES
+========================= */
 
-    for (const platform of level) {
+const obstacles = [
 
-        const previousBottom = p.y + 42 - p.vy;
+    {
+        x: 1250,
+        y: 570,
+        w: 35,
+        h: 50
+    },
 
-        if (
-            p.x + 28 > platform.x &&
-            p.x - 28 < platform.x + platform.w &&
-            p.y + 42 >= platform.y &&
-            p.y + 42 <= platform.y + platform.h + 20 &&
-            previousBottom <= platform.y + 10 &&
-            p.vy >= 0
-        ) {
-            p.y = platform.y - 42;
-            p.vy = 0;
-            p.grounded = true;
-        }
-    }
-}
+    {
+        x: 2330,
+        y: 630,
+        w: 45,
+        h: 50
+    },
 
-function resetPlayer(p) {
-    p.x = 0;
-    p.y = 350;
-    p.vx = 0;
-    p.vy = 0;
-}
+    {
+        x: 3650,
+        y: 480,
+        w: 40,
+        h: 50
+    },
 
-function physics(p, local) {
+    {
+        x: 4650,
+        y: 600,
+        w: 40,
+        h: 50
+    },
 
-    if (local) {
+    {
+        x: 7400,
+        y: 510,
+        w: 40,
+        h: 50
+    },
 
-        if (keys.left) {
-            p.vx -= 0.65;
-        }
-
-        if (keys.right) {
-            p.vx += 0.65;
-        }
-
-        if (!keys.left && !keys.right) {
-            p.vx *= 0.78;
-        }
-
-        p.vx = Math.max(-moveSpeed, Math.min(moveSpeed, p.vx));
-
-        if (keys.jump && p.grounded) {
-            p.vy = -jumpPower;
-            p.grounded = false;
-        }
+    {
+        x: 8650,
+        y: 550,
+        w: 45,
+        h: 50
     }
 
-    p.vy += gravity;
+];
 
-    p.x += p.vx;
-    p.y += p.vy;
 
-    collide(p);
+/* =========================
+   FINISH
+========================= */
 
-    if (p.y > 800) {
-        resetPlayer(p);
-    }
-}
+const finish = {
 
-function applyChain() {
+    x: 11450,
 
-    if (players.size < 2) return;
+    y: 430,
 
-    const arr = [...players.values()];
+    w: 100,
 
-    const a = arr[0];
-    const b = arr[1];
+    h: 170
 
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
+};
 
-    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Players can move freely until the chain reaches this length.
-    const maxLength = 260;
+/* =========================
+   CAMERA
+========================= */
 
-    if (distance <= maxLength) return;
+let cameraX = 0;
 
-    const nx = dx / distance;
-    const ny = dy / distance;
-
-    const excess = distance - maxLength;
-
-    // Only gently pull when the chain is actually stretched.
-    const pull = Math.min(excess * 0.035, 0.8);
-
-    if (a.id === myId) {
-        a.vx += nx * pull;
-        a.vy += ny * pull;
-    }
-
-    if (b.id === myId) {
-        b.vx -= nx * pull;
-        b.vy -= ny * pull;
-        }
-    }
-}
-
-function sendMovement() {
-
-    const p = players.get(myId);
-
-    if (!p) return;
-
-    send({
-        type: "move",
-        x: p.x,
-        y: p.y,
-        vx: p.vx,
-        vy: p.vy
-    });
-}
-
-let lastSend = 0;
-
-function update() {
+function updateCamera() {
 
     const me = players.get(myId);
 
     if (!me) return;
 
-    physics(me, true);
+    const other =
+        [...players.values()].find(p => p.id !== myId);
 
-    applyChain();
+    let target = me.x;
 
-    const now = performance.now();
+    if (other) {
 
-    if (now - lastSend > 30) {
-        sendMovement();
-        lastSend = now;
+        target =
+            (me.x + other.x) / 2;
+
     }
 
-    cameraX += ((me.x - W * 0.35) - cameraX) * 0.08;
+    cameraX +=
+        (target - W * .45 - cameraX) * .09;
 
-    cameraY += ((me.y - H * 0.55) - cameraY) * 0.08;
+    cameraX = Math.max(
+        0,
+        Math.min(
+            world.width - W,
+            cameraX
+        )
+    );
+
 }
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+const keys = {};
+
+window.addEventListener("keydown", e => {
+
+    keys[e.code] = true;
+
+    if (
+        e.code === "Space" ||
+        e.code === "ArrowUp"
+    ) {
+        e.preventDefault();
+    }
+
+});
+
+window.addEventListener("keyup", e => {
+
+    keys[e.code] = false;
+
+});
+
+
+/* =========================
+   INPUT
+========================= */
+
+function leftPressed() {
+
+    return (
+        keys["KeyA"] ||
+        keys["ArrowLeft"]
+    );
+
+}
+
+function rightPressed() {
+
+    return (
+        keys["KeyD"] ||
+        keys["ArrowRight"]
+    );
+
+}
+
+function jumpPressed() {
+
+    return (
+        keys["Space"] ||
+        keys["KeyW"] ||
+        keys["ArrowUp"]
+    );
+
+}
+
+function runPressed() {
+
+    return (
+        keys["ShiftLeft"] ||
+        keys["ShiftRight"]
+    );
+
+}
+
+
+/* =========================
+   JUMP BUFFER
+========================= */
+
+let jumpBuffer = 0;
+
+let jumpWasPressed = false;
+
+
+/* =========================
+   PHYSICS
+========================= */
+
+function updatePlayer(p, dt) {
+
+    if (!p || p.dead) return;
+
+    const isMe = p.id === myId;
+
+    if (!isMe) {
+
+        /* smooth remote player */
+
+        const smooth = 1 - Math.pow(.001, dt);
+
+        p.x +=
+            (p.targetX - p.x) * smooth;
+
+        p.y +=
+            (p.targetY - p.y) * smooth;
+
+        p.vx +=
+            (p.targetVX - p.vx) * smooth;
+
+        p.vy +=
+            (p.targetVY - p.vy) * smooth;
+
+        return;
+    }
+
+
+    /* =========================
+       INPUT
+    ========================= */
+
+    let direction = 0;
+
+    if (leftPressed()) {
+        direction--;
+    }
+
+    if (rightPressed()) {
+        direction++;
+    }
+
+
+    const running = runPressed();
+
+    p.running =
+        running && direction !== 0;
+
+
+    /* =========================
+       SPEED
+    ========================= */
+
+    const walkSpeed = 330;
+
+    const runSpeed = 540;
+
+    const maxSpeed =
+        running ? runSpeed : walkSpeed;
+
+
+    /* =========================
+       ACCELERATION
+    ========================= */
+
+    const acceleration =
+        p.grounded
+            ? 2600
+            : 1500;
+
+
+    if (direction !== 0) {
+
+        p.vx +=
+            direction *
+            acceleration *
+            dt;
+
+        p.facing = direction;
+
+    } else {
+
+        /* friction */
+
+        const friction =
+            p.grounded
+                ? 2300
+                : 500;
+
+        if (Math.abs(p.vx) < friction * dt) {
+
+            p.vx = 0;
+
+        } else {
+
+            p.vx -=
+                Math.sign(p.vx) *
+                friction *
+                dt;
+
+        }
+
+    }
+
+
+    /* cap speed */
+
+    if (p.vx > maxSpeed) {
+        p.vx = maxSpeed;
+    }
+
+    if (p.vx < -maxSpeed) {
+        p.vx = -maxSpeed;
+    }
+
+
+    /* =========================
+       JUMP BUFFER
+    ========================= */
+
+    if (
+        jumpPressed() &&
+        !jumpWasPressed
+    ) {
+
+        jumpBuffer = .14;
+
+    }
+
+    jumpWasPressed = jumpPressed();
+
+    jumpBuffer -= dt;
+
+
+    /* =========================
+       JUMP
+    ========================= */
+
+    if (
+        jumpBuffer > 0 &&
+        p.grounded
+    ) {
+
+        p.vy = -720;
+
+        p.grounded = false;
+
+        p.jumping = true;
+
+        jumpBuffer = 0;
+
+    }
+
+
+    /* =========================
+       GRAVITY
+    ========================= */
+
+    p.vy +=
+        world.gravity * dt;
+
+
+    /* =========================
+       VARIABLE JUMP
+    ========================= */
+
+    if (
+        !jumpPressed() &&
+        p.vy < -250
+    ) {
+
+        p.vy +=
+            1300 * dt;
+
+    }
+
+
+    /* =========================
+       MOVE X
+    ========================= */
+
+    const oldX = p.x;
+
+    p.x +=
+        p.vx * dt;
+
+
+    /* =========================
+       X COLLISION
+    ========================= */
+
+    for (const platform of getAllPlatforms()) {
+
+        if (
+            p.x < platform.x + platform.w &&
+            p.x + p.width > platform.x &&
+            p.y < platform.y + platform.h &&
+            p.y + p.height > platform.y
+        ) {
+
+            if (p.vx > 0) {
+
+                p.x =
+                    platform.x - p.width;
+
+                p.vx = 0;
+
+            }
+
+            else if (p.vx < 0) {
+
+                p.x =
+                    platform.x + platform.w;
+
+                p.vx = 0;
+
+            }
+
+        }
+
+    }
+
+
+    /* =========================
+       MOVE Y
+    ========================= */
+
+    const oldY = p.y;
+
+    p.y +=
+        p.vy * dt;
+
+    p.grounded = false;
+
+
+    /* =========================
+       PLATFORM COLLISION
+    ========================= */
+
+    for (const platform of getAllPlatforms()) {
+
+        const wasAbove =
+            oldY + p.height <= platform.y;
+
+        const isFalling =
+            p.vy >= 0;
+
+        const overlapsX =
+            p.x + p.width > platform.x &&
+            p.x < platform.x + platform.w;
+
+        const crossesTop =
+            p.y + p.height >= platform.y &&
+            p.y < platform.y + platform.h;
+
+        if (
+            wasAbove &&
+            isFalling &&
+            overlapsX &&
+            crossesTop
+        ) {
+
+            p.y =
+                platform.y - p.height;
+
+            p.vy = 0;
+
+            p.grounded = true;
+
+            p.jumping = false;
+
+            p.lastGroundY = p.y;
+
+        }
+
+    }
+
+
+    /* =========================
+       OBSTACLES
+    ========================= */
+
+    for (const o of obstacles) {
+
+        if (
+            p.x + p.width > o.x &&
+            p.x < o.x + o.w &&
+            p.y + p.height > o.y &&
+            p.y < o.y + o.h
+        ) {
+
+            killPlayer(p);
+
+        }
+
+    }
+
+
+    /* =========================
+       FALL
+    ========================= */
+
+    if (p.y > H + 500) {
+
+        killPlayer(p);
+
+    }
+
+
+    /* =========================
+       WORLD LIMIT
+    ========================= */
+
+    p.x =
+        Math.max(
+            0,
+            Math.min(
+                world.width - p.width,
+                p.x
+            )
+        );
+
+}
+
+
+/* =========================
+   PLATFORMS
+========================= */
+
+function getAllPlatforms() {
+
+    return [
+        ...platforms,
+        ...movingPlatforms
+    ];
+
+}
+
+
+/* =========================
+   MOVING PLATFORMS
+========================= */
+
+function updateMovingPlatforms(dt) {
+
+    for (const p of movingPlatforms) {
+
+        p.t +=
+            p.speed * dt;
+
+        p.x =
+            p.startX +
+            Math.sin(p.t) * p.range;
+
+    }
+
+}
+
+
+/* =========================
+   CHAIN PHYSICS
+========================= */
+
+const chain = {
+
+    maxLength: 360,
+
+    softLength: 300,
+
+    stiffness: 8,
+
+    damping: 2.5
+
+};
+
+
+function updateChain(dt) {
+
+    if (players.size < 2) return;
+
+    const arr =
+        [...players.values()];
+
+    const a = arr[0];
+
+    const b = arr[1];
+
+    if (a.dead || b.dead) return;
+
+
+    const ax =
+        a.x + a.width / 2;
+
+    const ay =
+        a.y + a.height / 2;
+
+    const bx =
+        b.x + b.width / 2;
+
+    const by =
+        b.y + b.height / 2;
+
+
+    let dx = bx - ax;
+
+    let dy = by - ay;
+
+    let dist =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    if (dist <= chain.softLength) {
+
+        return;
+
+    }
+
+
+    if (dist === 0) return;
+
+
+    const nx =
+        dx / dist;
+
+    const ny =
+        dy / dist;
+
+
+    const excess =
+        dist - chain.softLength;
+
+
+    /* =========================
+       ONLY LOCAL PLAYER
+       gets correction
+    ========================= */
+
+    const me =
+        players.get(myId);
+
+    if (!me) return;
+
+
+    const other =
+        me.id === a.id
+            ? b
+            : a;
+
+
+    const mex =
+        me.x + me.width / 2;
+
+    const mey =
+        me.y + me.height / 2;
+
+    const ox =
+        other.x + other.width / 2;
+
+    const oy =
+        other.y + other.height / 2;
+
+
+    let mdx =
+        ox - mex;
+
+    let mdy =
+        oy - mey;
+
+    let mdist =
+        Math.sqrt(
+            mdx * mdx +
+            mdy * mdy
+        );
+
+    if (mdist === 0) return;
+
+
+    mdx /= mdist;
+
+    mdy /= mdist;
+
+
+    /* gentle spring */
+
+    const force =
+        Math.min(
+            excess * chain.stiffness,
+            2600
+        );
+
+
+    /* only pull when stretched */
+
+    me.vx +=
+        mdx *
+        force *
+        dt;
+
+    me.vy +=
+        mdy *
+        force *
+        dt;
+
+
+    /* hard emergency limit */
+
+    if (dist > chain.maxLength) {
+
+        const emergency =
+            dist - chain.maxLength;
+
+        me.x +=
+            mdx *
+            emergency *
+            .15;
+
+        me.y +=
+            mdy *
+            emergency *
+            .15;
+
+    }
+
+}
+
+
+/* =========================
+   DEATH
+========================= */
+
+function killPlayer(p) {
+
+    if (p.dead) return;
+
+    p.dead = true;
+
+    p.vx = 0;
+    p.vy = 0;
+
+    if (p.id === myId) {
+
+        showMessage("💀 YOU FELL");
+
+        setTimeout(() => {
+
+            respawnPlayer(p);
+
+        }, 900);
+
+    }
+
+}
+
+
+function respawnPlayer(p) {
+
+    p.x = p.spawnX;
+
+    p.y = p.spawnY;
+
+    p.vx = 0;
+
+    p.vy = 0;
+
+    p.dead = false;
+
+}
+
+
+/* =========================
+   FINISH
+========================= */
+
+let finished = false;
+
+function checkFinish() {
+
+    if (finished) return;
+
+    if (players.size < 2) return;
+
+    const arr =
+        [...players.values()];
+
+    const bothAtFinish =
+        arr.every(p => {
+
+            return (
+                p.x + p.width >
+                    finish.x &&
+                p.x <
+                    finish.x + finish.w
+            );
+
+        });
+
+
+    if (bothAtFinish) {
+
+        finished = true;
+
+        showMessage(
+            "🏆 YOU BOTH MADE IT!<br><span class='finish-text'>COOLIO CLIMB COMPLETE</span>"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   NETWORK
+========================= */
+
+let lastSend = 0;
+
+function sendMovement(timestamp) {
+
+    if (!socket) return;
+
+    if (
+        socket.readyState !== WebSocket.OPEN
+    ) return;
+
+    if (!myId) return;
+
+    if (
+        timestamp - lastSend < 33
+    ) return;
+
+    lastSend = timestamp;
+
+    const me =
+        players.get(myId);
+
+    if (!me) return;
+
+
+    socket.send(
+        JSON.stringify({
+
+            type: "move",
+
+            x: me.x,
+
+            y: me.y,
+
+            vx: me.vx,
+
+            vy: me.vy
+
+        })
+    );
+
+}
+
+
+/* =========================
+   CONNECT
+========================= */
+
+function connectSocket() {
+
+    socket =
+        new WebSocket(SERVER);
+
+
+    socket.onopen = () => {
+
+        console.log(
+            "Connected to CoolioBeans server"
+        );
+
+    };
+
+
+    socket.onmessage = e => {
+
+        try {
+
+            const data =
+                JSON.parse(e.data);
+
+            handleServerMessage(data);
+
+        }
+
+        catch {
+
+            console.log(
+                "Bad server message"
+            );
+
+        }
+
+    };
+
+
+    socket.onclose = () => {
+
+        console.log(
+            "Disconnected"
+        );
+
+        if (gameRunning) {
+
+            showMessage(
+                "Connection lost 😭"
+            );
+
+        }
+
+    };
+
+}
+
+
+/* =========================
+   SERVER MESSAGES
+========================= */
+
+function handleServerMessage(data) {
+
+    if (data.type === "roomCreated") {
+
+        myId = data.id;
+
+        roomCode = data.room;
+
+        myColor = data.color;
+
+        myName = data.name;
+
+        isHost = true;
+
+
+        players.clear();
+
+        const me =
+            createPlayer(
+                myId,
+                myName,
+                myColor
+            );
+
+        me.x = 300;
+
+        me.y = 550;
+
+        me.spawnX = 300;
+
+        me.spawnY = 550;
+
+        players.set(
+            myId,
+            me
+        );
+
+
+        showLobby();
+
+        return;
+
+    }
+
+
+    if (data.type === "joined") {
+
+        myId = data.id;
+
+        roomCode = data.room;
+
+        myColor = data.color;
+
+        myName = data.name;
+
+        isHost = false;
+
+
+        players.clear();
+
+        const me =
+            createPlayer(
+                myId,
+                myName,
+                myColor
+            );
+
+        me.x = 450;
+
+        me.y = 550;
+
+        me.spawnX = 450;
+
+        me.spawnY = 550;
+
+        players.set(
+            myId,
+            me
+        );
+
+
+        showLobby();
+
+        return;
+
+    }
+
+
+    if (data.type === "playerJoined") {
+
+        if (
+            players.has(data.id)
+        ) return;
+
+
+        const p =
+            createPlayer(
+                data.id,
+                data.name,
+                data.color
+            );
+
+
+        p.x = data.x ?? 300;
+
+        p.y = data.y ?? 550;
+
+        p.targetX = p.x;
+
+        p.targetY = p.y;
+
+        p.spawnX = p.x;
+
+        p.spawnY = p.y;
+
+
+        players.set(
+            data.id,
+            p
+        );
+
+
+        updateLobby();
+
+        return;
+
+    }
+
+
+    if (data.type === "playerMoved") {
+
+        const p =
+            players.get(data.id);
+
+        if (!p) return;
+
+
+        /* NEVER overwrite our own local physics */
+
+        if (
+            data.id === myId
+        ) {
+            return;
+        }
+
+
+        p.targetX =
+            Number(data.x) || 0;
+
+        p.targetY =
+            Number(data.y) || 0;
+
+        p.targetVX =
+            Number(data.vx) || 0;
+
+        p.targetVY =
+            Number(data.vy) || 0;
+
+
+        return;
+
+    }
+
+
+    if (data.type === "playerLeft") {
+
+        players.delete(
+            data.id
+        );
+
+        updateLobby();
+
+        return;
+
+    }
+
+
+    if (data.type === "gameStart") {
+
+        startActualGame();
+
+        return;
+
+    }
+
+
+    if (data.type === "error") {
+
+        alert(data.message);
+
+    }
+
+}
+
+
+/* =========================
+   HOST GAME
+========================= */
+
+function hostGame(name) {
+
+    if (!socket) {
+
+        connectSocket();
+
+        const wait =
+            setInterval(() => {
+
+                if (
+                    socket &&
+                    socket.readyState ===
+                        WebSocket.OPEN
+                ) {
+
+                    clearInterval(wait);
+
+                    socket.send(
+                        JSON.stringify({
+
+                            type: "host",
+
+                            name
+
+                        })
+                    );
+
+                }
+
+            }, 50);
+
+        return;
+
+    }
+
+
+    socket.send(
+        JSON.stringify({
+
+            type: "host",
+
+            name
+
+        })
+    );
+
+}
+
+
+/* =========================
+   JOIN GAME
+========================= */
+
+function joinGame(name, code) {
+
+    if (!socket) {
+
+        connectSocket();
+
+        const wait =
+            setInterval(() => {
+
+                if (
+                    socket &&
+                    socket.readyState ===
+                        WebSocket.OPEN
+                ) {
+
+                    clearInterval(wait);
+
+                    socket.send(
+                        JSON.stringify({
+
+                            type: "join",
+
+                            name,
+
+                            room:
+                                code.toUpperCase()
+
+                        })
+                    );
+
+                }
+
+            }, 50);
+
+        return;
+
+    }
+
+
+    socket.send(
+        JSON.stringify({
+
+            type: "join",
+
+            name,
+
+            room:
+                code.toUpperCase()
+
+        })
+    );
+
+}
+
+
+/* =========================
+   LOBBY
+========================= */
+
+function showLobby() {
+
+    document
+        .getElementById("menu")
+        .classList.add("hidden");
+
+    document
+        .getElementById("lobby")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("roomCode")
+        .textContent =
+            roomCode;
+
+
+    document
+        .getElementById("roomDisplay")
+        .textContent =
+            roomCode;
+
+
+    updateLobby();
+
+}
+
+
+function updateLobby() {
+
+    const list =
+        document.getElementById(
+            "playerList"
+        );
+
+    const status =
+        document.getElementById(
+            "lobbyStatus"
+        );
+
+    const start =
+        document.getElementById(
+            "startBtn"
+        );
+
+
+    list.innerHTML = "";
+
+
+    for (
+        const p of players.values()
+    ) {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.className =
+            "player-entry";
+
+        div.textContent =
+            (p.id === myId
+                ? "👑 "
+                : "🔗 ") +
+            p.name;
+
+        list.appendChild(div);
+
+    }
+
+
+    if (players.size < 2) {
+
+        status.textContent =
+            "Waiting for your friend...";
+
+        start.disabled = true;
+
+    }
+
+    else {
+
+        status.textContent =
+            "Both players are ready!";
+
+        start.disabled =
+            !isHost;
+
+        if (!isHost) {
+
+            start.textContent =
+                "WAITING FOR HOST";
+
+        }
+
+        else {
+
+            start.textContent =
+                "START CLIMB";
+
+        }
+
+    }
+
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame() {
+
+    if (!isHost) return;
+
+    if (players.size < 2) return;
+
+
+    socket.send(
+        JSON.stringify({
+
+            type: "startGame"
+
+        })
+    );
+
+
+    /*
+       IMPORTANT:
+       Current server needs to forward
+       this message.
+
+       We also start locally immediately.
+    */
+
+    startActualGame();
+
+}
+
+
+/* =========================
+   ACTUAL GAME
+========================= */
+
+let gameRunning = false;
+
+function startActualGame() {
+
+    if (gameRunning) return;
+
+    gameRunning = true;
+
+    finished = false;
+
+
+    document
+        .getElementById("lobby")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("gameUI")
+        .classList.remove("hidden");
+
+
+    /* reset spawn positions */
+
+    const arr =
+        [...players.values()];
+
+
+    if (arr.length >= 2) {
+
+        arr[0].x = 300;
+        arr[0].y = 550;
+
+        arr[0].spawnX = 300;
+        arr[0].spawnY = 550;
+
+
+        arr[1].x = 450;
+        arr[1].y = 550;
+
+        arr[1].spawnX = 450;
+        arr[1].spawnY = 550;
+
+    }
+
+
+    showMessage(
+        "GET READY..."
+    );
+
+
+    setTimeout(() => {
+
+        hideMessage();
+
+    }, 1200);
+
+
+    lastTime =
+        performance.now();
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+/* =========================
+   PRACTICE
+========================= */
+
+function startPractice() {
+
+    players.clear();
+
+
+    const me =
+        createPlayer(
+            "practice",
+            "You",
+            "red"
+        );
+
+
+    me.x = 300;
+
+    me.y = 550;
+
+    me.spawnX = 300;
+
+    me.spawnY = 550;
+
+
+    players.set(
+        "practice",
+        me
+    );
+
+
+    myId = "practice";
+
+    roomCode = "PRACT";
+
+    gameRunning = true;
+
+    finished = false;
+
+
+    document
+        .getElementById("menu")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("gameUI")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("roomDisplay")
+        .textContent =
+            "PRACTICE";
+
+
+    lastTime =
+        performance.now();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+let lastTime = 0;
+
+function gameLoop(timestamp) {
+
+    if (!gameRunning) return;
+
+
+    let dt =
+        (timestamp - lastTime) /
+        1000;
+
+
+    lastTime =
+        timestamp;
+
+
+    /* prevent giant physics jumps */
+
+    dt =
+        Math.min(
+            dt,
+            0.033
+        );
+
+
+    updateMovingPlatforms(dt);
+
+
+    for (
+        const p of players.values()
+    ) {
+
+        updatePlayer(
+            p,
+            dt
+        );
+
+    }
+
+
+    updateChain(dt);
+
+
+    checkFinish();
+
+
+    updateCamera();
+
+
+    sendMovement(timestamp);
+
+
+    draw();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+/* =========================
+   DRAW BACKGROUND
+========================= */
 
 function drawBackground() {
 
-    ctx.fillStyle = "#09090f";
-    ctx.fillRect(0, 0, W, H);
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
 
-    ctx.strokeStyle = "rgba(255,255,255,.035)";
-    ctx.lineWidth = 1;
+    gradient.addColorStop(
+        0,
+        "#090b20"
+    );
 
-    const grid = 50;
+    gradient.addColorStop(
+        1,
+        "#171027"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /* stars */
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.45)";
 
     for (
-        let x = -((cameraX % grid) + grid);
-        x < W + grid;
-        x += grid
+        let i = 0;
+        i < 90;
+        i++
     ) {
 
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, H);
-        ctx.stroke();
+        const x =
+            (i * 197) %
+            W;
+
+        const y =
+            (i * 83) %
+            (H * .6);
+
+        const size =
+            (i % 3) + 1;
+
+        ctx.fillRect(
+            x,
+            y,
+            size,
+            size
+        );
+
     }
+
+}
+
+
+/* =========================
+   DRAW WORLD
+========================= */
+
+function drawWorld() {
+
+    ctx.save();
+
+    ctx.translate(
+        -cameraX,
+        0
+    );
+
+
+    /* platforms */
 
     for (
-        let y = -((cameraY % grid) + grid);
-        y < H + grid;
-        y += grid
+        const p of platforms
     ) {
 
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
-    }
-}
+        drawPlatform(p);
 
-function drawLevel() {
-
-    for (const platform of level) {
-
-        const x = platform.x - cameraX;
-        const y = platform.y - cameraY;
-
-        ctx.fillStyle = "#30303c";
-        ctx.fillRect(x, y, platform.w, platform.h);
-
-        ctx.fillStyle = "#8b5cf6";
-        ctx.fillRect(x, y, platform.w, 5);
-
-        ctx.strokeStyle = "rgba(255,255,255,.08)";
-        ctx.strokeRect(x, y, platform.w, platform.h);
     }
 
-    const finish = level[level.length - 1];
 
-    const fx = finish.x + finish.w - 70 - cameraX;
-    const fy = finish.y - 75 - cameraY;
+    /* moving platforms */
 
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 18px Arial";
-    ctx.fillText("FINISH 🏁", fx, fy);
+    for (
+        const p of movingPlatforms
+    ) {
+
+        drawMovingPlatform(p);
+
+    }
+
+
+    /* obstacles */
+
+    for (
+        const o of obstacles
+    ) {
+
+        drawObstacle(o);
+
+    }
+
+
+    /* finish */
+
+    drawFinish();
+
+
+    /* chain */
+
+    drawChain();
+
+
+    /* players */
+
+    for (
+        const p of players.values()
+    ) {
+
+        drawPlayer(p);
+
+    }
+
+
+    ctx.restore();
+
 }
+
+
+/* =========================
+   PLATFORM
+========================= */
+
+function drawPlatform(p) {
+
+    ctx.fillStyle =
+        "#292d4a";
+
+    ctx.fillRect(
+        p.x,
+        p.y,
+        p.w,
+        p.h
+    );
+
+
+    ctx.fillStyle =
+        "#56618d";
+
+    ctx.fillRect(
+        p.x,
+        p.y,
+        p.w,
+        8
+    );
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.25)";
+
+    ctx.fillRect(
+        p.x,
+        p.y + 8,
+        p.w,
+        p.h - 8
+    );
+
+}
+
+
+/* =========================
+   MOVING PLATFORM
+========================= */
+
+function drawMovingPlatform(p) {
+
+    ctx.fillStyle =
+        "#7c3aed";
+
+    ctx.fillRect(
+        p.x,
+        p.y,
+        p.w,
+        p.h
+    );
+
+
+    ctx.fillStyle =
+        "#c4b5fd";
+
+    ctx.fillRect(
+        p.x,
+        p.y,
+        p.w,
+        5
+    );
+
+}
+
+
+/* =========================
+   OBSTACLE
+========================= */
+
+function drawObstacle(o) {
+
+    ctx.fillStyle =
+        "#ef4444";
+
+    ctx.fillRect(
+        o.x,
+        o.y,
+        o.w,
+        o.h
+    );
+
+
+    ctx.fillStyle =
+        "#fecaca";
+
+    ctx.fillRect(
+        o.x + 7,
+        o.y + 7,
+        o.w - 14,
+        6
+    );
+
+}
+
+
+/* =========================
+   FINISH
+========================= */
+
+function drawFinish() {
+
+    ctx.fillStyle =
+        "rgba(34,197,94,.18)";
+
+    ctx.fillRect(
+        finish.x,
+        finish.y,
+        finish.w,
+        finish.h
+    );
+
+
+    ctx.strokeStyle =
+        "#22c55e";
+
+    ctx.lineWidth = 4;
+
+    ctx.strokeRect(
+        finish.x,
+        finish.y,
+        finish.w,
+        finish.h
+    );
+
+
+    ctx.fillStyle =
+        "#86efac";
+
+    ctx.font =
+        "bold 20px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillText(
+        "FINISH",
+        finish.x + finish.w / 2,
+        finish.y - 15
+    );
+
+}
+
+
+/* =========================
+   CHAIN
+========================= */
 
 function drawChain() {
 
     if (players.size < 2) return;
 
-    const arr = [...players.values()];
+
+    const arr =
+        [...players.values()];
 
     const a = arr[0];
+
     const b = arr[1];
 
-    const ax = a.x - cameraX;
-    const ay = a.y + 5 - cameraY;
 
-    const bx = b.x - cameraX;
-    const by = b.y + 5 - cameraY;
+    const ax =
+        a.x + a.width / 2;
 
-    ctx.strokeStyle = "#d8d8df";
-    ctx.lineWidth = 7;
+    const ay =
+        a.y + a.height / 2;
+
+    const bx =
+        b.x + b.width / 2;
+
+    const by =
+        b.y + b.height / 2;
+
+
+    const dx =
+        bx - ax;
+
+    const dy =
+        by - ay;
+
+    const dist =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    ctx.save();
+
+    ctx.lineWidth =
+        dist > chain.softLength
+            ? 7
+            : 5;
+
+    ctx.strokeStyle =
+        dist > chain.softLength
+            ? "#f97316"
+            : "#a78bfa";
+
+    ctx.shadowBlur = 12;
+
+    ctx.shadowColor =
+        ctx.strokeStyle;
+
 
     ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
+
+    ctx.moveTo(
+        ax,
+        ay
+    );
+
+    ctx.lineTo(
+        bx,
+        by
+    );
+
     ctx.stroke();
 
-    ctx.strokeStyle = "#555560";
-    ctx.lineWidth = 3;
 
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
-    ctx.stroke();
+    /* chain links */
+
+    const links =
+        Math.floor(
+            dist / 22
+        );
+
+
+    for (
+        let i = 1;
+        i < links;
+        i++
+    ) {
+
+        const t =
+            i / links;
+
+        const x =
+            ax +
+            dx * t;
+
+        const y =
+            ay +
+            dy * t;
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            4,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    ctx.restore();
+
 }
+
+
+/* =========================
+   PLAYER
+========================= */
 
 function drawPlayer(p) {
 
-    const x = p.x - cameraX;
-    const y = p.y - cameraY;
+    if (p.dead) return;
+
+
+    const x = p.x;
+
+    const y = p.y;
+
+
+    ctx.save();
+
+
+    /* shadow */
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.35)";
 
     ctx.beginPath();
-    ctx.arc(x, y, 25, 0, Math.PI * 2);
+
+    ctx.ellipse(
+        x + p.width / 2,
+        y + p.height + 5,
+        20,
+        6,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /* body */
 
     ctx.fillStyle =
         p.color === "red"
             ? "#ef4444"
             : "#3b82f6";
 
+
+    ctx.fillRect(
+        x,
+        y + 18,
+        p.width,
+        p.height - 18
+    );
+
+
+    /* head */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x + p.width / 2,
+        y + 14,
+        14,
+        0,
+        Math.PI * 2
+    );
+
     ctx.fill();
 
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
-    ctx.stroke();
 
-    ctx.fillStyle = "white";
-    ctx.font = "bold 14px Arial";
-    ctx.textAlign = "center";
+    /* eyes */
 
-    ctx.fillText(p.name, x, y - 35);
+    ctx.fillStyle =
+        "#fff";
 
-    ctx.textAlign = "left";
+
+    const eyeOffset =
+        p.facing === 1
+            ? 5
+            : -5;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x + p.width / 2 + eyeOffset,
+        y + 11,
+        3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /* name */
+
+    ctx.fillStyle =
+        "#fff";
+
+    ctx.font =
+        "bold 13px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillText(
+        p.name,
+        x + p.width / 2,
+        y - 12
+    );
+
+
+    /* sprint effect */
+
+    if (
+        p.running &&
+        Math.abs(p.vx) > 150
+    ) {
+
+        ctx.strokeStyle =
+            "rgba(255,255,255,.35)";
+
+        ctx.lineWidth = 3;
+
+        for (
+            let i = 0;
+            i < 3;
+            i++
+        ) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x +
+                (p.facing === 1
+                    ? -5
+                    : p.width + 5),
+                y + 30 + i * 8
+            );
+
+            ctx.lineTo(
+                x +
+                (p.facing === 1
+                    ? -20
+                    : p.width + 20),
+                y + 30 + i * 8
+            );
+
+            ctx.stroke();
+
+        }
+
+    }
+
+
+    ctx.restore();
+
 }
+
+
+/* =========================
+   DRAW
+========================= */
 
 function draw() {
 
     drawBackground();
-    drawLevel();
 
-    drawChain();
+    drawWorld();
 
-    players.forEach(drawPlayer);
 }
 
-function loop() {
 
-    if (!inGame) return;
+/* =========================
+   MESSAGE
+========================= */
 
-    update();
-    draw();
+function showMessage(text) {
 
-    requestAnimationFrame(loop);
+    const msg =
+        document.getElementById(
+            "message"
+        );
+
+    msg.innerHTML =
+        text;
+
+    msg.classList.add(
+        "show"
+    );
+
 }
 
-/* KEYBOARD */
 
-window.addEventListener("keydown", e => {
+function hideMessage() {
 
-    if (e.code === "KeyA" || e.code === "ArrowLeft") {
-        keys.left = true;
-    }
+    document
+        .getElementById(
+            "message"
+        )
+        .classList.remove(
+            "show"
+        );
 
-    if (e.code === "KeyD" || e.code === "ArrowRight") {
-        keys.right = true;
-    }
-
-    if (
-        e.code === "Space" ||
-        e.code === "KeyW" ||
-        e.code === "ArrowUp"
-    ) {
-        keys.jump = true;
-        e.preventDefault();
-    }
-});
-
-window.addEventListener("keyup", e => {
-
-    if (e.code === "KeyA" || e.code === "ArrowLeft") {
-        keys.left = false;
-    }
-
-    if (e.code === "KeyD" || e.code === "ArrowRight") {
-        keys.right = false;
-    }
-
-    if (
-        e.code === "Space" ||
-        e.code === "KeyW" ||
-        e.code === "ArrowUp"
-    ) {
-        keys.jump = false;
-    }
-});
-
-/* MOBILE */
-
-function holdButton(button, key) {
-
-    button.addEventListener("pointerdown", e => {
-        e.preventDefault();
-        keys[key] = true;
-    });
-
-    button.addEventListener("pointerup", () => {
-        keys[key] = false;
-    });
-
-    button.addEventListener("pointercancel", () => {
-        keys[key] = false;
-    });
-
-    button.addEventListener("pointerleave", () => {
-        keys[key] = false;
-    });
 }
 
-holdButton(document.getElementById("leftBtn"), "left");
-holdButton(document.getElementById("rightBtn"), "right");
-holdButton(document.getElementById("jumpBtn"), "jump");
 
-/* MENU */
+/* =========================
+   MENU NAVIGATION
+========================= */
 
-document.getElementById("hostBtn").onclick = () => {
+const mainMenu =
+    document.getElementById(
+        "mainMenu"
+    );
 
-    isHost = true;
+const hostNameMenu =
+    document.getElementById(
+        "hostNameMenu"
+    );
 
-    document.getElementById("continueHost").classList.remove("hidden");
-    document.getElementById("continueJoin").classList.add("hidden");
+const joinMenu =
+    document.getElementById(
+        "joinMenu"
+    );
 
-    show("nameMenu");
-};
 
-document.getElementById("joinBtn").onclick = () => {
+document
+    .getElementById("hostBtn")
+    .onclick = () => {
 
-    isHost = false;
+        mainMenu.classList.add(
+            "hidden"
+        );
 
-    document.getElementById("continueHost").classList.add("hidden");
-    document.getElementById("continueJoin").classList.remove("hidden");
+        hostNameMenu.classList.remove(
+            "hidden"
+        );
 
-    show("nameMenu");
-};
+    };
 
-document.getElementById("continueHost").onclick = () => {
 
-    myName =
-        document.getElementById("nameInput").value.trim() ||
-        "Player";
+document
+    .getElementById("joinBtn")
+    .onclick = () => {
 
-    connect();
-};
+        mainMenu.classList.add(
+            "hidden"
+        );
 
-document.getElementById("continueJoin").onclick = () => {
+        joinMenu.classList.remove(
+            "hidden"
+        );
 
-    myName =
-        document.getElementById("nameInput").value.trim() ||
-        "Player";
+    };
 
-    show("joinMenu");
-};
 
-document.getElementById("connectJoin").onclick = () => {
+document
+    .getElementById("hostBack")
+    .onclick = () => {
 
-    roomCode =
-        document.getElementById("codeInput").value
-        .trim()
-        .toUpperCase();
+        hostNameMenu.classList.add(
+            "hidden"
+        );
 
-    if (roomCode.length !== 4) {
-        alert("Enter a 4-character room code.");
-        return;
-    }
+        mainMenu.classList.remove(
+            "hidden"
+        );
 
-    connect();
-};
+    };
 
-document.getElementById("backName").onclick = () => {
-    show("mainMenu");
-};
 
-document.getElementById("backJoin").onclick = () => {
-    show("nameMenu");
-};
+document
+    .getElementById("joinBack")
+    .onclick = () => {
 
-document.getElementById("practiceBtn").onclick = () => {
-    startPractice();
-};
+        joinMenu.classList.add(
+            "hidden"
+        );
 
-document.getElementById("startBtn").onclick = () => {
-    startGame();
-};
+        mainMenu.classList.remove(
+            "hidden"
+        );
 
-document.getElementById("leaveBtn").onclick = () => {
-    if (socket) socket.close();
-    location.reload();
-};
+    };
+
+
+document
+    .getElementById("createRoomBtn")
+    .onclick = () => {
+
+        const name =
+            document
+                .getElementById(
+                    "hostName"
+                )
+                .value
+                .trim();
+
+
+        if (!name) {
+
+            alert(
+                "Enter a name first!"
+            );
+
+            return;
+
+        }
+
+
+        hostGame(name);
+
+    };
+
+
+document
+    .getElementById("joinRoomBtn")
+    .onclick = () => {
+
+        const name =
+            document
+                .getElementById(
+                    "joinName"
+                )
+                .value
+                .trim();
+
+
+        const code =
+            document
+                .getElementById(
+                    "roomInput"
+                )
+                .value
+                .trim()
+                .toUpperCase();
+
+
+        if (!name) {
+
+            alert(
+                "Enter a name first!"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            code.length !== 4
+        ) {
+
+            alert(
+                "Room code must be 4 characters."
+            );
+
+            return;
+
+        }
+
+
+        joinGame(
+            name,
+            code
+        );
+
+    };
+
+
+document
+    .getElementById("practiceBtn")
+    .onclick =
+        startPractice;
+
+
+document
+    .getElementById("startBtn")
+    .onclick =
+        startGame;
+
+
+/* =========================
+   LEAVE
+========================= */
+
+document
+    .getElementById("leaveBtn")
+    .onclick = () => {
+
+        if (socket) {
+
+            socket.close();
+
+        }
+
+        location.reload();
+
+    };
+
+
+/* =========================
+   ROOM CODE
+========================= */
+
+document
+    .getElementById("roomInput")
+    .addEventListener(
+        "input",
+        e => {
+
+            e.target.value =
+                e.target.value
+                    .replace(
+                        /[^a-zA-Z0-9]/g,
+                        ""
+                    )
+                    .substring(
+                        0,
+                        4
+                    )
+                    .toUpperCase();
+
+        }
+    );
+
+
+/* =========================
+   INITIAL DRAW
+========================= */
+
+draw();
+
 </script>
 
 </body>
 </html>
-```

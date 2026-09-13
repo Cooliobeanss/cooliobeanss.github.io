@@ -1364,17 +1364,17 @@ function killPlayer(p) {
     p.vx = 0;
     p.vy = 0;
 
-    if (p.id === myId) {
+    if (p.id !== myId) return;
 
-        showMessage("💀 YOU FELL");
+    showMessage("💀 YOU FELL");
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            respawnPlayer(p);
+        respawnPlayer(p);
 
-        }, 900);
+        hideMessage();
 
-    }
+    }, 1000);
 
 }
 

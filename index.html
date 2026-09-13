@@ -1,856 +1,2046 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CoolioBeans | Game Hub</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(circle at 50% -10%, rgba(124, 92, 255, 0.12), transparent 40%),
-                #08090d;
-            color: white;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
-
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(8, 9, 13, 0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #20232c;
-        }
-
-        .navbar {
-            max-width: 1200px;
-            margin: auto;
-            padding: 18px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: -1px;
-            white-space: nowrap;
-        }
-
-        .logo span {
-            color: #7c5cff;
-        }
-
-        nav {
-            display: flex;
-            gap: 25px;
-        }
-
-        nav a {
-            color: #aeb2c0;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        nav a:hover {
-            color: white;
-        }
-
-        /* HERO */
-
-        .hero {
-            max-width: 1200px;
-            margin: auto;
-            padding: 90px 25px 55px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: clamp(45px, 8vw, 85px);
-            line-height: 0.95;
-            font-weight: 900;
-            letter-spacing: -4px;
-        }
-
-        .hero h1 span {
-            color: #7c5cff;
-        }
-
-        .hero p {
-            max-width: 600px;
-            margin: 25px auto;
-            color: #9da2b1;
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .hero-button {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 15px 30px;
-            background: #7c5cff;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: 0.25s;
-            box-shadow: 0 0 30px rgba(124, 92, 255, 0.25);
-        }
-
-        .hero-button:hover {
-            transform: translateY(-3px);
-            background: #8c70ff;
-            box-shadow: 0 0 40px rgba(124, 92, 255, 0.45);
-        }
-
-        /* SEARCH */
-
-        .search-container {
-            max-width: 850px;
-            margin: 0 auto 65px;
-            padding: 0 25px;
-        }
-
-        .search-title {
-            text-align: center;
-            margin-bottom: 14px;
-            color: #858b9a;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            padding: 8px;
-            background: rgba(17, 19, 26, 0.95);
-            border: 1px solid #292d38;
-            border-radius: 16px;
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.3),
-                inset 0 0 20px rgba(124, 92, 255, 0.03);
-            transition: 0.25s;
-        }
-
-        .search-box:focus-within {
-            border-color: #7c5cff;
-            box-shadow:
-                0 0 0 3px rgba(124, 92, 255, 0.1),
-                0 15px 45px rgba(0, 0, 0, 0.4);
-        }
-
-        .search-wrapper {
-            position: relative;
-            flex: 1;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 17px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            pointer-events: none;
-        }
-
-        .search {
-            width: 100%;
-            height: 52px;
-            padding: 0 18px 0 48px;
-            border: none;
-            outline: none;
-            border-radius: 11px;
-            background: #151821;
-            color: white;
-            font-size: 16px;
-        }
-
-        .search::placeholder {
-            color: #666c7b;
-        }
-
-        .search-button,
-        .duck-button {
-            height: 52px;
-            padding: 0 20px;
-            border: none;
-            border-radius: 11px;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-
-        .search-button {
-            background: #7c5cff;
-        }
-
-        .search-button:hover {
-            background: #8c70ff;
-            transform: translateY(-1px);
-        }
-
-        .duck-button {
-            background: #292d38;
-        }
-
-        .duck-button:hover {
-            background: #363b49;
-            transform: translateY(-1px);
-        }
-
-        /* MAIN */
-
-        main {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 25px 80px;
-        }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .section-title h2 {
-            font-size: 30px;
-        }
-
-        .section-title p {
-            color: #777d8d;
-            margin-top: 5px;
-        }
-
-        /* GAME GRID */
-
-        .games {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 22px;
-            align-items: start;
-        }
-
-        .game-card {
-            background: #11131a;
-            border: 1px solid #242832;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: 0.25s;
-            min-width: 0;
-        }
-
-        .game-card:hover {
-            transform: translateY(-7px);
-            border-color: #7c5cff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-        }
-
-        .game-image {
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            background: linear-gradient(135deg, #171923, #252936);
-        }
-
-        .game-info {
-            padding: 20px;
-        }
-
-        .game-info h3 {
-            font-size: 21px;
-            margin-bottom: 8px;
-        }
-
-        .game-info p {
-            color: #858b9a;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 18px;
-        }
-
-        .game-tag {
-            display: inline-block;
-            background: #1c1f2a;
-            color: #a9a1ff;
-            padding: 5px 9px;
-            border-radius: 6px;
-            font-size: 12px;
-            margin-bottom: 15px;
-        }
-
-        .play-button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 9px;
-            background: #7c5cff;
-            color: white;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .play-button:hover {
-            background: #8c70ff;
-            transform: scale(1.02);
-        }
-
-        /* EMPTY SEARCH */
-
-        .no-results {
-            display: none;
-            text-align: center;
-            color: #777d8d;
-            padding: 50px;
-            grid-column: 1 / -1;
-            font-size: 16px;
-        }
-
-        /* ABOUT */
-
-        #about {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px 25px 80px;
-            text-align: center;
-        }
-
-        #about h2 {
-            font-size: 30px;
-            margin-bottom: 15px;
-        }
-
-        #about p {
-            color: #858b9a;
-            line-height: 1.7;
-        }
-
-        /* FOOTER */
-
-        footer {
-            border-top: 1px solid #20232c;
-            padding: 35px 25px;
-            text-align: center;
-            color: #666b78;
-            background: #07080b;
-        }
-
-        footer strong {
-            color: #7c5cff;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 850px) {
-
-            .games {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            nav {
-                display: none;
-            }
-
-            .search-box {
-                flex-wrap: wrap;
-            }
-
-            .search-wrapper {
-                flex-basis: 100%;
-            }
-
-            .search-button,
-            .duck-button {
-                flex: 1;
-            }
-        }
-
-        @media (max-width: 550px) {
-
-            .games {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                padding-top: 60px;
-            }
-
-            .hero h1 {
-                letter-spacing: -2px;
-            }
-
-            .search-container {
-                padding: 0 15px;
-            }
-
-            .search-button,
-            .duck-button {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CoolioBeans — Game Portal</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    background: #05030d;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+#bgCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background:
+        radial-gradient(circle at 50% 20%, #160a35 0%, #080414 40%, #030208 100%);
+}
+
+.background-grid {
+    position: fixed;
+    inset: 0;
+    z-index: -8;
+    pointer-events: none;
+    opacity: .25;
+
+    background-image:
+        linear-gradient(rgba(151, 71, 255, .12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(151, 71, 255, .12) 1px, transparent 1px);
+
+    background-size: 60px 60px;
+
+    transform: perspective(700px) rotateX(60deg) translateY(100px) scale(2);
+    transform-origin: center bottom;
+
+    animation: gridMove 12s linear infinite;
+}
+
+@keyframes gridMove {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 0 600px;
+    }
+}
+
+.blob {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: .25;
+    z-index: -9;
+    pointer-events: none;
+}
+
+.blob.one {
+    background: #7c2cff;
+    top: -200px;
+    left: -150px;
+    animation: blobOne 12s ease-in-out infinite alternate;
+}
+
+.blob.two {
+    background: #00d9ff;
+    right: -200px;
+    top: 30%;
+    animation: blobTwo 15s ease-in-out infinite alternate;
+}
+
+.blob.three {
+    background: #ff2bd6;
+    left: 30%;
+    bottom: -300px;
+    animation: blobThree 17s ease-in-out infinite alternate;
+}
+
+@keyframes blobOne {
+    to {
+        transform: translate(250px, 200px) scale(1.3);
+    }
+}
+
+@keyframes blobTwo {
+    to {
+        transform: translate(-250px, -100px) scale(1.2);
+    }
+}
+
+@keyframes blobThree {
+    to {
+        transform: translate(150px, -200px) scale(1.3);
+    }
+}
+
+/* Mouse glow */
+
+.mouse-glow {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -5;
+
+    background: radial-gradient(
+        circle,
+        rgba(160, 70, 255, .15) 0%,
+        rgba(160, 70, 255, .05) 35%,
+        transparent 70%
+    );
+
+    transform: translate(-50%, -50%);
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+header {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1150px, calc(100% - 30px));
+    z-index: 100;
+
+    padding: 13px 18px;
+
+    background: rgba(10, 7, 20, .65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 22px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.35),
+        inset 0 1px rgba(255,255,255,.08);
+
+    transition: .3s;
+}
+
+header:hover {
+    border-color: rgba(165, 84, 255, .3);
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -1px;
+
+    background: linear-gradient(
+        90deg,
+        #fff,
+        #b56cff,
+        #64eaff,
+        #fff
+    );
+
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation: logoGradient 5s linear infinite;
+}
+
+@keyframes logoGradient {
+    to {
+        background-position: 300% 0;
+    }
+}
+
+.nav-links {
+    display: flex;
+    gap: 6px;
+}
+
+.nav-links a {
+    color: #aaa3b8;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 12px;
+    transition: .25s;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.nav-links a:hover {
+    color: white;
+    background: rgba(255,255,255,.07);
+}
+
+.nav-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #aaa3b8;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #55ff99;
+    box-shadow: 0 0 15px #55ff99;
+    animation: statusPulse 1.5s infinite;
+}
+
+@keyframes statusPulse {
+    50% {
+        transform: scale(.6);
+        opacity: .5;
+    }
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 850px;
+    padding: 180px 20px 100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 950px;
+    animation: heroEnter 1s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes heroEnter {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 15px;
+    margin-bottom: 25px;
+
+    border-radius: 100px;
+
+    background: rgba(148, 65, 255, .1);
+    border: 1px solid rgba(170, 91, 255, .3);
+
+    color: #d6b7ff;
+    font-size: 13px;
+    font-weight: 800;
+
+    box-shadow:
+        0 0 30px rgba(139, 63, 255, .12);
+
+    animation: badgeFloat 3s ease-in-out infinite;
+}
+
+@keyframes badgeFloat {
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.hero h1 {
+    font-size: clamp(65px, 11vw, 145px);
+    line-height: .82;
+    letter-spacing: -8px;
+    font-weight: 1000;
+
+    margin-bottom: 30px;
+
+    background:
+        linear-gradient(
+            110deg,
+            #fff 10%,
+            #c98cff 35%,
+            #8e4cff 50%,
+            #5fe8ff 70%,
+            #fff 90%
+        );
+
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation: titleGradient 6s linear infinite;
+
+    text-shadow: 0 0 80px rgba(155, 67, 255, .15);
+}
+
+@keyframes titleGradient {
+    to {
+        background-position: 300% 0;
+    }
+}
+
+.hero h1 span {
+    display: block;
+}
+
+.hero-subtitle {
+    max-width: 680px;
+    margin: auto;
+
+    color: #a8a0b6;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 35px;
+    flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 15px 25px;
+    border-radius: 14px;
+
+    text-decoration: none;
+    font-weight: 900;
+
+    transition:
+        transform .25s,
+        box-shadow .25s,
+        background .25s;
+}
+
+.primary-btn {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8d39ff,
+            #5e4bff
+        );
+
+    box-shadow:
+        0 0 35px rgba(125, 51, 255, .3);
+}
+
+.primary-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+
+    box-shadow:
+        0 15px 45px rgba(125, 51, 255, .45);
+}
+
+.secondary-btn {
+    color: #ddd;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+}
+
+.secondary-btn:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,.08);
+}
+
+/* Floating decorative symbols */
+
+.floating-symbol {
+    position: absolute;
+    font-size: 30px;
+    opacity: .25;
+    filter: drop-shadow(0 0 15px currentColor);
+    animation: floatSymbol 5s ease-in-out infinite;
+}
+
+.symbol1 {
+    left: 10%;
+    top: 35%;
+    color: #a86cff;
+}
+
+.symbol2 {
+    right: 12%;
+    top: 28%;
+    color: #55e8ff;
+    animation-delay: 1s;
+}
+
+.symbol3 {
+    left: 18%;
+    bottom: 20%;
+    color: #ff5fe0;
+    animation-delay: 2s;
+}
+
+.symbol4 {
+    right: 18%;
+    bottom: 25%;
+    color: #a86cff;
+    animation-delay: 3s;
+}
+
+@keyframes floatSymbol {
+    50% {
+        transform: translateY(-25px) rotate(15deg);
+    }
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    max-width: 900px;
+    margin: -50px auto 100px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+
+    padding: 0 20px;
+}
+
+.stat {
+    padding: 25px;
+    text-align: center;
+
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px;
+
+    backdrop-filter: blur(15px);
+
+    transition: .3s;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+    border-color: rgba(163, 78, 255, .35);
+}
+
+.stat-number {
+    font-size: 30px;
+    font-weight: 1000;
+
+    background: linear-gradient(90deg, #fff, #a866ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-label {
+    color: #85808e;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    max-width: 1150px;
+    margin: auto;
+    padding: 100px 20px;
+}
+
+.section-header {
+    margin-bottom: 40px;
+}
+
+.section-kicker {
+    color: #a966ff;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: clamp(35px, 5vw, 60px);
+    letter-spacing: -3px;
+    font-weight: 1000;
+}
+
+.section-description {
+    color: #817b89;
+    margin-top: 10px;
+}
+
+/* =========================
+   FEATURED
+========================= */
+
+.featured {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 300px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(111, 38, 255, .2),
+            rgba(17, 12, 30, .85)
+        );
+
+    border: 1px solid rgba(169, 94, 255, .2);
+
+    padding: 45px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.25);
+
+    transition: .4s;
+}
+
+.featured:hover {
+    border-color: rgba(170, 94, 255, .5);
+    transform: translateY(-5px);
+}
+
+.featured::before {
+    content: "";
+
+    position: absolute;
+    width: 350px;
+    height: 350px;
+
+    right: -100px;
+    top: -150px;
+
+    background: #873cff;
+    opacity: .2;
+
+    filter: blur(90px);
+    border-radius: 50%;
+}
+
+.featured-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.featured-tag {
+    display: inline-block;
+
+    padding: 6px 10px;
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.08);
+    color: #c7a3ff;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    margin-bottom: 15px;
+}
+
+.featured h3 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.featured p {
+    color: #aaa2b4;
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-area {
+    margin: 30px 0 45px;
+
+    display: flex;
+    gap: 10px;
+}
+
+.search-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .5;
+}
+
+#search {
+    width: 100%;
+
+    padding: 16px 20px 16px 48px;
+
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,255,255,.1);
+
+    color: white;
+    outline: none;
+
+    font-size: 15px;
+
+    backdrop-filter: blur(10px);
+
+    transition: .25s;
+}
+
+#search:focus {
+    border-color: #934cff;
+
+    box-shadow:
+        0 0 30px rgba(147, 76, 255, .12);
+}
+
+.search-btn {
+    padding: 0 23px;
+
+    border: none;
+    border-radius: 15px;
+
+    color: white;
+    font-weight: 900;
+
+    cursor: pointer;
+
+    background: #7d3cff;
+
+    transition: .25s;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(125,60,255,.3);
+}
+
+.web-btn {
+    padding: 0 20px;
+
+    border-radius: 15px;
+
+    color: #ddd;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+
+    font-weight: 800;
+}
+
+/* =========================
+   GAME GRID
+========================= */
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.game-card {
+    position: relative;
+
+    padding: 28px;
+
+    min-height: 260px;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.025)
+        );
+
+    border: 1px solid rgba(255,255,255,.09);
+
+    overflow: hidden;
+
+    transform-style: preserve-3d;
+
+    transition:
+        transform .15s ease,
+        border-color .3s,
+        box-shadow .3s;
+
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+}
+
+.game-card::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at var(--mouse-x) var(--mouse-y),
+            rgba(173, 92, 255, .22),
+            transparent 35%
+        );
+
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+.game-card:hover::before {
+    opacity: 1;
+}
+
+.game-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    right: -40px;
+    bottom: -40px;
+
+    border-radius: 50%;
+
+    background: #7e39ff;
+    opacity: .08;
+
+    filter: blur(30px);
+
+    transition: .4s;
+}
+
+.game-card:hover::after {
+    transform: scale(2);
+    opacity: .16;
+}
+
+.game-card:hover {
+    border-color: rgba(170, 93, 255, .45);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.35),
+        0 0 40px rgba(133,58,255,.08);
+}
+
+.game-icon {
+    position: relative;
+    z-index: 2;
+
+    width: 65px;
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: rgba(140, 70, 255, .13);
+    border: 1px solid rgba(169, 95, 255, .2);
+
+    font-size: 30px;
+
+    margin-bottom: 20px;
+
+    transition: .3s;
+}
+
+.game-card:hover .game-icon {
+    transform: translateZ(30px) rotate(-5deg) scale(1.1);
+
+    box-shadow:
+        0 0 35px rgba(144, 67, 255, .2);
+}
+
+.game-card h3 {
+    position: relative;
+    z-index: 2;
+
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.game-card p {
+    position: relative;
+    z-index: 2;
+
+    color: #8f8997;
+    line-height: 1.6;
+    font-size: 14px;
+
+    max-width: 430px;
+}
+
+.card-bottom {
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 25px;
+}
+
+.game-tag {
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+
+    color: #a99fad;
+    background: rgba(255,255,255,.05);
+}
+
+.play-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 10px 15px;
+
+    color: white;
+    text-decoration: none;
+
+    border-radius: 11px;
+
+    background: rgba(128, 55, 255, .2);
+    border: 1px solid rgba(149, 73, 255, .25);
+
+    font-size: 13px;
+    font-weight: 900;
+
+    transition: .25s;
+}
+
+.play-btn:hover {
+    background: #803cff;
+    transform: translateX(3px);
+
+    box-shadow:
+        0 8px 25px rgba(128,60,255,.3);
+}
+
+/* Coming soon */
+
+.coming-soon {
+    opacity: .7;
+}
+
+.coming-soon .game-icon {
+    background: rgba(255,255,255,.04);
+}
+
+/* =========================
+   ABOUT
+========================= */
+
+.about-box {
+    padding: 45px;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,.035);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    backdrop-filter: blur(15px);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.about-box::before {
+    content: "COOLIOBEANS";
+
+    position: absolute;
+
+    right: -80px;
+    bottom: -50px;
+
+    font-size: 100px;
+    font-weight: 1000;
+
+    color: white;
+    opacity: .025;
+
+    transform: rotate(-10deg);
+}
+
+.about-box h2 {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.about-box p {
+    color: #99919f;
+    line-height: 1.8;
+    max-width: 750px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    border-top: 1px solid rgba(255,255,255,.07);
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #615c68;
+    font-size: 13px;
+}
+
+/* =========================
+   SCROLL REVEAL
+========================= */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(35px);
+
+    transition:
+        opacity .8s ease,
+        transform .8s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   CURSOR
+========================= */
+
+.cursor-dot,
+.cursor-ring {
+    position: fixed;
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    border-radius: 50%;
+}
+
+.cursor-dot {
+    width: 6px;
+    height: 6px;
+
+    background: white;
+
+    transform: translate(-50%, -50%);
+
+    box-shadow:
+        0 0 15px #fff,
+        0 0 30px #9e4cff;
+}
+
+.cursor-ring {
+    width: 35px;
+    height: 35px;
+
+    border: 1px solid rgba(180,120,255,.6);
+
+    transform: translate(-50%, -50%);
+
+    transition:
+        width .2s,
+        height .2s,
+        border-color .2s;
+}
+
+body.cursor-hover .cursor-ring {
+    width: 55px;
+    height: 55px;
+
+    border-color: rgba(110,230,255,.8);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+    header {
+        top: 10px;
+    }
+
+    .nav-status {
+        display: none;
+    }
+
+    .nav-links {
+        gap: 0;
+    }
+
+    .nav-links a {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .hero {
+        min-height: 750px;
+        padding-top: 150px;
+    }
+
+    .hero h1 {
+        letter-spacing: -5px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        margin-top: -20px;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-area {
+        flex-direction: column;
+    }
+
+    .search-btn,
+    .web-btn {
+        min-height: 48px;
+        justify-content: center;
+    }
+
+    .featured {
+        padding: 30px;
+    }
+
+    .featured h3 {
+        font-size: 32px;
+    }
+
+    .section {
+        padding: 70px 20px;
+    }
+
+    .cursor-dot,
+    .cursor-ring {
+        display: none;
+    }
+}
+
+@media (pointer: coarse) {
+    .cursor-dot,
+    .cursor-ring {
+        display: none;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
+<canvas id="bgCanvas"></canvas>
 
-    <header>
-        <div class="navbar">
+<div class="background-grid"></div>
 
-            <div class="logo">
-                🎮 Coolio<span>Beans</span>
-            </div>
+<div class="blob one"></div>
+<div class="blob two"></div>
+<div class="blob three"></div>
 
-            <nav>
-                <a href="#">Home</a>
-                <a href="#games">Games</a>
-                <a href="#about">About</a>
-            </nav>
+<div class="mouse-glow"></div>
 
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header>
+
+    <nav class="nav">
+
+        <div class="logo">
+            🎮 CoolioBeans
         </div>
-    </header>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#games">Games</a>
+            <a href="#about">About</a>
+        </div>
+
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            ONLINE
+        </div>
+
+    </nav>
+
+</header>
 
 
-    <!-- HERO -->
+<!-- =========================
+     HERO
+========================= -->
 
-    <section class="hero">
+<section class="hero" id="home">
+
+    <div class="floating-symbol symbol1">✦</div>
+    <div class="floating-symbol symbol2">✧</div>
+    <div class="floating-symbol symbol3">◆</div>
+    <div class="floating-symbol symbol4">✦</div>
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            ⚡ WELCOME TO COOLIOBEANS
+        </div>
 
         <h1>
-            PLAY.<br>
+            <span>PLAY.</span>
             <span>HAVE FUN.</span>
         </h1>
 
-        <p>
-            Welcome to CoolioBeans — a place to find
-            cool games and waste way too much time playing them.
+        <p class="hero-subtitle">
+            A tiny gaming universe packed with browser games,
+            questionable amounts of caffeine, and absolutely
+            zero reason to be productive.
         </p>
 
-        <a class="hero-button" href="#games">
-            🎮 Browse Games
-        </a>
+        <div class="hero-buttons">
 
-    </section>
+            <a href="#games" class="primary-btn">
+                🎮 Explore Games
+            </a>
 
-
-    <!-- SEARCH -->
-
-    <div class="search-container">
-
-        <div class="search-title">
-            🔎 Find something to play
-        </div>
-
-        <div class="search-box">
-
-            <div class="search-wrapper">
-
-                <span class="search-icon">🔎</span>
-
-                <input
-                    id="search"
-                    class="search"
-                    type="text"
-                    placeholder="Search games..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-            <button
-                class="search-button"
-                onclick="searchGames()"
-            >
-                SEARCH
-            </button>
-
-            <button
-                class="duck-button"
-                onclick="searchDuckDuckGo()"
-            >
-                🦆 WEB
-            </button>
+            <a href="#about" class="secondary-btn">
+                ✨ What is this?
+            </a>
 
         </div>
 
     </div>
 
+</section>
 
-    <!-- GAMES -->
 
-    <main id="games">
+<!-- =========================
+     STATS
+========================= -->
+
+<div class="stats reveal">
+
+    <div class="stat">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Games & Experiences</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Free To Play</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Potential For Fun</div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FEATURED
+========================= -->
+
+<section class="section reveal">
+
+    <div class="section-header">
+
+        <div class="section-kicker">
+            FEATURED
+        </div>
 
         <div class="section-title">
+            Something cool.
+        </div>
 
-            <div>
-                <h2>🔥 Featured Games</h2>
-                <p>Pick something and start playing.</p>
+    </div>
+
+    <div class="featured">
+
+        <div class="featured-content">
+
+            <div class="featured-tag">
+                🔥 FEATURED GAME
             </div>
+
+            <h3>
+                Zombie Survival
+            </h3>
+
+            <p>
+                Grab abilities, level up, destroy waves of zombies,
+                fight bosses, and become ridiculously overpowered.
+            </p>
+
+            <a href="games/zombie/" class="primary-btn">
+                Play Now →
+            </a>
 
         </div>
 
+    </div>
 
-        <div class="games" id="gameGrid">
-
-
-            <!-- GAME 1 -->
-
-            <div class="game-card" data-name="Flappy Bird">
-
-                <div class="game-image">
-                    🐦
-                </div>
-
-                <div class="game-info">
-
-                    <span class="game-tag">ARCADE</span>
-
-                    <h3>Flappy Bird</h3>
-
-                    <p>
-                        Dodge the pipes and see how high
-                        you can get.
-                    </p>
-
-                    <a
-                        class="play-button"
-                        href="games/flappy/"
-                    >
-                        ▶ PLAY
-                    </a>
-
-                </div>
-
-            </div>
+</section>
 
 
-            <!-- GAME 2 -->
+<!-- =========================
+     GAMES
+========================= -->
 
-            <div class="game-card" data-name="Snake">
+<section class="section" id="games">
 
-                <div class="game-image">
-                    🐍
-                </div>
+    <div class="section-header reveal">
 
-                <div class="game-info">
+        <div class="section-kicker">
+            GAME LIBRARY
+        </div>
 
-                    <span class="game-tag">CLASSIC</span>
+        <div class="section-title">
+            Pick your poison.
+        </div>
 
-                    <h3>Snake</h3>
+        <div class="section-description">
+            No downloads. No launcher. Just click and play.
+        </div>
 
-                    <p>
-                        Eat the food, grow bigger,
-                        and don't hit yourself.
-                    </p>
-
-                    <a
-                        class="play-button"
-                        href="games/snake/"
-                    >
-                        ▶ PLAY
-                    </a>
-
-                </div>
-
-            </div>
+    </div>
 
 
-            <!-- GAME 3 -->
+    <!-- SEARCH -->
 
-            <div class="game-card" data-name="Miner">
+    <div class="search-area reveal">
 
-                <div class="game-image">
-                    ⛏️
-                </div>
+        <div class="search-wrapper">
 
-                <div class="game-info">
+            <span class="search-icon">
+                🔎
+            </span>
 
-                    <h3>Miner</h3>
-
-                    <p>
-                        Dig deep, find rare ores,
-                        and get rich!
-                    </p>
-
-                    <span class="game-tag">MINING</span>
-
-                    <a
-                        class="play-button"
-                        href="games/miner/"
-                    >
-                        ▶ PLAY
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- GAME 4 -->
-
-            <div class="game-card" data-name="Zombie Survival">
-
-                <div class="game-image">
-                    🧟
-                </div>
-
-                <div class="game-info">
-
-                    <h3>Zombie Survival</h3>
-
-                    <p>
-                        Survive waves of zombies
-                        and upgrade your arsenal!
-                    </p>
-
-                    <span class="game-tag">SURVIVAL</span>
-
-                    <a
-                        class="play-button"
-                        href="games/zombie/"
-                    >
-                        ▶ PLAY
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <!-- GAME 5 -->
-
-            <div class="game-card" data-name="Coming Soon">
-
-                <div class="game-image">
-                    ❓
-                </div>
-
-                <div class="game-info">
-
-                    <span class="game-tag">COMING SOON</span>
-
-                    <h3>Something Cool</h3>
-
-                    <p>
-                        A new game is coming soon...
-                    </p>
-
-                    <button
-                        class="play-button"
-                        onclick="comingSoon()"
-                    >
-                        🔒 SOON
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- NO RESULTS -->
-
-            <div
-                class="no-results"
-                id="noResults"
+            <input
+                id="search"
+                type="text"
+                placeholder="Search games..."
+                autocomplete="off"
             >
-                😭 No games found.
-            </div>
-
 
         </div>
 
-    </main>
+        <button class="search-btn" onclick="searchGames()">
+            SEARCH
+        </button>
+
+        <a
+            class="web-btn"
+            href="https://duckduckgo.com/"
+            target="_blank"
+            rel="noopener"
+        >
+            WEB ↗
+        </a>
+
+    </div>
 
 
-    <!-- ABOUT -->
+    <!-- GAME GRID -->
 
-    <section id="about">
+    <div class="games-grid" id="gameGrid">
+
+
+        <!-- FLAPPY -->
+
+        <article class="game-card reveal" data-name="flappy bird">
+
+            <div class="game-icon">
+                🐦
+            </div>
+
+            <h3>
+                Flappy Bird
+            </h3>
+
+            <p>
+                Tap your way through the pipes.
+                Try not to become bird soup.
+            </p>
+
+            <div class="card-bottom">
+
+                <span class="game-tag">
+                    Arcade
+                </span>
+
+                <a
+                    href="games/flappy/"
+                    class="play-btn"
+                >
+                    PLAY →
+                </a>
+
+            </div>
+
+        </article>
+
+
+        <!-- SNAKE -->
+
+        <article class="game-card reveal" data-name="snake">
+
+            <div class="game-icon">
+                🐍
+            </div>
+
+            <h3>
+                Snake
+            </h3>
+
+            <p>
+                Eat food, grow bigger,
+                and try not to slam into yourself.
+            </p>
+
+            <div class="card-bottom">
+
+                <span class="game-tag">
+                    Classic
+                </span>
+
+                <a
+                    href="games/snake/"
+                    class="play-btn"
+                >
+                    PLAY →
+                </a>
+
+            </div>
+
+        </article>
+
+
+        <!-- MINER -->
+
+        <article class="game-card reveal" data-name="miner mining">
+
+            <div class="game-icon">
+                ⛏️
+            </div>
+
+            <h3>
+                Miner
+            </h3>
+
+            <p>
+                Dig deep, collect rare ores,
+                upgrade your gear, and get rich.
+            </p>
+
+            <div class="card-bottom">
+
+                <span class="game-tag">
+                    Mining
+                </span>
+
+                <a
+                    href="games/miner/"
+                    class="play-btn"
+                >
+                    PLAY →
+                </a>
+
+            </div>
+
+        </article>
+
+
+        <!-- ZOMBIE -->
+
+        <article class="game-card reveal" data-name="zombie survival zombie brawl">
+
+            <div class="game-icon">
+                🧟
+            </div>
+
+            <h3>
+                Zombie Survival
+            </h3>
+
+            <p>
+                Choose abilities, destroy zombies,
+                level up, and survive increasingly insane waves.
+            </p>
+
+            <div class="card-bottom">
+
+                <span class="game-tag">
+                    Survival
+                </span>
+
+                <a
+                    href="games/zombie/"
+                    class="play-btn"
+                >
+                    PLAY →
+                </a>
+
+            </div>
+
+        </article>
+
+
+        <!-- COMING SOON -->
+
+        <article
+            class="game-card coming-soon reveal"
+            data-name="coming soon"
+        >
+
+            <div class="game-icon">
+                🚀
+            </div>
+
+            <h3>
+                Coming Soon
+            </h3>
+
+            <p>
+                Something ridiculously cool is
+                probably being cooked right now.
+            </p>
+
+            <div class="card-bottom">
+
+                <span class="game-tag">
+                    Soon™
+                </span>
+
+                <span class="game-tag">
+                    🔒 LOCKED
+                </span>
+
+            </div>
+
+        </article>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT
+========================= -->
+
+<section class="section" id="about">
+
+    <div class="section-header reveal">
+
+        <div class="section-kicker">
+            ABOUT
+        </div>
+
+        <div class="section-title">
+            Why does this exist?
+        </div>
+
+    </div>
+
+    <div class="about-box reveal">
 
         <h2>
-            About CoolioBeans
+            Because games are cool.
         </h2>
 
         <p>
-            This is a free gaming website made for people
-            who just want to play some games.
+            CoolioBeans is a little corner of the internet for
+            browser games and random experiments. Everything here
+            is designed to be quick, simple, and fun. No giant
+            downloads, no complicated launchers—just open a game
+            and start playing.
         </p>
 
-    </section>
+    </div>
+
+</section>
 
 
-    <!-- FOOTER -->
+<!-- =========================
+     FOOTER
+========================= -->
 
-    <footer>
+<footer>
 
-        <p>
-            © 2026 <strong>CoolioBeans</strong>
-            · Made with AI cause i cant code T-T
-            ps: for more games dm on my discord alt: cooliobeanss.
-        </p>
+    © 2026 CoolioBeans · Made with AI cause i cant code T-T
+    <br>
+    ps: for more games dm on my discord alt: cooliobeanss.
 
-    </footer>
+</footer>
 
 
-    <!-- JAVASCRIPT -->
+<script>
 
-    <script>
+/* =========================================================
+   PARTICLE BACKGROUND
+========================================================= */
 
-        /* COMING SOON */
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
 
-        function comingSoon() {
+let particles = [];
+let width;
+let height;
 
-            alert(
-                "👀 This game isn't ready yet..."
-            );
+function resizeCanvas() {
+
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+
+}
+
+resizeCanvas();
+
+window.addEventListener("resize", resizeCanvas);
+
+
+class Particle {
+
+    constructor() {
+
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+
+        this.vx = (Math.random() - .5) * .35;
+        this.vy = (Math.random() - .5) * .35;
+
+        this.size = Math.random() * 2 + .4;
+
+        this.alpha = Math.random() * .6 + .1;
+
+    }
+
+    update() {
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+
+    }
+
+    draw() {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(180,130,255,${this.alpha})`;
+
+        ctx.fill();
+
+    }
+
+}
+
+
+function createParticles() {
+
+    particles = [];
+
+    const count =
+        Math.min(
+            150,
+            Math.floor((width * height) / 10000)
+        );
+
+    for (let i = 0; i < count; i++) {
+
+        particles.push(new Particle());
+
+    }
+
+}
+
+createParticles();
+
+window.addEventListener("resize", createParticles);
+
+
+function animateParticles() {
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    for (const p of particles) {
+
+        p.update();
+        p.draw();
+
+    }
+
+    /* connections */
+
+    for (let i = 0; i < particles.length; i++) {
+
+        for (
+            let j = i + 1;
+            j < particles.length;
+            j++
+        ) {
+
+            const a = particles[i];
+            const b = particles[j];
+
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+
+            const distance =
+                Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 120) {
+
+                const opacity =
+                    (1 - distance / 120) * .12;
+
+                ctx.beginPath();
+
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+
+                ctx.strokeStyle =
+                    `rgba(160,100,255,${opacity})`;
+
+                ctx.lineWidth = .6;
+
+                ctx.stroke();
+
+            }
 
         }
 
+    }
 
-        /* GAME SEARCH */
+    requestAnimationFrame(animateParticles);
 
-        function searchGames() {
+}
 
-            const search =
-                document.getElementById("search");
+animateParticles();
 
-            const cards =
-                document.querySelectorAll(".game-card");
 
-            const noResults =
-                document.getElementById("noResults");
+/* =========================================================
+   MOUSE GLOW
+========================================================= */
 
-            const searchText =
-                search.value
-                    .toLowerCase()
-                    .trim();
+const mouseGlow =
+    document.querySelector(".mouse-glow");
 
-            let found = false;
+const cursorDot =
+    document.querySelector(".cursor-dot");
 
-            cards.forEach(function(card) {
+const cursorRing =
+    document.querySelector(".cursor-ring");
 
-                if (card === noResults) return;
 
-                const name =
-                    card.dataset.name
-                        .toLowerCase();
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
 
-                if (
-                    name.includes(searchText)
-                ) {
+let ringX = mouseX;
+let ringY = mouseY;
 
-                    card.style.display = "";
 
-                    found = true;
+window.addEventListener("mousemove", e => {
 
-                } else {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 
-                    card.style.display = "none";
+    mouseGlow.style.left =
+        mouseX + "px";
+
+    mouseGlow.style.top =
+        mouseY + "px";
+
+    cursorDot.style.left =
+        mouseX + "px";
+
+    cursorDot.style.top =
+        mouseY + "px";
+
+});
+
+
+function animateCursor() {
+
+    ringX += (mouseX - ringX) * .12;
+    ringY += (mouseY - ringY) * .12;
+
+    cursorRing.style.left =
+        ringX + "px";
+
+    cursorRing.style.top =
+        ringY + "px";
+
+    requestAnimationFrame(animateCursor);
+
+}
+
+animateCursor();
+
+
+/* =========================================================
+   CARD TILT
+========================================================= */
+
+const cards =
+    document.querySelectorAll(".game-card");
+
+
+cards.forEach(card => {
+
+    card.addEventListener("mousemove", e => {
+
+        const rect =
+            card.getBoundingClientRect();
+
+        const x =
+            e.clientX - rect.left;
+
+        const y =
+            e.clientY - rect.top;
+
+        const centerX =
+            rect.width / 2;
+
+        const centerY =
+            rect.height / 2;
+
+        const rotateX =
+            ((y - centerY) / centerY) * -5;
+
+        const rotateY =
+            ((x - centerX) / centerX) * 5;
+
+        card.style.transform =
+            `perspective(800px)
+             rotateX(${rotateX}deg)
+             rotateY(${rotateY}deg)
+             translateY(-5px)`;
+
+        card.style.setProperty(
+            "--mouse-x",
+            `${(x / rect.width) * 100}%`
+        );
+
+        card.style.setProperty(
+            "--mouse-y",
+            `${(y / rect.height) * 100}%`
+        );
+
+    });
+
+
+    card.addEventListener("mouseleave", () => {
+
+        card.style.transform =
+            "";
+
+    });
+
+});
+
+
+/* =========================================================
+   CURSOR HOVER EFFECT
+========================================================= */
+
+const interactive =
+    document.querySelectorAll(
+        "a, button, input, .game-card"
+    );
+
+
+interactive.forEach(element => {
+
+    element.addEventListener("mouseenter", () => {
+
+        document.body.classList.add(
+            "cursor-hover"
+        );
+
+    });
+
+    element.addEventListener("mouseleave", () => {
+
+        document.body.classList.remove(
+            "cursor-hover"
+        );
+
+    });
+
+});
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+const searchInput =
+    document.getElementById("search");
+
+
+function searchGames() {
+
+    const query =
+        searchInput.value
+            .toLowerCase()
+            .trim();
+
+    const gameCards =
+        document.querySelectorAll(
+            ".game-card"
+        );
+
+    gameCards.forEach(card => {
+
+        const name =
+            card.dataset.name || "";
+
+        if (
+            query === "" ||
+            name.includes(query)
+        ) {
+
+            card.style.display = "";
+
+        } else {
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+searchInput.addEventListener(
+    "input",
+    searchGames
+);
+
+
+searchInput.addEventListener(
+    "keydown",
+    e => {
+
+        if (e.key === "Enter") {
+
+            searchGames();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SCROLL REVEAL
+========================================================= */
+
+const revealElements =
+    document.querySelectorAll(".reveal");
+
+
+const revealObserver =
+    new IntersectionObserver(
+        entries => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add(
+                        "visible"
+                    );
+
+                    revealObserver.unobserve(
+                        entry.target
+                    );
 
                 }
 
             });
 
-            if (found) {
+        },
+        {
+            threshold: .12
+        }
+    );
 
-                noResults.style.display = "none";
 
-            } else {
+revealElements.forEach(element => {
 
-                noResults.style.display = "block";
+    revealObserver.observe(element);
 
-            }
+});
+
+
+/* =========================================================
+   SMOOTH BUTTON EFFECT
+========================================================= */
+
+document.querySelectorAll(
+    ".primary-btn, .play-btn"
+).forEach(button => {
+
+    button.addEventListener(
+        "mousemove",
+        e => {
+
+            const rect =
+                button.getBoundingClientRect();
+
+            const x =
+                e.clientX - rect.left;
+
+            const y =
+                e.clientY - rect.top;
+
+            button.style.transform =
+                `translate(
+                    ${(x - rect.width / 2) * .08}px,
+                    ${(y - rect.height / 2) * .08}px
+                )`;
 
         }
+    );
 
+    button.addEventListener(
+        "mouseleave",
+        () => {
 
-        /* LIVE SEARCH */
-
-        document
-            .getElementById("search")
-            .addEventListener(
-                "input",
-                searchGames
-            );
-
-
-        /* ENTER KEY */
-
-        document
-            .getElementById("search")
-            .addEventListener(
-                "keydown",
-                function(event) {
-
-                    if (event.key === "Enter") {
-
-                        searchGames();
-
-                    }
-
-                }
-            );
-
-
-        /* DUCKDUCKGO SEARCH */
-
-        function searchDuckDuckGo() {
-
-            const search =
-                document.getElementById("search");
-
-            const query =
-                search.value.trim();
-
-            if (!query) {
-
-                window.open(
-                    "https://duckduckgo.com/",
-                    "_blank"
-                );
-
-                return;
-
-            }
-
-            window.open(
-                "https://duckduckgo.com/?q=" +
-                encodeURIComponent(query),
-                "_blank"
-            );
+            button.style.transform = "";
 
         }
+    );
 
-    </script>
+});
+
+</script>
 
 </body>
 </html>

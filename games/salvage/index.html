@@ -1840,78 +1840,190 @@ function updatePlayer(dt){
         CLIMBING
     */
 
-    if(me.climbing){
+  if(me.climbing){
 
-        const l=me.ladder;
+    const l=me.ladder;
+
+    if(!l){
+
+        me.climbing=false;
+
+    }else{
+
+        /*
+            JUMP OFF LADDER
+            Space / W / Up launches the player
+            away from the ladder.
+        */
 
         if(
-            !l ||
-            Math.abs(
-                me.x-
-                l.x
-            )>70
+            keys["Space"] ||
+            keys["KeyW"] ||
+            keys["ArrowUp"]
         ){
 
             me.climbing=false;
+            me.ladder=null;
 
-        }else{
+            me.vy=-me.jump*.85;
 
-            me.x=
-                l.x+
-                l.width/2-
-                me.width/2;
+            /*
+                Kick away from the ladder
+                based on which side we're facing.
+            */
 
-            let climbSpeed=190;
-
-            if(
-                keys["KeyW"] ||
-                keys["ArrowUp"]
-            ){
-
-                me.y-=
-                    climbSpeed*
-                    dt;
-
-            }
+            let direction=1;
 
             if(
-                keys["KeyS"] ||
-                keys["ArrowDown"]
+                keys["KeyA"] ||
+                keys["ArrowLeft"]
             ){
 
-                me.y+=
-                    climbSpeed*
-                    dt;
+                direction=-1;
+
+            }else if(
+                keys["KeyD"] ||
+                keys["ArrowRight"]
+            ){
+
+                direction=1;
+
+            }else{
+
+                direction=
+                    me.x <
+                    l.x+
+                    l.width/2
+                        ? -1
+                        : 1;
 
             }
 
-            const top=
-                l.topY-
-                me.height;
+            me.vx=
+                direction*
+                me.speed*
+                .9;
 
-            const bottom=
-                l.bottomY-
-                me.height;
-
-            if(me.y<=top){
-
-                me.y=top;
-                me.climbing=false;
-
-            }
-
-            if(me.y>=bottom){
-
-                me.y=bottom;
-                me.climbing=false;
-
-            }
+            me.grounded=false;
 
             return;
+        }
+
+        /*
+            SIDEWAYS KICK-OFF
+        */
+
+        if(
+            keys["KeyA"] ||
+            keys["ArrowLeft"] ||
+            keys["KeyD"] ||
+            keys["ArrowRight"]
+        ){
+
+            let direction=0;
+
+            if(
+                keys["KeyA"] ||
+                keys["ArrowLeft"]
+            ){
+                direction=-1;
+            }
+
+            if(
+                keys["KeyD"] ||
+                keys["ArrowRight"]
+            ){
+                direction=1;
+            }
+
+            me.climbing=false;
+            me.ladder=null;
+
+            me.vx=
+                direction*
+                me.speed;
+
+            me.vy=
+                -120;
+
+            me.grounded=false;
+
+            return;
+        }
+
+        /*
+            NORMAL CLIMBING
+        */
+
+        me.x=
+            l.x+
+            l.width/2-
+            me.width/2;
+
+        const climbSpeed=190;
+
+        if(
+            keys["KeyW"] ||
+            keys["ArrowUp"]
+        ){
+
+            me.y-=
+                climbSpeed*
+                dt;
 
         }
 
+        if(
+            keys["KeyS"] ||
+            keys["ArrowDown"]
+        ){
+
+            me.y+=
+                climbSpeed*
+                dt;
+
+        }
+
+        const top=
+            l.topY-
+            me.height;
+
+        const bottom=
+            l.bottomY-
+            me.height;
+
+        /*
+            Reaching the top does NOT
+            make you fall off.
+            You simply stand on the deck.
+        */
+
+        if(me.y<=top){
+
+            me.y=top;
+            me.climbing=false;
+            me.ladder=null;
+            me.grounded=true;
+
+        }
+
+        /*
+            Reaching the bottom.
+        */
+
+        if(me.y>=bottom){
+
+            me.y=bottom;
+            me.climbing=false;
+            me.ladder=null;
+            me.grounded=true;
+
+        }
+
+        return;
+
     }
+}
 
     /*
         HORIZONTAL

@@ -134,7 +134,7 @@ canvas {
 }
 
 .weapon {
-    min-width: 230px;
+    min-width: 250px;
 }
 
 .weaponName {
@@ -153,6 +153,20 @@ canvas {
     font-size: 12px;
     text-align: right;
     line-height: 1.6;
+}
+
+.armoryHudButton {
+    pointer-events: auto;
+    background: #29323b;
+    border: 1px solid #4b5864;
+    color: white;
+    font-size: 13px;
+    padding: 9px 13px;
+    margin-top: 8px;
+}
+
+.armoryHudButton:hover {
+    background: #3a4652;
 }
 
 #message {
@@ -179,7 +193,7 @@ canvas {
 #shop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.7);
+    background: rgba(0,0,0,.72);
     display: none;
     justify-content: center;
     align-items: center;
@@ -187,7 +201,9 @@ canvas {
 }
 
 .shopBox {
-    width: min(520px, 92vw);
+    width: min(760px, 94vw);
+    max-height: 90vh;
+    overflow-y: auto;
     background: #15191e;
     border: 1px solid #39414a;
     border-radius: 15px;
@@ -197,6 +213,23 @@ canvas {
 
 .shopBox h1 {
     margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.shopSubtitle {
+    color: #858e97;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.shopSection {
+    margin-top: 22px;
+}
+
+.shopSection h2 {
+    font-size: 15px;
+    color: #cbd1d6;
+    margin-bottom: 8px;
 }
 
 .shopItem {
@@ -208,6 +241,7 @@ canvas {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
 .shopItem strong {
@@ -217,6 +251,54 @@ canvas {
 .shopItem span {
     color: #929aa2;
     font-size: 12px;
+}
+
+.gunCard {
+    background: #1b2025;
+    border: 1px solid #303740;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.gunTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.gunName {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.gunDescription {
+    color: #9099a2;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.gunStats {
+    color: #b6bec6;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 8px;
+}
+
+.gunActions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.owned {
+    color: #65db83 !important;
+}
+
+.equipped {
+    background: #226c3c !important;
 }
 
 button {
@@ -247,6 +329,11 @@ button:hover {
 
 .red:hover {
     background: #a13d3d;
+}
+
+.disabled {
+    opacity: .45;
+    cursor: not-allowed;
 }
 
 #gameOver {
@@ -318,6 +405,10 @@ button:hover {
     .bottom {
         bottom: 10px;
     }
+
+    .shopBox {
+        padding: 18px;
+    }
 }
 </style>
 </head>
@@ -325,7 +416,6 @@ button:hover {
 <body>
 
 <canvas id="game"></canvas>
-
 <div id="crosshair"></div>
 
 <div id="hud">
@@ -333,29 +423,41 @@ button:hover {
     <div class="top">
 
         <div class="panel health">
+
             <div class="label">Health</div>
+
             <div class="bar">
                 <div id="healthBar"></div>
             </div>
 
             <div class="label" style="margin-top:8px;">Stamina</div>
+
             <div class="bar">
                 <div id="staminaBar"></div>
             </div>
+
         </div>
 
         <div class="center">
+
             <div class="wave">
                 WAVE <span id="wave">1</span>
             </div>
+
             <div class="waveSub">
-                Zombies remaining: <span id="zombies">0</span>
+                Zombies remaining:
+                <span id="zombies">0</span>
             </div>
+
         </div>
 
         <div class="panel right">
+
             <div class="label">Cash</div>
-            <div class="money">$<span id="money">0</span></div>
+
+            <div class="money">
+                $<span id="money">0</span>
+            </div>
 
             <div class="ammo">
                 <span id="ammo">12</span>/<span id="reserve">72</span>
@@ -364,6 +466,11 @@ button:hover {
             <div id="reloadText">
                 RELOADING...
             </div>
+
+            <button class="armoryHudButton" id="openArmoryHud">
+                🔫 ARMORY
+            </button>
+
         </div>
 
     </div>
@@ -371,23 +478,30 @@ button:hover {
     <div class="bottom">
 
         <div class="panel weapon">
+
             <div class="weaponName">
                 🔫 <span id="weaponName">Pistol</span>
             </div>
 
             <div class="weaponStats">
-                Damage: <span id="damage">25</span>
-                · Level <span id="weaponLevel">1</span>
+                Damage:
+                <span id="damage">25</span>
+                · Level
+                <span id="weaponLevel">1</span>
             </div>
+
         </div>
 
         <div class="panel controls">
+
             <b>WASD</b> Move ·
             <b>SHIFT</b> Sprint ·
             <b>Mouse</b> Aim/Shoot ·
             <b>R</b> Reload<br>
-            <b>E</b> Shop ·
-            <b>ESC</b> Close Shop
+
+            <b>E</b> Armory ·
+            <b>ESC</b> Close
+
         </div>
 
     </div>
@@ -400,54 +514,91 @@ button:hover {
 
     <div class="shopBox">
 
-        <h1>🛒 Armory</h1>
+        <h1>🔫 Armory</h1>
 
-        <p style="color:#999;">
-            Cash: <b style="color:#65db83;">$<span id="shopMoney">0</span></b>
+        <p class="shopSubtitle">
+            Buy weapons, equip them, and upgrade each gun separately.
         </p>
 
-        <div class="shopItem">
-            <div>
-                <strong>🔫 Damage Upgrade</strong>
-                <span>Increase weapon damage.</span>
-            </div>
+        <p style="color:#999;">
+            Cash:
+            <b style="color:#65db83;">
+                $<span id="shopMoney">0</span>
+            </b>
+        </p>
 
-            <button class="green" id="damageUpgrade">
-                Upgrade
-            </button>
+        <div class="shopSection">
+
+            <h2>WEAPONS</h2>
+
+            <div id="gunList"></div>
+
         </div>
 
-        <div class="shopItem">
-            <div>
-                <strong>📦 Ammo Refill</strong>
-                <span>Restock 60 bullets.</span>
+        <div class="shopSection">
+
+            <h2>UPGRADES & SUPPLIES</h2>
+
+            <div class="shopItem">
+
+                <div>
+                    <strong>🔧 Upgrade Current Weapon</strong>
+                    <span>
+                        Increase damage and magazine size.
+                    </span>
+                </div>
+
+                <button class="green" id="damageUpgrade">
+                    Upgrade
+                </button>
+
             </div>
 
-            <button class="green" id="ammoBuy">
-                $75
-            </button>
-        </div>
+            <div class="shopItem">
 
-        <div class="shopItem">
-            <div>
-                <strong>❤️ Medkit</strong>
-                <span>Restore 50 health.</span>
+                <div>
+                    <strong>📦 Ammo Refill</strong>
+                    <span>
+                        Restock 60 bullets.
+                    </span>
+                </div>
+
+                <button class="green" id="ammoBuy">
+                    $75
+                </button>
+
             </div>
 
-            <button class="green" id="medkitBuy">
-                $100
-            </button>
-        </div>
+            <div class="shopItem">
 
-        <div class="shopItem">
-            <div>
-                <strong>⚡ Stamina Upgrade</strong>
-                <span>Increase maximum stamina.</span>
+                <div>
+                    <strong>❤️ Medkit</strong>
+                    <span>
+                        Restore 50 health.
+                    </span>
+                </div>
+
+                <button class="green" id="medkitBuy">
+                    $100
+                </button>
+
             </div>
 
-            <button class="green" id="staminaUpgrade">
-                Upgrade
-            </button>
+            <div class="shopItem">
+
+                <div>
+                    <strong>⚡ Stamina Upgrade</strong>
+                    <span>
+                        Increase maximum stamina.
+                    </span>
+                </div>
+
+                <button class="green" id="staminaUpgrade">
+                    Upgrade
+                </button>
+
+            </div>
+
         </div>
 
         <button class="red" id="closeShop">
@@ -498,11 +649,13 @@ canvas.width = W;
 canvas.height = H;
 
 window.addEventListener("resize", () => {
+
     W = window.innerWidth;
     H = window.innerHeight;
 
     canvas.width = W;
     canvas.height = H;
+
 });
 
 const keys = {};
@@ -523,7 +676,7 @@ document.addEventListener("keydown", e => {
 
     if (e.key.toLowerCase() === "e") {
 
-        if (document.getElementById("shop").style.display === "flex") {
+        if (isShopOpen()) {
             closeShop();
         } else {
             openShop();
@@ -562,33 +715,244 @@ document.addEventListener("mouseup", () => {
     mouse.down = false;
 });
 
+
+/* =========================
+   PLAYER
+========================= */
+
 let player = {
+
     x: 0,
     y: 0,
+
     radius: 16,
+
     speed: 3.2,
+
     health: 100,
     maxHealth: 100,
+
     stamina: 100,
     maxStamina: 100
+
 };
+
+
+/* =========================
+   CAMERA
+========================= */
 
 let camera = {
     x: 0,
     y: 0
 };
 
+
+/* =========================
+   MONEY / SAVE DATA
+========================= */
+
 let money =
     Number(localStorage.getItem("zombieMoney")) || 0;
-
-let weaponLevel =
-    Number(localStorage.getItem("zombieWeapon")) || 1;
 
 let staminaLevel =
     Number(localStorage.getItem("zombieStamina")) || 1;
 
-let wave = 1;
-let kills = 0;
+
+/* =========================
+   GUN SYSTEM
+========================= */
+
+const guns = {
+
+    pistol: {
+
+        name: "Pistol",
+
+        cost: 0,
+
+        damage: 25,
+
+        maxAmmo: 12,
+
+        fireRate: 260,
+
+        bulletSpeed: 12,
+
+        pellets: 1,
+
+        spread: 0,
+
+        reload: 900,
+
+        description: "Reliable starter handgun."
+
+    },
+
+    smg: {
+
+        name: "SMG",
+
+        cost: 500,
+
+        damage: 15,
+
+        maxAmmo: 30,
+
+        fireRate: 90,
+
+        bulletSpeed: 13,
+
+        pellets: 1,
+
+        spread: 0.07,
+
+        reload: 1100,
+
+        description: "Fast firing with a large magazine."
+
+    },
+
+    shotgun: {
+
+        name: "Shotgun",
+
+        cost: 850,
+
+        damage: 20,
+
+        maxAmmo: 6,
+
+        fireRate: 650,
+
+        bulletSpeed: 11,
+
+        pellets: 7,
+
+        spread: 0.30,
+
+        reload: 1250,
+
+        description: "Fires 7 pellets per shot."
+
+    },
+
+    rifle: {
+
+        name: "Rifle",
+
+        cost: 1200,
+
+        damage: 45,
+
+        maxAmmo: 18,
+
+        fireRate: 300,
+
+        bulletSpeed: 15,
+
+        pellets: 1,
+
+        spread: 0.015,
+
+        reload: 1150,
+
+        description: "Accurate, powerful and balanced."
+
+    },
+
+    minigun: {
+
+        name: "Minigun",
+
+        cost: 3000,
+
+        damage: 12,
+
+        maxAmmo: 80,
+
+        fireRate: 55,
+
+        bulletSpeed: 14,
+
+        pellets: 1,
+
+        spread: 0.09,
+
+        reload: 1800,
+
+        description: "Insane fire rate. Absolute bullet hose."
+
+    }
+
+};
+
+
+let ownedGuns;
+
+try {
+
+    ownedGuns =
+        JSON.parse(
+            localStorage.getItem("zombieOwnedGuns")
+        ) || ["pistol"];
+
+} catch {
+
+    ownedGuns = ["pistol"];
+
+}
+
+if (!ownedGuns.includes("pistol")) {
+    ownedGuns.push("pistol");
+}
+
+
+let gunLevels;
+
+try {
+
+    gunLevels =
+        JSON.parse(
+            localStorage.getItem("zombieGunLevels")
+        ) || {};
+
+} catch {
+
+    gunLevels = {};
+
+}
+
+
+for (const id in guns) {
+
+    if (!gunLevels[id]) {
+        gunLevels[id] = 1;
+    }
+
+}
+
+
+let equippedGun =
+    localStorage.getItem("zombieEquippedGun") || "pistol";
+
+
+if (!guns[equippedGun] || !ownedGuns.includes(equippedGun)) {
+    equippedGun = "pistol";
+}
+
+
+let weapon = {
+    ...guns[equippedGun]
+};
+
+
+let weaponLevel = 1;
+
+
+/* =========================
+   AMMO
+========================= */
 
 let ammo = 12;
 let reserveAmmo = 72;
@@ -597,19 +961,50 @@ let reloading = false;
 let reloadTimer = 0;
 let shootTimer = 0;
 
+
+/* =========================
+   GAME STATE
+========================= */
+
+let wave = 1;
+let kills = 0;
+
 let zombies = [];
 let bullets = [];
 
 let waveDelay = 0;
 let spawning = false;
 
-const weapon = {
-    name: "Pistol",
-    maxAmmo: 12,
-    damage: 25,
-    fireRate: 260,
-    bulletSpeed: 12
-};
+let dead = false;
+
+
+/* =========================
+   WEAPON STATS
+========================= */
+
+function updateWeaponStats() {
+
+    weapon = {
+        ...guns[equippedGun]
+    };
+
+    weaponLevel =
+        gunLevels[equippedGun] || 1;
+
+    weapon.damage =
+        guns[equippedGun].damage +
+        ((weaponLevel - 1) * 8);
+
+    weapon.maxAmmo =
+        guns[equippedGun].maxAmmo +
+        ((weaponLevel - 1) * 2);
+
+}
+
+
+/* =========================
+   SAVE
+========================= */
 
 function saveGame() {
 
@@ -619,36 +1014,48 @@ function saveGame() {
     );
 
     localStorage.setItem(
-        "zombieWeapon",
-        weaponLevel
-    );
-
-    localStorage.setItem(
         "zombieStamina",
         staminaLevel
     );
 
+    localStorage.setItem(
+        "zombieOwnedGuns",
+        JSON.stringify(ownedGuns)
+    );
+
+    localStorage.setItem(
+        "zombieGunLevels",
+        JSON.stringify(gunLevels)
+    );
+
+    localStorage.setItem(
+        "zombieEquippedGun",
+        equippedGun
+    );
+
 }
+
+
+/* =========================
+   RESET
+========================= */
 
 function resetSave() {
 
     localStorage.removeItem("zombieMoney");
-    localStorage.removeItem("zombieWeapon");
     localStorage.removeItem("zombieStamina");
+    localStorage.removeItem("zombieOwnedGuns");
+    localStorage.removeItem("zombieGunLevels");
+    localStorage.removeItem("zombieEquippedGun");
 
     location.reload();
 
 }
 
-function updateWeaponStats() {
 
-    weapon.damage =
-        25 + ((weaponLevel - 1) * 10);
-
-    weapon.maxAmmo =
-        12 + ((weaponLevel - 1) * 2);
-
-}
+/* =========================
+   START
+========================= */
 
 function startGame() {
 
@@ -658,8 +1065,10 @@ function startGame() {
     player.y = 0;
 
     player.health = player.maxHealth;
+
     player.maxStamina =
-        100 + ((staminaLevel - 1) * 20);
+        100 +
+        ((staminaLevel - 1) * 20);
 
     player.stamina =
         player.maxStamina;
@@ -676,23 +1085,41 @@ function startGame() {
     spawning = false;
     waveDelay = 0;
 
-    document.getElementById("gameOver").style.display =
-        "none";
+    dead = false;
+
+    reloading = false;
+    reloadTimer = 0;
+    shootTimer = 0;
+
+    document.getElementById("gameOver")
+        .style.display = "none";
+
+    closeShop();
 
     startWave();
 
+    updateHUD();
+
 }
+
+
+/* =========================
+   WAVES
+========================= */
 
 function startWave() {
 
     spawning = true;
 
     let amount =
-        5 + ((wave - 1) * 3);
+        5 +
+        ((wave - 1) * 3);
 
     for (let i = 0; i < amount; i++) {
 
         setTimeout(() => {
+
+            if (dead) return;
 
             spawnZombie();
 
@@ -710,82 +1137,147 @@ function startWave() {
 
 }
 
+
+/* =========================
+   ZOMBIES
+========================= */
+
 function spawnZombie() {
 
     const angle =
-        Math.random() * Math.PI * 2;
+        Math.random() *
+        Math.PI *
+        2;
 
     const distance =
-        650 + Math.random() * 350;
+        650 +
+        Math.random() * 350;
 
     let typeRoll =
         Math.random();
 
     let type = "normal";
 
-    if (wave >= 5 && typeRoll < .18) {
+    if (
+        wave >= 5 &&
+        typeRoll < .18
+    ) {
         type = "fast";
     }
 
-    if (wave >= 8 && typeRoll < .08) {
+    if (
+        wave >= 8 &&
+        typeRoll < .08
+    ) {
         type = "tank";
     }
 
     let stats = {
+
         normal: {
+
             radius: 18,
-            speed: 1.15 + wave * .025,
-            health: 50 + wave * 5,
+
+            speed:
+                1.15 +
+                wave * .025,
+
+            health:
+                50 +
+                wave * 5,
+
             damage: 8,
+
             reward: 15
+
         },
 
         fast: {
+
             radius: 14,
-            speed: 2.05 + wave * .035,
-            health: 35 + wave * 4,
+
+            speed:
+                2.05 +
+                wave * .035,
+
+            health:
+                35 +
+                wave * 4,
+
             damage: 6,
+
             reward: 22
+
         },
 
         tank: {
+
             radius: 28,
-            speed: .65 + wave * .015,
-            health: 220 + wave * 20,
+
+            speed:
+                .65 +
+                wave * .015,
+
+            health:
+                220 +
+                wave * 20,
+
             damage: 18,
+
             reward: 60
+
         }
+
     }[type];
 
     zombies.push({
 
-        x: player.x +
-            Math.cos(angle) * distance,
+        x:
+            player.x +
+            Math.cos(angle) *
+            distance,
 
-        y: player.y +
-            Math.sin(angle) * distance,
+        y:
+            player.y +
+            Math.sin(angle) *
+            distance,
 
-        radius: stats.radius,
+        radius:
+            stats.radius,
 
-        speed: stats.speed,
+        speed:
+            stats.speed,
 
-        health: stats.health,
+        health:
+            stats.health,
 
-        maxHealth: stats.health,
+        maxHealth:
+            stats.health,
 
-        damage: stats.damage,
+        damage:
+            stats.damage,
 
-        reward: stats.reward,
+        reward:
+            stats.reward,
 
-        type: type,
+        type:
+            type,
 
-        attackCooldown: 0
+        attackCooldown:
+            0
 
     });
 
 }
 
+
+/* =========================
+   SHOOTING
+========================= */
+
 function shoot() {
+
+    if (dead) return;
 
     if (reloading)
         return;
@@ -798,6 +1290,7 @@ function shoot() {
         reload();
 
         return;
+
     }
 
     ammo--;
@@ -806,35 +1299,69 @@ function shoot() {
         weapon.fireRate;
 
     const dx =
-        mouse.x - W / 2;
+        mouse.x -
+        W / 2;
 
     const dy =
-        mouse.y - H / 2;
+        mouse.y -
+        H / 2;
 
-    const distance =
-        Math.hypot(dx, dy);
+    const baseAngle =
+        Math.atan2(
+            dy,
+            dx
+        );
 
-    bullets.push({
+    for (
+        let i = 0;
+        i < weapon.pellets;
+        i++
+    ) {
 
-        x: player.x,
+        let angle =
+            baseAngle;
 
-        y: player.y,
+        if (weapon.spread > 0) {
 
-        vx: dx / distance *
-            weapon.bulletSpeed,
+            angle +=
+                (Math.random() - .5) *
+                weapon.spread;
 
-        vy: dy / distance *
-            weapon.bulletSpeed,
+        }
 
-        damage: weapon.damage,
+        bullets.push({
 
-        life: 70
+            x: player.x,
+            y: player.y,
 
-    });
+            vx:
+                Math.cos(angle) *
+                weapon.bulletSpeed,
+
+            vy:
+                Math.sin(angle) *
+                weapon.bulletSpeed,
+
+            damage:
+                weapon.damage,
+
+            life: 70
+
+        });
+
+    }
 
 }
 
+
+/* =========================
+   RELOAD
+========================= */
+
 function reload() {
+
+    if (dead)
+        return;
 
     if (reloading)
         return;
@@ -846,17 +1373,21 @@ function reload() {
         return;
 
     reloading = true;
-    reloadTimer = 1000;
+
+    reloadTimer =
+        weapon.reload;
 
     document.getElementById("reloadText")
         .style.display = "block";
 
 }
 
+
 function finishReload() {
 
     const needed =
-        weapon.maxAmmo - ammo;
+        weapon.maxAmmo -
+        ammo;
 
     const amount =
         Math.min(
@@ -865,6 +1396,7 @@ function finishReload() {
         );
 
     ammo += amount;
+
     reserveAmmo -= amount;
 
     reloading = false;
@@ -874,25 +1406,49 @@ function finishReload() {
 
 }
 
+
+/* =========================
+   PLAYER
+========================= */
+
 function updatePlayer() {
 
     let dx = 0;
     let dy = 0;
 
-    if (keys["w"] || keys["arrowup"])
+    if (
+        keys["w"] ||
+        keys["arrowup"]
+    ) {
         dy--;
+    }
 
-    if (keys["s"] || keys["arrowdown"])
+    if (
+        keys["s"] ||
+        keys["arrowdown"]
+    ) {
         dy++;
+    }
 
-    if (keys["a"] || keys["arrowleft"])
+    if (
+        keys["a"] ||
+        keys["arrowleft"]
+    ) {
         dx--;
+    }
 
-    if (keys["d"] || keys["arrowright"])
+    if (
+        keys["d"] ||
+        keys["arrowright"]
+    ) {
         dx++;
+    }
 
     const length =
-        Math.hypot(dx, dy);
+        Math.hypot(
+            dx,
+            dy
+        );
 
     let sprinting =
         keys["shift"] &&
@@ -926,29 +1482,45 @@ function updatePlayer() {
     if (length > 0) {
 
         player.x +=
-            dx / length * speed;
+            dx / length *
+            speed;
 
         player.y +=
-            dy / length * speed;
+            dy / length *
+            speed;
 
     }
 
 }
+
+
+/* =========================
+   ZOMBIE UPDATE
+========================= */
 
 function updateZombies() {
 
     for (let zombie of zombies) {
 
         const dx =
-            player.x - zombie.x;
+            player.x -
+            zombie.x;
 
         const dy =
-            player.y - zombie.y;
+            player.y -
+            zombie.y;
 
         const distance =
-            Math.hypot(dx, dy);
+            Math.hypot(
+                dx,
+                dy
+            );
 
-        if (distance > player.radius + zombie.radius) {
+        if (
+            distance >
+            player.radius +
+            zombie.radius
+        ) {
 
             zombie.x +=
                 dx / distance *
@@ -960,7 +1532,9 @@ function updateZombies() {
 
         } else {
 
-            if (zombie.attackCooldown <= 0) {
+            if (
+                zombie.attackCooldown <= 0
+            ) {
 
                 player.health -=
                     zombie.damage;
@@ -968,26 +1542,39 @@ function updateZombies() {
                 zombie.attackCooldown =
                     700;
 
-                if (player.health <= 0) {
+                if (
+                    player.health <= 0
+                ) {
+
                     die();
+
                 }
 
             }
 
         }
 
-        zombie.attackCooldown -=
-            16;
+        zombie.attackCooldown -= 16;
 
     }
 
 }
 
+
+/* =========================
+   BULLETS
+========================= */
+
 function updateBullets() {
 
-    for (let i = bullets.length - 1; i >= 0; i--) {
+    for (
+        let i = bullets.length - 1;
+        i >= 0;
+        i--
+    ) {
 
-        const bullet = bullets[i];
+        const bullet =
+            bullets[i];
 
         bullet.x += bullet.vx;
         bullet.y += bullet.vy;
@@ -996,32 +1583,47 @@ function updateBullets() {
 
         let hit = false;
 
-        for (let j = zombies.length - 1; j >= 0; j--) {
+        for (
+            let j = zombies.length - 1;
+            j >= 0;
+            j--
+        ) {
 
-            const zombie = zombies[j];
+            const zombie =
+                zombies[j];
 
             const distance =
                 Math.hypot(
-                    bullet.x - zombie.x,
-                    bullet.y - zombie.y
+                    bullet.x -
+                    zombie.x,
+
+                    bullet.y -
+                    zombie.y
                 );
 
-            if (distance <
-                zombie.radius + 5) {
+            if (
+                distance <
+                zombie.radius + 5
+            ) {
 
                 zombie.health -=
                     bullet.damage;
 
                 hit = true;
 
-                if (zombie.health <= 0) {
+                if (
+                    zombie.health <= 0
+                ) {
 
                     money +=
                         zombie.reward;
 
                     kills++;
 
-                    zombies.splice(j, 1);
+                    zombies.splice(
+                        j,
+                        1
+                    );
 
                     saveGame();
 
@@ -1033,13 +1635,26 @@ function updateBullets() {
 
         }
 
-        if (hit || bullet.life <= 0) {
-            bullets.splice(i, 1);
+        if (
+            hit ||
+            bullet.life <= 0
+        ) {
+
+            bullets.splice(
+                i,
+                1
+            );
+
         }
 
     }
 
 }
+
+
+/* =========================
+   WAVES
+========================= */
 
 function checkWave() {
 
@@ -1050,13 +1665,16 @@ function checkWave() {
 
         waveDelay += 16;
 
-        if (waveDelay >= 2500) {
+        if (
+            waveDelay >= 2500
+        ) {
 
             wave++;
 
             waveDelay = 0;
 
-            ammo = weapon.maxAmmo;
+            ammo =
+                weapon.maxAmmo;
 
             reserveAmmo += 30;
 
@@ -1072,9 +1690,15 @@ function checkWave() {
 
 }
 
+
+/* =========================
+   WORLD DRAW
+========================= */
+
 function drawWorld() {
 
-    ctx.fillStyle = "#171b1e";
+    ctx.fillStyle =
+        "#171b1e";
 
     ctx.fillRect(
         0,
@@ -1086,8 +1710,11 @@ function drawWorld() {
     ctx.save();
 
     ctx.translate(
-        W / 2 - player.x,
-        H / 2 - player.y
+        W / 2 -
+        player.x,
+
+        H / 2 -
+        player.y
     );
 
     drawGround();
@@ -1100,18 +1727,25 @@ function drawWorld() {
 
 }
 
+
+/* =========================
+   GROUND
+========================= */
+
 function drawGround() {
 
     const grid = 80;
 
     const startX =
         Math.floor(
-            (player.x - W / 2) / grid
+            (player.x - W / 2) /
+            grid
         ) * grid;
 
     const startY =
         Math.floor(
-            (player.y - H / 2) / grid
+            (player.y - H / 2) /
+            grid
         ) * grid;
 
     ctx.strokeStyle =
@@ -1120,8 +1754,14 @@ function drawGround() {
     ctx.lineWidth = 1;
 
     for (
-        let x = startX - grid;
-        x < player.x + W / 2 + grid;
+        let x =
+            startX - grid;
+
+        x <
+            player.x +
+            W / 2 +
+            grid;
+
         x += grid
     ) {
 
@@ -1129,12 +1769,16 @@ function drawGround() {
 
         ctx.moveTo(
             x,
-            player.y - H / 2 - grid
+            player.y -
+            H / 2 -
+            grid
         );
 
         ctx.lineTo(
             x,
-            player.y + H / 2 + grid
+            player.y +
+            H / 2 +
+            grid
         );
 
         ctx.stroke();
@@ -1142,20 +1786,30 @@ function drawGround() {
     }
 
     for (
-        let y = startY - grid;
-        y < player.y + H / 2 + grid;
+        let y =
+            startY - grid;
+
+        y <
+            player.y +
+            H / 2 +
+            grid;
+
         y += grid
     ) {
 
         ctx.beginPath();
 
         ctx.moveTo(
-            player.x - W / 2 - grid,
+            player.x -
+            W / 2 -
+            grid,
             y
         );
 
         ctx.lineTo(
-            player.x + W / 2 + grid,
+            player.x +
+            W / 2 +
+            grid,
             y
         );
 
@@ -1163,9 +1817,10 @@ function drawGround() {
 
     }
 
-    // Gas station
+    /* Gas station */
 
-    ctx.fillStyle = "#262b2f";
+    ctx.fillStyle =
+        "#262b2f";
 
     ctx.fillRect(
         -260,
@@ -1174,7 +1829,8 @@ function drawGround() {
         150
     );
 
-    ctx.fillStyle = "#d8b449";
+    ctx.fillStyle =
+        "#d8b449";
 
     ctx.fillRect(
         -260,
@@ -1183,11 +1839,14 @@ function drawGround() {
         12
     );
 
-    ctx.fillStyle = "#111";
+    ctx.fillStyle =
+        "#111";
 
-    ctx.font = "bold 34px Arial";
+    ctx.font =
+        "bold 34px Arial";
 
-    ctx.textAlign = "center";
+    ctx.textAlign =
+        "center";
 
     ctx.fillText(
         "GAS",
@@ -1195,11 +1854,17 @@ function drawGround() {
         -125
     );
 
-    // Pumps
+    for (
+        let x of [
+            -170,
+            -70,
+            70,
+            170
+        ]
+    ) {
 
-    for (let x of [-170, -70, 70, 170]) {
-
-        ctx.fillStyle = "#b7bcc0";
+        ctx.fillStyle =
+            "#b7bcc0";
 
         ctx.fillRect(
             x - 14,
@@ -1208,7 +1873,8 @@ function drawGround() {
             55
         );
 
-        ctx.fillStyle = "#181b1e";
+        ctx.fillStyle =
+            "#181b1e";
 
         ctx.fillRect(
             x - 9,
@@ -1221,9 +1887,15 @@ function drawGround() {
 
 }
 
+
+/* =========================
+   BUILDINGS
+========================= */
+
 function drawBuildings() {
 
-    ctx.fillStyle = "#31383d";
+    ctx.fillStyle =
+        "#31383d";
 
     ctx.fillRect(
         -500,
@@ -1239,7 +1911,8 @@ function drawBuildings() {
         45
     );
 
-    ctx.fillStyle = "#454c50";
+    ctx.fillStyle =
+        "#454c50";
 
     ctx.fillRect(
         -500,
@@ -1250,12 +1923,20 @@ function drawBuildings() {
 
 }
 
+
+/* =========================
+   PLAYER DRAW
+========================= */
+
 function drawPlayer() {
 
     const angle =
         Math.atan2(
-            mouse.y - H / 2,
-            mouse.x - W / 2
+            mouse.y -
+            H / 2,
+
+            mouse.x -
+            W / 2
         );
 
     ctx.save();
@@ -1267,7 +1948,8 @@ function drawPlayer() {
 
     ctx.rotate(angle);
 
-    ctx.fillStyle = "#4da3d9";
+    ctx.fillStyle =
+        "#4da3d9";
 
     ctx.beginPath();
 
@@ -1281,34 +1963,71 @@ function drawPlayer() {
 
     ctx.fill();
 
-    // gun
+    /* Gun */
 
-    ctx.fillStyle = "#222";
+    ctx.fillStyle =
+        "#222";
+
+    let gunLength = 28;
+    let gunHeight = 10;
+
+    if (equippedGun === "shotgun") {
+        gunLength = 38;
+        gunHeight = 13;
+    }
+
+    if (equippedGun === "rifle") {
+        gunLength = 42;
+        gunHeight = 7;
+    }
+
+    if (equippedGun === "smg") {
+        gunLength = 34;
+        gunHeight = 9;
+    }
+
+    if (equippedGun === "minigun") {
+        gunLength = 45;
+        gunHeight = 13;
+    }
 
     ctx.fillRect(
         7,
-        -5,
-        28,
-        10
+        -gunHeight / 2,
+        gunLength,
+        gunHeight
     );
 
     ctx.restore();
 
 }
 
+
+/* =========================
+   ZOMBIE DRAW
+========================= */
+
 function drawZombies() {
 
     for (let zombie of zombies) {
 
-        let color = "#5b9c52";
+        let color =
+            "#5b9c52";
 
-        if (zombie.type === "fast")
+        if (
+            zombie.type === "fast"
+        ) {
             color = "#b75b5b";
+        }
 
-        if (zombie.type === "tank")
+        if (
+            zombie.type === "tank"
+        ) {
             color = "#795b9d";
+        }
 
-        ctx.fillStyle = color;
+        ctx.fillStyle =
+            color;
 
         ctx.beginPath();
 
@@ -1322,23 +2041,30 @@ function drawZombies() {
 
         ctx.fill();
 
-        // eyes
-
-        ctx.fillStyle = "#111";
+        ctx.fillStyle =
+            "#111";
 
         ctx.beginPath();
 
         ctx.arc(
-            zombie.x - zombie.radius * .3,
-            zombie.y - zombie.radius * .25,
+            zombie.x -
+            zombie.radius * .3,
+
+            zombie.y -
+            zombie.radius * .25,
+
             3,
             0,
             Math.PI * 2
         );
 
         ctx.arc(
-            zombie.x + zombie.radius * .3,
-            zombie.y - zombie.radius * .25,
+            zombie.x +
+            zombie.radius * .3,
+
+            zombie.y -
+            zombie.radius * .25,
+
             3,
             0,
             Math.PI * 2
@@ -1346,31 +2072,46 @@ function drawZombies() {
 
         ctx.fill();
 
-        // health bar
-
-        if (zombie.health <
-            zombie.maxHealth) {
+        if (
+            zombie.health <
+            zombie.maxHealth
+        ) {
 
             const width =
                 zombie.radius * 2;
 
-            ctx.fillStyle = "#181818";
+            ctx.fillStyle =
+                "#181818";
 
             ctx.fillRect(
-                zombie.x - width / 2,
-                zombie.y - zombie.radius - 10,
+                zombie.x -
+                width / 2,
+
+                zombie.y -
+                zombie.radius -
+                10,
+
                 width,
                 5
             );
 
-            ctx.fillStyle = "#df4949";
+            ctx.fillStyle =
+                "#df4949";
 
             ctx.fillRect(
-                zombie.x - width / 2,
-                zombie.y - zombie.radius - 10,
+                zombie.x -
+                width / 2,
+
+                zombie.y -
+                zombie.radius -
+                10,
+
                 width *
-                (zombie.health /
-                 zombie.maxHealth),
+                (
+                    zombie.health /
+                    zombie.maxHealth
+                ),
+
                 5
             );
 
@@ -1380,11 +2121,19 @@ function drawZombies() {
 
 }
 
+
+/* =========================
+   BULLET DRAW
+========================= */
+
 function drawBullets() {
 
-    ctx.fillStyle = "#ffd86b";
+    ctx.fillStyle =
+        "#ffd86b";
 
-    for (let bullet of bullets) {
+    for (
+        let bullet of bullets
+    ) {
 
         ctx.beginPath();
 
@@ -1402,17 +2151,32 @@ function drawBullets() {
 
 }
 
+
+/* =========================
+   CAMERA
+========================= */
+
 function updateCamera() {
 
-    camera.x = player.x;
-    camera.y = player.y;
+    camera.x =
+        player.x;
+
+    camera.y =
+        player.y;
 
 }
 
+
+/* =========================
+   HUD
+========================= */
+
 function updateHUD() {
 
-    document.getElementById("healthBar")
-        .style.width =
+    document.getElementById(
+        "healthBar"
+    ).style.width =
+
         Math.max(
             0,
             player.health /
@@ -1420,56 +2184,100 @@ function updateHUD() {
             100
         ) + "%";
 
-    document.getElementById("staminaBar")
-        .style.width =
-        player.stamina /
-        player.maxStamina *
-        100 + "%";
 
-    document.getElementById("wave")
-        .textContent = wave;
+    document.getElementById(
+        "staminaBar"
+    ).style.width =
 
-    document.getElementById("zombies")
-        .textContent =
+        (
+            player.stamina /
+            player.maxStamina *
+            100
+        ) + "%";
+
+
+    document.getElementById(
+        "wave"
+    ).textContent =
+        wave;
+
+
+    document.getElementById(
+        "zombies"
+    ).textContent =
+
         zombies.length +
-        (spawning ? "+" : "");
+        (
+            spawning
+                ? "+"
+                : ""
+        );
 
-    document.getElementById("money")
-        .textContent =
+
+    document.getElementById(
+        "money"
+    ).textContent =
         money.toLocaleString();
 
-    document.getElementById("ammo")
-        .textContent = ammo;
 
-    document.getElementById("reserve")
-        .textContent = reserveAmmo;
+    document.getElementById(
+        "ammo"
+    ).textContent =
+        ammo;
 
-    document.getElementById("weaponName")
-        .textContent =
+
+    document.getElementById(
+        "reserve"
+    ).textContent =
+        reserveAmmo;
+
+
+    document.getElementById(
+        "weaponName"
+    ).textContent =
         weapon.name;
 
-    document.getElementById("damage")
-        .textContent =
+
+    document.getElementById(
+        "damage"
+    ).textContent =
         weapon.damage;
 
-    document.getElementById("weaponLevel")
-        .textContent =
+
+    document.getElementById(
+        "weaponLevel"
+    ).textContent =
         weaponLevel;
 
-    document.getElementById("shopMoney")
-        .textContent =
+
+    document.getElementById(
+        "shopMoney"
+    ).textContent =
         money.toLocaleString();
 
+
+    updateUpgradeButton();
+
 }
+
+
+/* =========================
+   MESSAGES
+========================= */
 
 function showMessage(text) {
 
     const el =
-        document.getElementById("message");
+        document.getElementById(
+            "message"
+        );
 
-    el.textContent = text;
+    el.textContent =
+        text;
 
-    el.classList.add("show");
+    el.classList.add(
+        "show"
+    );
 
     clearTimeout(
         showMessage.timer
@@ -1478,212 +2286,648 @@ function showMessage(text) {
     showMessage.timer =
         setTimeout(() => {
 
-            el.classList.remove("show");
+            el.classList.remove(
+                "show"
+            );
 
         }, 1400);
 
 }
 
+
+/* =========================
+   DEATH
+========================= */
+
 function die() {
+
+    if (dead)
+        return;
+
+    dead = true;
 
     player.health = 0;
 
-    document.getElementById("finalWave")
-        .textContent = wave;
+    document.getElementById(
+        "finalWave"
+    ).textContent =
+        wave;
 
-    document.getElementById("finalKills")
-        .textContent = kills;
+    document.getElementById(
+        "finalKills"
+    ).textContent =
+        kills;
 
-    document.getElementById("gameOver")
-        .style.display = "flex";
+    document.getElementById(
+        "gameOver"
+    ).style.display =
+        "flex";
 
     mouse.down = false;
 
 }
 
-function openShop() {
 
-    document.getElementById("shop")
-        .style.display = "flex";
+/* =========================
+   SHOP
+========================= */
 
-}
+function isShopOpen() {
 
-function closeShop() {
-
-    document.getElementById("shop")
-        .style.display = "none";
-
-}
-
-function damageUpgradeCost() {
-
-    return Math.floor(
-        250 *
-        Math.pow(1.8, weaponLevel - 1)
+    return (
+        document.getElementById(
+            "shop"
+        ).style.display === "flex"
     );
 
 }
+
+
+function openShop() {
+
+    renderGunList();
+
+    updateUpgradeButton();
+
+    document.getElementById(
+        "shop"
+    ).style.display =
+        "flex";
+
+}
+
+
+function closeShop() {
+
+    document.getElementById(
+        "shop"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================
+   GUN BUY COST
+========================= */
+
+function gunUpgradeCost(id) {
+
+    const level =
+        gunLevels[id] || 1;
+
+    return Math.floor(
+        250 *
+        Math.pow(
+            1.65,
+            level - 1
+        )
+    );
+
+}
+
+
+/* =========================
+   RENDER ARMORY
+========================= */
+
+function renderGunList() {
+
+    const container =
+        document.getElementById(
+            "gunList"
+        );
+
+    container.innerHTML = "";
+
+    for (
+        const id in guns
+    ) {
+
+        const gun =
+            guns[id];
+
+        const owned =
+            ownedGuns.includes(id);
+
+        const equipped =
+            equippedGun === id;
+
+        const level =
+            gunLevels[id] || 1;
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "gunCard";
+
+        let actionHTML = "";
+
+        if (!owned) {
+
+            actionHTML = `
+                <button
+                    class="green"
+                    onclick="buyGun('${id}')"
+                >
+                    Buy $${gun.cost.toLocaleString()}
+                </button>
+            `;
+
+        } else if (equipped) {
+
+            actionHTML = `
+                <button
+                    class="equipped"
+                    disabled
+                >
+                    ✓ Equipped
+                </button>
+            `;
+
+        } else {
+
+            actionHTML = `
+                <button
+                    class="green"
+                    onclick="equipGun('${id}')"
+                >
+                    Equip
+                </button>
+            `;
+
+        }
+
+        card.innerHTML = `
+
+            <div class="gunTop">
+
+                <div>
+
+                    <div class="gunName">
+                        🔫 ${gun.name}
+                    </div>
+
+                    <div class="gunDescription">
+                        ${gun.description}
+                    </div>
+
+                </div>
+
+                <div class="gunActions">
+                    ${actionHTML}
+                </div>
+
+            </div>
+
+            <div class="gunStats">
+
+                Damage:
+                ${gun.damage + ((level - 1) * 8)}
+
+                · Magazine:
+                ${gun.maxAmmo + ((level - 1) * 2)}
+
+                · Level:
+                ${level}
+
+                <br>
+
+                Fire Rate:
+                ${gun.fireRate}ms
+
+                · Reload:
+                ${gun.reload}ms
+
+                · Pellets:
+                ${gun.pellets}
+
+                ${
+                    owned
+                        ? `<br><span class="owned">OWNED</span>`
+                        : ""
+                }
+
+            </div>
+
+        `;
+
+        container.appendChild(
+            card
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BUY GUN
+========================= */
+
+function buyGun(id) {
+
+    const gun =
+        guns[id];
+
+    if (!gun)
+        return;
+
+    if (
+        ownedGuns.includes(id)
+    ) {
+
+        showMessage(
+            "Already owned!"
+        );
+
+        return;
+
+    }
+
+    if (
+        money < gun.cost
+    ) {
+
+        showMessage(
+            "❌ Not enough cash!"
+        );
+
+        return;
+
+    }
+
+    money -=
+        gun.cost;
+
+    ownedGuns.push(id);
+
+    gunLevels[id] = 1;
+
+    saveGame();
+
+    showMessage(
+        "🔫 " +
+        gun.name +
+        " purchased!"
+    );
+
+    renderGunList();
+    updateHUD();
+
+}
+
+
+/* =========================
+   EQUIP GUN
+========================= */
+
+function equipGun(id) {
+
+    if (
+        !ownedGuns.includes(id)
+    ) {
+
+        showMessage(
+            "You don't own that gun!"
+        );
+
+        return;
+
+    }
+
+    equippedGun =
+        id;
+
+    updateWeaponStats();
+
+    ammo =
+        weapon.maxAmmo;
+
+    reserveAmmo = 72;
+
+    reloading = false;
+
+    document.getElementById(
+        "reloadText"
+    ).style.display =
+        "none";
+
+    saveGame();
+
+    showMessage(
+        "🔫 Equipped " +
+        weapon.name
+    );
+
+    renderGunList();
+    updateHUD();
+
+}
+
+
+/* =========================
+   DAMAGE UPGRADE
+========================= */
+
+function damageUpgradeCost() {
+
+    return gunUpgradeCost(
+        equippedGun
+    );
+
+}
+
+
+function updateUpgradeButton() {
+
+    const button =
+        document.getElementById(
+            "damageUpgrade"
+        );
+
+    if (!button)
+        return;
+
+    const cost =
+        damageUpgradeCost();
+
+    button.textContent =
+        "$" +
+        cost.toLocaleString();
+
+}
+
+
+document
+    .getElementById(
+        "damageUpgrade"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const cost =
+                damageUpgradeCost();
+
+            if (
+                money < cost
+            ) {
+
+                showMessage(
+                    "❌ Not enough cash!"
+                );
+
+                return;
+
+            }
+
+            money -=
+                cost;
+
+            gunLevels[
+                equippedGun
+            ]++;
+
+            updateWeaponStats();
+
+            ammo =
+                Math.min(
+                    ammo,
+                    weapon.maxAmmo
+                );
+
+            saveGame();
+
+            showMessage(
+                "🔧 " +
+                weapon.name +
+                " upgraded!"
+            );
+
+            renderGunList();
+            updateHUD();
+
+        }
+    );
+
+
+/* =========================
+   AMMO
+========================= */
+
+document
+    .getElementById(
+        "ammoBuy"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                money < 75
+            ) {
+
+                showMessage(
+                    "❌ Not enough cash!"
+                );
+
+                return;
+
+            }
+
+            money -= 75;
+
+            reserveAmmo += 60;
+
+            saveGame();
+
+            showMessage(
+                "📦 +60 ammo!"
+            );
+
+            updateHUD();
+
+        }
+    );
+
+
+/* =========================
+   MEDKIT
+========================= */
+
+document
+    .getElementById(
+        "medkitBuy"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                money < 100
+            ) {
+
+                showMessage(
+                    "❌ Not enough cash!"
+                );
+
+                return;
+
+            }
+
+            if (
+                player.health >=
+                player.maxHealth
+            ) {
+
+                showMessage(
+                    "❤️ Already full health!"
+                );
+
+                return;
+
+            }
+
+            money -= 100;
+
+            player.health =
+                Math.min(
+                    player.maxHealth,
+
+                    player.health +
+                    50
+                );
+
+            saveGame();
+
+            showMessage(
+                "❤️ Health restored!"
+            );
+
+            updateHUD();
+
+        }
+    );
+
+
+/* =========================
+   STAMINA
+========================= */
 
 function staminaUpgradeCost() {
 
     return Math.floor(
         300 *
-        Math.pow(1.9, staminaLevel - 1)
+        Math.pow(
+            1.9,
+            staminaLevel - 1
+        )
     );
 
 }
 
-document
-    .getElementById("damageUpgrade")
-    .addEventListener("click", () => {
-
-        const cost =
-            damageUpgradeCost();
-
-        if (money < cost) {
-
-            showMessage(
-                "❌ Not enough cash!"
-            );
-
-            return;
-
-        }
-
-        money -= cost;
-        weaponLevel++;
-
-        updateWeaponStats();
-        saveGame();
-
-        showMessage(
-            "🔫 Weapon upgraded!"
-        );
-
-    });
 
 document
-    .getElementById("ammoBuy")
-    .addEventListener("click", () => {
+    .getElementById(
+        "staminaUpgrade"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-        if (money < 75) {
+            const cost =
+                staminaUpgradeCost();
+
+            if (
+                money < cost
+            ) {
+
+                showMessage(
+                    "❌ Not enough cash!"
+                );
+
+                return;
+
+            }
+
+            money -=
+                cost;
+
+            staminaLevel++;
+
+            player.maxStamina =
+                100 +
+                (
+                    (staminaLevel - 1) *
+                    20
+                );
+
+            player.stamina =
+                player.maxStamina;
+
+            saveGame();
 
             showMessage(
-                "❌ Not enough cash!"
+                "⚡ Stamina upgraded!"
             );
 
-            return;
+            updateHUD();
 
         }
+    );
 
-        money -= 75;
 
-        reserveAmmo += 60;
-
-        saveGame();
-
-        showMessage(
-            "📦 +60 ammo!"
-        );
-
-    });
+/* =========================
+   BUTTONS
+========================= */
 
 document
-    .getElementById("medkitBuy")
-    .addEventListener("click", () => {
+    .getElementById(
+        "openArmoryHud"
+    )
+    .addEventListener(
+        "click",
+        openShop
+    );
 
-        if (money < 100) {
-
-            showMessage(
-                "❌ Not enough cash!"
-            );
-
-            return;
-
-        }
-
-        if (player.health >= player.maxHealth) {
-
-            showMessage(
-                "❤️ Already full health!"
-            );
-
-            return;
-
-        }
-
-        money -= 100;
-
-        player.health =
-            Math.min(
-                player.maxHealth,
-                player.health + 50
-            );
-
-        saveGame();
-
-        showMessage(
-            "❤️ Health restored!"
-        );
-
-    });
 
 document
-    .getElementById("staminaUpgrade")
-    .addEventListener("click", () => {
-
-        const cost =
-            staminaUpgradeCost();
-
-        if (money < cost) {
-
-            showMessage(
-                "❌ Not enough cash!"
-            );
-
-            return;
-
-        }
-
-        money -= cost;
-
-        staminaLevel++;
-
-        player.maxStamina =
-            100 +
-            ((staminaLevel - 1) * 20);
-
-        player.stamina =
-            player.maxStamina;
-
-        saveGame();
-
-        showMessage(
-            "⚡ Stamina upgraded!"
-        );
-
-    });
-
-document
-    .getElementById("closeShop")
+    .getElementById(
+        "closeShop"
+    )
     .addEventListener(
         "click",
         closeShop
     );
 
+
 document
-    .getElementById("restartButton")
+    .getElementById(
+        "restartButton"
+    )
     .addEventListener(
         "click",
         startGame
     );
 
+
 document
-    .getElementById("resetButton")
+    .getElementById(
+        "resetButton"
+    )
     .addEventListener(
         "click",
         resetSave
     );
+
+
+/* =========================
+   GAME LOOP
+========================= */
 
 function gameLoop() {
 
@@ -1691,10 +2935,7 @@ function gameLoop() {
         gameLoop
     );
 
-    if (
-        document.getElementById("gameOver")
-            .style.display === "flex"
-    ) {
+    if (dead) {
 
         drawWorld();
         updateHUD();
@@ -1704,8 +2945,7 @@ function gameLoop() {
     }
 
     const shopOpen =
-        document.getElementById("shop")
-            .style.display === "flex";
+        isShopOpen();
 
     if (!shopOpen) {
 
@@ -1719,15 +2959,24 @@ function gameLoop() {
         updateBullets();
         checkWave();
 
-        if (shootTimer > 0)
+        if (
+            shootTimer > 0
+        ) {
+
             shootTimer -= 16;
+
+        }
 
         if (reloading) {
 
             reloadTimer -= 16;
 
-            if (reloadTimer <= 0) {
+            if (
+                reloadTimer <= 0
+            ) {
+
                 finishReload();
+
             }
 
         }
@@ -1742,7 +2991,15 @@ function gameLoop() {
 
 }
 
+
+/* =========================
+   START
+========================= */
+
+updateWeaponStats();
+
 startGame();
+
 gameLoop();
 
 setInterval(

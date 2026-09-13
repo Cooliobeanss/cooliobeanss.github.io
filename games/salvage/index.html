@@ -1,516 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Space Salvage</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#02050a;
+    color:#e8f4ff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+#app{
+    width:100%;
+    height:100%;
+    position:relative;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(30,70,110,.16),transparent 35%),
+        radial-gradient(circle at 80% 70%,rgba(80,30,120,.12),transparent 40%),
+        #02050a;
+}
+
+.screen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.panel{
+    width:min(900px,92vw);
+    max-height:90vh;
+    overflow:auto;
+    padding:28px;
+    border:1px solid rgba(130,190,230,.22);
+    border-radius:18px;
+    background:rgba(5,12,20,.88);
+    box-shadow:0 20px 80px rgba(0,0,0,.55);
+    backdrop-filter:blur(16px);
+}
+
+.title{
+    font-size:clamp(42px,8vw,82px);
+    font-weight:900;
+    letter-spacing:-4px;
+    color:#dff6ff;
+    text-shadow:0 0 30px rgba(90,200,255,.3);
+}
+
+.subtitle{
+    color:#8296a8;
+    margin-top:8px;
+    margin-bottom:28px;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+input{
+    min-height:48px;
+    border-radius:10px;
+    border:1px solid rgba(130,190,230,.22);
+    background:#08111b;
+    color:white;
+    padding:0 14px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#61c8ff;
+}
+
+.btn{
+    min-height:48px;
+    border:1px solid rgba(110,190,240,.3);
+    border-radius:10px;
+    background:#0b1a28;
+    color:#e9f7ff;
+    padding:0 20px;
+    font-weight:700;
+    transition:.15s;
+}
+
+.btn:hover{
+    background:#10283b;
+    transform:translateY(-1px);
+}
+
+.btn.primary{
+    background:#1674a8;
+    border-color:#42baff;
+}
+
+.btn.primary:hover{
+    background:#1d91ca;
+}
+
+.status{
+    margin-top:16px;
+    min-height:24px;
+    color:#8da4b8;
+}
+
+#hub{
+    position:absolute;
+    inset:0;
+}
+
+#hubCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+.hub-ui{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+.hub-title{
+    position:absolute;
+    left:30px;
+    top:24px;
+    font-size:30px;
+    font-weight:900;
+}
+
+.hub-sub{
+    position:absolute;
+    left:32px;
+    top:62px;
+    color:#71889c;
+}
+
+.hub-buttons{
+    position:absolute;
+    left:30px;
+    bottom:30px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    pointer-events:auto;
+}
+
+.money{
+    position:absolute;
+    right:30px;
+    top:28px;
+    padding:12px 16px;
+    border-radius:10px;
+    background:rgba(4,12,20,.8);
+    border:1px solid rgba(120,190,230,.2);
+}
+
+#shipSelect{
+    align-items:flex-start;
+    padding-top:7vh;
+}
+
+.ship-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
+    margin-top:20px;
+}
+
+.ship-card{
+    text-align:left;
+    min-height:170px;
+    padding:18px;
+    border-radius:14px;
+    border:1px solid rgba(110,190,240,.2);
+    background:#08121d;
+    color:white;
+    transition:.15s;
+}
+
+.ship-card:hover{
+    border-color:#4abaff;
+    transform:translateY(-3px);
+    background:#0b1b2a;
+}
+
+.ship-name{
+    font-size:21px;
+    font-weight:900;
+}
+
+.ship-difficulty{
+    margin-top:8px;
+    color:#68c8ff;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.ship-info{
+    color:#788da0;
+    font-size:14px;
+    margin-top:12px;
+    line-height:1.5;
+}
+
+#gameUI{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+#canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:#020509;
+}
+
+.hud{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+.top-left{
+    position:absolute;
+    left:18px;
+    top:16px;
+    width:250px;
+}
+
+.hud-box{
+    padding:12px;
+    margin-bottom:8px;
+    border-radius:10px;
+    background:rgba(3,10,16,.76);
+    border:1px solid rgba(110,170,210,.18);
+    backdrop-filter:blur(6px);
+}
+
+.hud-title{
+    font-size:12px;
+    color:#7590a4;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.hud-value{
+    margin-top:4px;
+    font-weight:900;
+}
+
+.bar{
+    height:8px;
+    margin-top:7px;
+    border-radius:99px;
+    background:#101d28;
+    overflow:hidden;
+}
+
+.bar-fill{
+    width:100%;
+    height:100%;
+    transition:width .15s;
+}
+
+#oxygenFill{
+    background:#55c8ff;
+}
+
+#healthFill{
+    background:#66df88;
+}
+
+.top-right{
+    position:absolute;
+    right:18px;
+    top:16px;
+    text-align:right;
+}
+
+#shipNameHud{
+    font-weight:900;
+    font-size:18px;
+}
+
+#connectionStatus{
+    margin-top:5px;
+    color:#72899b;
+    font-size:12px;
+}
+
+#message{
+    position:absolute;
+    left:50%;
+    top:15%;
+    transform:translateX(-50%);
+    padding:12px 18px;
+    border-radius:10px;
+    background:rgba(4,12,20,.9);
+    border:1px solid rgba(110,200,250,.25);
+    color:white;
+    opacity:0;
+    transition:.2s;
+}
+
+#message.show{
+    opacity:1;
+}
+
+#interaction{
+    position:absolute;
+    left:50%;
+    bottom:30px;
+    transform:translateX(-50%);
+    padding:11px 16px;
+    border-radius:10px;
+    background:rgba(3,10,16,.86);
+    border:1px solid rgba(110,190,230,.2);
+    color:#bfe8ff;
+}
+
+#inventory{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:auto;
+    background:rgba(0,0,0,.5);
+}
+
+.inventory-panel{
+    width:min(700px,90vw);
+    padding:24px;
+    border-radius:16px;
+    background:#07111b;
+    border:1px solid rgba(120,200,240,.25);
+}
+
+.inventory-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+    gap:10px;
+    margin:18px 0;
+}
+
+.inventory-item{
+    padding:14px;
+    border-radius:10px;
+    background:#0b1a27;
+    border:1px solid rgba(110,180,220,.16);
+}
+
+.item-icon{
+    font-size:28px;
+}
+
+.item-name{
+    margin-top:7px;
+    font-weight:800;
+}
+
+.item-value{
+    color:#7ed5ff;
+    margin-top:4px;
+}
+
+@media(max-width:600px){
+    .top-left{
+        width:190px;
+    }
+
+    .hub-title{
+        font-size:24px;
+    }
+
+    .panel{
+        padding:20px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<!-- LOBBY -->
+<section id="lobby" class="screen">
+    <div class="panel">
+        <div class="title">SPACE SALVAGE</div>
+        <div class="subtitle">
+            Board dead ships. Take everything valuable. Get out alive.
+        </div>
+
+        <div class="row">
+            <input id="nameInput" maxlength="18" placeholder="Crew name">
+            <button class="btn primary" id="hostBtn">CREATE CREW</button>
+            <button class="btn" id="joinBtn">JOIN CREW</button>
+            <button class="btn" id="practiceBtn">PRACTICE</button>
+        </div>
+
+        <div id="connectionStatus" class="status">
+            Connecting to multiplayer...
+        </div>
+    </div>
+</section>
+
+<!-- JOIN -->
+<section id="joinLobby" class="screen hidden">
+    <div class="panel">
+        <h2>JOIN CREW</h2>
+        <p class="subtitle">Enter the room code from the host.</p>
+
+        <div class="row">
+            <input id="joinName" maxlength="18" placeholder="Crew name">
+            <input id="roomInput" maxlength="4" placeholder="ROOM">
+            <button class="btn primary" id="joinConfirm">JOIN</button>
+            <button class="btn" id="joinBack">BACK</button>
+        </div>
+
+        <div id="joinStatus" class="status"></div>
+    </div>
+</section>
+
+<!-- ROOM -->
+<section id="roomLobby" class="screen hidden">
+    <div class="panel">
+        <h2>CREW READY</h2>
+
+        <div style="margin-top:20px">
+            Room:
+            <strong id="roomCode">----</strong>
+        </div>
+
+        <div id="roomStatus" class="status">
+            Waiting for another crew member...
+        </div>
+
+        <div class="row" style="margin-top:20px">
+            <button class="btn primary hidden" id="launchBtn">
+                LAUNCH
+            </button>
+            <button class="btn" id="roomBack">
+                BACK
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ORPHEUS -->
+<section id="hub" class="hidden">
+    <canvas id="hubCanvas"></canvas>
+
+    <div class="hub-ui">
+        <div class="hub-title">ORPHEUS</div>
+        <div class="hub-sub">CREW SHIP · SAFE ZONE</div>
+
+        <div class="money">
+            BANK: $<span id="hubMoney">0</span>
+        </div>
+
+        <div class="hub-buttons">
+            <button class="btn primary" id="selectRaidBtn">
+                RAID TERMINAL
+            </button>
+
+            <button class="btn" id="upgradeBtn">
+                UPGRADES
+            </button>
+
+            <button class="btn" id="lockerBtn">
+                EQUIPMENT
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- SHIP SELECT -->
+<section id="shipSelect" class="screen hidden">
+    <div class="panel">
+        <h2>SELECT RAID</h2>
+        <div class="subtitle">
+            The deeper you go, the worse the things waiting inside become.
+        </div>
+
+        <div id="shipGrid" class="ship-grid"></div>
+
+        <button class="btn" id="shipBack" style="margin-top:18px">
+            BACK TO ORPHEUS
+        </button>
+    </div>
+</section>
+
+<!-- GAME -->
+<section id="gameUI" class="hidden">
+    <canvas id="canvas"></canvas>
+
+    <div class="hud">
+        <div class="top-left">
+
+            <div class="hud-box">
+                <div class="hud-title">Oxygen</div>
+                <div class="hud-value">
+                    <span id="oxygen">100</span>%
+                </div>
+                <div class="bar">
+                    <div id="oxygenFill" class="bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-title">Health</div>
+                <div class="hud-value">
+                    <span id="health">100</span>
+                </div>
+                <div class="bar">
+                    <div id="healthFill" class="bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-title">Salvage</div>
+                <div class="hud-value">
+                    $<span id="money">0</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="top-right">
+            <div id="shipNameHud">UNKNOWN</div>
+            <div id="connectionStatus">OFFLINE</div>
+        </div>
+
+        <div id="message"></div>
+        <div id="interaction" class="hidden"></div>
+    </div>
+
+    <div id="inventory" class="hidden">
+        <div class="inventory-panel">
+            <h2>INVENTORY</h2>
+            <div id="inventoryGrid" class="inventory-grid"></div>
+            <button class="btn" id="closeInventory">
+                CLOSE
+            </button>
+        </div>
+    </div>
+</section>
+
+</div>
+
 <script>
 "use strict";
 
 /* =========================================================
    SPACE SALVAGE
-   Full gameplay script
-   ========================================================= */
+   COMPLETE GAME
+========================================================= */
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+const hubCanvas = document.getElementById("hubCanvas");
+const hctx = hubCanvas.getContext("2d");
+
 let W = innerWidth;
 let H = innerHeight;
 
-function resize() {
+function resize(){
     W = innerWidth;
     H = innerHeight;
+
     canvas.width = W;
     canvas.height = H;
+
+    hubCanvas.width = W;
+    hubCanvas.height = H;
 }
 
-addEventListener("resize", resize);
+addEventListener("resize",resize);
 resize();
 
 /* =========================================================
-   SERVER
-   ========================================================= */
+   NETWORK
+========================================================= */
 
 const SERVER =
     "wss://cooliobeans-multiplayer.onrender.com";
 
 let socket = null;
 let myId = null;
-let room = null;
+let roomCode = null;
 let isHost = false;
 let practiceMode = false;
 
-/* =========================================================
-   SHIPS
-   ========================================================= */
+function connect(){
 
-const raidShips = [
-    {
-        id: "mercury",
-        name: "Mercury-12",
-        type: "Research Vessel",
-        difficulty: 1,
-        color: "#55e6a5",
-        reward: "$500–$1,500"
-    },
-    {
-        id: "atlas",
-        name: "Atlas-4",
-        type: "Cargo Freighter",
-        difficulty: 2,
-        color: "#74c8ff",
-        reward: "$800–$2,000"
-    },
-    {
-        id: "titan",
-        name: "Titan Hauler",
-        type: "Heavy Cargo Ship",
-        difficulty: 3,
-        color: "#f0c35a",
-        reward: "$1,500–$4,000"
-    },
-    {
-        id: "vanguard",
-        name: "Vanguard-9",
-        type: "Military Transport",
-        difficulty: 4,
-        color: "#ff8c52",
-        reward: "$3,000–$7,000"
-    },
-    {
-        id: "blackstar",
-        name: "Blackstar",
-        type: "Derelict Warship",
-        difficulty: 5,
-        color: "#ff526c",
-        reward: "$5,000–$12,000"
-    },
-    {
-        id: "abyssal",
-        name: "The Abyssal",
-        type: "UNKNOWN",
-        difficulty: 6,
-        color: "#c16cff",
-        reward: "$10,000–$30,000"
+    try{
+        socket = new WebSocket(SERVER);
+
+        socket.addEventListener("open",()=>{
+            setConnection("CONNECTED");
+        });
+
+        socket.addEventListener("close",()=>{
+            setConnection("OFFLINE");
+        });
+
+        socket.addEventListener("error",()=>{
+            setConnection("ERROR");
+        });
+
+        socket.addEventListener("message",event=>{
+            try{
+                handleServerMessage(JSON.parse(event.data));
+            }catch(e){
+                console.error(e);
+            }
+        });
+
+    }catch(e){
+        console.error(e);
+        setConnection("OFFLINE");
     }
-];
-
-/* =========================================================
-   GAME STATE
-   ========================================================= */
-
-let selectedShip = null;
-let gameStarted = false;
-let me = null;
-
-const players = {};
-const keys = {};
-
-const camera = {
-    x: 0,
-    shake: 0
-};
-
-let lastTime = performance.now();
-let dt = 0;
-
-/* =========================================================
-   WORLD
-   ========================================================= */
-
-const world = {
-    width: 7600,
-    height: 1200
-};
-
-let solids = [];
-let props = [];
-let salvageObjects = [];
-let enemies = [];
-let ladders = [];
-
-/* =========================================================
-   EXTRACTION STATE
-   ========================================================= */
-
-const extraction = {
-    x: 7050,
-    y: 650,
-    w: 480,
-    h: 250,
-    active: false,
-    countdown: 0,
-    duration: 4,
-    completed: false
-};
-
-/* =========================================================
-   LADDER SYSTEM
-   ========================================================= */
-
-function addLadder(x, bottomY, topY) {
-
-    ladders.push({
-        x,
-        bottomY,
-        topY,
-        w: 58,
-        climbSpeed: 190
-    });
-
 }
 
-function nearestLadder() {
+function send(data){
 
-    if (!me || me.dead)
-        return null;
+    if(
+        practiceMode ||
+        !socket ||
+        socket.readyState !== WebSocket.OPEN
+    ){
+        return;
+    }
 
-    let best = null;
-    let bestDistance = 90;
+    socket.send(JSON.stringify(data));
+}
 
-    for (const ladder of ladders) {
+function setConnection(text){
+    document.querySelectorAll("#connectionStatus")
+        .forEach(e=>e.textContent=text);
+}
 
-        const center = ladder.x + ladder.w / 2;
+function handleServerMessage(data){
 
-        const playerCenter =
-            me.x + me.width / 2;
+    if(data.type==="connected"){
+        myId=data.id;
+        return;
+    }
 
-        const horizontal =
-            Math.abs(playerCenter - center);
+    if(data.type==="roomCreated"){
+        roomCode=data.room;
+        isHost=true;
+        showRoom();
+        return;
+    }
 
-        const playerBottom =
-            me.y + me.height;
+    if(data.type==="roomJoined" || data.type==="joined"){
+        roomCode=data.room;
+        isHost=false;
+        showRoom();
+        return;
+    }
 
-        const vertical =
-            Math.min(
-                Math.abs(playerBottom - ladder.bottomY),
-                Math.abs(me.y - ladder.topY),
-                Math.abs(me.y - (ladder.bottomY + ladder.topY) / 2)
-            );
+    if(data.type==="playerJoined"){
+        receiveRemote(data);
+        updateRoomStatus();
+        return;
+    }
 
-        if (
-            horizontal < 45 &&
-            vertical < 90
-        ) {
+    if(
+        data.type==="playerMoved" ||
+        data.type==="playerUpdate"
+    ){
+        receiveRemote(data);
+        return;
+    }
 
-            const distance =
-                horizontal + vertical * 0.35;
+    if(data.type==="gameStart"){
+        showOrpheus();
+        return;
+    }
 
-            if (distance < bestDistance) {
-                bestDistance = distance;
-                best = ladder;
-            }
-
+    if(data.type==="playerLeft"){
+        if(data.id){
+            delete players[data.id];
         }
 
+        updateRoomStatus();
+        return;
     }
 
-    return best;
+    if(data.type==="error"){
+        showMessage(data.message || "Server error");
+    }
 }
 
 /* =========================================================
-   COLLISION
-   ========================================================= */
+   GAME DATA
+========================================================= */
 
-function overlap(a, b) {
+const raidShips = [
 
-    return (
-        a.x < b.x + b.w &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.h &&
-        a.y + a.height > b.y
-    );
+    {
+        id:"mercury",
+        name:"Mercury-12",
+        difficulty:"EASY",
+        color:"#67d9ff",
+        min:500,
+        max:1500,
+        enemies:2,
+        oxygen:160
+    },
 
+    {
+        id:"atlas",
+        name:"Atlas-4",
+        difficulty:"EASY",
+        color:"#79e0a0",
+        min:800,
+        max:2000,
+        enemies:3,
+        oxygen:150
+    },
+
+    {
+        id:"titan",
+        name:"Titan Hauler",
+        difficulty:"MEDIUM",
+        color:"#e6c66d",
+        min:1500,
+        max:4000,
+        enemies:5,
+        oxygen:135
+    },
+
+    {
+        id:"vanguard",
+        name:"Vanguard-9",
+        difficulty:"HARD",
+        color:"#ff9c68",
+        min:3000,
+        max:7000,
+        enemies:7,
+        oxygen:120
+    },
+
+    {
+        id:"blackstar",
+        name:"Blackstar",
+        difficulty:"VERY HARD",
+        color:"#e66cff",
+        min:5000,
+        max:12000,
+        enemies:10,
+        oxygen:105
+    },
+
+    {
+        id:"abyssal",
+        name:"The Abyssal",
+        difficulty:"IMPOSSIBLE",
+        color:"#ff4d62",
+        min:10000,
+        max:30000,
+        enemies:15,
+        oxygen:90
+    }
+
+];
+
+let selectedShip = null;
+
+let gameStarted = false;
+
+let money = 0;
+let bank = 0;
+
+let worldWidth = 8400;
+let worldHeight = 1250;
+
+let cameraX = 0;
+let cameraY = 0;
+
+let shake = 0;
+
+const solids = [];
+const props = [];
+const ladders = [];
+const loot = [];
+const enemies = [];
+const doors = [];
+const hazards = [];
+const particles = [];
+
+const players = {};
+
+let me = null;
+
+const keys = {};
+
+let lastTime = performance.now();
+let networkTimer = 0;
+
+let extraction = {
+    x:7750,
+    y:800,
+    w:450,
+    h:250,
+    countdown:0,
+    active:false,
+    complete:false
+};
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function createPlayer(
+    id,
+    name,
+    color,
+    x,
+    y
+){
+
+    return {
+
+        id,
+        name:name || "Crew",
+        color:color || "#ff4d55",
+
+        x,
+        y,
+
+        width:32,
+        height:62,
+
+        vx:0,
+        vy:0,
+
+        speed:240,
+        jump:520,
+
+        grounded:false,
+
+        climbing:false,
+        ladder:null,
+
+        health:100,
+
+        oxygen:100,
+
+        dead:false,
+
+        invulnerable:0,
+
+        carried:null,
+
+        salvage:[],
+
+        noise:0,
+
+        lastSafeX:x,
+        lastSafeY:y
+
+    };
 }
 
 /* =========================================================
-   WORLD BUILDING
-   ========================================================= */
+   WORLD HELPERS
+========================================================= */
 
-function addSolid(x, y, w, h) {
+function clearWorld(){
+
+    solids.length=0;
+    props.length=0;
+    ladders.length=0;
+    loot.length=0;
+    enemies.length=0;
+    doors.length=0;
+    hazards.length=0;
+    particles.length=0;
+}
+
+function addSolid(
+    x,
+    y,
+    w,
+    h,
+    type="floor"
+){
 
     solids.push({
         x,
         y,
         w,
-        h
+        h,
+        type
+    });
+
+    return solids[solids.length-1];
+}
+
+function addLadder(
+    x,
+    topY,
+    bottomY
+){
+
+    ladders.push({
+        x,
+        topY,
+        bottomY,
+        width:42
     });
 
 }
 
-function addProp(type, x, y, w, h) {
+function addProp(
+    type,
+    x,
+    y,
+    w=40,
+    h=40,
+    data={}
+){
 
     props.push({
         type,
         x,
         y,
         w,
-        h
+        h,
+        ...data
     });
 
 }
 
-function resetRaidWorld() {
+function addDoor(
+    x,
+    y,
+    w,
+    h,
+    locked=false
+){
 
-    solids = [];
-    props = [];
-    salvageObjects = [];
-    enemies = [];
-    ladders = [];
+    doors.push({
+        x,
+        y,
+        w,
+        h,
+        locked,
+        open:false
+    });
 
-    extraction.active = false;
-    extraction.countdown = 0;
-    extraction.completed = false;
+}
 
-    const difficulty =
-        selectedShip
-            ? selectedShip.difficulty
-            : 1;
+function addHazard(
+    type,
+    x,
+    y,
+    w,
+    h,
+    damage=10
+){
 
-    /* =====================================================
-       MAIN SHIP STRUCTURE
-       ===================================================== */
+    hazards.push({
+        type,
+        x,
+        y,
+        w,
+        h,
+        damage,
+        timer:0
+    });
+
+}
+
+/* =========================================================
+   COLLISION
+========================================================= */
+
+function intersects(a,b){
+
+    return (
+        a.x < b.x+b.w &&
+        a.x+a.width > b.x &&
+        a.y < b.y+b.h &&
+        a.y+a.height > b.y
+    );
+}
+
+function solidForCollision(s){
+
+    if(
+        s.type==="decor" ||
+        s.type==="background"
+    ){
+        return false;
+    }
+
+    return true;
+}
+
+/* =========================================================
+   SHIP GENERATION
+========================================================= */
+
+function resetRaidWorld(){
+
+    clearWorld();
+
+    const ship = selectedShip || raidShips[0];
+
+    worldWidth = 8400;
+    worldHeight = 1250;
+
+    /*
+        MAIN OUTER HULL
+    */
 
     addSolid(
-        0,
+        100,
         900,
-        world.width,
-        180
+        7500,
+        80
     );
 
     addSolid(
-        0,
-        0,
-        world.width,
+        100,
+        40,
+        7500,
         45
     );
 
-    addSolid(
-        -80,
-        0,
-        80,
-        world.height
-    );
+    /*
+        OUTER WALLS
+    */
 
     addSolid(
-        world.width,
-        0,
-        80,
-        world.height
+        100,
+        40,
+        60,
+        940
     );
 
-    /* =====================================================
-       MIDDLE DECK
-       ===================================================== */
-
-    const middleDecks = [
-        [150, 680, 950],
-        [1300, 680, 900],
-        [2500, 680, 1000],
-        [3700, 680, 850],
-        [4800, 680, 950],
-        [6100, 680, 1000]
-    ];
-
-    for (const deck of middleDecks) {
-
-        addSolid(
-            deck[0],
-            deck[1],
-            deck[2],
-            34
-        );
-
-    }
-
-    /* =====================================================
-       UPPER DECK
-       ===================================================== */
-
-    const upperDecks = [
-        [300, 430, 600],
-        [1450, 430, 650],
-        [2750, 450, 500],
-        [3850, 400, 600],
-        [5150, 440, 600],
-        [6250, 450, 600]
-    ];
-
-    for (const deck of upperDecks) {
-
-        addSolid(
-            deck[0],
-            deck[1],
-            deck[2],
-            34
-        );
-
-    }
-
-    /* =====================================================
-       LADDERS
-       ===================================================== */
-
-    /* Ground → Middle */
-
-    addLadder(
-        800,
-        900,
-        680
+    addSolid(
+        7600,
+        40,
+        60,
+        940
     );
 
-    addLadder(
-        3050,
-        900,
-        680
+    /*
+        DECK 2
+    */
+
+    addSolid(
+        180,
+        620,
+        720,
+        38
     );
 
-    addLadder(
-        4200,
-        900,
-        680
+    addSolid(
+        1100,
+        620,
+        850,
+        38
     );
 
-    addLadder(
-        5400,
-        900,
-        680
+    addSolid(
+        2150,
+        620,
+        780,
+        38
     );
 
-    addLadder(
-        6650,
-        900,
-        680
+    addSolid(
+        3100,
+        620,
+        920,
+        38
     );
 
-    /* Middle → Upper */
-
-    addLadder(
-        650,
-        680,
-        430
+    addSolid(
+        4250,
+        620,
+        780,
+        38
     );
 
-    addLadder(
-        1750,
-        680,
-        430
+    addSolid(
+        5250,
+        620,
+        1050,
+        38
     );
 
-    addLadder(
-        3000,
-        680,
-        450
-    );
-
-    addLadder(
-        4150,
-        680,
-        400
-    );
-
-    addLadder(
-        5450,
-        680,
-        440
-    );
-
-    addLadder(
+    addSolid(
         6550,
-        680,
-        450
+        620,
+        950,
+        38
     );
 
-    /* =====================================================
-       SHIP PROPS
-       ===================================================== */
+    /*
+        DECK 3
+    */
 
-    for (
-        let x = 200;
-        x < world.width - 300;
-        x += 700
-    ) {
+    addSolid(
+        350,
+        350,
+        600,
+        38
+    );
+
+    addSolid(
+        1200,
+        350,
+        700,
+        38
+    );
+
+    addSolid(
+        2200,
+        350,
+        650,
+        38
+    );
+
+    addSolid(
+        3150,
+        350,
+        900,
+        38
+    );
+
+    addSolid(
+        4400,
+        350,
+        700,
+        38
+    );
+
+    addSolid(
+        5350,
+        350,
+        800,
+        38
+    );
+
+    /*
+        DECK 4
+    */
+
+    addSolid(
+        650,
+        120,
+        700,
+        32
+    );
+
+    addSolid(
+        1700,
+        120,
+        700,
+        32
+    );
+
+    addSolid(
+        2800,
+        120,
+        900,
+        32
+    );
+
+    /*
+        LADDERS
+    */
+
+    addLadder(260,650,900);
+    addLadder(1010,650,900);
+    addLadder(2050,650,900);
+    addLadder(3000,650,900);
+    addLadder(4140,650,900);
+    addLadder(5160,650,900);
+    addLadder(6420,650,900);
+    addLadder(7200,650,900);
+
+    addLadder(600,380,620);
+    addLadder(1040,380,620);
+    addLadder(2040,380,620);
+    addLadder(3000,380,620);
+    addLadder(4250,380,620);
+    addLadder(5200,380,620);
+    addLadder(6600,380,620);
+
+    addLadder(1600,150,350);
+    addLadder(2650,150,350);
+    addLadder(4200,380,620);
+
+    /*
+        WINDOWS
+    */
+
+    for(let x=220;x<7400;x+=300){
 
         addProp(
             "window",
             x,
-            90,
-            250,
-            130
-        );
-
-    }
-
-    for (
-        let x = 300;
-        x < world.width - 300;
-        x += 600
-    ) {
-
-        addProp(
-            "console",
-            x,
-            790,
-            110,
+            82,
+            180,
             80
         );
 
     }
 
-    for (
-        let x = 500;
-        x < world.width;
-        x += 850
-    ) {
+    /*
+        ROOMS / FURNITURE
+    */
+
+    for(let x=250;x<7400;x+=520){
+
+        addProp(
+            "crate",
+            x,
+            850,
+            70,
+            50
+        );
+
+        addProp(
+            "crate",
+            x+90,
+            820,
+            60,
+            80
+        );
+
+    }
+
+    addProp("bridge",500,285,300,60);
+    addProp("reactor",1850,520,120,100);
+    addProp("reactor",4600,520,120,100);
+    addProp("reactor",6100,520,120,100);
+
+    addProp("console",720,560,80,60);
+    addProp("console",1700,560,80,60);
+    addProp("console",2700,560,80,60);
+    addProp("console",3800,560,80,60);
+    addProp("console",5700,560,80,60);
+
+    /*
+        PIPES
+    */
+
+    for(let x=250;x<7400;x+=240){
 
         addProp(
             "pipe",
             x,
-            300,
-            160,
-            40
-        );
-
-    }
-
-    const crateCount =
-        10 + difficulty * 4;
-
-    for (
-        let i = 0;
-        i < crateCount;
-        i++
-    ) {
-
-        const upper =
-            Math.random() > 0.55;
-
-        addProp(
-            "crate",
-            150 +
-                Math.random() *
-                7000,
-            upper
-                ? 380 + Math.random() * 180
-                : 820,
-            65,
-            65
-        );
-
-    }
-
-    /* Reactor */
-
-    if (difficulty >= 3) {
-
-        addProp(
-            "reactor",
-            3350,
+            170,
             180,
-            350,
-            430
+            22
         );
 
     }
 
-    /* =====================================================
-       EXTRACTION
-       ===================================================== */
+    /*
+        ROOMS
+    */
+
+    addProp("bed",380,550,110,50);
+    addProp("bed",530,550,110,50);
+
+    addProp("bed",2250,550,110,50);
+    addProp("locker",2420,520,55,100);
+
+    addProp("locker",3300,520,55,100);
+    addProp("locker",3400,520,55,100);
+
+    addProp("cargo",4500,550,200,65);
+    addProp("cargo",4750,550,160,65);
+
+    /*
+        DOORS
+    */
+
+    addDoor(900,800,36,100,false);
+    addDoor(1940,800,36,100,false);
+    addDoor(2920,800,36,100,true);
+    addDoor(4030,800,36,100,false);
+    addDoor(5050,800,36,100,true);
+    addDoor(6300,800,36,100,false);
+
+    /*
+        HAZARDS
+    */
+
+    addHazard("electric",1480,875,100,25,16);
+    addHazard("fire",3500,840,120,60,24);
+    addHazard("electric",5500,875,120,25,18);
+
+    /*
+        LOOT
+    */
+
+    generateLoot(ship);
+
+    /*
+        ENEMIES
+    */
+
+    for(let i=0;i<ship.enemies;i++){
+
+        const x =
+            1000 +
+            Math.random()*6200;
+
+        const floor =
+            Math.random()<.45
+                ? 820
+                : Math.random()<.6
+                    ? 550
+                    : 280;
+
+        addEnemy(
+            x,
+            floor,
+            Math.random()<.7
+                ? "crawler"
+                : "stalker"
+        );
+
+    }
+
+    /*
+        EXTRACTION
+    */
+
+    extraction.x=7100;
+    extraction.y=650;
+    extraction.w=500;
+    extraction.h=250;
+    extraction.countdown=0;
+    extraction.active=false;
+    extraction.complete=false;
+
+    /*
+        EXTRACTION AIRLOCK
+    */
 
     addProp(
         "airlock",
@@ -520,185 +1390,175 @@ function resetRaidWorld() {
         extraction.h
     );
 
-    /* =====================================================
-       LOOT
-       ===================================================== */
-
-    const lootTable = [
-        ["Battery", "🔋", 120],
-        ["Navigation Computer", "💻", 260],
-        ["Medical Kit", "🩹", 180],
-        ["Pressure Helmet", "⛑️", 350],
-        ["Cargo Crate", "📦", 420],
-        ["Power Core", "⚡", 650],
-        ["Ruby", "♦️", 800],
-        ["Emerald", "💚", 950],
-        ["Unknown Alloy", "🧱", 1200],
-        ["Engine Component", "⚙️", 1500],
-        ["Black Box", "⬛", 2200],
-        ["Research Sample", "🧪", 2600],
-        ["Prototype Core", "🔮", 4000],
-        ["Unknown Artifact", "👁️", 6500]
-    ];
-
-    const amount =
-        5 + difficulty * 3;
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
-    ) {
-
-        const loot =
-            lootTable[
-                Math.floor(
-                    Math.random() *
-                    lootTable.length
-                )
-            ];
-
-        const possibleLocations = [
-            {
-                x: 250 + Math.random() * 6500,
-                y: 835
-            },
-            {
-                x: 300 + Math.random() * 6200,
-                y: 610
-            },
-            {
-                x: 350 + Math.random() * 6100,
-                y: 360 + Math.random() * 60
-            }
-        ];
-
-        const spot =
-            possibleLocations[
-                Math.floor(
-                    Math.random() *
-                    possibleLocations.length
-                )
-            ];
-
-        addLoot(
-            "loot_" + i,
-            loot[0],
-            loot[1],
-            loot[2],
-            spot.x,
-            spot.y
-        );
-
-    }
-
-    /* =====================================================
-       ENEMIES
-       ===================================================== */
-
-    const enemyCount =
-        1 + difficulty * 2;
-
-    for (
-        let i = 0;
-        i < enemyCount;
-        i++
-    ) {
-
-        const type =
-            Math.random() > 0.5
-                ? "crawler"
-                : "stalker";
-
-        const upper =
-            Math.random() >
-            0.65;
-
-        const y =
-            upper
-                ? 385
-                : 840;
-
-        const x =
-            600 +
-            Math.random() *
-            6200;
-
-        addEnemy(
-            type,
-            x,
-            y,
-            Math.max(100, x - 250),
-            Math.min(
-                world.width - 250,
-                x + 250
-            )
-        );
-
-    }
-
 }
 
 /* =========================================================
    LOOT
-   ========================================================= */
+========================================================= */
 
-function addLoot(
-    id,
-    name,
-    icon,
-    value,
-    x,
-    y
-) {
+const lootTable=[
 
-    salvageObjects.push({
-        id,
-        name,
-        icon,
-        value,
-        x,
-        y,
-        w: 35,
-        h: 35,
-        carried: false,
-        extracted: false,
-        holder: null
-    });
+    {
+        name:"Copper Wire",
+        icon:"🔌",
+        value:120,
+        weight:1
+    },
+
+    {
+        name:"Circuit Board",
+        icon:"🟩",
+        value:280,
+        weight:2
+    },
+
+    {
+        name:"Navigation Core",
+        icon:"💠",
+        value:850,
+        weight:3
+    },
+
+    {
+        name:"Quantum Battery",
+        icon:"🔋",
+        value:1200,
+        weight:3
+    },
+
+    {
+        name:"Medical Kit",
+        icon:"🩹",
+        value:400,
+        weight:1
+    },
+
+    {
+        name:"Titanium Plate",
+        icon:"⬜",
+        value:500,
+        weight:4
+    },
+
+    {
+        name:"Research Sample",
+        icon:"🧪",
+        value:1400,
+        weight:1
+    },
+
+    {
+        name:"Black Box",
+        icon:"📦",
+        value:2500,
+        weight:5
+    },
+
+    {
+        name:"Alien Artifact",
+        icon:"👁️",
+        value:5000,
+        weight:6
+    }
+
+];
+
+function generateLoot(ship){
+
+    const amount =
+        ship.id==="abyssal"
+            ? 32
+            : ship.id==="blackstar"
+                ? 27
+                : 20;
+
+    for(let i=0;i<amount;i++){
+
+        const item =
+            lootTable[
+                Math.floor(
+                    Math.random()*lootTable.length
+                )
+            ];
+
+        let floor;
+
+        const r=Math.random();
+
+        if(r<.45){
+            floor=820;
+        }else if(r<.82){
+            floor=540;
+        }else{
+            floor=260;
+        }
+
+        loot.push({
+
+            id:"loot_"+i+"_"+Math.random(),
+
+            name:item.name,
+            icon:item.icon,
+            value:item.value,
+            weight:item.weight,
+
+            x:
+                250+
+                Math.random()*6500,
+
+            y:
+                floor-
+
+                45+
+
+                Math.random()*15,
+
+            width:34,
+            height:34,
+
+            carried:false,
+            extracted:false
+
+        });
+
+    }
 
 }
 
-function nearestLoot() {
+function nearestLoot(){
 
-    if (!me || me.dead)
-        return null;
+    if(!me || me.dead) return null;
 
-    let best = null;
-    let distance = 95;
+    let best=null;
+    let bestDist=75;
 
-    for (const item of salvageObjects) {
+    for(const item of loot){
 
-        if (
-            item.extracted ||
-            item.carried
-        )
-            continue;
+        if(
+            item.carried ||
+            item.extracted
+        ) continue;
 
         const dx =
             item.x -
-            me.x;
+            (
+                me.x+
+                me.width/2
+            );
 
         const dy =
             item.y -
-            me.y;
+            (
+                me.y+
+                me.height/2
+            );
 
-        const d =
-            Math.hypot(dx, dy);
+        const d=Math.hypot(dx,dy);
 
-        if (d < distance) {
+        if(d<bestDist){
 
-            distance = d;
-            best = item;
+            bestDist=d;
+            best=item;
 
         }
 
@@ -709,467 +1569,504 @@ function nearestLoot() {
 
 /* =========================================================
    ENEMIES
-   ========================================================= */
+========================================================= */
 
 function addEnemy(
-    type,
     x,
     y,
-    a,
-    b
-) {
+    type
+){
 
     enemies.push({
-        type,
+
+        id:"enemy_"+Math.random(),
+
         x,
         y,
-        w: 40,
-        h: 45,
-        patrolA: Math.min(a, b),
-        patrolB: Math.max(a, b),
-        dir: Math.random() > 0.5 ? 1 : -1,
+
+        width:type==="stalker"
+            ? 40
+            : 46,
+
+        height:type==="stalker"
+            ? 80
+            : 45,
+
+        type,
+
+        vx:0,
+        vy:0,
+
         speed:
-            type === "stalker"
-                ? 105
-                : 60,
-        alive: true,
-        alert: 0,
-        attackCooldown: 0,
-        health: 100
+            type==="stalker"
+                ? 80
+                : 115,
+
+        health:
+            type==="stalker"
+                ? 80
+                : 45,
+
+        alive:true,
+
+        attackCooldown:0,
+
+        direction:
+            Math.random()<.5
+                ? -1
+                : 1
+
     });
 
 }
 
-/* =========================================================
-   PLAYER
-   ========================================================= */
+function updateEnemies(dt){
 
-function makePlayer(
-    id,
-    name,
-    x,
-    y,
-    color
-) {
+    for(const enemy of enemies){
 
-    return {
-        id,
-        name,
-        x,
-        y,
-        vx: 0,
-        vy: 0,
+        if(!enemy.alive) continue;
 
-        width: 34,
-        height: 60,
+        enemy.attackCooldown=
+            Math.max(
+                0,
+                enemy.attackCooldown-dt
+            );
 
-        grounded: false,
+        if(!me || me.dead) continue;
 
-        health: 100,
-        oxygen: 100,
+        const dx =
+            me.x -
+            enemy.x;
 
-        dead: false,
+        const dy =
+            me.y -
+            enemy.y;
 
-        color,
+        const distance=
+            Math.hypot(dx,dy);
 
-        facing: 1,
+        if(distance<850){
 
-        holding: null,
+            enemy.direction=
+                dx>=0
+                    ? 1
+                    : -1;
 
-        salvage: 0,
+            if(
+                Math.abs(dy)<150 ||
+                enemy.type==="stalker"
+            ){
 
-        targetX: x,
-        targetY: y,
+                enemy.vx=
+                    enemy.direction*
+                    enemy.speed;
 
-        climbing: false,
-        climbingLadder: null
-    };
+            }else{
+
+                enemy.vx=
+                    enemy.direction*
+                    enemy.speed*.35;
+
+            }
+
+            enemy.x+=enemy.vx*dt;
+
+        }else{
+
+            enemy.x+=
+                enemy.direction*
+                enemy.speed*.2*
+                dt;
+
+            if(
+                Math.random()<.003
+            ){
+
+                enemy.direction*=-1;
+
+            }
+
+        }
+
+        /*
+            Enemy floor snapping
+        */
+
+        let floorY=900;
+
+        for(const s of solids){
+
+            if(
+                enemy.x+enemy.width>s.x &&
+                enemy.x<s.x+s.w &&
+                s.y>=enemy.y+enemy.height-10 &&
+                s.y<floorY+100
+            ){
+
+                floorY=
+                    Math.min(
+                        floorY,
+                        s.y
+                    );
+
+            }
+
+        }
+
+        enemy.y=
+            floorY-
+            enemy.height;
+
+        if(
+            distance<65 &&
+            enemy.attackCooldown<=0
+        ){
+
+            damagePlayer(
+                enemy.type==="stalker"
+                    ? 18
+                    : 11
+            );
+
+            enemy.attackCooldown=
+                enemy.type==="stalker"
+                    ? 1.4
+                    : .9;
+
+            shake=8;
+
+        }
+
+    }
 
 }
 
 /* =========================================================
-   PLAYER UPDATE
-   ========================================================= */
+   PLAYER MOVEMENT
+========================================================= */
 
-function updatePlayer() {
+function nearestLadder(){
 
-    if (!me || me.dead)
-        return;
+    if(!me || me.dead) return null;
 
-    /* =====================================================
-       LADDER CLIMBING
-       ===================================================== */
+    let result=null;
+    let distance=Infinity;
 
-    if (me.climbing) {
+    for(const ladder of ladders){
 
-        const ladder =
-            me.climbingLadder;
+        const center=
+            ladder.x+
+            ladder.width/2;
 
-        if (!ladder) {
+        const playerCenter=
+            me.x+
+            me.width/2;
 
-            me.climbing = false;
-
-        } else {
-
-            const center =
-                ladder.x +
-                ladder.w / 2;
-
-            me.x =
-                center -
-                me.width / 2;
-
-            me.vx = 0;
-
-            let climbDirection = 0;
-
-            if (
-                keys.KeyW ||
-                keys.ArrowUp
-            ) {
-
-                climbDirection = -1;
-
-            }
-
-            if (
-                keys.KeyS ||
-                keys.ArrowDown
-            ) {
-
-                climbDirection = 1;
-
-            }
-
-            me.y +=
-                climbDirection *
-                ladder.climbSpeed *
-                dt;
-
-            const top =
-                ladder.topY -
-                me.height;
-
-            const bottom =
-                ladder.bottomY -
-                me.height;
-
-            if (me.y <= top) {
-
-                me.y = top;
-
-                me.climbing = false;
-                me.climbingLadder = null;
-
-                me.grounded = true;
-
-            }
-
-            if (me.y >= bottom) {
-
-                me.y = bottom;
-
-                me.climbing = false;
-                me.climbingLadder = null;
-
-                me.grounded = true;
-
-            }
-
-            return;
-
-        }
-
-    }
-
-    /* =====================================================
-       FIND LADDER
-       ===================================================== */
-
-    const ladder =
-        nearestLadder();
-
-    if (
-        ladder &&
-        (
-            keys.KeyW ||
-            keys.ArrowUp
-        )
-    ) {
-
-        const center =
-            ladder.x +
-            ladder.w / 2;
-
-        const playerCenter =
-            me.x +
-            me.width / 2;
-
-        const nearCenter =
+        const dx=
             Math.abs(
-                playerCenter -
-                center
-            ) < 48;
-
-        const playerBottom =
-            me.y +
-            me.height;
-
-        const nearBottom =
-            Math.abs(
-                playerBottom -
-                ladder.bottomY
-            ) < 85;
-
-        const inside =
-            me.y + me.height >
-                ladder.topY &&
-            me.y <
-                ladder.bottomY;
-
-        if (
-            nearCenter &&
-            (
-                nearBottom ||
-                inside
-            )
-        ) {
-
-            me.climbing = true;
-            me.climbingLadder = ladder;
-
-            me.x =
-                center -
-                me.width / 2;
-
-            me.vx = 0;
-            me.vy = 0;
-
-            return;
-
-        }
-
-    }
-
-    /* =====================================================
-       DOWNWARD LADDER ENTRY
-       ===================================================== */
-
-    if (
-        ladder &&
-        (
-            keys.KeyS ||
-            keys.ArrowDown
-        )
-    ) {
-
-        const center =
-            ladder.x +
-            ladder.w / 2;
-
-        const playerCenter =
-            me.x +
-            me.width / 2;
-
-        const nearTop =
-            Math.abs(
-                me.y -
-                (ladder.topY - me.height)
-            ) < 55;
-
-        if (
-            Math.abs(
-                playerCenter - center
-            ) < 48 &&
-            nearTop
-        ) {
-
-            me.climbing = true;
-            me.climbingLadder = ladder;
-
-            me.x =
-                center -
-                me.width / 2;
-
-            me.vx = 0;
-            me.vy = 0;
-
-            return;
-
-        }
-
-    }
-
-    /* =====================================================
-       NORMAL MOVEMENT
-       ===================================================== */
-
-    const left =
-        keys.KeyA ||
-        keys.ArrowLeft;
-
-    const right =
-        keys.KeyD ||
-        keys.ArrowRight;
-
-    const sprint =
-        keys.ShiftLeft ||
-        keys.ShiftRight;
-
-    const speed =
-        sprint
-            ? 420
-            : 260;
-
-    if (left) {
-
-        me.vx -=
-            1800 * dt;
-
-        me.facing = -1;
-
-    }
-
-    if (right) {
-
-        me.vx +=
-            1800 * dt;
-
-        me.facing = 1;
-
-    }
-
-    if (!left && !right) {
-
-        me.vx *=
-            Math.pow(
-                0.001,
-                dt
+                center-
+                playerCenter
             );
 
-    }
-
-    me.vx =
-        Math.max(
-            -speed,
+        const vertical=
             Math.min(
-                speed,
-                me.vx
-            )
-        );
+                Math.abs(
+                    me.y+
+                    me.height-
+                    ladder.bottomY
+                ),
+                Math.abs(
+                    me.y-
+                    ladder.topY
+                )
+            );
 
-    /* =====================================================
-       JUMP
-       ===================================================== */
+        if(
+            dx<55 &&
+            vertical<100
+        ){
 
-    if (
-        (
-            keys.Space ||
-            keys.KeyW ||
-            keys.ArrowUp
-        ) &&
-        me.grounded
-    ) {
+            const score=
+                dx+
+                vertical;
 
-        me.vy = -650;
-        me.grounded = false;
+            if(score<distance){
 
-    }
-
-    /* =====================================================
-       GRAVITY
-       ===================================================== */
-
-    me.vy +=
-        1800 * dt;
-
-    /* =====================================================
-       HORIZONTAL COLLISION
-       ===================================================== */
-
-    me.x +=
-        me.vx * dt;
-
-    for (const s of solids) {
-
-        if (overlap(me, s)) {
-
-            if (me.vx > 0) {
-
-                me.x =
-                    s.x -
-                    me.width;
+                distance=score;
+                result=ladder;
 
             }
 
-            if (me.vx < 0) {
+        }
 
-                me.x =
-                    s.x +
+    }
+
+    return result;
+}
+
+function updatePlayer(dt){
+
+    if(!me || me.dead) return;
+
+    me.invulnerable=
+        Math.max(
+            0,
+            me.invulnerable-dt
+        );
+
+    const ladder=
+        nearestLadder();
+
+    /*
+        LADDER ENTRY
+    */
+
+    if(
+        ladder &&
+        (
+            keys["KeyW"] ||
+            keys["ArrowUp"]
+        )
+    ){
+
+        me.climbing=true;
+        me.ladder=ladder;
+        me.vx=0;
+        me.vy=0;
+
+    }
+
+    /*
+        CLIMBING
+    */
+
+    if(me.climbing){
+
+        const l=me.ladder;
+
+        if(
+            !l ||
+            Math.abs(
+                me.x-
+                l.x
+            )>70
+        ){
+
+            me.climbing=false;
+
+        }else{
+
+            me.x=
+                l.x+
+                l.width/2-
+                me.width/2;
+
+            let climbSpeed=190;
+
+            if(
+                keys["KeyW"] ||
+                keys["ArrowUp"]
+            ){
+
+                me.y-=
+                    climbSpeed*
+                    dt;
+
+            }
+
+            if(
+                keys["KeyS"] ||
+                keys["ArrowDown"]
+            ){
+
+                me.y+=
+                    climbSpeed*
+                    dt;
+
+            }
+
+            const top=
+                l.topY-
+                me.height;
+
+            const bottom=
+                l.bottomY-
+                me.height;
+
+            if(me.y<=top){
+
+                me.y=top;
+                me.climbing=false;
+
+            }
+
+            if(me.y>=bottom){
+
+                me.y=bottom;
+                me.climbing=false;
+
+            }
+
+            return;
+
+        }
+
+    }
+
+    /*
+        HORIZONTAL
+    */
+
+    let move=0;
+
+    if(
+        keys["KeyA"] ||
+        keys["ArrowLeft"]
+    ){
+        move-=1;
+    }
+
+    if(
+        keys["KeyD"] ||
+        keys["ArrowRight"]
+    ){
+        move+=1;
+    }
+
+    me.vx=
+        move*
+        me.speed;
+
+    if(move!==0){
+        me.noise=1;
+    }else{
+        me.noise=.2;
+    }
+
+    /*
+        JUMP
+    */
+
+    if(
+        (
+            keys["Space"] ||
+            keys["KeyW"] ||
+            keys["ArrowUp"]
+        ) &&
+        me.grounded
+    ){
+
+        me.vy=
+            -me.jump;
+
+        me.grounded=false;
+
+    }
+
+    /*
+        GRAVITY
+    */
+
+    me.vy+=
+        1450*
+        dt;
+
+    /*
+        HORIZONTAL COLLISION
+    */
+
+    me.x+=
+        me.vx*
+        dt;
+
+    for(const s of solids){
+
+        if(!solidForCollision(s))
+            continue;
+
+        if(intersects(me,s)){
+
+            if(me.vx>0){
+
+                me.x=
+                    s.x-
+                    me.width;
+
+            }else if(me.vx<0){
+
+                me.x=
+                    s.x+
                     s.w;
 
             }
 
-            me.vx = 0;
+            me.vx=0;
 
         }
 
     }
 
-    /* =====================================================
-       VERTICAL COLLISION
-       ===================================================== */
+    /*
+        VERTICAL COLLISION
+    */
 
-    me.grounded = false;
+    me.y+=
+        me.vy*
+        dt;
 
-    me.y +=
-        me.vy * dt;
+    me.grounded=false;
 
-    for (const s of solids) {
+    for(const s of solids){
 
-        if (overlap(me, s)) {
+        if(!solidForCollision(s))
+            continue;
 
-            if (me.vy > 0) {
+        if(intersects(me,s)){
 
-                me.y =
-                    s.y -
+            if(me.vy>0){
+
+                me.y=
+                    s.y-
                     me.height;
 
-                me.grounded = true;
+                me.vy=0;
+                me.grounded=true;
 
-            }
+                me.lastSafeX=me.x;
+                me.lastSafeY=me.y;
 
-            if (me.vy < 0) {
+            }else if(me.vy<0){
 
-                me.y =
-                    s.y +
+                me.y=
+                    s.y+
                     s.h;
 
-            }
+                me.vy=0;
 
-            me.vy = 0;
+            }
 
         }
 
     }
 
-    /* =====================================================
-       WORLD BOUNDS
-       ===================================================== */
+    /*
+        WORLD BOUNDS
+    */
 
-    me.x =
+    me.x=
         Math.max(
-            0,
+            160,
             Math.min(
-                world.width -
-                    me.width,
+                worldWidth-
+                me.width-
+                50,
                 me.x
             )
         );
 
-    if (me.y > world.height + 200) {
+    if(me.y>worldHeight+200){
 
-        killPlayer();
+        damagePlayer(999);
 
     }
 
@@ -1177,181 +2074,67 @@ function updatePlayer() {
 
 /* =========================================================
    OXYGEN
-   ========================================================= */
+========================================================= */
 
-function updateOxygen() {
+function updateOxygen(dt){
 
-    if (!me || me.dead)
-        return;
+    if(!me || me.dead) return;
 
-    const difficulty =
-        selectedShip
-            ? selectedShip.difficulty
-            : 1;
+    const ship=selectedShip;
 
-    if (me.x > 1800) {
+    const drain=
+        ship
+            ? 100/ship.oxygen
+            : .7;
 
-        me.oxygen -=
-            (
-                1.2 +
-                difficulty * 0.38
-            ) * dt;
-
-    } else {
-
-        me.oxygen +=
-            4 * dt;
-
-    }
-
-    me.oxygen =
+    me.oxygen=
         Math.max(
             0,
-            Math.min(
-                100,
-                me.oxygen
-            )
+            me.oxygen-
+            drain*
+            dt
         );
 
-    if (
-        me.oxygen <= 0 &&
-        !me.dead
-    ) {
+    if(me.oxygen<=0){
 
-        me.health -=
-            25 * dt;
-
-        if (me.health <= 0) {
-
-            killPlayer();
-
-        }
+        damagePlayer(
+            999*dt
+        );
 
     }
 
 }
 
 /* =========================================================
-   ENEMIES
-   ========================================================= */
+   HAZARDS
+========================================================= */
 
-function updateEnemies() {
+function updateHazards(dt){
 
-    if (!me || me.dead)
-        return;
+    if(!me || me.dead) return;
 
-    for (const enemy of enemies) {
+    for(const hazard of hazards){
 
-        if (!enemy.alive)
-            continue;
+        hazard.timer+=dt;
 
-        enemy.attackCooldown -= dt;
-
-        const distance =
-            Math.hypot(
-                enemy.x - me.x,
-                enemy.y - me.y
-            );
-
-        /* STALKER */
-
-        if (
-            enemy.type === "stalker" &&
-            distance < 330
-        ) {
-
-            enemy.alert =
-                Math.min(
-                    1,
-                    enemy.alert +
-                    dt * 3
-                );
-
-            if (
-                me.x >
-                enemy.x
-            ) {
-
-                enemy.x +=
-                    enemy.speed * dt;
-
-            } else {
-
-                enemy.x -=
-                    enemy.speed * dt;
-
-            }
-
-        } else {
-
-            enemy.alert =
-                Math.max(
-                    0,
-                    enemy.alert -
-                    dt
-                );
-
-            enemy.x +=
-                enemy.dir *
-                enemy.speed *
-                dt;
-
-            if (
-                enemy.x <
-                enemy.patrolA
-            ) {
-
-                enemy.x =
-                    enemy.patrolA;
-
-                enemy.dir = 1;
-
-            }
-
-            if (
-                enemy.x >
-                enemy.patrolB
-            ) {
-
-                enemy.x =
-                    enemy.patrolB;
-
-                enemy.dir = -1;
-
-            }
-
-        }
-
-        /* ATTACK */
-
-        const enemyBox = {
-            x: enemy.x,
-            y: enemy.y,
-            width: enemy.w,
-            height: enemy.h
-        };
-
-        if (
-            overlap(
+        if(
+            intersects(
                 me,
-                enemyBox
-            ) &&
-            enemy.attackCooldown <= 0
-        ) {
+                hazard
+            )
+        ){
 
-            me.health -=
-                enemy.type === "stalker"
-                    ? 22
-                    : 12;
+            if(
+                hazard.timer>
+                .45
+            ){
 
-            enemy.attackCooldown =
-                1.1;
+                damagePlayer(
+                    hazard.damage
+                );
 
-            camera.shake = 12;
-
-            if (me.health <= 0) {
-
-                killPlayer();
+                hazard.timer=0;
+                shake=5;
 
             }
 
@@ -1362,159 +2145,115 @@ function updateEnemies() {
 }
 
 /* =========================================================
-   EXTRACTION
-   ========================================================= */
+   DAMAGE / DEATH
+========================================================= */
 
-function playerInsideExtraction() {
+function damagePlayer(amount){
 
-    if (!me)
-        return false;
+    if(
+        !me ||
+        me.dead ||
+        me.invulnerable>0
+    ){
+        return;
+    }
 
-    return (
-        me.x + me.width >
-            extraction.x &&
-        me.x <
-            extraction.x +
-            extraction.w &&
-        me.y + me.height >
-            extraction.y &&
-        me.y <
-            extraction.y +
-            extraction.h
-    );
+    me.health=
+        Math.max(
+            0,
+            me.health-
+            amount
+        );
+
+    me.invulnerable=.6;
+
+    if(me.health<=0){
+
+        killPlayer();
+
+    }
 
 }
 
-function beginExtraction() {
+function killPlayer(){
 
-    if (
-        extraction.active ||
-        extraction.completed
-    )
-        return;
+    if(!me) return;
 
-    if (!me || me.dead)
-        return;
+    me.dead=true;
+    me.vx=0;
+    me.vy=0;
 
-    if (!playerInsideExtraction()) {
+    if(me.carried){
 
-        showMessage(
-            "GET INSIDE THE EXTRACTION AIRLOCK"
-        );
+        me.carried.carried=false;
 
-        return;
+        me.carried.x=
+            me.x+
+            me.width/2;
 
-    }
+        me.carried.y=
+            me.y;
 
-    if (!me.holding) {
-
-        showMessage(
-            "BRING SALVAGE INTO THE AIRLOCK"
-        );
-
-        return;
+        me.carried=null;
 
     }
-
-    extraction.active = true;
-    extraction.countdown =
-        extraction.duration;
 
     showMessage(
-        "EXTRACTION STARTED · HOLD POSITION"
+        "YOU DIED — press R to respawn"
     );
 
 }
 
-function updateExtraction() {
+function respawn(){
 
-    if (
-        !extraction.active ||
-        extraction.completed
-    )
-        return;
+    if(!me || !me.dead) return;
 
-    if (!playerInsideExtraction()) {
+    me.dead=false;
 
-        extraction.active = false;
-        extraction.countdown = 0;
+    me.health=100;
+    me.oxygen=
+        selectedShip
+            ? 100
+            : 100;
 
-        showMessage(
-            "EXTRACTION CANCELLED"
-        );
+    me.x=
+        me.lastSafeX ||
+        250;
 
-        return;
+    me.y=
+        me.lastSafeY ||
+        820;
 
-    }
+    me.vx=0;
+    me.vy=0;
 
-    extraction.countdown -= dt;
+    me.climbing=false;
 
-    if (
-        extraction.countdown <= 0
-    ) {
-
-        completeExtraction();
-
-    }
-
-}
-
-function completeExtraction() {
-
-    if (extraction.completed)
-        return;
-
-    extraction.active = false;
-    extraction.completed = true;
-
-    if (me.holding) {
-
-        const item =
-            me.holding;
-
-        me.salvage +=
-            item.value;
-
-        item.extracted = true;
-        item.carried = false;
-        item.holder = null;
-
-        item.x = -9999;
-        item.y = -9999;
-
-        me.holding = null;
-
-    }
-
-    updateHUD();
-
-    showMessage(
-        "✓ SALVAGE EXTRACTED · RETURNING TO ORPHEUS"
-    );
-
-    setTimeout(
-        returnToOrpheus,
-        1800
-    );
+    send({
+        type:"respawn",
+        x:me.x,
+        y:me.y
+    });
 
 }
 
 /* =========================================================
    INTERACTION
-   ========================================================= */
+========================================================= */
 
-function interact() {
+function interact(){
 
-    if (!me || me.dead)
-        return;
+    if(!me || me.dead) return;
 
-    /* Extraction gets priority */
+    /*
+        EXTRACTION
+    */
 
-    if (
+    if(
         playerInsideExtraction()
-    ) {
+    ){
 
-        if (me.holding) {
+        if(me.carried){
 
             beginExtraction();
 
@@ -1524,503 +2263,818 @@ function interact() {
 
     }
 
-    /* Drop held item */
+    /*
+        DROP
+    */
 
-    if (me.holding) {
+    if(me.carried){
 
         dropLoot();
+        return;
+
+    }
+
+    /*
+        LOOT
+    */
+
+    const item=
+        nearestLoot();
+
+    if(item){
+
+        pickUpLoot(item);
+        return;
+
+    }
+
+    /*
+        DOORS
+    */
+
+    const door=
+        nearestDoor();
+
+    if(door){
+
+        if(door.locked){
+
+            showMessage(
+                "ACCESS DENIED"
+            );
+
+        }else{
+
+            door.open=
+                !door.open;
+
+        }
+
+    }
+
+}
+
+function pickUpLoot(item){
+
+    if(
+        !item ||
+        item.carried ||
+        item.extracted
+    ) return;
+
+    item.carried=true;
+    me.carried=item;
+
+    showMessage(
+        item.name+
+        " · $"+
+        item.value
+    );
+
+}
+
+function dropLoot(){
+
+    if(!me.carried) return;
+
+    const item=me.carried;
+
+    item.carried=false;
+
+    item.x=
+        me.x+
+        me.width+
+        10;
+
+    item.y=
+        me.y+
+        me.height-
+        30;
+
+    me.carried=null;
+
+    showMessage(
+        "Dropped "+item.name
+    );
+
+}
+
+function nearestDoor(){
+
+    if(!me) return null;
+
+    let best=null;
+    let dist=75;
+
+    for(const door of doors){
+
+        const dx=
+            (
+                door.x+
+                door.w/2
+            )-
+            (
+                me.x+
+                me.width/2
+            );
+
+        const dy=
+            (
+                door.y+
+                door.h/2
+            )-
+            (
+                me.y+
+                me.height/2
+            );
+
+        const d=
+            Math.hypot(dx,dy);
+
+        if(d<dist){
+
+            dist=d;
+            best=door;
+
+        }
+
+    }
+
+    return best;
+}
+
+/* =========================================================
+   EXTRACTION
+========================================================= */
+
+function playerInsideExtraction(){
+
+    if(!me) return false;
+
+    return (
+        me.x+
+        me.width>
+        extraction.x &&
+        me.x<
+        extraction.x+
+        extraction.w &&
+        me.y+
+        me.height>
+        extraction.y &&
+        me.y<
+        extraction.y+
+        extraction.h
+    );
+
+}
+
+function beginExtraction(){
+
+    if(
+        extraction.active ||
+        extraction.complete
+    ){
+        return;
+    }
+
+    extraction.active=true;
+    extraction.countdown=4;
+
+    showMessage(
+        "AIRLOCK SEALED — EXTRACTING"
+    );
+
+}
+
+function updateExtraction(dt){
+
+    if(
+        !extraction.active ||
+        extraction.complete
+    ){
+        return;
+    }
+
+    if(
+        !playerInsideExtraction() ||
+        !me.carried
+    ){
+
+        extraction.active=false;
+        extraction.countdown=0;
+
+        showMessage(
+            "EXTRACTION CANCELLED"
+        );
 
         return;
 
     }
 
-    /* Pick up */
+    extraction.countdown-=dt;
 
-    const item =
-        nearestLoot();
+    if(
+        extraction.countdown<=0
+    ){
 
-    if (!item)
-        return;
+        completeExtraction();
 
-    item.carried = true;
-    item.holder = me.id;
-
-    me.holding = item;
-
-    showMessage(
-        "SALVAGE SECURED · " +
-        item.name
-    );
+    }
 
 }
 
-function dropLoot() {
+function completeExtraction(){
 
-    if (!me.holding)
-        return;
+    extraction.active=false;
+    extraction.complete=true;
 
-    const item =
-        me.holding;
+    if(me.carried){
 
-    item.carried = false;
-    item.holder = null;
+        const item=me.carried;
 
-    item.x =
-        me.x +
-        me.width / 2 +
-        me.facing * 45;
+        item.carried=false;
+        item.extracted=true;
 
-    item.y =
-        me.y +
-        me.height -
-        item.h;
+        me.salvage.push(item);
+        money+=item.value;
 
-    me.holding = null;
+        me.carried=null;
+
+        showMessage(
+            "SALVAGED +$"+
+            item.value
+        );
+
+    }
+
+    /*
+        Allow another extraction after
+        returning to the airlock.
+    */
+
+    extraction.complete=false;
 
 }
 
 /* =========================================================
-   DEATH
-   ========================================================= */
+   REMOTE PLAYERS
+========================================================= */
 
-function killPlayer() {
+function receiveRemote(data){
 
-    if (!me || me.dead)
+    if(!data.id || data.id===myId)
         return;
 
-    me.dead = true;
+    if(!players[data.id]){
 
-    me.climbing = false;
-    me.climbingLadder = null;
-
-    if (me.holding) {
-
-        const item =
-            me.holding;
-
-        item.carried = false;
-        item.holder = null;
-
-        item.x = me.x;
-        item.y =
-            me.y +
-            me.height -
-            item.h;
-
-        me.holding = null;
+        players[data.id]=createPlayer(
+            data.id,
+            data.name || "Crew",
+            data.color || "#5aaaff",
+            data.x || 400,
+            data.y || 820
+        );
 
     }
 
-    camera.shake = 20;
+    const p=players[data.id];
 
-    showMessage(
-        "☠ CREW MEMBER LOST"
-    );
+    p.targetX=
+        Number.isFinite(data.x)
+            ? data.x
+            : p.x;
 
-    setTimeout(
-        respawn,
-        1800
-    );
+    p.targetY=
+        Number.isFinite(data.y)
+            ? data.y
+            : p.y;
+
+    p.dead=!!data.dead;
+
+    if(
+        Number.isFinite(data.vx)
+    ){
+        p.vx=data.vx;
+    }
 
 }
 
-function respawn() {
+function updateRemote(dt){
 
-    if (!me)
-        return;
+    for(const id in players){
 
-    me.dead = false;
+        const p=players[id];
 
-    me.health = 100;
-    me.oxygen = 100;
+        if(
+            Number.isFinite(p.targetX)
+        ){
 
-    me.climbing = false;
-    me.climbingLadder = null;
+            p.x+=
+                (
+                    p.targetX-
+                    p.x
+                )*
+                Math.min(
+                    1,
+                    dt*12
+                );
 
-    me.x =
-        isHost
-            ? 250
-            : 350;
+        }
 
-    me.y = 820;
+        if(
+            Number.isFinite(p.targetY)
+        ){
 
-    me.vx = 0;
-    me.vy = 0;
+            p.y+=
+                (
+                    p.targetY-
+                    p.y
+                )*
+                Math.min(
+                    1,
+                    dt*12
+                );
 
-    showMessage(
-        "BACK ON YOUR FEET"
-    );
+        }
+
+    }
+
+}
+
+function updateNetwork(dt){
+
+    networkTimer+=dt;
+
+    if(
+        networkTimer<
+        .05
+    ) return;
+
+    networkTimer=0;
+
+    if(
+        me &&
+        gameStarted &&
+        !practiceMode
+    ){
+
+        send({
+
+            type:"move",
+
+            x:me.x,
+            y:me.y,
+
+            vx:me.vx,
+            vy:me.vy,
+
+            grounded:me.grounded,
+            running:
+                Math.abs(me.vx)>20,
+
+            dead:me.dead
+
+        });
+
+    }
+
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function particle(
+    x,
+    y,
+    vx,
+    vy,
+    life,
+    size
+){
+
+    particles.push({
+
+        x,
+        y,
+        vx,
+        vy,
+
+        life,
+        maxLife:life,
+
+        size
+
+    });
+
+}
+
+function updateParticles(dt){
+
+    for(let i=particles.length-1;i>=0;i--){
+
+        const p=particles[i];
+
+        p.life-=dt;
+
+        if(p.life<=0){
+
+            particles.splice(i,1);
+            continue;
+
+        }
+
+        p.x+=p.vx*dt;
+        p.y+=p.vy*dt;
+
+        p.vy+=
+            100*
+            dt;
+
+    }
 
 }
 
 /* =========================================================
    CAMERA
-   ========================================================= */
+========================================================= */
 
-function updateCamera() {
+function updateCamera(){
 
-    if (!me)
-        return;
+    if(!me) return;
 
-    const target =
-        me.x +
-        me.width / 2 -
-        W / 2;
+    const targetX=
+        me.x+
+        me.width/2-
+        W/2;
 
-    camera.x +=
+    const targetY=
+        me.y+
+        me.height/2-
+        H/2;
+
+    cameraX+=
         (
-            target -
-            camera.x
-        ) *
-        Math.min(
-            1,
-            dt * 7
-        );
+            targetX-
+            cameraX
+        )*
+        .08;
 
-    camera.x =
+    cameraY+=
+        (
+            targetY-
+            cameraY
+        )*
+        .08;
+
+    cameraX=
         Math.max(
             0,
             Math.min(
-                world.width - W,
-                camera.x
+                worldWidth-W,
+                cameraX
             )
         );
 
-    if (
-        camera.shake > 0
-    ) {
+    cameraY=
+        Math.max(
+            0,
+            Math.min(
+                worldHeight-H,
+                cameraY
+            )
+        );
 
-        camera.shake *=
-            Math.pow(
-                0.03,
-                dt
-            );
-
-    }
-
-}
-
-function sx(x) {
-    return x - camera.x;
-}
-
-function sy(y) {
-    return y;
 }
 
 /* =========================================================
-   SPACE BACKGROUND
-   ========================================================= */
+   DRAW BACKGROUND
+========================================================= */
 
-function drawSpace() {
+function drawBackground(){
 
-    ctx.fillStyle =
-        "#02040a";
+    const g=
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
 
-    ctx.fillRect(
+    g.addColorStop(
         0,
-        0,
-        W,
-        H
+        "#02060b"
     );
 
-    for (
-        let i = 0;
-        i < 180;
-        i++
-    ) {
+    g.addColorStop(
+        1,
+        "#07111a"
+    );
 
-        let x =
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,W,H);
+
+    /*
+        Stars visible through windows
+    */
+
+    for(let i=0;i<90;i++){
+
+        const x=
             (
-                i * 271 -
-                camera.x * 0.1
-            ) %
-            (W + 100);
+                i*431+
+                Math.floor(cameraX*.05)
+            )%
+            (W+100);
 
-        if (x < 0)
-            x += W + 100;
+        const y=
+            (
+                i*173+
+                Math.floor(cameraY*.02)
+            )%
+            H;
 
-        const y =
-            (i * 137) % H;
-
-        ctx.globalAlpha =
-            0.25 +
-            (i % 5) * 0.1;
-
-        ctx.fillStyle =
-            "#dce8ff";
+        ctx.fillStyle=
+            "rgba(150,210,255,.45)";
 
         ctx.fillRect(
             x,
             y,
-            1 + (i % 2),
-            1 + (i % 2)
+            1,
+            1
         );
 
     }
-
-    ctx.globalAlpha = 1;
 
 }
 
 /* =========================================================
-   SHIP DRAWING
-   ========================================================= */
+   DRAW SHIP
+========================================================= */
 
-function drawShip() {
+function drawShipInterior(){
 
-    const difficulty =
-        selectedShip
-            ? selectedShip.difficulty
-            : 1;
+    ctx.save();
 
-    /* Hull */
-
-    ctx.fillStyle =
-        "#080e17";
-
-    ctx.fillRect(
-        sx(0),
-        sy(0),
-        world.width,
-        1080
+    ctx.translate(
+        -cameraX,
+        -cameraY
     );
 
-    /* Interior */
+    /*
+        Outer hull
+    */
 
-    ctx.fillStyle =
-        "#0d1622";
+    ctx.fillStyle="#0a121b";
 
     ctx.fillRect(
-        sx(0),
-        sy(45),
-        world.width,
-        855
+        100,
+        40,
+        7560,
+        940
     );
 
-    /* Wall panels */
+    /*
+        Hull ribs
+    */
 
-    for (
-        let x = 0;
-        x < world.width;
-        x += 120
-    ) {
+    for(let x=170;x<7600;x+=160){
 
-        ctx.fillStyle =
-            x % 240 === 0
-                ? "#101b29"
-                : "#0d1724";
+        ctx.fillStyle=
+            "rgba(100,140,165,.08)";
 
         ctx.fillRect(
-            sx(x),
+            x,
             45,
-            108,
-            840
-        );
-
-        ctx.strokeStyle =
-            "#1c2a3d";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            sx(x + 108),
-            45
-        );
-
-        ctx.lineTo(
-            sx(x + 108),
-            885
-        );
-
-        ctx.stroke();
-
-    }
-
-    /* Floor */
-
-    ctx.fillStyle =
-        "#1a2634";
-
-    ctx.fillRect(
-        sx(0),
-        900,
-        world.width,
-        180
-    );
-
-    /* Floor panels */
-
-    for (
-        let x = 0;
-        x < world.width;
-        x += 80
-    ) {
-
-        ctx.strokeStyle =
-            "#293749";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            sx(x),
+            8,
             900
         );
 
-        ctx.lineTo(
-            sx(x),
-            1080
-        );
-
-        ctx.stroke();
-
     }
 
-    /* Ceiling */
+    /*
+        Windows
+    */
 
-    ctx.fillStyle =
-        "#080d15";
+    for(const p of props){
 
-    ctx.fillRect(
-        sx(0),
-        0,
-        world.width,
-        45
-    );
+        if(p.type!=="window")
+            continue;
 
-    /* Ceiling lights */
-
-    for (
-        let x = 30;
-        x < world.width;
-        x += 160
-    ) {
-
-        const broken =
-            (
-                Math.floor(
-                    x / 160
-                ) +
-                difficulty
-            ) %
-            Math.max(
-                3,
-                8 - difficulty
-            ) === 0;
-
-        ctx.fillStyle =
-            broken
-                ? "#22272d"
-                : "#718eaf";
+        ctx.fillStyle="#071827";
 
         ctx.fillRect(
-            sx(x),
-            17,
-            85,
-            7
+            p.x,
+            p.y,
+            p.w,
+            p.h
         );
+
+        ctx.strokeStyle=
+            "rgba(90,180,230,.4)";
+
+        ctx.strokeRect(
+            p.x,
+            p.y,
+            p.w,
+            p.h
+        );
+
+        for(let i=0;i<3;i++){
+
+            ctx.fillStyle=
+                "rgba(100,190,255,"+
+                (.12+i*.04)+")";
+
+            ctx.fillRect(
+                p.x+8+i*50,
+                p.y+8,
+                32,
+                p.h-16
+            );
+
+        }
 
     }
 
-    /* Deck accent lines */
-
-    for (const ladder of ladders) {
-
-        ctx.strokeStyle =
-            "rgba(74,105,135,.22)";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            sx(ladder.x - 100),
-            ladder.topY
-        );
-
-        ctx.lineTo(
-            sx(ladder.x + ladder.w + 100),
-            ladder.topY
-        );
-
-        ctx.stroke();
-
-    }
+    ctx.restore();
 
 }
 
 /* =========================================================
-   LADDERS DRAW
-   ========================================================= */
+   DRAW SOLIDS
+========================================================= */
 
-function drawLadders() {
+function drawSolids(){
 
-    for (const ladder of ladders) {
+    ctx.save();
 
-        const x =
-            sx(ladder.x);
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
 
-        const top =
-            ladder.topY;
+    for(const s of solids){
 
-        const bottom =
-            ladder.bottomY;
+        if(
+            s.y<0 ||
+            s.y>worldHeight
+        ) continue;
 
-        /* Outer rails */
+        ctx.fillStyle=
+            s.h<=45
+                ? "#162633"
+                : "#0b1721";
 
-        ctx.strokeStyle =
-            "#657b91";
+        ctx.fillRect(
+            s.x,
+            s.y,
+            s.w,
+            s.h
+        );
 
-        ctx.lineWidth = 6;
+        /*
+            Floor edge
+        */
+
+        ctx.fillStyle=
+            "#294556";
+
+        ctx.fillRect(
+            s.x,
+            s.y,
+            s.w,
+            5
+        );
+
+        /*
+            Warning stripes
+        */
+
+        if(s.h<=45){
+
+            ctx.save();
+
+            ctx.beginPath();
+
+            ctx.rect(
+                s.x,
+                s.y,
+                s.w,
+                s.h
+            );
+
+            ctx.clip();
+
+            ctx.fillStyle=
+                "rgba(220,175,60,.22)";
+
+            for(
+                let x=s.x-50;
+                x<s.x+s.w;
+                x+=36
+            ){
+
+                ctx.save();
+
+                ctx.translate(
+                    x,
+                    s.y
+                );
+
+                ctx.rotate(
+                    -.6
+                );
+
+                ctx.fillRect(
+                    0,
+                    0,
+                    10,
+                    s.h+30
+                );
+
+                ctx.restore();
+
+            }
+
+            ctx.restore();
+
+        }
+
+    }
+
+    ctx.restore();
+
+}
+
+/* =========================================================
+   DRAW LADDERS
+========================================================= */
+
+function drawLadders(){
+
+    ctx.save();
+
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
+
+    for(const l of ladders){
+
+        const center=
+            l.x+
+            l.width/2;
+
+        ctx.strokeStyle=
+            "#536b79";
+
+        ctx.lineWidth=7;
 
         ctx.beginPath();
 
         ctx.moveTo(
-            x + 7,
-            top
+            l.x+6,
+            l.topY
         );
 
         ctx.lineTo(
-            x + 7,
-            bottom
+            l.x+6,
+            l.bottomY
         );
-
-        ctx.stroke();
-
-        ctx.beginPath();
 
         ctx.moveTo(
-            x + ladder.w - 7,
-            top
+            l.x+l.width-6,
+            l.topY
         );
 
         ctx.lineTo(
-            x + ladder.w - 7,
-            bottom
+            l.x+l.width-6,
+            l.bottomY
         );
 
         ctx.stroke();
 
-        /* Rungs */
+        ctx.strokeStyle=
+            "#6f8796";
 
-        ctx.strokeStyle =
-            "#91a6bb";
+        ctx.lineWidth=3;
 
-        ctx.lineWidth = 4;
-
-        for (
-            let y = top + 12;
-            y < bottom;
-            y += 24
-        ) {
+        for(
+            let y=l.topY+14;
+            y<l.bottomY;
+            y+=24
+        ){
 
             ctx.beginPath();
 
             ctx.moveTo(
-                x + 7,
+                l.x+5,
                 y
             );
 
             ctx.lineTo(
-                x + ladder.w - 7,
+                l.x+l.width-5,
                 y
             );
 
@@ -2028,535 +3082,483 @@ function drawLadders() {
 
         }
 
-        /* Warning lights */
-
-        ctx.fillStyle =
-            "#f0b94d";
-
-        ctx.fillRect(
-            x - 8,
-            top - 8,
-            8,
-            8
-        );
-
-        ctx.fillRect(
-            x + ladder.w,
-            top - 8,
-            8,
-            8
-        );
-
     }
+
+    ctx.restore();
 
 }
 
 /* =========================================================
-   PROPS
-   ========================================================= */
+   DRAW PROPS
+========================================================= */
 
-function drawProps() {
+function drawProps(){
 
-    for (const p of props) {
+    ctx.save();
 
-        const x =
-            sx(p.x);
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
 
-        const y =
-            sy(p.y);
+    for(const p of props){
 
-        if (
-            p.type === "window"
-        ) {
+        if(p.type==="crate"){
 
-            ctx.fillStyle =
-                "#030914";
+            ctx.fillStyle="#563f2c";
 
             ctx.fillRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            const g =
-                ctx.createLinearGradient(
-                    x,
-                    y,
-                    x + p.w,
-                    y + p.h
-                );
-
-            g.addColorStop(
-                0,
-                "#183b64"
-            );
-
-            g.addColorStop(
-                0.5,
-                "#07172b"
-            );
-
-            g.addColorStop(
-                1,
-                "#02050b"
-            );
-
-            ctx.fillStyle = g;
-
-            ctx.fillRect(
-                x + 8,
-                y + 8,
-                p.w - 16,
-                p.h - 16
-            );
-
-            for (
-                let i = 0;
-                i < 8;
-                i++
-            ) {
-
-                ctx.fillStyle =
-                    "#b8d8ff";
-
-                ctx.globalAlpha =
-                    0.4;
-
-                ctx.fillRect(
-                    x + 20 + i * 31,
-                    y + 20 + (i % 4) * 19,
-                    2,
-                    2
-                );
-
-            }
-
-            ctx.globalAlpha = 1;
-
-            ctx.strokeStyle =
-                "#40536e";
-
-            ctx.lineWidth = 4;
+            ctx.strokeStyle="#9b7651";
 
             ctx.strokeRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-        }
-
-        else if (
-            p.type === "crate"
-        ) {
-
-            ctx.fillStyle =
-                "#354456";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.strokeStyle =
-                "#657890";
-
-            ctx.strokeRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.strokeStyle =
-                "#202d3c";
-
-            for (
-                let xx = x + 20;
-                xx < x + p.w;
-                xx += 35
-            ) {
-
-                ctx.beginPath();
-
-                ctx.moveTo(
-                    xx,
-                    y
-                );
-
-                ctx.lineTo(
-                    xx,
-                    y + p.h
-                );
-
-                ctx.stroke();
-
-            }
-
-            ctx.fillStyle =
-                "#c7a64b";
-
-            ctx.fillRect(
-                x + 10,
-                y + 10,
-                22,
-                4
-            );
-
-        }
-
-        else if (
-            p.type === "console"
-        ) {
-
-            ctx.fillStyle =
-                "#172536";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle =
-                "#050a12";
-
-            ctx.fillRect(
-                x + 10,
-                y + 10,
-                p.w - 20,
-                30
-            );
-
-            ctx.fillStyle =
-                "#59d8ff";
-
-            ctx.fillRect(
-                x + 20,
-                y + 23,
-                p.w - 40,
-                3
-            );
-
-            ctx.fillStyle =
-                "#f0b94d";
+            ctx.strokeStyle=
+                "rgba(230,200,150,.35)";
 
             ctx.beginPath();
 
-            ctx.arc(
-                x + 25,
-                y + 53,
-                4,
-                0,
-                Math.PI * 2
+            ctx.moveTo(
+                p.x,
+                p.y
             );
 
-            ctx.fill();
+            ctx.lineTo(
+                p.x+p.w,
+                p.y+p.h
+            );
+
+            ctx.moveTo(
+                p.x+p.w,
+                p.y
+            );
+
+            ctx.lineTo(
+                p.x,
+                p.y+p.h
+            );
+
+            ctx.stroke();
 
         }
 
-        else if (
-            p.type === "pipe"
-        ) {
+        else if(p.type==="console"){
 
-            ctx.fillStyle =
-                "#394a5c";
+            ctx.fillStyle="#111d28";
 
             ctx.fillRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            ctx.fillStyle =
-                "#596b80";
+            ctx.fillStyle="#42d4ff";
 
             ctx.fillRect(
-                x - 5,
-                y + 25,
-                p.w + 10,
+                p.x+12,
+                p.y+10,
+                p.w-24,
+                24
+            );
+
+            ctx.fillStyle="#172c38";
+
+            ctx.fillRect(
+                p.x+12,
+                p.y+40,
+                12,
+                8
+            );
+
+            ctx.fillRect(
+                p.x+30,
+                p.y+40,
+                12,
                 8
             );
 
         }
 
-        else if (
-            p.type === "reactor"
-        ) {
+        else if(p.type==="pipe"){
 
-            ctx.fillStyle =
-                "#101b29";
+            ctx.fillStyle="#263844";
 
             ctx.fillRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            ctx.strokeStyle =
-                "#4d627d";
+            ctx.fillStyle="#465c69";
 
-            ctx.lineWidth = 4;
+            ctx.fillRect(
+                p.x,
+                p.y+4,
+                p.w,
+                5
+            );
+
+        }
+
+        else if(p.type==="reactor"){
+
+            ctx.fillStyle="#08121b";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.strokeStyle="#467084";
+
+            ctx.lineWidth=4;
 
             ctx.strokeRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            const cx =
-                x + p.w / 2;
+            const pulse=
+                (
+                    Math.sin(
+                        performance.now()/
+                        250
+                    )+
+                    1
+                )/2;
 
-            const cy =
-                y + 160;
-
-            const glow =
-                ctx.createRadialGradient(
-                    cx,
-                    cy,
-                    5,
-                    cx,
-                    cy,
-                    120
-                );
-
-            glow.addColorStop(
-                0,
-                "#dffcff"
-            );
-
-            glow.addColorStop(
-                0.2,
-                "#5bdcff"
-            );
-
-            glow.addColorStop(
-                0.65,
-                "#17466b"
-            );
-
-            glow.addColorStop(
-                1,
-                "#07101a"
-            );
-
-            ctx.fillStyle =
-                glow;
+            ctx.fillStyle=
+                "rgba(60,210,255,"+
+                (.08+
+                pulse*.12)+")";
 
             ctx.beginPath();
 
             ctx.arc(
-                cx,
-                cy,
-                110,
+                p.x+p.w/2,
+                p.y+p.h/2,
+                45,
                 0,
-                Math.PI * 2
+                Math.PI*2
             );
 
             ctx.fill();
 
-            ctx.strokeStyle =
-                "#79eaff";
+            ctx.fillStyle="#56dfff";
 
             ctx.beginPath();
 
             ctx.arc(
-                cx,
-                cy,
-                85,
-                performance.now() * 0.0005,
-                performance.now() * 0.0005 +
-                Math.PI * 1.5
+                p.x+p.w/2,
+                p.y+p.h/2,
+                18,
+                0,
+                Math.PI*2
             );
 
-            ctx.stroke();
+            ctx.fill();
 
         }
 
-        else if (
-            p.type === "airlock"
-        ) {
+        else if(p.type==="bed"){
 
-            const active =
-                playerInsideExtraction();
-
-            ctx.fillStyle =
-                active
-                    ? "#15352d"
-                    : "#0f1b28";
+            ctx.fillStyle="#182936";
 
             ctx.fillRect(
-                x,
-                y,
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            ctx.strokeStyle =
-                active
-                    ? "#9dffcf"
-                    : "#5be0aa";
+            ctx.fillStyle="#738b9b";
 
-            ctx.lineWidth = 4;
+            ctx.fillRect(
+                p.x+8,
+                p.y+8,
+                55,
+                p.h-16
+            );
 
-            ctx.strokeRect(
-                x,
-                y,
+        }
+
+        else if(p.type==="locker"){
+
+            ctx.fillStyle="#1c2933";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
                 p.w,
                 p.h
             );
 
-            /* Door */
-
-            ctx.strokeStyle =
-                "#405a63";
-
-            ctx.lineWidth = 8;
+            ctx.strokeStyle="#587080";
 
             ctx.strokeRect(
-                x + 35,
-                y + 85,
-                p.w - 70,
-                p.h - 105
+                p.x,
+                p.y,
+                p.w,
+                p.h
             );
 
-            /* Text */
+        }
 
-            ctx.fillStyle =
-                "#5be0aa";
+        else if(p.type==="cargo"){
 
-            ctx.font =
-                "bold 17px Arial";
+            ctx.fillStyle="#263746";
 
-            ctx.textAlign =
-                "center";
-
-            ctx.fillText(
-                extraction.active
-                    ? "EXTRACTING..."
-                    : "EXTRACTION",
-                x + p.w / 2,
-                y + 42
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
             );
 
-            ctx.font =
-                "10px Arial";
+            ctx.strokeStyle="#71899a";
 
-            ctx.fillStyle =
-                "#6e9a88";
+            ctx.strokeRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
 
-            if (
-                extraction.active
-            ) {
+            ctx.fillStyle="#d5ad4c";
 
-                ctx.fillText(
-                    Math.ceil(
-                        extraction.countdown
-                    ) +
-                    " SECONDS",
-                    x + p.w / 2,
-                    y + 65
-                );
+            for(
+                let x=p.x+12;
+                x<p.x+p.w-10;
+                x+=30
+            ){
 
-            } else {
-
-                ctx.fillText(
-                    "RETURN TO ORPHEUS",
-                    x + p.w / 2,
-                    y + 65
+                ctx.fillRect(
+                    x,
+                    p.y+5,
+                    12,
+                    5
                 );
 
             }
 
-            ctx.textAlign =
-                "left";
+        }
+
+        else if(p.type==="airlock"){
+
+            const active=
+                extraction.active;
+
+            ctx.fillStyle=
+                active
+                    ? "rgba(50,180,120,.16)"
+                    : "rgba(30,100,130,.08)";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.strokeStyle=
+                active
+                    ? "#56e59a"
+                    : "#407087";
+
+            ctx.lineWidth=4;
+
+            ctx.strokeRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#172832";
+
+            ctx.fillRect(
+                p.x+35,
+                p.y+35,
+                p.w-70,
+                p.h-70
+            );
+
+            ctx.fillStyle=
+                active
+                    ? "#6cffae"
+                    : "#5d9eb5";
+
+            ctx.font=
+                "bold 20px Arial";
+
+            ctx.textAlign="center";
+
+            ctx.fillText(
+                active
+                    ? "EXTRACTING"
+                    : "EXTRACTION",
+                p.x+p.w/2,
+                p.y+75
+            );
+
+            if(active){
+
+                ctx.font=
+                    "bold 34px Arial";
+
+                ctx.fillText(
+                    Math.ceil(
+                        extraction.countdown
+                    ),
+                    p.x+p.w/2,
+                    p.y+125
+                );
+
+            }
+
+            ctx.textAlign="left";
+
+        }
+
+        else if(p.type==="bridge"){
+
+            ctx.fillStyle="#101d27";
+
+            ctx.fillRect(
+                p.x,
+                p.y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#1d3b4a";
+
+            ctx.fillRect(
+                p.x+15,
+                p.y+12,
+                p.w-30,
+                25
+            );
 
         }
 
     }
 
+    ctx.restore();
+
 }
 
 /* =========================================================
-   SOLIDS
-   ========================================================= */
+   DRAW HAZARDS
+========================================================= */
 
-function drawSolids() {
+function drawHazards(){
 
-    for (const s of solids) {
+    ctx.save();
 
-        const x =
-            sx(s.x);
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
 
-        const y =
-            sy(s.y);
+    for(const h of hazards){
 
-        ctx.fillStyle =
-            "#293a4e";
+        if(h.type==="electric"){
 
-        ctx.fillRect(
-            x,
-            y,
-            s.w,
-            s.h
-        );
+            ctx.fillStyle="#26343d";
 
-        ctx.fillStyle =
-            "#526980";
+            ctx.fillRect(
+                h.x,
+                h.y,
+                h.w,
+                h.h
+            );
 
-        ctx.fillRect(
-            x,
-            y,
-            s.w,
-            5
-        );
+            ctx.strokeStyle=
+                "rgba(80,210,255,.8)";
 
-        /* Warning stripe on platforms */
+            ctx.lineWidth=2;
 
-        if (
-            s.h <= 40
-        ) {
+            ctx.beginPath();
 
-            ctx.fillStyle =
-                "rgba(240,185,77,.22)";
+            for(
+                let x=h.x;
+                x<h.x+h.w;
+                x+=20
+            ){
 
-            for (
-                let xx = x;
-                xx < x + s.w;
-                xx += 36
-            ) {
+                ctx.lineTo(
+                    x,
+                    h.y+
+                    h.h/2+
+                    Math.sin(
+                        x+
+                        performance.now()/100
+                    )*8
+                );
+
+            }
+
+            ctx.stroke();
+
+        }
+
+        if(h.type==="fire"){
+
+            const pulse=
+                (
+                    Math.sin(
+                        performance.now()/90
+                    )+1
+                )/2;
+
+            ctx.fillStyle=
+                "rgba(255,110,40,"+
+                (.2+
+                pulse*.25)+")";
+
+            ctx.fillRect(
+                h.x-15,
+                h.y-20,
+                h.w+30,
+                h.h+30
+            );
+
+            ctx.fillStyle="#ffb13b";
+
+            for(
+                let x=h.x+10;
+                x<h.x+h.w;
+                x+=28
+            ){
 
                 ctx.beginPath();
 
-                ctx.moveTo(
-                    xx,
-                    y
+                ctx.arc(
+                    x,
+                    h.y+
+                    20+
+                    Math.random()*20,
+                    8,
+                    0,
+                    Math.PI*2
                 );
-
-                ctx.lineTo(
-                    xx + 14,
-                    y
-                );
-
-                ctx.lineTo(
-                    xx + 4,
-                    y + s.h
-                );
-
-                ctx.lineTo(
-                    xx - 10,
-                    y + s.h
-                );
-
-                ctx.closePath();
 
                 ctx.fill();
 
@@ -2566,439 +3568,425 @@ function drawSolids() {
 
     }
 
+    ctx.restore();
+
 }
 
 /* =========================================================
-   LOOT DRAWING
-   ========================================================= */
+   DRAW LOOT
+========================================================= */
 
-function drawLoot() {
+function drawLoot(){
 
-    for (const item of salvageObjects) {
+    ctx.save();
 
-        if (
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
+
+    for(const item of loot){
+
+        if(
             item.extracted ||
             item.carried
-        )
-            continue;
+        ) continue;
 
-        const x =
-            sx(
-                item.x +
-                item.w / 2
+        const near=
+            nearestLoot()===item;
+
+        if(near){
+
+            ctx.fillStyle=
+                "rgba(80,210,255,.12)";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                item.x+17,
+                item.y+17,
+                30+
+                Math.sin(
+                    performance.now()/150
+                )*4,
+                0,
+                Math.PI*2
             );
 
-        const y =
-            item.y +
-            item.h / 2;
+            ctx.fill();
 
-        ctx.globalAlpha =
-            0.08;
+        }
 
-        ctx.fillStyle =
-            "#72aaff";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            y,
-            35,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        ctx.globalAlpha = 1;
-
-        ctx.font =
-            "27px Arial";
-
-        ctx.textAlign =
-            "center";
+        ctx.font="26px Arial";
 
         ctx.fillText(
             item.icon,
-            x,
-            y + 9
+            item.x,
+            item.y+26
         );
 
-        if (
-            nearestLoot() === item
-        ) {
+        if(near){
 
-            ctx.font =
-                "10px Arial";
+            ctx.font=
+                "bold 13px Arial";
 
-            ctx.fillStyle =
-                "#d7e4ff";
+            ctx.fillStyle="#d9f3ff";
 
             ctx.fillText(
                 item.name,
-                x,
-                y + 30
+                item.x-10,
+                item.y-8
             );
 
-            ctx.fillStyle =
-                "#71e6a8";
+            ctx.fillStyle="#6bd6ff";
 
             ctx.fillText(
-                "$" + item.value,
-                x,
-                y + 43
+                "$"+item.value,
+                item.x-10,
+                item.y-25
             );
 
         }
 
     }
 
-    if (
-        me &&
-        me.holding
-    ) {
+    if(me && me.carried){
 
-        ctx.font =
-            "28px Arial";
+        const item=me.carried;
 
-        ctx.textAlign =
-            "center";
+        ctx.font="28px Arial";
 
         ctx.fillText(
-            me.holding.icon,
-            sx(
-                me.x +
-                me.width / 2
-            ),
-            me.y - 10
+            item.icon,
+            me.x,
+            me.y-12
         );
 
-        ctx.textAlign =
-            "left";
+        ctx.fillStyle="#8bdfff";
+
+        ctx.font=
+            "bold 12px Arial";
+
+        ctx.fillText(
+            "$"+item.value,
+            me.x-4,
+            me.y-32
+        );
 
     }
+
+    ctx.restore();
 
 }
 
 /* =========================================================
-   ENEMY DRAWING
-   ========================================================= */
+   DRAW ENEMIES
+========================================================= */
 
-function drawEnemies() {
+function drawEnemies(){
 
-    for (const e of enemies) {
+    ctx.save();
 
-        if (!e.alive)
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
+
+    for(const e of enemies){
+
+        if(!e.alive)
             continue;
 
-        const x =
-            sx(e.x);
+        if(e.type==="crawler"){
 
-        const y =
-            e.y;
+            ctx.fillStyle="#111820";
 
-        ctx.fillStyle =
-            "#222a36";
+            ctx.beginPath();
 
-        ctx.beginPath();
+            ctx.roundRect(
+                e.x,
+                e.y,
+                e.width,
+                e.height,
+                10
+            );
 
-        ctx.roundRect(
-            x,
-            y + 10,
-            e.w,
-            e.h - 10,
-            10
-        );
+            ctx.fill();
 
-        ctx.fill();
+            ctx.fillStyle="#d72f45";
 
-        ctx.fillStyle =
-            "#444c5a";
+            ctx.fillRect(
+                e.x+8,
+                e.y+13,
+                7,
+                5
+            );
 
-        ctx.beginPath();
+            ctx.fillRect(
+                e.x+27,
+                e.y+13,
+                7,
+                5
+            );
 
-        ctx.arc(
-            x + e.w / 2,
-            y + 12,
-            14,
-            0,
-            Math.PI * 2
-        );
+        }else{
 
-        ctx.fill();
+            ctx.fillStyle="#080c12";
 
-        ctx.fillStyle =
-            e.alert
-                ? "#ff2540"
-                : "#9d3044";
+            ctx.beginPath();
 
-        ctx.fillRect(
-            x + 8,
-            y + 9,
-            6,
-            4
-        );
+            ctx.roundRect(
+                e.x,
+                e.y,
+                e.width,
+                e.height,
+                15
+            );
 
-        ctx.fillRect(
-            x + e.w - 14,
-            y + 9,
-            6,
-            4
-        );
+            ctx.fill();
+
+            ctx.fillStyle="#e53e52";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                e.x+11,
+                e.y+25,
+                4,
+                0,
+                Math.PI*2
+            );
+
+            ctx.arc(
+                e.x+29,
+                e.y+25,
+                4,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+
+        }
 
     }
+
+    ctx.restore();
 
 }
 
 /* =========================================================
-   PLAYER DRAWING
-   ========================================================= */
+   DRAW PLAYER
+========================================================= */
 
-function drawPlayer(p) {
+function drawPlayer(p){
 
-    if (!p || p.dead)
-        return;
+    if(!p) return;
 
-    const x =
-        sx(p.x);
+    ctx.save();
 
-    const y =
-        p.y;
+    ctx.translate(
+        -cameraX,
+        -cameraY
+    );
 
-    /* Shadow */
+    /*
+        Shadow
+    */
 
-    ctx.fillStyle =
-        "rgba(0,0,0,.45)";
+    ctx.fillStyle=
+        "rgba(0,0,0,.35)";
 
     ctx.beginPath();
 
     ctx.ellipse(
-        x + p.width / 2,
-        y + p.height,
-        23,
+        p.x+p.width/2,
+        p.y+p.height+5,
+        24,
         7,
         0,
         0,
-        Math.PI * 2
+        Math.PI*2
     );
 
     ctx.fill();
 
-    /* Backpack */
+    if(p.dead){
 
-    ctx.fillStyle =
-        "#27374b";
+        ctx.globalAlpha=.35;
+
+    }
+
+    /*
+        Backpack
+    */
+
+    ctx.fillStyle="#202d38";
 
     ctx.fillRect(
-        x - 4,
-        y + 22,
-        9,
+        p.x-7,
+        p.y+19,
+        10,
+        29
+    );
+
+    /*
+        Body
+    */
+
+    ctx.fillStyle=
+        p.color ||
+        "#ff4d55";
+
+    ctx.fillRect(
+        p.x+6,
+        p.y+23,
+        20,
         28
     );
 
-    /* Suit */
+    /*
+        Legs
+    */
 
-    ctx.fillStyle =
-        p.color;
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-        x + 4,
-        y + 21,
-        p.width - 8,
-        p.height - 21,
-        8
-    );
-
-    ctx.fill();
-
-    /* Chest */
-
-    ctx.fillStyle =
-        "#0c1725";
+    ctx.fillStyle="#293743";
 
     ctx.fillRect(
-        x + 9,
-        y + 33,
-        p.width - 18,
-        13
+        p.x+7,
+        p.y+48,
+        8,
+        14
     );
-
-    ctx.fillStyle =
-        "#63dfff";
 
     ctx.fillRect(
-        x + 13,
-        y + 37,
-        9,
-        3
+        p.x+17,
+        p.y+48,
+        8,
+        14
     );
 
-    /* Helmet */
+    /*
+        Helmet
+    */
 
-    ctx.fillStyle =
-        "#dbe7f7";
+    ctx.fillStyle="#17232c";
 
     ctx.beginPath();
 
     ctx.arc(
-        x + p.width / 2,
-        y + 15,
-        16,
+        p.x+p.width/2,
+        p.y+17,
+        18,
         0,
-        Math.PI * 2
+        Math.PI*2
     );
 
     ctx.fill();
 
-    /* Visor */
+    /*
+        Visor
+    */
 
-    ctx.fillStyle =
-        "#091321";
+    ctx.fillStyle="#76d9ff";
 
     ctx.beginPath();
 
     ctx.roundRect(
-        x + 6,
-        y + 9,
-        p.width - 12,
-        11,
+        p.x+8,
+        p.y+9,
+        16,
+        10,
         5
     );
 
     ctx.fill();
 
-    ctx.fillStyle =
-        "#e8f7ff";
+    /*
+        Name
+    */
 
-    ctx.globalAlpha =
-        0.3;
+    ctx.font=
+        "bold 12px Arial";
 
-    ctx.fillRect(
-        x + 9,
-        y + 11,
-        9,
-        2
-    );
+    ctx.textAlign="center";
 
-    ctx.globalAlpha = 1;
-
-    /* Climbing pose */
-
-    if (p.climbing) {
-
-        ctx.strokeStyle =
-            "#eaf2ff";
-
-        ctx.lineWidth = 5;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x + 4,
-            y + 28
-        );
-
-        ctx.lineTo(
-            x - 8,
-            y + 36
-        );
-
-        ctx.stroke();
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x + p.width - 4,
-            y + 28
-        );
-
-        ctx.lineTo(
-            x + p.width + 8,
-            y + 36
-        );
-
-        ctx.stroke();
-
-    }
-
-    /* Name */
-
-    ctx.fillStyle =
-        "#eaf2ff";
-
-    ctx.font =
-        "bold 11px Arial";
-
-    ctx.textAlign =
-        "center";
+    ctx.fillStyle="#eaf7ff";
 
     ctx.fillText(
         p.name,
-        x + p.width / 2,
-        y - 10
+        p.x+p.width/2,
+        p.y-12
     );
 
-    ctx.textAlign =
-        "left";
+    ctx.textAlign="left";
+
+    ctx.restore();
 
 }
 
 /* =========================================================
    LIGHTING
-   ========================================================= */
+========================================================= */
 
-function drawLighting() {
+function drawLighting(){
 
-    if (!me)
-        return;
+    if(!me) return;
 
-    const difficulty =
+    const px=
+        me.x+
+        me.width/2-
+        cameraX;
+
+    const py=
+        me.y+
+        me.height/2-
+        cameraY;
+
+    const difficulty=
         selectedShip
-            ? selectedShip.difficulty
-            : 1;
+            ? selectedShip.id
+            : "mercury";
 
-    const px =
-        sx(
-            me.x +
-            me.width / 2
-        );
+    let radius=330;
 
-    const py =
-        me.y +
-        me.height / 2;
+    if(difficulty==="blackstar")
+        radius=280;
 
-    const radius =
-        440 -
-        difficulty * 45;
+    if(difficulty==="abyssal")
+        radius=210;
 
-    const g =
+    ctx.save();
+
+    /*
+        Darkness
+    */
+
+    const darkness=
         ctx.createRadialGradient(
             px,
             py,
-            45,
+            50,
             px,
             py,
             radius
         );
 
-    g.addColorStop(
+    darkness.addColorStop(
         0,
         "rgba(0,0,0,0)"
     );
 
-    g.addColorStop(
-        0.5,
+    darkness.addColorStop(
+        .45,
         "rgba(0,0,0,.25)"
     );
 
-    g.addColorStop(
+    darkness.addColorStop(
         1,
-        "rgba(0,0,0,.82)"
+        "rgba(0,0,0,.78)"
     );
 
-    ctx.fillStyle = g;
+    ctx.fillStyle=darkness;
 
     ctx.fillRect(
         0,
@@ -3007,198 +3995,362 @@ function drawLighting() {
         H
     );
 
+    /*
+        Flashlight
+    */
+
+    const direction=
+        me.vx>=0
+            ? 1
+            : -1;
+
+    const light=
+        ctx.createLinearGradient(
+            px,
+            py,
+            px+
+            direction*
+            330,
+            py
+        );
+
+    light.addColorStop(
+        0,
+        "rgba(190,235,255,.08)"
+    );
+
+    light.addColorStop(
+        1,
+        "rgba(190,235,255,0)"
+    );
+
+    ctx.fillStyle=light;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        px,
+        py-15
+    );
+
+    ctx.lineTo(
+        px+
+        direction*340,
+        py-150
+    );
+
+    ctx.lineTo(
+        px+
+        direction*340,
+        py+150
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+
 }
 
 /* =========================================================
    HUD
-   ========================================================= */
+========================================================= */
 
-function updateHUD() {
+function updateHUD(){
 
-    if (!me)
+    const moneyEl=
+        document.getElementById("money");
+
+    const oxygenEl=
+        document.getElementById("oxygen");
+
+    const healthEl=
+        document.getElementById("health");
+
+    if(!me) return;
+
+    moneyEl.textContent=
+        Math.floor(money);
+
+    oxygenEl.textContent=
+        Math.max(
+            0,
+            Math.floor(me.oxygen)
+        );
+
+    healthEl.textContent=
+        Math.max(
+            0,
+            Math.floor(me.health)
+        );
+
+    document.getElementById(
+        "oxygenFill"
+    ).style.width=
+        Math.max(
+            0,
+            me.oxygen
+        )+"%";
+
+    document.getElementById(
+        "healthFill"
+    ).style.width=
+        Math.max(
+            0,
+            me.health
+        )+"%";
+
+}
+
+/* =========================================================
+   INTERACTION UI
+========================================================= */
+
+function updateInteractionUI(){
+
+    const el=
+        document.getElementById(
+            "interaction"
+        );
+
+    if(
+        !gameStarted ||
+        !me ||
+        me.dead
+    ){
+
+        el.classList.add("hidden");
         return;
 
-    const money =
-        document.getElementById(
-            "money"
-        );
+    }
 
-    const hubMoney =
-        document.getElementById(
-            "hubMoney"
-        );
+    if(extraction.active){
 
-    const oxygen =
-        document.getElementById(
-            "oxygen"
-        );
-
-    const health =
-        document.getElementById(
-            "health"
-        );
-
-    const oxygenFill =
-        document.getElementById(
-            "oxygenFill"
-        );
-
-    const healthFill =
-        document.getElementById(
-            "healthFill"
-        );
-
-    if (money)
-        money.textContent =
-            "$" + me.salvage;
-
-    if (hubMoney)
-        hubMoney.textContent =
-            me.salvage;
-
-    if (oxygen)
-        oxygen.textContent =
+        el.textContent=
+            "AIRLOCK · "+
             Math.ceil(
-                me.oxygen
-            ) + "%";
+                extraction.countdown
+            )+
+            "s";
 
-    if (health)
-        health.textContent =
-            Math.ceil(
-                me.health
-            ) + "%";
+        el.classList.remove(
+            "hidden"
+        );
 
-    if (oxygenFill)
-        oxygenFill.style.width =
-            me.oxygen + "%";
+        return;
 
-    if (healthFill)
-        healthFill.style.width =
-            me.health + "%";
+    }
+
+    if(
+        playerInsideExtraction()
+    ){
+
+        if(me.carried){
+
+            el.textContent=
+                "E · EXTRACT SALVAGE";
+
+        }else{
+
+            el.textContent=
+                "BRING SALVAGE HERE";
+
+        }
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    if(me.climbing){
+
+        el.textContent=
+            "W / S · CLIMB";
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    const ladder=
+        nearestLadder();
+
+    if(ladder){
+
+        el.textContent=
+            "W · USE LADDER";
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    if(me.carried){
+
+        el.textContent=
+            "E · DROP "+me.carried.name;
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    const item=
+        nearestLoot();
+
+    if(item){
+
+        el.textContent=
+            "E · PICK UP "+
+            item.name+
+            " · $"+
+            item.value;
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    const door=
+        nearestDoor();
+
+    if(door){
+
+        el.textContent=
+            door.locked
+                ? "E · ACCESS DENIED"
+                : "E · "+
+                  (
+                    door.open
+                        ? "CLOSE DOOR"
+                        : "OPEN DOOR"
+                  );
+
+        el.classList.remove(
+            "hidden"
+        );
+
+        return;
+
+    }
+
+    el.classList.add(
+        "hidden"
+    );
 
 }
 
 /* =========================================================
    INVENTORY
-   ========================================================= */
+========================================================= */
 
-function toggleInventory() {
+function toggleInventory(){
 
-    const inv =
+    const inv=
         document.getElementById(
             "inventory"
         );
 
-    if (!inv)
-        return;
+    if(inv.classList.contains("hidden")){
 
-    if (
-        inv.style.display ===
-        "grid"
-    ) {
+        inv.classList.remove(
+            "hidden"
+        );
 
-        inv.style.display =
-            "none";
+        buildInventory();
 
-    } else {
+    }else{
 
-        inv.style.display =
-            "grid";
-
-        const grid =
-            document.getElementById(
-                "inventoryGrid"
-            );
-
-        if (!grid)
-            return;
-
-        grid.innerHTML = "";
-
-        const items =
-            salvageObjects.filter(
-                x =>
-                    x.extracted ||
-                    (
-                        x.carried &&
-                        x.holder === myId
-                    )
-            );
-
-        if (!items.length) {
-
-            grid.innerHTML =
-                "<div class='item'>Nothing collected.</div>";
-
-        }
-
-        for (const item of items) {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-            div.className =
-                "item";
-
-            div.innerHTML = `
-                <div class="item-icon">
-                    ${item.icon}
-                </div>
-                <div class="item-name">
-                    ${item.name}
-                </div>
-                <div class="item-name">
-                    VALUE $${item.value}
-                </div>
-            `;
-
-            grid.appendChild(div);
-
-        }
+        inv.classList.add(
+            "hidden"
+        );
 
     }
 
 }
 
-const closeInventory =
-    document.getElementById(
-        "closeInventory"
-    );
+function buildInventory(){
 
-if (closeInventory) {
+    const grid=
+        document.getElementById(
+            "inventoryGrid"
+        );
 
-    closeInventory.onclick =
-        () => {
+    grid.innerHTML="";
 
-            document.getElementById(
-                "inventory"
-            ).style.display =
-                "none";
+    if(
+        !me ||
+        me.salvage.length===0
+    ){
 
-        };
+        grid.innerHTML=
+            "<div style='color:#70879a'>No extracted salvage yet.</div>";
+
+        return;
+
+    }
+
+    for(const item of me.salvage){
+
+        const div=
+            document.createElement(
+                "div"
+            );
+
+        div.className=
+            "inventory-item";
+
+        div.innerHTML=
+            `
+            <div class="item-icon">
+                ${item.icon}
+            </div>
+
+            <div class="item-name">
+                ${item.name}
+            </div>
+
+            <div class="item-value">
+                $${item.value}
+            </div>
+            `;
+
+        grid.appendChild(div);
+
+    }
 
 }
 
 /* =========================================================
    MESSAGES
-   ========================================================= */
+========================================================= */
 
-let messageTimer;
+let messageTimer=null;
 
-function showMessage(text) {
+function showMessage(text){
 
-    const el =
+    const el=
         document.getElementById(
             "message"
         );
 
-    if (!el)
-        return;
-
-    el.textContent =
-        text;
+    el.textContent=text;
 
     el.classList.add(
         "show"
@@ -3208,232 +4360,281 @@ function showMessage(text) {
         messageTimer
     );
 
-    messageTimer =
-        setTimeout(
-            () => {
-
-                el.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
+    messageTimer=
+        setTimeout(()=>{
+            el.classList.remove(
+                "show"
+            );
+        },2200);
 
 }
 
 /* =========================================================
    ORPHEUS
-   ========================================================= */
+========================================================= */
 
-const hubCanvas =
-    document.getElementById(
-        "hubCanvas"
-    );
+function drawOrpheus(){
 
-const hubCtx =
-    hubCanvas
-        ? hubCanvas.getContext("2d")
-        : null;
+    const w=hubCanvas.width;
+    const h=hubCanvas.height;
 
-function resizeHub() {
-
-    if (!hubCanvas)
-        return;
-
-    hubCanvas.width =
-        innerWidth;
-
-    hubCanvas.height =
-        innerHeight;
-
-}
-
-addEventListener(
-    "resize",
-    resizeHub
-);
-
-resizeHub();
-
-function drawOrpheus() {
-
-    if (!hubCanvas || !hubCtx)
-        return;
-
-    const w =
-        hubCanvas.width;
-
-    const h =
-        hubCanvas.height;
-
-    hubCtx.fillStyle =
-        "#02050b";
-
-    hubCtx.fillRect(
+    hctx.clearRect(
         0,
         0,
         w,
         h
     );
 
-    /* Stars */
+    /*
+        Space
+    */
 
-    for (
-        let i = 0;
-        i < 130;
-        i++
-    ) {
+    hctx.fillStyle="#02060b";
 
-        hubCtx.fillStyle =
-            "rgba(180,210,255,.5)";
-
-        hubCtx.fillRect(
-            (i * 317) % w,
-            (i * 179) % h,
-            1,
-            1
-        );
-
-    }
-
-    const cx =
-        w / 2;
-
-    const cy =
-        h / 2;
-
-    /* Orpheus */
-
-    hubCtx.fillStyle =
-        "#111b2a";
-
-    hubCtx.beginPath();
-
-    hubCtx.moveTo(
-        cx - 430,
-        cy - 100
-    );
-
-    hubCtx.lineTo(
-        cx - 250,
-        cy - 190
-    );
-
-    hubCtx.lineTo(
-        cx + 280,
-        cy - 160
-    );
-
-    hubCtx.lineTo(
-        cx + 450,
-        cy
-    );
-
-    hubCtx.lineTo(
-        cx + 260,
-        cy + 150
-    );
-
-    hubCtx.lineTo(
-        cx - 280,
-        cy + 170
-    );
-
-    hubCtx.lineTo(
-        cx - 450,
-        cy + 80
-    );
-
-    hubCtx.closePath();
-
-    hubCtx.fill();
-
-    hubCtx.strokeStyle =
-        "#435977";
-
-    hubCtx.lineWidth = 4;
-
-    hubCtx.stroke();
-
-    /* Cockpit */
-
-    hubCtx.fillStyle =
-        "#1b4d70";
-
-    hubCtx.beginPath();
-
-    hubCtx.moveTo(
-        cx + 300,
-        cy - 65
-    );
-
-    hubCtx.lineTo(
-        cx + 405,
-        cy
-    );
-
-    hubCtx.lineTo(
-        cx + 300,
-        cy + 65
-    );
-
-    hubCtx.closePath();
-
-    hubCtx.fill();
-
-    /* Engines */
-
-    for (
-        let i = -1;
-        i <= 1;
-        i++
-    ) {
-
-        hubCtx.fillStyle =
-            "#61d9ff";
-
-        hubCtx.beginPath();
-
-        hubCtx.arc(
-            cx - 400,
-            cy + i * 60,
-            14,
-            0,
-            Math.PI * 2
-        );
-
-        hubCtx.fill();
-
-    }
-
-    /* Hangar */
-
-    hubCtx.fillStyle =
-        "#08101c";
-
-    hubCtx.fillRect(
+    hctx.fillRect(
         0,
-        h * 0.73,
+        0,
         w,
-        h * 0.27
+        h
     );
+
+    /*
+        Stars
+    */
+
+    for(let i=0;i<160;i++){
+
+        const x=
+            (
+                i*173
+            )%w;
+
+        const y=
+            (
+                i*91
+            )%h;
+
+        const size=
+            i%7===0
+                ? 2
+                : 1;
+
+        hctx.fillStyle=
+            "rgba(170,220,255,"+
+            (.2+
+            (i%5)/10)+")";
+
+        hctx.fillRect(
+            x,
+            y,
+            size,
+            size
+        );
+
+    }
+
+    const cx=w/2;
+    const cy=h/2;
+
+    /*
+        Glow
+    */
+
+    const glow=
+        hctx.createRadialGradient(
+            cx,
+            cy,
+            30,
+            cx,
+            cy,
+            500
+        );
+
+    glow.addColorStop(
+        0,
+        "rgba(70,180,255,.15)"
+    );
+
+    glow.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    hctx.fillStyle=glow;
+
+    hctx.fillRect(
+        0,
+        0,
+        w,
+        h
+    );
+
+    /*
+        Orpheus hull
+    */
+
+    hctx.save();
+
+    hctx.translate(
+        cx,
+        cy
+    );
+
+    hctx.fillStyle="#172a38";
+
+    hctx.beginPath();
+
+    hctx.moveTo(
+        -430,
+        60
+    );
+
+    hctx.lineTo(
+        -250,
+        -60
+    );
+
+    hctx.lineTo(
+        160,
+        -105
+    );
+
+    hctx.lineTo(
+        420,
+        -35
+    );
+
+    hctx.lineTo(
+        500,
+        20
+    );
+
+    hctx.lineTo(
+        350,
+        75
+    );
+
+    hctx.lineTo(
+        120,
+        110
+    );
+
+    hctx.lineTo(
+        -250,
+        100
+    );
+
+    hctx.closePath();
+
+    hctx.fill();
+
+    hctx.strokeStyle="#4e7386";
+    hctx.lineWidth=3;
+
+    hctx.stroke();
+
+    /*
+        Cockpit
+    */
+
+    hctx.fillStyle="#55cfff";
+
+    hctx.beginPath();
+
+    hctx.moveTo(
+        80,
+        -65
+    );
+
+    hctx.lineTo(
+        250,
+        -40
+    );
+
+    hctx.lineTo(
+        315,
+        -10
+    );
+
+    hctx.lineTo(
+        130,
+        -12
+    );
+
+    hctx.closePath();
+
+    hctx.fill();
+
+    /*
+        Engines
+    */
+
+    for(
+        let x=-350;
+        x<=-180;
+        x+=80
+    ){
+
+        hctx.fillStyle=
+            "rgba(90,210,255,.7)";
+
+        hctx.beginPath();
+
+        hctx.arc(
+            x,
+            50,
+            16+
+            Math.sin(
+                performance.now()/100+
+                x
+            )*4,
+            0,
+            Math.PI*2
+        );
+
+        hctx.fill();
+
+    }
+
+    /*
+        Hangar
+    */
+
+    hctx.strokeStyle="#6a91a5";
+
+    hctx.strokeRect(
+        -40,
+        35,
+        130,
+        65
+    );
+
+    hctx.fillStyle=
+        "rgba(60,200,255,.12)";
+
+    hctx.fillRect(
+        -40,
+        35,
+        130,
+        65
+    );
+
+    hctx.restore();
 
 }
 
-function hubLoop() {
+/* =========================================================
+   HUB LOOP
+========================================================= */
 
-    const hub =
-        document.getElementById(
-            "hub"
-        );
+function hubLoop(){
 
-    if (
-        hub &&
-        !hub.classList.contains(
-            "hidden"
-        )
-    ) {
+    if(
+        !document
+            .getElementById("hub")
+            .classList
+            .contains("hidden")
+    ){
 
         drawOrpheus();
 
@@ -3449,83 +4650,64 @@ hubLoop();
 
 /* =========================================================
    SHIP SELECT
-   ========================================================= */
+========================================================= */
 
-function buildShipCards() {
+function buildShipCards(){
 
-    const grid =
+    const grid=
         document.getElementById(
             "shipGrid"
         );
 
-    if (!grid)
-        return;
+    grid.innerHTML="";
 
-    grid.innerHTML = "";
+    for(const ship of raidShips){
 
-    for (const ship of raidShips) {
-
-        const card =
+        const button=
             document.createElement(
                 "button"
             );
 
-        card.type =
-            "button";
-
-        card.className =
+        button.className=
             "ship-card";
 
-        card.innerHTML = `
-            <div class="ship-card-name">
+        button.innerHTML=
+            `
+            <div class="ship-name">
                 ${ship.name}
             </div>
-            <div class="ship-card-type">
-                ${ship.type}
+
+            <div class="ship-difficulty">
+                ${ship.difficulty}
             </div>
-            <div class="ship-card-difficulty">
-                Difficulty ${ship.difficulty}/6
+
+            <div class="ship-info">
+                Estimated salvage:
+                $${ship.min.toLocaleString()}
+                –
+                $${ship.max.toLocaleString()}
+                <br><br>
+                Threats:
+                ${ship.enemies}
+                <br>
+                Oxygen:
+                ${ship.oxygen}s
             </div>
-            <div class="ship-card-reward">
-                ${ship.reward}
-            </div>
-        `;
+            `;
 
-        card.onclick =
-            () => {
+        button.addEventListener(
+            "click",
+            ()=>{
 
-                selectedShip =
-                    ship;
+                selectedShip=ship;
 
-                document
-                    .querySelectorAll(
-                        ".ship-card"
-                    )
-                    .forEach(
-                        c =>
-                            c.classList.remove(
-                                "selected"
-                            )
-                    );
+                launchRaid();
 
-                card.classList.add(
-                    "selected"
-                );
-
-                showMessage(
-                    ship.name +
-                    " SELECTED"
-                );
-
-                setTimeout(
-                    launchRaid,
-                    350
-                );
-
-            };
+            }
+        );
 
         grid.appendChild(
-            card
+            button
         );
 
     }
@@ -3533,662 +4715,276 @@ function buildShipCards() {
 }
 
 /* =========================================================
-   ORPHEUS / RAID BUTTONS
-   ========================================================= */
+   SCREEN CONTROL
+========================================================= */
 
-const selectRaidBtn =
-    document.getElementById(
-        "selectRaidBtn"
-    );
-
-if (selectRaidBtn) {
-
-    selectRaidBtn.onclick =
-        () => {
-
-            document
-                .getElementById(
-                    "hub"
-                )
-                .classList.add(
-                    "hidden"
-                );
-
-            document
-                .getElementById(
-                    "shipSelect"
-                )
-                .classList.remove(
-                    "hidden"
-                );
-
-        };
-
-}
-
-const shipBack =
-    document.getElementById(
-        "shipBack"
-    );
-
-if (shipBack) {
-
-    shipBack.onclick =
-        () => {
-
-            document
-                .getElementById(
-                    "shipSelect"
-                )
-                .classList.add(
-                    "hidden"
-                );
-
-            document
-                .getElementById(
-                    "hub"
-                )
-                .classList.remove(
-                    "hidden"
-                );
-
-        };
-
-}
-
-/* =========================================================
-   RETURN TO ORPHEUS
-   ========================================================= */
-
-function returnToOrpheus() {
-
-    gameStarted = false;
-
-    extraction.active = false;
-    extraction.completed = false;
-    extraction.countdown = 0;
+function hideAllScreens(){
 
     document
-        .getElementById(
-            "gameUI"
-        )
-        .classList.add(
+        .getElementById("lobby")
+        .classList.add("hidden");
+
+    document
+        .getElementById("joinLobby")
+        .classList.add("hidden");
+
+    document
+        .getElementById("roomLobby")
+        .classList.add("hidden");
+
+    document
+        .getElementById("hub")
+        .classList.add("hidden");
+
+    document
+        .getElementById("shipSelect")
+        .classList.add("hidden");
+
+    document
+        .getElementById("gameUI")
+        .classList.add("hidden");
+
+}
+
+function showRoom(){
+
+    hideAllScreens();
+
+    document
+        .getElementById("roomLobby")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("roomCode")
+        .textContent=
+            roomCode || "----";
+
+    updateRoomStatus();
+
+    const launch=
+        document.getElementById(
+            "launchBtn"
+        );
+
+    if(isHost){
+
+        launch.classList.remove(
             "hidden"
         );
 
-    document
-        .getElementById(
-            "hub"
-        )
-        .classList.remove(
+    }else{
+
+        launch.classList.add(
             "hidden"
         );
 
-    me.climbing = false;
-    me.climbingLadder = null;
-
-    me.vx = 0;
-    me.vy = 0;
-
-    showMessage(
-        "WELCOME BACK TO ORPHEUS · $" +
-        me.salvage +
-        " SALVAGED"
-    );
+    }
 
 }
 
-/* =========================================================
-   LAUNCH RAID
-   ========================================================= */
+function updateRoomStatus(){
 
-function launchRaid() {
+    const status=
+        document.getElementById(
+            "roomStatus"
+        );
 
-    if (!selectedShip)
+    const count=
+        Object.keys(players).length+
+        (
+            me
+                ? 1
+                : 0
+        );
+
+    if(practiceMode){
+
+        status.textContent=
+            "Practice mode ready.";
+
         return;
 
-    document
-        .getElementById(
-            "shipSelect"
-        )
-        .classList.add(
-            "hidden"
-        );
+    }
+
+    if(count>=2){
+
+        status.textContent=
+            isHost
+                ? "Crew assembled. Launch when ready."
+                : "Crew assembled. Waiting for host.";
+
+    }else{
+
+        status.textContent=
+            "Waiting for another crew member...";
+
+    }
+
+}
+
+function showOrpheus(){
+
+    hideAllScreens();
 
     document
-        .getElementById(
-            "hub"
-        )
-        .classList.add(
-            "hidden"
-        );
+        .getElementById("hub")
+        .classList.remove("hidden");
+
+    if(!me){
+
+        me=
+            createPlayer(
+                myId ||
+                "practice",
+                "Crew",
+                "#ff4d55",
+                400,
+                500
+            );
+
+    }
+
+    updateRoomStatus();
+
+}
+
+/* =========================================================
+   RAID
+========================================================= */
+
+function launchRaid(){
+
+    if(!selectedShip)
+        return;
+
+    hideAllScreens();
+
+    document
+        .getElementById("gameUI")
+        .classList.remove("hidden");
 
     resetRaidWorld();
 
-    gameStarted = true;
+    gameStarted=true;
 
     document
-        .getElementById(
-            "gameUI"
-        )
-        .classList.remove(
-            "hidden"
-        );
+        .getElementById("shipNameHud")
+        .textContent=
+            selectedShip.name+
+            " · "+
+            selectedShip.difficulty;
 
-    document
-        .getElementById(
-            "shipNameHud"
-        ).textContent =
-        selectedShip.name +
-        " · " +
-        selectedShip.type;
+    if(!me){
 
-    if (!me) {
-
-        me =
-            makePlayer(
-                myId || "local",
-                practiceMode
-                    ? "You"
-                    : "Crew",
+        me=
+            createPlayer(
+                myId ||
+                "practice",
+                "Crew",
                 isHost
-                    ? 250
-                    : 350,
-                820,
-                isHost
-                    ? "#ff526c"
-                    : "#648cff"
+                    ? "#ff4d55"
+                    : "#5baeff",
+                250,
+                820
             );
 
-        players[
-            me.id
-        ] = me;
+    }else{
+
+        me.x=
+            isHost
+                ? 250
+                : 360;
+
+        me.y=820;
+
+        me.vx=0;
+        me.vy=0;
+
+        me.health=100;
+        me.oxygen=100;
+
+        me.dead=false;
+
+        me.carried=null;
+
+        me.salvage=[];
 
     }
 
-    me.dead = false;
-    me.health = 100;
-    me.oxygen = 100;
+    cameraX=0;
+    cameraY=0;
 
-    me.salvage = 0;
-
-    me.climbing = false;
-    me.climbingLadder = null;
-
-    me.x =
-        isHost
-            ? 250
-            : 350;
-
-    me.y = 820;
-
-    me.vx = 0;
-    me.vy = 0;
+    extraction.active=false;
+    extraction.complete=false;
+    extraction.countdown=0;
 
     showMessage(
-        "BOARDING " +
+        "BOARDING "+
         selectedShip.name
     );
 
 }
 
 /* =========================================================
-   NETWORK
-   ========================================================= */
+   RETURN
+========================================================= */
 
-function connect() {
+function returnToOrpheus(){
 
-    try {
+    gameStarted=false;
 
-        socket =
-            new WebSocket(
-                SERVER
-            );
-
-        socket.onopen =
-            () => {
-
-                const status =
-                    document.getElementById(
-                        "connectionStatus"
-                    );
-
-                if (status) {
-
-                    status.textContent =
-                        "● SERVER ONLINE";
-
-                }
-
-            };
-
-        socket.onclose =
-            () => {
-
-                const status =
-                    document.getElementById(
-                        "connectionStatus"
-                    );
-
-                if (status) {
-
-                    status.textContent =
-                        "○ SERVER OFFLINE · PRACTICE STILL WORKS";
-
-                }
-
-            };
-
-        socket.onerror =
-            () => {
-
-                const status =
-                    document.getElementById(
-                        "connectionStatus"
-                    );
-
-                if (status) {
-
-                    status.textContent =
-                        "NETWORK ERROR";
-
-                }
-
-            };
-
-        socket.onmessage =
-            handleServerMessage;
-
-    } catch (err) {
-
-        console.error(err);
-
-    }
-
-}
-
-function send(data) {
-
-    if (
-        socket &&
-        socket.readyState ===
-        WebSocket.OPEN
-    ) {
-
-        socket.send(
-            JSON.stringify(
-                data
-            )
-        );
-
-    }
-
-}
-
-/* =========================================================
-   SERVER MESSAGES
-   ========================================================= */
-
-function handleServerMessage(
-    event
-) {
-
-    let data;
-
-    try {
-
-        data =
-            JSON.parse(
-                event.data
-            );
-
-    } catch {
-
-        return;
-
-    }
-
-    if (
-        data.type ===
-        "connected"
-    ) {
-
-        myId =
-            data.id;
-
-    }
-
-    if (
-        data.type ===
-            "roomCreated" ||
-        data.type ===
-            "roomJoined" ||
-        data.type ===
-            "joined"
-    ) {
-
-        room =
-            data.room;
-
-        isHost =
-            data.type ===
-            "roomCreated";
-
-        showRoom();
-
-    }
-
-    if (
-        data.type ===
-            "playerJoined" ||
-        data.type ===
-            "playerMoved" ||
-        data.type ===
-            "playerUpdate"
-    ) {
-
-        receiveRemote(
-            data
-        );
-
-    }
-
-    if (
-        data.type ===
-        "gameStart"
-    ) {
-
-        showOrpheus();
-
-    }
-
-    if (
-        data.type ===
-        "playerLeft"
-    ) {
-
-        delete players[
-            data.id
-        ];
-
-    }
-
-    if (
-        data.type ===
-        "error"
-    ) {
-
-        showMessage(
-            data.message ||
-            "SERVER ERROR"
-        );
-
-    }
-
-}
-
-/* =========================================================
-   ROOM
-   ========================================================= */
-
-function showRoom() {
+    extraction.active=false;
+    extraction.complete=false;
 
     document
-        .getElementById(
-            "lobby"
-        )
-        .classList.add(
-            "hidden"
-        );
+        .getElementById("gameUI")
+        .classList.add("hidden");
 
     document
-        .getElementById(
-            "joinLobby"
-        )
-        .classList.add(
-            "hidden"
-        );
+        .getElementById("hub")
+        .classList.remove("hidden");
+
+    bank+=money;
 
     document
-        .getElementById(
-            "roomLobby"
-        )
-        .classList.remove(
-            "hidden"
-        );
+        .getElementById("hubMoney")
+        .textContent=
+            bank.toLocaleString();
 
-    document
-        .getElementById(
-            "roomCode"
-        ).textContent =
-        room ||
-        "----";
-
-    document
-        .getElementById(
-            "roomStatus"
-        ).textContent =
-        isHost
-            ? "Crew leader · waiting for launch"
-            : "Waiting for crew leader";
-
-}
-
-function showOrpheus() {
-
-    document
-        .getElementById(
-            "roomLobby"
-        )
-        .classList.add(
-            "hidden"
-        );
-
-    document
-        .getElementById(
-            "hub"
-        )
-        .classList.remove(
-            "hidden"
-        );
-
-    if (!me) {
-
-        me =
-            makePlayer(
-                myId || "local",
-                "Crew",
-                isHost
-                    ? 250
-                    : 350,
-                820,
-                isHost
-                    ? "#ff526c"
-                    : "#648cff"
-            );
-
-        players[
-            me.id
-        ] = me;
-
-    }
+    money=0;
 
     showMessage(
-        "WELCOME ABOARD ORPHEUS"
+        "WELCOME BACK TO ORPHEUS"
     );
-
-}
-
-/* =========================================================
-   REMOTE PLAYERS
-   ========================================================= */
-
-function receiveRemote(
-    data
-) {
-
-    if (
-        !data.id ||
-        data.id === myId
-    )
-        return;
-
-    let p =
-        players[
-            data.id
-        ];
-
-    if (!p) {
-
-        p =
-            makePlayer(
-                data.id,
-                data.name ||
-                    "CREW",
-                data.x ||
-                    350,
-                data.y ||
-                    820,
-                data.color ||
-                    "#648cff"
-            );
-
-        players[
-            data.id
-        ] = p;
-
-    }
-
-    p.targetX =
-        data.x ??
-        p.x;
-
-    p.targetY =
-        data.y ??
-        p.y;
-
-    p.dead =
-        !!data.dead;
-
-}
-
-/* =========================================================
-   REMOTE INTERPOLATION
-   ========================================================= */
-
-function updateRemote() {
-
-    for (
-        const id in players
-    ) {
-
-        if (
-            id === myId
-        )
-            continue;
-
-        const p =
-            players[id];
-
-        p.x +=
-            (
-                p.targetX -
-                p.x
-            ) *
-            Math.min(
-                1,
-                dt * 12
-            );
-
-        p.y +=
-            (
-                p.targetY -
-                p.y
-            ) *
-            Math.min(
-                1,
-                dt * 12
-            );
-
-    }
-
-}
-
-/* =========================================================
-   NETWORK SEND
-   ========================================================= */
-
-let networkTimer = 0;
-
-function updateNetwork() {
-
-    if (
-        practiceMode ||
-        !me
-    )
-        return;
-
-    networkTimer +=
-        dt;
-
-    if (
-        networkTimer < 0.05
-    )
-        return;
-
-    networkTimer = 0;
-
-    send({
-
-        type: "move",
-
-        x: me.x,
-        y: me.y,
-
-        vx: me.vx,
-        vy: me.vy,
-
-        grounded:
-            me.grounded,
-
-        running:
-            Math.abs(
-                me.vx
-            ) > 300,
-
-        dead:
-            me.dead
-
-    });
 
 }
 
 /* =========================================================
    LOBBY BUTTONS
-   ========================================================= */
+========================================================= */
 
-const hostBtn =
-    document.getElementById(
-        "hostBtn"
-    );
+document
+    .getElementById("hostBtn")
+    .addEventListener(
+        "click",
+        ()=>{
 
-if (hostBtn) {
-
-    hostBtn.onclick =
-        () => {
-
-            const name =
+            const name=
                 document
                     .getElementById(
                         "nameInput"
                     )
                     .value
-                    .trim();
+                    .trim() ||
+                "Crew";
 
-            if (!name) {
+            if(
+                !socket ||
+                socket.readyState!==WebSocket.OPEN
+            ){
 
-                alert(
-                    "Enter a crew name."
+                showMessage(
+                    "Server connection unavailable"
                 );
 
                 return;
@@ -4196,93 +4992,71 @@ if (hostBtn) {
             }
 
             send({
-                type: "host",
+                type:"host",
                 name
             });
 
-        };
-
-}
-
-const joinBtn =
-    document.getElementById(
-        "joinBtn"
+        }
     );
 
-if (joinBtn) {
-
-    joinBtn.onclick =
-        () => {
+document
+    .getElementById("joinBtn")
+    .addEventListener(
+        "click",
+        ()=>{
 
             document
-                .getElementById(
-                    "lobby"
-                )
+                .getElementById("lobby")
                 .classList.add(
                     "hidden"
                 );
 
             document
-                .getElementById(
-                    "joinLobby"
-                )
+                .getElementById("joinLobby")
                 .classList.remove(
                     "hidden"
                 );
 
-        };
-
-}
-
-const joinBack =
-    document.getElementById(
-        "joinBack"
+        }
     );
 
-if (joinBack) {
-
-    joinBack.onclick =
-        () => {
+document
+    .getElementById("joinBack")
+    .addEventListener(
+        "click",
+        ()=>{
 
             document
-                .getElementById(
-                    "joinLobby"
-                )
+                .getElementById("joinLobby")
                 .classList.add(
                     "hidden"
                 );
 
             document
-                .getElementById(
-                    "lobby"
-                )
+                .getElementById("lobby")
                 .classList.remove(
                     "hidden"
                 );
 
-        };
-
-}
-
-const joinConfirm =
-    document.getElementById(
-        "joinConfirm"
+        }
     );
 
-if (joinConfirm) {
+document
+    .getElementById("joinConfirm")
+    .addEventListener(
+        "click",
+        ()=>{
 
-    joinConfirm.onclick =
-        () => {
-
-            const name =
+            const name=
                 document
                     .getElementById(
                         "joinName"
                     )
                     .value
-                    .trim();
+                    .trim() ||
+                "Crew";
 
-            const code =
+            const room=
                 document
                     .getElementById(
                         "roomInput"
@@ -4291,156 +5065,236 @@ if (joinConfirm) {
                     .trim()
                     .toUpperCase();
 
-            if (
-                !name ||
-                code.length !== 4
-            ) {
+            if(room.length!==4){
 
-                alert(
-                    "Enter your name and the 4-character room code."
-                );
+                document
+                    .getElementById(
+                        "joinStatus"
+                    )
+                    .textContent=
+                        "Room codes are 4 characters.";
 
                 return;
 
             }
 
             send({
-
-                type: "join",
-
+                type:"join",
                 name,
-
-                room: code
-
+                room
             });
 
-        };
-
-}
-
-/* =========================================================
-   PRACTICE MODE
-   ========================================================= */
-
-const practiceBtn =
-    document.getElementById(
-        "practiceBtn"
+        }
     );
 
-if (practiceBtn) {
+document
+    .getElementById("practiceBtn")
+    .addEventListener(
+        "click",
+        ()=>{
 
-    practiceBtn.onclick =
-        () => {
+            practiceMode=true;
+            isHost=true;
 
-            practiceMode = true;
-            isHost = true;
+            myId="practice";
 
-            myId =
-                "practice";
-
-            me =
-                makePlayer(
+            me=
+                createPlayer(
                     "practice",
-                    "You",
+                    "Player",
+                    "#ff4d55",
                     250,
-                    820,
-                    "#648cff"
+                    820
                 );
-
-            players.practice =
-                me;
 
             showOrpheus();
 
-        };
-
-}
-
-/* =========================================================
-   LAUNCH BUTTON
-   ========================================================= */
-
-const launchBtn =
-    document.getElementById(
-        "launchBtn"
+        }
     );
 
-if (launchBtn) {
+document
+    .getElementById("launchBtn")
+    .addEventListener(
+        "click",
+        ()=>{
 
-    launchBtn.onclick =
-        () => {
-
-            if (!isHost) {
-
-                showMessage(
-                    "ONLY THE CREW LEADER CAN LAUNCH"
-                );
-
+            if(!isHost)
                 return;
+
+            send({
+                type:"startGame"
+            });
+
+            if(practiceMode){
+
+                showOrpheus();
 
             }
 
-            send({
-                type: "startGame"
-            });
+        }
+    );
 
-        };
+document
+    .getElementById("roomBack")
+    .addEventListener(
+        "click",
+        ()=>{
 
-}
+            hideAllScreens();
+
+            document
+                .getElementById("lobby")
+                .classList.remove(
+                    "hidden"
+                );
+
+            roomCode=null;
+            isHost=false;
+
+        }
+    );
+
+/* =========================================================
+   HUB BUTTONS
+========================================================= */
+
+document
+    .getElementById("selectRaidBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            hideAllScreens();
+
+            document
+                .getElementById("shipSelect")
+                .classList.remove(
+                    "hidden"
+                );
+
+        }
+    );
+
+document
+    .getElementById("shipBack")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            showOrpheus();
+
+        }
+    );
+
+document
+    .getElementById("upgradeBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            showMessage(
+                "UPGRADES COMING — BANK $"+
+                bank
+            );
+
+        }
+    );
+
+document
+    .getElementById("lockerBtn")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            showMessage(
+                "EQUIPMENT LOCKER"
+            );
+
+        }
+    );
+
+document
+    .getElementById("closeInventory")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            document
+                .getElementById(
+                    "inventory"
+                )
+                .classList.add(
+                    "hidden"
+                );
+
+        }
+    );
 
 /* =========================================================
    KEYBOARD
-   ========================================================= */
+========================================================= */
 
 addEventListener(
     "keydown",
-    e => {
+    e=>{
 
-        keys[e.code] =
-            true;
+        keys[e.code]=true;
 
-        if (
-            e.code ===
-                "Space" ||
-            e.code ===
-                "ArrowUp" ||
-            e.code ===
-                "ArrowDown" ||
-            e.code ===
+        if(
+            [
+                "Space",
+                "ArrowUp",
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
                 "Tab"
-        ) {
+            ].includes(e.code)
+        ){
 
             e.preventDefault();
 
         }
 
-        if (
-            e.code ===
-            "KeyE"
-        ) {
+        if(
+            e.code==="KeyE" &&
+            gameStarted
+        ){
 
-            if (
-                gameStarted
-            ) {
-
-                interact();
-
-            }
+            interact();
 
         }
 
-        if (
-            e.code ===
-            "Tab"
-        ) {
+        if(
+            e.code==="KeyR" &&
+            gameStarted &&
+            me &&
+            me.dead
+        ){
 
-            if (
-                gameStarted
-            ) {
+            respawn();
 
-                toggleInventory();
+        }
 
-            }
+        if(
+            e.code==="Tab" &&
+            gameStarted
+        ){
+
+            toggleInventory();
+
+        }
+
+        if(
+            e.code==="Escape"
+        ){
+
+            document
+                .getElementById(
+                    "inventory"
+                )
+                .classList.add(
+                    "hidden"
+                );
 
         }
 
@@ -4449,199 +5303,68 @@ addEventListener(
 
 addEventListener(
     "keyup",
-    e => {
-
-        keys[e.code] =
-            false;
-
+    e=>{
+        keys[e.code]=false;
     }
 );
 
 /* =========================================================
-   INTERACTION HUD
-   ========================================================= */
-
-function updateInteractionUI() {
-
-    const interaction =
-        document.getElementById(
-            "interaction"
-        );
-
-    if (
-        !interaction ||
-        !me ||
-        me.dead
-    )
-        return;
-
-    if (
-        extraction.active
-    ) {
-
-        interaction.textContent =
-            "EXTRACTING · " +
-            Math.ceil(
-                extraction.countdown
-            ) +
-            "s";
-
-        interaction.classList.add(
-            "show"
-        );
-
-        return;
-
-    }
-
-    if (
-        playerInsideExtraction()
-    ) {
-
-        if (me.holding) {
-
-            interaction.textContent =
-                "E — EXTRACT " +
-                me.holding.name;
-
-        } else {
-
-            interaction.textContent =
-                "BRING SALVAGE HERE";
-
-        }
-
-        interaction.classList.add(
-            "show"
-        );
-
-        return;
-
-    }
-
-    if (me.climbing) {
-
-        interaction.textContent =
-            "W / S — CLIMB";
-
-        interaction.classList.add(
-            "show"
-        );
-
-        return;
-
-    }
-
-    const ladder =
-        nearestLadder();
-
-    if (ladder) {
-
-        interaction.textContent =
-            "W / S — USE LADDER";
-
-        interaction.classList.add(
-            "show"
-        );
-
-    }
-
-    if (me.holding) {
-
-        interaction.textContent =
-            "E — DROP " +
-            me.holding.name;
-
-        interaction.classList.add(
-            "show"
-        );
-
-        return;
-
-    }
-
-    const item =
-        nearestLoot();
-
-    if (item) {
-
-        interaction.textContent =
-            "E — PICK UP " +
-            item.name +
-            " · $" +
-            item.value;
-
-        interaction.classList.add(
-            "show"
-        );
-
-        return;
-
-    }
-
-    if (!ladder) {
-
-        interaction.classList.remove(
-            "show"
-        );
-
-    }
-
-}
-
-/* =========================================================
    MAIN RENDER
-   ========================================================= */
+========================================================= */
 
-function render() {
+function render(){
 
-    drawSpace();
+    drawBackground();
 
-    if (!gameStarted)
+    if(!gameStarted || !me)
         return;
 
-    updateCamera();
+    /*
+        Camera shake
+    */
 
-    const shakeX =
-        camera.shake
-            ? (
-                Math.random() -
-                0.5
-            ) *
-            camera.shake
-            : 0;
+    let sx=0;
+    let sy=0;
 
-    const shakeY =
-        camera.shake
-            ? (
-                Math.random() -
-                0.5
-            ) *
-            camera.shake
-            : 0;
+    if(shake>0){
+
+        sx=
+            (
+                Math.random()-
+                .5
+            )*
+            shake;
+
+        sy=
+            (
+                Math.random()-
+                .5
+            )*
+            shake;
+
+        shake*=.88;
+
+        if(shake<.1)
+            shake=0;
+
+    }
 
     ctx.save();
 
     ctx.translate(
-        shakeX,
-        shakeY
+        sx,
+        sy
     );
 
-    drawShip();
-
-    drawProps();
-
+    drawShipInterior();
     drawSolids();
-
     drawLadders();
-
+    drawProps();
+    drawHazards();
     drawLoot();
-
     drawEnemies();
 
-    for (
-        const id in players
-    ) {
+    for(const id in players){
 
         drawPlayer(
             players[id]
@@ -4649,49 +5372,47 @@ function render() {
 
     }
 
-    drawLighting();
+    drawPlayer(me);
 
     ctx.restore();
+
+    drawLighting();
 
 }
 
 /* =========================================================
    MAIN LOOP
-   ========================================================= */
+========================================================= */
 
-function loop(now) {
+function loop(now){
 
-    dt =
-        Math.min(
-            0.033,
-            (
-                now -
-                lastTime
-            ) / 1000
+    let dt=
+        (now-lastTime)/
+        1000;
+
+    lastTime=now;
+
+    dt=
+        Math.max(
+            .001,
+            Math.min(
+                .033,
+                dt
+            )
         );
 
-    lastTime =
-        now;
+    if(gameStarted){
 
-    if (
-        gameStarted &&
-        me
-    ) {
-
-        updatePlayer();
-
-        updateRemote();
-
-        updateEnemies();
-
-        updateOxygen();
-
-        updateExtraction();
-
-        updateNetwork();
-
+        updatePlayer(dt);
+        updateRemote(dt);
+        updateEnemies(dt);
+        updateOxygen(dt);
+        updateHazards(dt);
+        updateExtraction(dt);
+        updateParticles(dt);
+        updateNetwork(dt);
+        updateCamera();
         updateHUD();
-
         updateInteractionUI();
 
     }
@@ -4704,16 +5425,22 @@ function loop(now) {
 
 }
 
-/* =========================================================
-   START
-   ========================================================= */
-
 buildShipCards();
-
 connect();
 
 requestAnimationFrame(
     loop
 );
 
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+document
+    .getElementById("hubMoney")
+    .textContent=
+        bank.toLocaleString();
+
 </script>
+</body>
+</html>

@@ -12,13 +12,20 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #070812;
+    background: #060713;
     color: white;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
 body {
@@ -26,109 +33,9 @@ body {
 }
 
 canvas {
-    position: fixed;
-    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
-    display: block;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* =========================
-   MENU
-========================= */
-
-#menu {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-        radial-gradient(circle at 50% 20%, rgba(125, 70, 255, .25), transparent 40%),
-        linear-gradient(135deg, #080912, #11132a);
-}
-
-.menu-box {
-    width: min(480px, 92vw);
-    padding: 38px;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 24px;
-    background: rgba(15,17,35,.82);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 30px 100px rgba(0,0,0,.55);
-    text-align: center;
-}
-
-.logo {
-    font-size: 46px;
-    font-weight: 900;
-    letter-spacing: -2px;
-    background: linear-gradient(90deg,#ff4d6d,#8b5cf6,#3b82f6);
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    color: #a7a9bb;
-    margin-bottom: 30px;
-}
-
-.menu-buttons {
-    display: grid;
-    gap: 12px;
-}
-
-button {
-    border: 0;
-    cursor: pointer;
-    font: inherit;
-}
-
-.menu-btn {
-    padding: 16px;
-    border-radius: 14px;
-    color: white;
-    font-weight: 800;
-    font-size: 16px;
-    background: linear-gradient(135deg,#7c3aed,#2563eb);
-    transition: .2s;
-}
-
-.menu-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.15);
-}
-
-.menu-btn.secondary {
-    background: rgba(255,255,255,.08);
-}
-
-input {
-    width: 100%;
-    padding: 15px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,.12);
-    outline: none;
-    background: rgba(0,0,0,.3);
-    color: white;
-    font-size: 16px;
-    margin-bottom: 12px;
-}
-
-input:focus {
-    border-color: #8b5cf6;
-}
-
-.back-btn {
-    margin-top: 14px;
-    color: #aaa;
-    background: none;
 }
 
 /* =========================
@@ -138,52 +45,213 @@ input:focus {
 #lobby {
     position: fixed;
     inset: 0;
-    z-index: 19;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 25px;
+
     background:
-        radial-gradient(circle at 50% 10%, rgba(139,92,246,.2), transparent 40%),
-        #080912;
+        radial-gradient(circle at 20% 20%, rgba(105, 70, 255, .18), transparent 30%),
+        radial-gradient(circle at 80% 80%, rgba(0, 220, 255, .12), transparent 30%),
+        #050610;
+}
+
+.lobby-card {
+    width: min(520px, 100%);
+    padding: 42px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.09),
+            rgba(255,255,255,.025)
+        );
+
+    backdrop-filter: blur(25px);
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.65),
+        inset 0 1px rgba(255,255,255,.12);
+
+    text-align: center;
+}
+
+.logo {
+    font-size: clamp(42px, 9vw, 72px);
+    font-weight: 1000;
+    letter-spacing: -4px;
+
+    background: linear-gradient(
+        90deg,
+        #9b7cff,
+        #61d9ff,
+        #d36cff,
+        #9b7cff
+    );
+
+    background-size: 300% 100%;
+    animation: logoMove 5s linear infinite;
+
+    -webkit-background-clip: text;
+    color: transparent;
+
+    margin-bottom: 5px;
+}
+
+@keyframes logoMove {
+    to {
+        background-position: 300% 0;
+    }
+}
+
+.subtitle {
+    color: #9da1b8;
+    font-size: 14px;
+    margin-bottom: 35px;
+}
+
+input {
+    width: 100%;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+
+    outline: none;
+
+    background: rgba(0,0,0,.3);
+    color: white;
+
+    font-size: 16px;
+
+    transition: .2s;
+}
+
+input:focus {
+    border-color: #8c72ff;
+    box-shadow: 0 0 25px rgba(130,100,255,.18);
+}
+
+button {
+    border: none;
+    cursor: pointer;
+
+    padding: 15px 22px;
+    border-radius: 14px;
+
+    color: white;
+    font-weight: 800;
+    font-size: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7657ff,
+            #4f9cff
+        );
+
+    box-shadow:
+        0 10px 30px rgba(90,90,255,.25);
+
+    transition:
+        transform .15s,
+        filter .15s,
+        box-shadow .15s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.12);
+
+    box-shadow:
+        0 15px 40px rgba(90,90,255,.35);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.secondary {
+    background:
+        rgba(255,255,255,.07);
+
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: none;
+}
+
+#roomPanel {
+    display: none;
 }
 
 .room-code {
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: 10px;
-    margin: 15px 0;
-    color: #fff;
-}
-
-.status {
     margin: 15px 0 25px;
-    color: #aaa;
+
+    font-size: 48px;
+    font-weight: 1000;
+    letter-spacing: 10px;
+
+    color: #83e8ff;
+
+    text-shadow:
+        0 0 25px rgba(80,220,255,.6);
 }
 
 .player-list {
-    display: grid;
-    gap: 8px;
-    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 20px;
 }
 
 .player-entry {
-    padding: 12px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.06);
+    padding: 12px 15px;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.05);
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    text-align: left;
 }
 
-.start-btn {
-    width: 100%;
-    padding: 16px;
-    border-radius: 14px;
-    background: linear-gradient(135deg,#22c55e,#16a34a);
-    color: white;
-    font-weight: 900;
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 
-.start-btn:disabled {
-    opacity: .4;
-    cursor: not-allowed;
+.red {
+    background: #ff4f6d;
+    box-shadow: 0 0 15px #ff4f6d;
+}
+
+.blue {
+    background: #51c9ff;
+    box-shadow: 0 0 15px #51c9ff;
+}
+
+.status {
+    color: #8f94aa;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+#error {
+    color: #ff6d7c;
+    font-size: 13px;
+    min-height: 18px;
+    margin-top: 10px;
 }
 
 /* =========================
@@ -193,7 +261,7 @@ input:focus {
 #gameUI {
     position: fixed;
     inset: 0;
-    z-index: 10;
+    z-index: 20;
     pointer-events: none;
 }
 
@@ -202,70 +270,148 @@ input:focus {
     top: 18px;
     left: 18px;
     right: 18px;
+
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
-.ui-panel {
-    padding: 11px 15px;
-    border-radius: 12px;
-    background: rgba(10,12,25,.7);
+.panel {
+    padding: 12px 16px;
+
     border: 1px solid rgba(255,255,255,.1);
-    backdrop-filter: blur(10px);
+    border-radius: 15px;
+
+    background: rgba(5,7,20,.65);
+    backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.3);
 }
 
 .controls {
-    color: #bbb;
-    font-size: 13px;
+    color: #aeb3c9;
+    font-size: 12px;
+    line-height: 1.7;
 }
 
-.room-small {
-    font-weight: 800;
+.controls b {
+    color: white;
 }
 
 #message {
     position: absolute;
     left: 50%;
-    top: 30%;
-    transform: translateX(-50%);
-    padding: 20px 28px;
-    border-radius: 16px;
-    background: rgba(10,12,25,.9);
-    font-size: 25px;
-    font-weight: 900;
-    text-align: center;
+    top: 28%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.8);
+
     opacity: 0;
-    transition: .25s;
+    visibility: hidden;
+
+    padding: 22px 38px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(8,8,18,.88);
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    backdrop-filter: blur(20px);
+
+    font-size: clamp(25px, 5vw, 45px);
+    font-weight: 1000;
+
+    text-align: center;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.5),
+        0 0 50px rgba(255,70,100,.12);
+
+    transition:
+        opacity .2s ease,
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        visibility 0s linear .2s;
 }
 
 #message.show {
     opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+
+    transition:
+        opacity .2s ease,
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        visibility 0s;
+}
+
+#message.hide {
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.85);
+
+    transition:
+        opacity .12s ease,
+        transform .12s ease,
+        visibility 0s linear .12s;
 }
 
 /* =========================
-   FINISH
+   LOADING
 ========================= */
 
-.finish-text {
-    color: #86efac;
+#loading {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #050610;
+
+    font-size: 18px;
+    font-weight: 800;
 }
 
-/* =========================
-   MOBILE DISABLED
-========================= */
+.spinner {
+    width: 24px;
+    height: 24px;
 
-@media(max-width:700px) {
-    .menu-box {
-        padding: 25px;
+    border: 3px solid rgba(255,255,255,.15);
+    border-top-color: #8b6cff;
+
+    border-radius: 50%;
+
+    animation: spin .7s linear infinite;
+    margin-right: 12px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* PC ONLY */
+
+@media (max-width: 700px) {
+    .lobby-card {
+        padding: 28px 20px;
     }
 
-    .logo {
-        font-size: 36px;
-    }
-
-    .controls {
-        display: none;
+    .buttons {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -273,132 +419,126 @@ input:focus {
 
 <body>
 
-<canvas id="gameCanvas"></canvas>
-
-<!-- =========================
-     MENU
-========================= -->
-
-<div id="menu">
-
-    <div class="menu-box" id="mainMenu">
-
-        <div class="logo">COOLIO CLIMB</div>
-
-        <div class="subtitle">
-            Two players. One chain. Absolutely terrible decisions.
-        </div>
-
-        <div class="menu-buttons">
-
-            <button class="menu-btn" id="hostBtn">
-                HOST GAME
-            </button>
-
-            <button class="menu-btn secondary" id="joinBtn">
-                JOIN GAME
-            </button>
-
-            <button class="menu-btn secondary" id="practiceBtn">
-                PRACTICE PARKOUR
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- HOST NAME -->
-
-    <div class="menu-box hidden" id="hostNameMenu">
-
-        <div class="logo">HOST GAME</div>
-
-        <p class="subtitle">
-            What's your name?
-        </p>
-
-        <input
-            id="hostName"
-            maxlength="16"
-            placeholder="Your name"
-        >
-
-        <button class="menu-btn" id="createRoomBtn">
-            CREATE ROOM
-        </button>
-
-        <button class="back-btn" id="hostBack">
-            ← Back
-        </button>
-
-    </div>
-
-    <!-- JOIN -->
-
-    <div class="menu-box hidden" id="joinMenu">
-
-        <div class="logo">JOIN GAME</div>
-
-        <input
-            id="joinName"
-            maxlength="16"
-            placeholder="Your name"
-        >
-
-        <input
-            id="roomInput"
-            maxlength="4"
-            placeholder="4-letter room code"
-            style="text-transform:uppercase"
-        >
-
-        <button class="menu-btn" id="joinRoomBtn">
-            JOIN ROOM
-        </button>
-
-        <button class="back-btn" id="joinBack">
-            ← Back
-        </button>
-
-    </div>
-
-</div>
+<canvas id="game"></canvas>
 
 <!-- =========================
      LOBBY
 ========================= -->
 
-<div id="lobby" class="hidden">
+<div id="lobby">
 
-    <div class="menu-box">
+    <div class="lobby-card">
 
-        <div class="logo">ROOM READY</div>
+        <div class="logo">
+            COOLIO CLIMB
+        </div>
 
         <div class="subtitle">
-            Give this code to your friend
+            Two players. One chain. Absolutely terrible decisions.
         </div>
 
-        <div class="room-code" id="roomCode">
-            ----
+        <div id="mainPanel">
+
+            <input
+                id="nameInput"
+                maxlength="16"
+                placeholder="Your name"
+                autocomplete="off"
+            >
+
+            <div class="buttons">
+
+                <button id="hostBtn">
+                    CREATE ROOM
+                </button>
+
+                <button
+                    id="joinBtn"
+                    class="secondary"
+                >
+                    JOIN ROOM
+                </button>
+
+            </div>
+
+            <button
+                id="practiceBtn"
+                class="secondary"
+                style="width:100%;margin-top:12px;"
+            >
+                PRACTICE MODE
+            </button>
+
+            <div id="error"></div>
+
         </div>
 
-        <div class="status" id="lobbyStatus">
-            Waiting for player...
+        <div id="joinPanel" style="display:none;">
+
+            <input
+                id="joinName"
+                maxlength="16"
+                placeholder="Your name"
+                autocomplete="off"
+            >
+
+            <input
+                id="roomInput"
+                maxlength="4"
+                placeholder="4-character room code"
+                autocomplete="off"
+                style="text-transform:uppercase;text-align:center;letter-spacing:7px;"
+            >
+
+            <div class="buttons">
+
+                <button id="joinConfirm">
+                    JOIN
+                </button>
+
+                <button
+                    id="joinBack"
+                    class="secondary"
+                >
+                    BACK
+                </button>
+
+            </div>
+
         </div>
 
-        <div class="player-list" id="playerList"></div>
+        <div id="roomPanel">
 
-        <button
-            class="start-btn"
-            id="startBtn"
-            disabled
-        >
-            START CLIMB
-        </button>
+            <div class="subtitle">
+                YOUR ROOM
+            </div>
 
-        <button class="back-btn" id="leaveBtn">
-            Leave room
-        </button>
+            <div
+                id="roomCode"
+                class="room-code"
+            >
+                ----
+            </div>
+
+            <div
+                id="playerList"
+                class="player-list"
+            ></div>
+
+            <button
+                id="startBtn"
+                style="width:100%;"
+            >
+                START CLIMB
+            </button>
+
+            <div class="status">
+                Share the room code with your friend.
+            </div>
+
+            <div id="roomError"></div>
+
+        </div>
 
     </div>
 
@@ -408,18 +548,20 @@ input:focus {
      GAME UI
 ========================= -->
 
-<div id="gameUI" class="hidden">
+<div id="gameUI">
 
     <div class="topbar">
 
-        <div class="ui-panel room-small">
-            ROOM: <span id="roomDisplay">----</span>
+        <div class="panel controls">
+
+            <b>MOVE</b> A / D or ← / →<br>
+            <b>JUMP</b> W / SPACE / ↑<br>
+            <b>RUN</b> SHIFT
+
         </div>
 
-        <div class="ui-panel controls">
-            A / D or ← / → Move &nbsp; • &nbsp;
-            SHIFT Run &nbsp; • &nbsp;
-            SPACE Jump
+        <div class="panel">
+            🔗 Chain: <span id="chainDistance">0</span> px
         </div>
 
     </div>
@@ -428,24 +570,37 @@ input:focus {
 
 </div>
 
+<div id="loading">
+    <div class="spinner"></div>
+    Connecting...
+</div>
+
 <script>
+"use strict";
 
 /* =========================================================
-   COOLIO CLIMB
-   COMPLETE REWRITE
+   SERVER
 ========================================================= */
 
-/* =========================
-   CANVAS
-========================= */
+const SERVER =
+    "wss://cooliobeans-multiplayer.onrender.com";
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas =
+    document.getElementById("game");
+
+const ctx =
+    canvas.getContext("2d");
 
 let W = innerWidth;
 let H = innerHeight;
 
 function resize() {
+
     W = innerWidth;
     H = innerHeight;
 
@@ -465,35 +620,89 @@ function resize() {
     );
 }
 
+addEventListener("resize", resize);
 resize();
 
-window.addEventListener("resize", resize);
+
+/* =========================================================
+   LOBBY ELEMENTS
+========================================================= */
+
+const lobby =
+    document.getElementById("lobby");
+
+const loading =
+    document.getElementById("loading");
+
+const mainPanel =
+    document.getElementById("mainPanel");
+
+const joinPanel =
+    document.getElementById("joinPanel");
+
+const roomPanel =
+    document.getElementById("roomPanel");
+
+const nameInput =
+    document.getElementById("nameInput");
+
+const joinName =
+    document.getElementById("joinName");
+
+const roomInput =
+    document.getElementById("roomInput");
+
+const errorBox =
+    document.getElementById("error");
+
+const roomError =
+    document.getElementById("roomError");
+
+const playerList =
+    document.getElementById("playerList");
+
+const roomCode =
+    document.getElementById("roomCode");
+
+const startBtn =
+    document.getElementById("startBtn");
 
 
-/* =========================
-   SERVER
-========================= */
-
-const SERVER =
-    "wss://cooliobeans-multiplayer.onrender.com";
+/* =========================================================
+   GAME STATE
+========================================================= */
 
 let socket = null;
 
 let myId = null;
-let roomCode = null;
-let myColor = "red";
 let myName = "Player";
+let myColor = "red";
 
-let isHost = false;
+let room = null;
+
+let gameStarted = false;
+let practiceMode = false;
+
+let lastTime = performance.now();
+
+let cameraX = 0;
+
+let messageTimer = null;
 
 
-/* =========================
-   PLAYER STATE
-========================= */
+/* =========================================================
+   PLAYERS
+========================================================= */
 
 const players = new Map();
 
-function createPlayer(id, name, color) {
+function createPlayer(
+    id,
+    name,
+    color,
+    x,
+    y
+) {
 
     return {
 
@@ -501,396 +710,814 @@ function createPlayer(id, name, color) {
         name,
         color,
 
-        x: 250,
-        y: 500,
+        x,
+        y,
 
         vx: 0,
         vy: 0,
 
         width: 34,
-        height: 54,
+        height: 58,
+
+        spawnX: x,
+        spawnY: y,
 
         grounded: false,
-
-        jumping: false,
-
-        facing: 1,
-
         running: false,
-
         dead: false,
 
-        /* remote interpolation */
-
-        targetX: 250,
-        targetY: 500,
+        targetX: x,
+        targetY: y,
         targetVX: 0,
         targetVY: 0,
 
-        spawnX: 250,
-        spawnY: 500,
+        coyote: 0,
+        jumpBuffer: 0,
 
-        lastGroundY: 500
+        facing: color === "blue"
+            ? -1
+            : 1,
+
+        anim: 0
 
     };
 
 }
 
 
-/* =========================
+/* =========================================================
    WORLD
-========================= */
-
-const world = {
-
-    gravity: 1800,
-
-    groundY: 650,
-
-    width: 12000
-
-};
-
-
-/* =========================
-   PLATFORMS
-========================= */
+========================================================= */
 
 const platforms = [
 
-    {x:0, y:650, w:850, h:80},
-
-    {x:1000, y:620, w:500, h:80},
-
-    {x:1600, y:560, w:400, h:80},
-
-    {x:2100, y:680, w:700, h:80},
-
-    {x:2950, y:600, w:350, h:80},
-
-    {x:3500, y:530, w:500, h:80},
-
-    {x:4150, y:650, w:900, h:80},
-
-    {x:5200, y:570, w:350, h:80},
-
-    {x:5750, y:500, w:400, h:80},
-
-    {x:6350, y:650, w:700, h:80},
-
-    {x:7200, y:560, w:500, h:80},
-
-    {x:7900, y:460, w:400, h:80},
-
-    {x:8500, y:600, w:700, h:80},
-
-    {x:9500, y:520, w:400, h:80},
-
-    {x:10100, y:450, w:450, h:80},
-
-    {x:10800, y:600, w:900, h:80}
-
-];
-
-
-/* =========================
-   MOVING PLATFORMS
-========================= */
-
-const movingPlatforms = [
-
     {
-        x: 880,
-        y: 530,
-        w: 130,
-        h: 25,
-        startX: 880,
-        range: 100,
-        speed: 1.5,
-        t: 0
+        x: -500,
+        y: 650,
+        w: 1200,
+        h: 80
     },
 
     {
-        x: 3050,
-        y: 450,
-        w: 140,
-        h: 25,
-        startX: 3050,
-        range: 160,
-        speed: 1.2,
-        t: 2
+        x: 820,
+        y: 560,
+        w: 300,
+        h: 35
     },
 
     {
-        x: 6100,
-        y: 400,
-        w: 150,
-        h: 25,
-        startX: 6100,
-        range: 140,
-        speed: 1.4,
-        t: 4
-    }
-
-];
-
-
-/* =========================
-   OBSTACLES
-========================= */
-
-const obstacles = [
-
-    {
-        x: 1250,
-        y: 570,
-        w: 35,
-        h: 50
+        x: 1300,
+        y: 650,
+        w: 420,
+        h: 40
     },
 
     {
-        x: 2330,
-        y: 630,
-        w: 45,
-        h: 50
+        x: 1850,
+        y: 520,
+        w: 260,
+        h: 35
+    },
+
+    {
+        x: 2250,
+        y: 430,
+        w: 250,
+        h: 35
+    },
+
+    {
+        x: 2650,
+        y: 590,
+        w: 350,
+        h: 35
+    },
+
+    {
+        x: 3200,
+        y: 470,
+        w: 260,
+        h: 35
     },
 
     {
         x: 3650,
-        y: 480,
-        w: 40,
-        h: 50
+        y: 380,
+        w: 280,
+        h: 35
     },
 
     {
-        x: 4650,
-        y: 600,
-        w: 40,
-        h: 50
+        x: 4100,
+        y: 520,
+        w: 420,
+        h: 40
     },
 
     {
-        x: 7400,
-        y: 510,
-        w: 40,
-        h: 50
+        x: 4700,
+        y: 400,
+        w: 300,
+        h: 35
     },
 
     {
-        x: 8650,
+        x: 5200,
         y: 550,
-        w: 45,
+        w: 500,
+        h: 45
+    },
+
+    {
+        x: 5850,
+        y: 430,
+        w: 260,
+        h: 35
+    },
+
+    {
+        x: 6300,
+        y: 350,
+        w: 350,
+        h: 35
+    },
+
+    {
+        x: 6850,
+        y: 500,
+        w: 500,
+        h: 45
+    },
+
+    {
+        x: 7500,
+        y: 380,
+        w: 400,
+        h: 40
+    },
+
+    {
+        x: 8150,
+        y: 500,
+        w: 550,
         h: 50
     }
 
 ];
 
 
-/* =========================
+const movingPlatforms = [
+
+    {
+        baseX: 1120,
+        baseY: 430,
+        w: 150,
+        h: 30,
+        distance: 180,
+        speed: .9,
+        phase: 0
+    },
+
+    {
+        baseX: 3000,
+        baseY: 360,
+        w: 150,
+        h: 30,
+        distance: 170,
+        speed: 1.1,
+        phase: 2
+    },
+
+    {
+        baseX: 5700,
+        baseY: 330,
+        w: 160,
+        h: 30,
+        distance: 200,
+        speed: .8,
+        phase: 1
+    }
+
+];
+
+
+/* =========================================================
    FINISH
-========================= */
+========================================================= */
 
-const finish = {
+const finishX = 8500;
 
-    x: 11450,
 
-    y: 430,
+/* =========================================================
+   INPUT
+========================================================= */
 
-    w: 100,
+const keys = {};
 
-    h: 170
+addEventListener(
+    "keydown",
+    e => {
+
+        keys[e.code] = true;
+
+        if (
+            [
+                "ArrowUp",
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
+                "Space"
+            ].includes(e.code)
+        ) {
+            e.preventDefault();
+        }
+
+    }
+);
+
+addEventListener(
+    "keyup",
+    e => {
+
+        keys[e.code] = false;
+
+    }
+);
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+document
+    .getElementById("hostBtn")
+    .onclick = hostGame;
+
+document
+    .getElementById("joinBtn")
+    .onclick = () => {
+
+        mainPanel.style.display = "none";
+        joinPanel.style.display = "block";
+
+    };
+
+document
+    .getElementById("joinBack")
+    .onclick = () => {
+
+        joinPanel.style.display = "none";
+        mainPanel.style.display = "block";
+
+    };
+
+document
+    .getElementById("joinConfirm")
+    .onclick = joinGame;
+
+document
+    .getElementById("practiceBtn")
+    .onclick = startPractice;
+
+startBtn.onclick = () => {
+
+    if (
+        socket &&
+        socket.readyState === WebSocket.OPEN
+    ) {
+
+        socket.send(
+            JSON.stringify({
+                type: "startGame"
+            })
+        );
+
+    }
 
 };
 
 
-/* =========================
-   CAMERA
-========================= */
+/* =========================================================
+   WEBSOCKET
+========================================================= */
 
-let cameraX = 0;
+function connect() {
 
-function updateCamera() {
+    return new Promise(
+        (resolve, reject) => {
 
-    const me = players.get(myId);
+            socket =
+                new WebSocket(SERVER);
 
-    if (!me) return;
+            socket.onopen = () => {
 
-    const other =
-        [...players.values()].find(p => p.id !== myId);
+                loading.style.display = "none";
 
-    let target = me.x;
+                resolve();
 
-    if (other) {
+            };
 
-        target =
-            (me.x + other.x) / 2;
+            socket.onerror = () => {
 
-    }
+                reject(
+                    new Error(
+                        "Could not connect to multiplayer server."
+                    )
+                );
 
-    cameraX +=
-        (target - W * .45 - cameraX) * .09;
+            };
 
-    cameraX = Math.max(
-        0,
-        Math.min(
-            world.width - W,
-            cameraX
-        )
+            socket.onclose = () => {
+
+                if (
+                    !practiceMode &&
+                    !gameStarted
+                ) {
+
+                    showError(
+                        "Disconnected from server."
+                    );
+
+                }
+
+            };
+
+            socket.onmessage = event => {
+
+                handleServerMessage(
+                    JSON.parse(event.data)
+                );
+
+            };
+
+        }
     );
 
 }
 
 
-/* =========================
-   KEYBOARD
-========================= */
+/* =========================================================
+   SERVER MESSAGES
+========================================================= */
 
-const keys = {};
+function handleServerMessage(data) {
 
-window.addEventListener("keydown", e => {
+    if (data.type === "error") {
 
-    keys[e.code] = true;
+        errorBox.textContent =
+            data.message || "Something went wrong.";
 
-    if (
-        e.code === "Space" ||
-        e.code === "ArrowUp"
-    ) {
-        e.preventDefault();
-    }
-
-});
-
-window.addEventListener("keyup", e => {
-
-    keys[e.code] = false;
-
-});
-
-
-/* =========================
-   INPUT
-========================= */
-
-function leftPressed() {
-
-    return (
-        keys["KeyA"] ||
-        keys["ArrowLeft"]
-    );
-
-}
-
-function rightPressed() {
-
-    return (
-        keys["KeyD"] ||
-        keys["ArrowRight"]
-    );
-
-}
-
-function jumpPressed() {
-
-    return (
-        keys["Space"] ||
-        keys["KeyW"] ||
-        keys["ArrowUp"]
-    );
-
-}
-
-function runPressed() {
-
-    return (
-        keys["ShiftLeft"] ||
-        keys["ShiftRight"]
-    );
-
-}
-
-
-/* =========================
-   JUMP BUFFER
-========================= */
-
-let jumpBuffer = 0;
-
-let jumpWasPressed = false;
-
-
-/* =========================
-   PHYSICS
-========================= */
-
-function updatePlayer(p, dt) {
-
-    if (!p || p.dead) return;
-
-    const isMe = p.id === myId;
-
-    if (!isMe) {
-
-        /* smooth remote player */
-
-        const smooth = 1 - Math.pow(.001, dt);
-
-        p.x +=
-            (p.targetX - p.x) * smooth;
-
-        p.y +=
-            (p.targetY - p.y) * smooth;
-
-        p.vx +=
-            (p.targetVX - p.vx) * smooth;
-
-        p.vy +=
-            (p.targetVY - p.vy) * smooth;
+        roomError.textContent =
+            data.message || "";
 
         return;
     }
 
 
-    /* =========================
-       INPUT
-    ========================= */
+    if (data.type === "roomCreated") {
 
-    let direction = 0;
+        myId = data.id;
+        myName = data.name;
+        myColor = data.color;
+        room = data.room;
 
-    if (leftPressed()) {
-        direction--;
+        players.clear();
+
+        players.set(
+            myId,
+            createPlayer(
+                myId,
+                myName,
+                myColor,
+                300,
+                550
+            )
+        );
+
+        roomCode.textContent =
+            room;
+
+        showRoomPanel();
+
+        return;
     }
 
-    if (rightPressed()) {
-        direction++;
+
+    if (data.type === "joined") {
+
+        myId = data.id;
+        myName = data.name;
+        myColor = data.color;
+        room = data.room;
+
+        players.clear();
+
+        players.set(
+            myId,
+            createPlayer(
+                myId,
+                myName,
+                myColor,
+                450,
+                550
+            )
+        );
+
+        roomCode.textContent =
+            room;
+
+        showRoomPanel();
+
+        return;
     }
 
 
-    const running = runPressed();
+    if (data.type === "playerJoined") {
 
-    p.running =
-        running && direction !== 0;
+        if (data.id === myId) {
+            return;
+        }
+
+        players.set(
+            data.id,
+            createPlayer(
+                data.id,
+                data.name,
+                data.color,
+                data.x,
+                data.y
+            )
+        );
+
+        updatePlayerList();
+
+        return;
+    }
 
 
-    /* =========================
-       SPEED
-    ========================= */
+    if (data.type === "playerMoved") {
 
-    const walkSpeed = 330;
+        if (data.id === myId) {
+            return;
+        }
 
-    const runSpeed = 540;
+        const p =
+            players.get(data.id);
 
-    const maxSpeed =
-        running ? runSpeed : walkSpeed;
+        if (!p) return;
+
+        p.targetX = data.x;
+        p.targetY = data.y;
+
+        p.targetVX = data.vx;
+        p.targetVY = data.vy;
+
+        p.grounded =
+            !!data.grounded;
+
+        p.running =
+            !!data.running;
+
+        p.dead =
+            !!data.dead;
+
+        return;
+    }
 
 
-    /* =========================
-       ACCELERATION
-    ========================= */
+    if (data.type === "playerRespawned") {
+
+        const p =
+            players.get(data.id);
+
+        if (!p) return;
+
+        p.x = data.x;
+        p.y = data.y;
+
+        p.targetX = data.x;
+        p.targetY = data.y;
+
+        p.vx = 0;
+        p.vy = 0;
+
+        p.dead = false;
+
+        if (data.id === myId) {
+            hideMessage();
+        }
+
+        return;
+    }
+
+
+    if (data.type === "playerLeft") {
+
+        players.delete(data.id);
+
+        updatePlayerList();
+
+        return;
+    }
+
+
+    if (data.type === "gameStart") {
+
+        beginGame();
+
+        return;
+    }
+
+}
+
+
+/* =========================================================
+   HOST
+========================================================= */
+
+async function hostGame() {
+
+    const name =
+        nameInput.value.trim();
+
+    if (!name) {
+
+        showError(
+            "Enter a name first."
+        );
+
+        return;
+    }
+
+    try {
+
+        await connect();
+
+        socket.send(
+            JSON.stringify({
+                type: "host",
+                name
+            })
+        );
+
+    } catch (error) {
+
+        showError(error.message);
+
+    }
+
+}
+
+
+/* =========================================================
+   JOIN
+========================================================= */
+
+async function joinGame() {
+
+    const name =
+        joinName.value.trim();
+
+    const code =
+        roomInput.value.trim().toUpperCase();
+
+    if (!name) {
+
+        roomError.textContent =
+            "Enter your name.";
+
+        return;
+    }
+
+    if (code.length !== 4) {
+
+        roomError.textContent =
+            "Room codes are 4 characters.";
+
+        return;
+    }
+
+    try {
+
+        await connect();
+
+        socket.send(
+            JSON.stringify({
+                type: "join",
+                room: code,
+                name
+            })
+        );
+
+    } catch (error) {
+
+        roomError.textContent =
+            error.message;
+
+    }
+
+}
+
+
+/* =========================================================
+   ROOM UI
+========================================================= */
+
+function showRoomPanel() {
+
+    mainPanel.style.display = "none";
+    joinPanel.style.display = "none";
+    roomPanel.style.display = "block";
+
+    updatePlayerList();
+
+}
+
+function updatePlayerList() {
+
+    playerList.innerHTML = "";
+
+    for (const p of players.values()) {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "player-entry";
+
+        div.innerHTML = `
+            <span class="dot ${p.color}"></span>
+            <strong>${escapeHTML(p.name)}</strong>
+            ${p.id === myId ? "<small style='color:#888'> YOU</small>" : ""}
+        `;
+
+        playerList.appendChild(div);
+
+    }
+
+}
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   PRACTICE
+========================================================= */
+
+function startPractice() {
+
+    practiceMode = true;
+
+    myId = "practice";
+    myName = "Coolio";
+    myColor = "red";
+
+    players.clear();
+
+    players.set(
+        myId,
+        createPlayer(
+            myId,
+            myName,
+            myColor,
+            300,
+            550
+        )
+    );
+
+    beginGame();
+
+}
+
+
+/* =========================================================
+   BEGIN GAME
+========================================================= */
+
+function beginGame() {
+
+    gameStarted = true;
+
+    lobby.style.display = "none";
+
+    hideMessage();
+
+    const me =
+        players.get(myId);
+
+    if (me) {
+
+        me.dead = false;
+        me.x = me.spawnX;
+        me.y = me.spawnY;
+        me.vx = 0;
+        me.vy = 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   PHYSICS
+========================================================= */
+
+const physics = {
+
+    gravity: 1800,
+
+    walkSpeed: 330,
+    runSpeed: 540,
+
+    acceleration: 2600,
+    airAcceleration: 1500,
+
+    jumpVelocity: -720,
+
+    friction: 2800,
+
+    maxFall: 1300
+
+};
+
+
+/* =========================================================
+   UPDATE PLAYER
+========================================================= */
+
+function updateLocalPlayer(
+    p,
+    dt
+) {
+
+    if (p.dead) {
+        return;
+    }
+
+    let left =
+        keys["KeyA"] ||
+        keys["ArrowLeft"];
+
+    let right =
+        keys["KeyD"] ||
+        keys["ArrowRight"];
+
+    let jump =
+        keys["KeyW"] ||
+        keys["ArrowUp"] ||
+        keys["Space"];
+
+    let running =
+        keys["ShiftLeft"] ||
+        keys["ShiftRight"];
+
+
+    if (jump) {
+
+        p.jumpBuffer = .14;
+
+    } else {
+
+        p.jumpBuffer -= dt;
+
+    }
+
+
+    if (!p.grounded) {
+
+        p.coyote -= dt;
+
+    } else {
+
+        p.coyote = .12;
+
+    }
+
+
+    const direction =
+        (right ? 1 : 0) -
+        (left ? 1 : 0);
+
+
+    const targetSpeed =
+        running
+            ? physics.runSpeed
+            : physics.walkSpeed;
+
 
     const acceleration =
         p.grounded
-            ? 2600
-            : 1500;
+            ? physics.acceleration
+            : physics.airAcceleration;
 
 
     if (direction !== 0) {
@@ -900,156 +1527,90 @@ function updatePlayer(p, dt) {
             acceleration *
             dt;
 
-        p.facing = direction;
+        p.facing =
+            direction;
 
     } else {
 
-        /* friction */
+        if (p.grounded) {
 
-        const friction =
-            p.grounded
-                ? 2300
-                : 500;
+            if (Math.abs(p.vx) <= physics.friction * dt) {
 
-        if (Math.abs(p.vx) < friction * dt) {
+                p.vx = 0;
 
-            p.vx = 0;
+            } else {
+
+                p.vx -=
+                    Math.sign(p.vx) *
+                    physics.friction *
+                    dt;
+
+            }
 
         } else {
 
-            p.vx -=
-                Math.sign(p.vx) *
-                friction *
-                dt;
+            p.vx *=
+                Math.pow(.985, dt * 60);
 
         }
 
     }
 
 
-    /* cap speed */
+    p.vx =
+        Math.max(
+            -targetSpeed,
+            Math.min(
+                targetSpeed,
+                p.vx
+            )
+        );
 
-    if (p.vx > maxSpeed) {
-        p.vx = maxSpeed;
-    }
-
-    if (p.vx < -maxSpeed) {
-        p.vx = -maxSpeed;
-    }
-
-
-    /* =========================
-       JUMP BUFFER
-    ========================= */
 
     if (
-        jumpPressed() &&
-        !jumpWasPressed
+        p.jumpBuffer > 0 &&
+        p.coyote > 0
     ) {
 
-        jumpBuffer = .14;
-
-    }
-
-    jumpWasPressed = jumpPressed();
-
-    jumpBuffer -= dt;
-
-
-    /* =========================
-       JUMP
-    ========================= */
-
-    if (
-        jumpBuffer > 0 &&
-        p.grounded
-    ) {
-
-        p.vy = -720;
+        p.vy =
+            physics.jumpVelocity;
 
         p.grounded = false;
 
-        p.jumping = true;
+        p.coyote = 0;
 
-        jumpBuffer = 0;
+        p.jumpBuffer = 0;
 
     }
 
 
-    /* =========================
-       GRAVITY
-    ========================= */
-
-    p.vy +=
-        world.gravity * dt;
-
-
-    /* =========================
-       VARIABLE JUMP
-    ========================= */
-
     if (
-        !jumpPressed() &&
+        !jump &&
         p.vy < -250
     ) {
 
         p.vy +=
-            1300 * dt;
+            2300 * dt;
 
     }
 
 
-    /* =========================
-       MOVE X
-    ========================= */
+    p.vy +=
+        physics.gravity *
+        dt;
 
-    const oldX = p.x;
+    p.vy =
+        Math.min(
+            p.vy,
+            physics.maxFall
+        );
+
+
+    const oldY =
+        p.y;
 
     p.x +=
         p.vx * dt;
-
-
-    /* =========================
-       X COLLISION
-    ========================= */
-
-    for (const platform of getAllPlatforms()) {
-
-        if (
-            p.x < platform.x + platform.w &&
-            p.x + p.width > platform.x &&
-            p.y < platform.y + platform.h &&
-            p.y + p.height > platform.y
-        ) {
-
-            if (p.vx > 0) {
-
-                p.x =
-                    platform.x - p.width;
-
-                p.vx = 0;
-
-            }
-
-            else if (p.vx < 0) {
-
-                p.x =
-                    platform.x + platform.w;
-
-                p.vx = 0;
-
-            }
-
-        }
-
-    }
-
-
-    /* =========================
-       MOVE Y
-    ========================= */
-
-    const oldY = p.y;
 
     p.y +=
         p.vy * dt;
@@ -1057,1458 +1618,166 @@ function updatePlayer(p, dt) {
     p.grounded = false;
 
 
-    /* =========================
-       PLATFORM COLLISION
-    ========================= */
+    collideWithWorld(
+        p,
+        oldY
+    );
 
-    for (const platform of getAllPlatforms()) {
 
-        const wasAbove =
-            oldY + p.height <= platform.y;
+    if (
+        p.x < -1000
+    ) {
 
-        const isFalling =
-            p.vy >= 0;
-
-        const overlapsX =
-            p.x + p.width > platform.x &&
-            p.x < platform.x + platform.w;
-
-        const crossesTop =
-            p.y + p.height >= platform.y &&
-            p.y < platform.y + platform.h;
-
-        if (
-            wasAbove &&
-            isFalling &&
-            overlapsX &&
-            crossesTop
-        ) {
-
-            p.y =
-                platform.y - p.height;
-
-            p.vy = 0;
-
-            p.grounded = true;
-
-            p.jumping = false;
-
-            p.lastGroundY = p.y;
-
-        }
+        p.x = -1000;
+        p.vx = 0;
 
     }
 
 
-    /* =========================
-       OBSTACLES
-    ========================= */
-
-    for (const o of obstacles) {
-
-        if (
-            p.x + p.width > o.x &&
-            p.x < o.x + o.w &&
-            p.y + p.height > o.y &&
-            p.y < o.y + o.h
-        ) {
-
-            killPlayer(p);
-
-        }
-
-    }
-
-
-    /* =========================
-       FALL
-    ========================= */
-
-    if (p.y > H + 500) {
+    if (
+        p.y > 1100
+    ) {
 
         killPlayer(p);
 
     }
 
 
-    /* =========================
-       WORLD LIMIT
-    ========================= */
+    p.running =
+        Math.abs(p.vx) > 360;
 
-    p.x =
-        Math.max(
-            0,
-            Math.min(
-                world.width - p.width,
-                p.x
-            )
-        );
+    p.anim +=
+        Math.abs(p.vx) *
+        dt *
+        .025;
+
 
 }
 
 
-/* =========================
-   PLATFORMS
-========================= */
+/* =========================================================
+   PLATFORM COLLISION
+========================================================= */
 
-function getAllPlatforms() {
+function getMovingPlatformData(mp) {
 
-    return [
-        ...platforms,
-        ...movingPlatforms
-    ];
+    return {
+
+        x:
+            mp.baseX +
+            Math.sin(
+                performance.now() / 1000 *
+                mp.speed +
+                mp.phase
+            ) *
+            mp.distance,
+
+        y:
+            mp.baseY
+
+    };
 
 }
 
+function collideWithWorld(
+    p,
+    oldY
+) {
 
-/* =========================
-   MOVING PLATFORMS
-========================= */
+    const oldBottom =
+        oldY + p.height;
 
-function updateMovingPlatforms(dt) {
+    const newBottom =
+        p.y + p.height;
 
-    for (const p of movingPlatforms) {
 
-        p.t +=
-            p.speed * dt;
+    for (const platform of platforms) {
 
-        p.x =
-            p.startX +
-            Math.sin(p.t) * p.range;
+        if (
+            p.x + p.width > platform.x &&
+            p.x < platform.x + platform.w &&
+            oldBottom <= platform.y &&
+            newBottom >= platform.y &&
+            p.vy >= 0
+        ) {
+
+            p.y =
+                platform.y -
+                p.height;
+
+            p.vy = 0;
+
+            p.grounded = true;
+
+        }
+
+    }
+
+
+    for (const mp of movingPlatforms) {
+
+        const pos =
+            getMovingPlatformData(mp);
+
+        if (
+            p.x + p.width > pos.x &&
+            p.x < pos.x + mp.w &&
+            oldBottom <= pos.y &&
+            newBottom >= pos.y &&
+            p.vy >= 0
+        ) {
+
+            p.y =
+                pos.y -
+                p.height;
+
+            p.vy = 0;
+
+            p.grounded = true;
+
+        }
 
     }
 
 }
 
 
-/* =========================
+/* =========================================================
    CHAIN PHYSICS
-========================= */
+========================================================= */
 
 const chain = {
 
+    softLength: 300,
     maxLength: 360,
 
-    softLength: 300,
-
-    stiffness: 8,
-
-    damping: 2.5
+    stiffness: 7,
+    damping: 2.3
 
 };
 
 
 function updateChain(dt) {
 
-    if (players.size < 2) return;
-
-    const arr =
-        [...players.values()];
-
-    const a = arr[0];
-
-    const b = arr[1];
-
-    if (a.dead || b.dead) return;
-
-
-    const ax =
-        a.x + a.width / 2;
-
-    const ay =
-        a.y + a.height / 2;
-
-    const bx =
-        b.x + b.width / 2;
-
-    const by =
-        b.y + b.height / 2;
-
-
-    let dx = bx - ax;
-
-    let dy = by - ay;
-
-    let dist =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
-        );
-
-
-    if (dist <= chain.softLength) {
-
+    if (players.size < 2) {
         return;
-
     }
-
-
-    if (dist === 0) return;
-
-
-    const nx =
-        dx / dist;
-
-    const ny =
-        dy / dist;
-
-
-    const excess =
-        dist - chain.softLength;
-
-
-    /* =========================
-       ONLY LOCAL PLAYER
-       gets correction
-    ========================= */
-
-    const me =
-        players.get(myId);
-
-    if (!me) return;
-
-
-    const other =
-        me.id === a.id
-            ? b
-            : a;
-
-
-    const mex =
-        me.x + me.width / 2;
-
-    const mey =
-        me.y + me.height / 2;
-
-    const ox =
-        other.x + other.width / 2;
-
-    const oy =
-        other.y + other.height / 2;
-
-
-    let mdx =
-        ox - mex;
-
-    let mdy =
-        oy - mey;
-
-    let mdist =
-        Math.sqrt(
-            mdx * mdx +
-            mdy * mdy
-        );
-
-    if (mdist === 0) return;
-
-
-    mdx /= mdist;
-
-    mdy /= mdist;
-
-
-    /* gentle spring */
-
-    const force =
-        Math.min(
-            excess * chain.stiffness,
-            2600
-        );
-
-
-    /* only pull when stretched */
-
-    me.vx +=
-        mdx *
-        force *
-        dt;
-
-    me.vy +=
-        mdy *
-        force *
-        dt;
-
-
-    /* hard emergency limit */
-
-    if (dist > chain.maxLength) {
-
-        const emergency =
-            dist - chain.maxLength;
-
-        me.x +=
-            mdx *
-            emergency *
-            .15;
-
-        me.y +=
-            mdy *
-            emergency *
-            .15;
-
-    }
-
-}
-
-
-/* =========================
-   DEATH
-========================= */
-
-function killPlayer(p) {
-
-    if (p.dead) return;
-
-    p.dead = true;
-
-    p.vx = 0;
-    p.vy = 0;
-
-    if (p.id !== myId) return;
-
-    showMessage("💀 YOU FELL");
-
-    setTimeout(() => {
-
-        respawnPlayer(p);
-
-        hideMessage();
-
-    }, 1000);
-
-}
-
-
-function respawnPlayer(p) {
-
-    p.x = p.spawnX;
-
-    p.y = p.spawnY;
-
-    p.vx = 0;
-
-    p.vy = 0;
-
-    p.dead = false;
-
-}
-
-
-/* =========================
-   FINISH
-========================= */
-
-let finished = false;
-
-function checkFinish() {
-
-    if (finished) return;
-
-    if (players.size < 2) return;
-
-    const arr =
-        [...players.values()];
-
-    const bothAtFinish =
-        arr.every(p => {
-
-            return (
-                p.x + p.width >
-                    finish.x &&
-                p.x <
-                    finish.x + finish.w
-            );
-
-        });
-
-
-    if (bothAtFinish) {
-
-        finished = true;
-
-        showMessage(
-            "🏆 YOU BOTH MADE IT!<br><span class='finish-text'>COOLIO CLIMB COMPLETE</span>"
-        );
-
-    }
-
-}
-
-
-/* =========================
-   NETWORK
-========================= */
-
-let lastSend = 0;
-
-function sendMovement(timestamp) {
-
-    if (!socket) return;
-
-    if (
-        socket.readyState !== WebSocket.OPEN
-    ) return;
-
-    if (!myId) return;
-
-    if (
-        timestamp - lastSend < 33
-    ) return;
-
-    lastSend = timestamp;
-
-    const me =
-        players.get(myId);
-
-    if (!me) return;
-
-
-    socket.send(
-        JSON.stringify({
-
-            type: "move",
-
-            x: me.x,
-
-            y: me.y,
-
-            vx: me.vx,
-
-            vy: me.vy
-
-        })
-    );
-
-}
-
-
-/* =========================
-   CONNECT
-========================= */
-
-function connectSocket() {
-
-    socket =
-        new WebSocket(SERVER);
-
-
-    socket.onopen = () => {
-
-        console.log(
-            "Connected to CoolioBeans server"
-        );
-
-    };
-
-
-    socket.onmessage = e => {
-
-        try {
-
-            const data =
-                JSON.parse(e.data);
-
-            handleServerMessage(data);
-
-        }
-
-        catch {
-
-            console.log(
-                "Bad server message"
-            );
-
-        }
-
-    };
-
-
-    socket.onclose = () => {
-
-        console.log(
-            "Disconnected"
-        );
-
-        if (gameRunning) {
-
-            showMessage(
-                "Connection lost 😭"
-            );
-
-        }
-
-    };
-
-}
-
-
-/* =========================
-   SERVER MESSAGES
-========================= */
-
-function handleServerMessage(data) {
-
-    if (data.type === "roomCreated") {
-
-        myId = data.id;
-
-        roomCode = data.room;
-
-        myColor = data.color;
-
-        myName = data.name;
-
-        isHost = true;
-
-
-        players.clear();
-
-        const me =
-            createPlayer(
-                myId,
-                myName,
-                myColor
-            );
-
-        me.x = 300;
-
-        me.y = 550;
-
-        me.spawnX = 300;
-
-        me.spawnY = 550;
-
-        players.set(
-            myId,
-            me
-        );
-
-
-        showLobby();
-
-        return;
-
-    }
-
-
-    if (data.type === "joined") {
-
-        myId = data.id;
-
-        roomCode = data.room;
-
-        myColor = data.color;
-
-        myName = data.name;
-
-        isHost = false;
-
-
-        players.clear();
-
-        const me =
-            createPlayer(
-                myId,
-                myName,
-                myColor
-            );
-
-        me.x = 450;
-
-        me.y = 550;
-
-        me.spawnX = 450;
-
-        me.spawnY = 550;
-
-        players.set(
-            myId,
-            me
-        );
-
-
-        showLobby();
-
-        return;
-
-    }
-
-
-    if (data.type === "playerJoined") {
-
-        if (
-            players.has(data.id)
-        ) return;
-
-
-        const p =
-            createPlayer(
-                data.id,
-                data.name,
-                data.color
-            );
-
-
-        p.x = data.x ?? 300;
-
-        p.y = data.y ?? 550;
-
-        p.targetX = p.x;
-
-        p.targetY = p.y;
-
-        p.spawnX = p.x;
-
-        p.spawnY = p.y;
-
-
-        players.set(
-            data.id,
-            p
-        );
-
-
-        updateLobby();
-
-        return;
-
-    }
-
-
-    if (data.type === "playerMoved") {
-
-        const p =
-            players.get(data.id);
-
-        if (!p) return;
-
-
-        /* NEVER overwrite our own local physics */
-
-        if (
-            data.id === myId
-        ) {
-            return;
-        }
-
-
-        p.targetX =
-            Number(data.x) || 0;
-
-        p.targetY =
-            Number(data.y) || 0;
-
-        p.targetVX =
-            Number(data.vx) || 0;
-
-        p.targetVY =
-            Number(data.vy) || 0;
-
-
-        return;
-
-    }
-
-
-    if (data.type === "playerLeft") {
-
-        players.delete(
-            data.id
-        );
-
-        updateLobby();
-
-        return;
-
-    }
-
-
-    if (data.type === "gameStart") {
-
-        startActualGame();
-
-        return;
-
-    }
-
-
-    if (data.type === "error") {
-
-        alert(data.message);
-
-    }
-
-}
-
-
-/* =========================
-   HOST GAME
-========================= */
-
-function hostGame(name) {
-
-    if (!socket) {
-
-        connectSocket();
-
-        const wait =
-            setInterval(() => {
-
-                if (
-                    socket &&
-                    socket.readyState ===
-                        WebSocket.OPEN
-                ) {
-
-                    clearInterval(wait);
-
-                    socket.send(
-                        JSON.stringify({
-
-                            type: "host",
-
-                            name
-
-                        })
-                    );
-
-                }
-
-            }, 50);
-
-        return;
-
-    }
-
-
-    socket.send(
-        JSON.stringify({
-
-            type: "host",
-
-            name
-
-        })
-    );
-
-}
-
-
-/* =========================
-   JOIN GAME
-========================= */
-
-function joinGame(name, code) {
-
-    if (!socket) {
-
-        connectSocket();
-
-        const wait =
-            setInterval(() => {
-
-                if (
-                    socket &&
-                    socket.readyState ===
-                        WebSocket.OPEN
-                ) {
-
-                    clearInterval(wait);
-
-                    socket.send(
-                        JSON.stringify({
-
-                            type: "join",
-
-                            name,
-
-                            room:
-                                code.toUpperCase()
-
-                        })
-                    );
-
-                }
-
-            }, 50);
-
-        return;
-
-    }
-
-
-    socket.send(
-        JSON.stringify({
-
-            type: "join",
-
-            name,
-
-            room:
-                code.toUpperCase()
-
-        })
-    );
-
-}
-
-
-/* =========================
-   LOBBY
-========================= */
-
-function showLobby() {
-
-    document
-        .getElementById("menu")
-        .classList.add("hidden");
-
-    document
-        .getElementById("lobby")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("roomCode")
-        .textContent =
-            roomCode;
-
-
-    document
-        .getElementById("roomDisplay")
-        .textContent =
-            roomCode;
-
-
-    updateLobby();
-
-}
-
-
-function updateLobby() {
 
     const list =
-        document.getElementById(
-            "playerList"
-        );
-
-    const status =
-        document.getElementById(
-            "lobbyStatus"
-        );
-
-    const start =
-        document.getElementById(
-            "startBtn"
-        );
-
-
-    list.innerHTML = "";
-
-
-    for (
-        const p of players.values()
-    ) {
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.className =
-            "player-entry";
-
-        div.textContent =
-            (p.id === myId
-                ? "👑 "
-                : "🔗 ") +
-            p.name;
-
-        list.appendChild(div);
-
-    }
-
-
-    if (players.size < 2) {
-
-        status.textContent =
-            "Waiting for your friend...";
-
-        start.disabled = true;
-
-    }
-
-    else {
-
-        status.textContent =
-            "Both players are ready!";
-
-        start.disabled =
-            !isHost;
-
-        if (!isHost) {
-
-            start.textContent =
-                "WAITING FOR HOST";
-
-        }
-
-        else {
-
-            start.textContent =
-                "START CLIMB";
-
-        }
-
-    }
-
-}
-
-
-/* =========================
-   START GAME
-========================= */
-
-function startGame() {
-
-    if (!isHost) return;
-
-    if (players.size < 2) return;
-
-
-    socket.send(
-        JSON.stringify({
-
-            type: "startGame"
-
-        })
-    );
-
-
-    /*
-       IMPORTANT:
-       Current server needs to forward
-       this message.
-
-       We also start locally immediately.
-    */
-
-    startActualGame();
-
-}
-
-
-/* =========================
-   ACTUAL GAME
-========================= */
-
-let gameRunning = false;
-
-function startActualGame() {
-
-    if (gameRunning) return;
-
-    gameRunning = true;
-
-    finished = false;
-
-
-    document
-        .getElementById("lobby")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("gameUI")
-        .classList.remove("hidden");
-
-
-    /* reset spawn positions */
-
-    const arr =
         [...players.values()];
 
+    const a =
+        list[0];
 
-    if (arr.length >= 2) {
+    const b =
+        list[1];
 
-        arr[0].x = 300;
-        arr[0].y = 550;
-
-        arr[0].spawnX = 300;
-        arr[0].spawnY = 550;
-
-
-        arr[1].x = 450;
-        arr[1].y = 550;
-
-        arr[1].spawnX = 450;
-        arr[1].spawnY = 550;
-
-    }
-
-
-    showMessage(
-        "GET READY..."
-    );
-
-
-    setTimeout(() => {
-
-        hideMessage();
-
-    }, 1200);
-
-
-    lastTime =
-        performance.now();
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-}
-
-
-/* =========================
-   PRACTICE
-========================= */
-
-function startPractice() {
-
-    players.clear();
-
-
-    const me =
-        createPlayer(
-            "practice",
-            "You",
-            "red"
-        );
-
-
-    me.x = 300;
-
-    me.y = 550;
-
-    me.spawnX = 300;
-
-    me.spawnY = 550;
-
-
-    players.set(
-        "practice",
-        me
-    );
-
-
-    myId = "practice";
-
-    roomCode = "PRACT";
-
-    gameRunning = true;
-
-    finished = false;
-
-
-    document
-        .getElementById("menu")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("gameUI")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("roomDisplay")
-        .textContent =
-            "PRACTICE";
-
-
-    lastTime =
-        performance.now();
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-}
-
-
-/* =========================
-   GAME LOOP
-========================= */
-
-let lastTime = 0;
-
-function gameLoop(timestamp) {
-
-    if (!gameRunning) return;
-
-
-    let dt =
-        (timestamp - lastTime) /
-        1000;
-
-
-    lastTime =
-        timestamp;
-
-
-    /* prevent giant physics jumps */
-
-    dt =
-        Math.min(
-            dt,
-            0.033
-        );
-
-
-    updateMovingPlatforms(dt);
-
-
-    for (
-        const p of players.values()
+    if (
+        a.dead ||
+        b.dead
     ) {
-
-        updatePlayer(
-            p,
-            dt
-        );
-
+        return;
     }
-
-
-    updateChain(dt);
-
-
-    checkFinish();
-
-
-    updateCamera();
-
-
-    sendMovement(timestamp);
-
-
-    draw();
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-}
-
-
-/* =========================
-   DRAW BACKGROUND
-========================= */
-
-function drawBackground() {
-
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            H
-        );
-
-    gradient.addColorStop(
-        0,
-        "#090b20"
-    );
-
-    gradient.addColorStop(
-        1,
-        "#171027"
-    );
-
-    ctx.fillStyle =
-        gradient;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    /* stars */
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.45)";
-
-    for (
-        let i = 0;
-        i < 90;
-        i++
-    ) {
-
-        const x =
-            (i * 197) %
-            W;
-
-        const y =
-            (i * 83) %
-            (H * .6);
-
-        const size =
-            (i % 3) + 1;
-
-        ctx.fillRect(
-            x,
-            y,
-            size,
-            size
-        );
-
-    }
-
-}
-
-
-/* =========================
-   DRAW WORLD
-========================= */
-
-function drawWorld() {
-
-    ctx.save();
-
-    ctx.translate(
-        -cameraX,
-        0
-    );
-
-
-    /* platforms */
-
-    for (
-        const p of platforms
-    ) {
-
-        drawPlatform(p);
-
-    }
-
-
-    /* moving platforms */
-
-    for (
-        const p of movingPlatforms
-    ) {
-
-        drawMovingPlatform(p);
-
-    }
-
-
-    /* obstacles */
-
-    for (
-        const o of obstacles
-    ) {
-
-        drawObstacle(o);
-
-    }
-
-
-    /* finish */
-
-    drawFinish();
-
-
-    /* chain */
-
-    drawChain();
-
-
-    /* players */
-
-    for (
-        const p of players.values()
-    ) {
-
-        drawPlayer(p);
-
-    }
-
-
-    ctx.restore();
-
-}
-
-
-/* =========================
-   PLATFORM
-========================= */
-
-function drawPlatform(p) {
-
-    ctx.fillStyle =
-        "#292d4a";
-
-    ctx.fillRect(
-        p.x,
-        p.y,
-        p.w,
-        p.h
-    );
-
-
-    ctx.fillStyle =
-        "#56618d";
-
-    ctx.fillRect(
-        p.x,
-        p.y,
-        p.w,
-        8
-    );
-
-
-    ctx.fillStyle =
-        "rgba(0,0,0,.25)";
-
-    ctx.fillRect(
-        p.x,
-        p.y + 8,
-        p.w,
-        p.h - 8
-    );
-
-}
-
-
-/* =========================
-   MOVING PLATFORM
-========================= */
-
-function drawMovingPlatform(p) {
-
-    ctx.fillStyle =
-        "#7c3aed";
-
-    ctx.fillRect(
-        p.x,
-        p.y,
-        p.w,
-        p.h
-    );
-
-
-    ctx.fillStyle =
-        "#c4b5fd";
-
-    ctx.fillRect(
-        p.x,
-        p.y,
-        p.w,
-        5
-    );
-
-}
-
-
-/* =========================
-   OBSTACLE
-========================= */
-
-function drawObstacle(o) {
-
-    ctx.fillStyle =
-        "#ef4444";
-
-    ctx.fillRect(
-        o.x,
-        o.y,
-        o.w,
-        o.h
-    );
-
-
-    ctx.fillStyle =
-        "#fecaca";
-
-    ctx.fillRect(
-        o.x + 7,
-        o.y + 7,
-        o.w - 14,
-        6
-    );
-
-}
-
-
-/* =========================
-   FINISH
-========================= */
-
-function drawFinish() {
-
-    ctx.fillStyle =
-        "rgba(34,197,94,.18)";
-
-    ctx.fillRect(
-        finish.x,
-        finish.y,
-        finish.w,
-        finish.h
-    );
-
-
-    ctx.strokeStyle =
-        "#22c55e";
-
-    ctx.lineWidth = 4;
-
-    ctx.strokeRect(
-        finish.x,
-        finish.y,
-        finish.w,
-        finish.h
-    );
-
-
-    ctx.fillStyle =
-        "#86efac";
-
-    ctx.font =
-        "bold 20px Arial";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.fillText(
-        "FINISH",
-        finish.x + finish.w / 2,
-        finish.y - 15
-    );
-
-}
-
-
-/* =========================
-   CHAIN
-========================= */
-
-function drawChain() {
-
-    if (players.size < 2) return;
-
-
-    const arr =
-        [...players.values()];
-
-    const a = arr[0];
-
-    const b = arr[1];
 
 
     const ax =
@@ -2530,29 +1799,1408 @@ function drawChain() {
     const dy =
         by - ay;
 
-    const dist =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
+
+    const distance =
+        Math.hypot(dx, dy);
+
+    document
+        .getElementById(
+            "chainDistance"
+        )
+        .textContent =
+            Math.round(distance);
+
+
+    if (
+        distance <= chain.softLength
+    ) {
+        return;
+    }
+
+
+    const nx =
+        dx / distance;
+
+    const ny =
+        dy / distance;
+
+
+    const excess =
+        distance -
+        chain.softLength;
+
+
+    const relativeVelocity =
+        (b.vx - a.vx) * nx +
+        (b.vy - a.vy) * ny;
+
+
+    const force =
+        excess *
+            chain.stiffness +
+        relativeVelocity *
+            chain.damping;
+
+
+    const pull =
+        Math.min(
+            force,
+            1400
+        );
+
+
+    a.vx +=
+        nx *
+        pull *
+        dt;
+
+    a.vy +=
+        ny *
+        pull *
+        dt;
+
+    b.vx -=
+        nx *
+        pull *
+        dt;
+
+    b.vy -=
+        ny *
+        pull *
+        dt;
+
+
+    if (
+        distance >
+        chain.maxLength
+    ) {
+
+        const correction =
+            distance -
+            chain.maxLength;
+
+        const amount =
+            correction * .5;
+
+        if (!a.grounded) {
+
+            a.x +=
+                nx *
+                amount;
+
+            a.y +=
+                ny *
+                amount;
+
+        }
+
+        if (!b.grounded) {
+
+            b.x -=
+                nx *
+                amount;
+
+            b.y -=
+                ny *
+                amount;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   DEATH SYSTEM
+   THIS IS THE IMPORTANT FIX
+========================================================= */
+
+function killPlayer(p) {
+
+    if (p.dead) {
+        return;
+    }
+
+    p.dead = true;
+
+    p.vx = 0;
+    p.vy = 0;
+
+
+    if (p.id !== myId) {
+        return;
+    }
+
+
+    /*
+        Clear ANY previous death timer.
+        This prevents old timers from interfering
+        with a new death/respawn.
+    */
+
+    if (messageTimer !== null) {
+
+        clearTimeout(
+            messageTimer
+        );
+
+        messageTimer = null;
+
+    }
+
+
+    showMessage(
+        "💀 YOU FELL"
+    );
+
+
+    /*
+        Respawn after one second.
+    */
+
+    messageTimer =
+        setTimeout(
+            () => {
+
+                /*
+                    First respawn.
+                */
+
+                respawnPlayer(p);
+
+
+                /*
+                    THEN force the message completely
+                    invisible and reset its state.
+                */
+
+                hideMessage();
+
+
+                messageTimer =
+                    null;
+
+            },
+            1000
+        );
+
+
+    /*
+        Tell the server too.
+    */
+
+    if (
+        socket &&
+        socket.readyState ===
+        WebSocket.OPEN &&
+        !practiceMode
+    ) {
+
+        socket.send(
+            JSON.stringify({
+                type: "respawn"
+            })
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPAWN
+========================================================= */
+
+function respawnPlayer(p) {
+
+    p.x =
+        p.spawnX;
+
+    p.y =
+        p.spawnY;
+
+    p.vx = 0;
+    p.vy = 0;
+
+    p.dead = false;
+
+    p.grounded = false;
+
+    p.coyote = 0;
+    p.jumpBuffer = 0;
+
+    /*
+        EXTRA SAFETY:
+        Every respawn ALWAYS hides the message.
+        So even if something else calls respawnPlayer(),
+        the death message cannot remain stuck.
+    */
+
+    hideMessage();
+
+}
+
+
+/* =========================================================
+   MESSAGE SYSTEM
+========================================================= */
+
+function showMessage(text) {
+
+    const msg =
+        document.getElementById(
+            "message"
+        );
+
+
+    /*
+        Cancel any hide timer.
+    */
+
+    if (messageTimer !== null) {
+
+        clearTimeout(
+            messageTimer
+        );
+
+        messageTimer = null;
+
+    }
+
+
+    msg.textContent =
+        text;
+
+
+    /*
+        Remove the forced hide state first.
+    */
+
+    msg.classList.remove(
+        "hide"
+    );
+
+
+    /*
+        Force browser reflow so repeated
+        show/hide cycles always work.
+    */
+
+    void msg.offsetWidth;
+
+
+    msg.classList.add(
+        "show"
+    );
+
+}
+
+
+function hideMessage() {
+
+    const msg =
+        document.getElementById(
+            "message"
+        );
+
+
+    /*
+        REMOVE show.
+    */
+
+    msg.classList.remove(
+        "show"
+    );
+
+
+    /*
+        ADD hide.
+        This explicitly overrides the
+        visible state.
+    */
+
+    msg.classList.add(
+        "hide"
+    );
+
+
+    /*
+        Clear it completely after
+        the tiny fade animation.
+    */
+
+    setTimeout(
+        () => {
+
+            msg.classList.remove(
+                "hide"
+            );
+
+            /*
+                This is important:
+                if no new message was shown,
+                visibility stays hidden.
+            */
+
+            if (
+                !msg.classList.contains(
+                    "show"
+                )
+            ) {
+
+                msg.style.visibility =
+                    "hidden";
+
+            }
+
+        },
+        150
+    );
+
+}
+
+
+/* =========================================================
+   SEND MOVEMENT
+========================================================= */
+
+let lastSend = 0;
+
+function sendMovement(now) {
+
+    if (
+        practiceMode ||
+        !socket ||
+        socket.readyState !==
+            WebSocket.OPEN ||
+        !gameStarted
+    ) {
+        return;
+    }
+
+
+    if (
+        now -
+        lastSend <
+        33
+    ) {
+        return;
+    }
+
+
+    lastSend =
+        now;
+
+
+    const p =
+        players.get(myId);
+
+    if (!p) {
+        return;
+    }
+
+
+    socket.send(
+        JSON.stringify({
+
+            type: "move",
+
+            x: p.x,
+            y: p.y,
+
+            vx: p.vx,
+            vy: p.vy,
+
+            grounded:
+                p.grounded,
+
+            running:
+                p.running,
+
+            dead:
+                p.dead
+
+        })
+    );
+
+}
+
+
+/* =========================================================
+   REMOTE PLAYER UPDATE
+========================================================= */
+
+function updateRemotePlayers(dt) {
+
+    for (
+        const p
+        of players.values()
+    ) {
+
+        if (
+            p.id === myId ||
+            p.dead
+        ) {
+            continue;
+        }
+
+
+        /*
+            Smooth interpolation.
+        */
+
+        const smoothing =
+            1 -
+            Math.pow(
+                .0001,
+                dt
+            );
+
+
+        p.x +=
+            (
+                p.targetX -
+                p.x
+            ) *
+            smoothing;
+
+
+        p.y +=
+            (
+                p.targetY -
+                p.y
+            ) *
+            smoothing;
+
+
+        p.vx =
+            p.targetVX;
+
+        p.vy =
+            p.targetVY;
+
+
+        if (
+            Math.abs(p.vx) > 10
+        ) {
+
+            p.facing =
+                Math.sign(
+                    p.vx
+                );
+
+        }
+
+
+        p.anim +=
+            Math.abs(p.vx) *
+            dt *
+            .025;
+
+    }
+
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(dt) {
+
+    const me =
+        players.get(myId);
+
+    if (!me) {
+        return;
+    }
+
+
+    const target =
+        me.x -
+        W * .32;
+
+
+    cameraX +=
+        (
+            target -
+            cameraX
+        ) *
+        (
+            1 -
+            Math.pow(.0005, dt)
+        );
+
+
+    cameraX =
+        Math.max(
+            0,
+            cameraX
+        );
+
+}
+
+
+/* =========================================================
+   DRAW BACKGROUND
+========================================================= */
+
+function drawBackground() {
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+    gradient.addColorStop(
+        0,
+        "#07091a"
+    );
+
+    gradient.addColorStop(
+        .5,
+        "#0b1030"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#090712"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /*
+        Large glowing moon.
+    */
+
+    const moonX =
+        W -
+        160;
+
+    const moonY =
+        120;
+
+
+    const moon =
+        ctx.createRadialGradient(
+            moonX,
+            moonY,
+            5,
+            moonX,
+            moonY,
+            130
+        );
+
+    moon.addColorStop(
+        0,
+        "rgba(160,140,255,.35)"
+    );
+
+    moon.addColorStop(
+        1,
+        "rgba(100,80,255,0)"
+    );
+
+    ctx.fillStyle =
+        moon;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        moonX,
+        moonY,
+        130,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+        Stars.
+    */
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.7)";
+
+    for (
+        let i = 0;
+        i < 90;
+        i++
+    ) {
+
+        const x =
+            (
+                i * 173
+                - cameraX * .08
+            ) % (
+                W + 100
+            );
+
+        const y =
+            (
+                i * 71
+            ) % (
+                H * .55
+            );
+
+        const size =
+            i % 5 === 0
+                ? 2
+                : 1;
+
+        ctx.globalAlpha =
+            .25 +
+            (
+                i % 7
+            ) / 15;
+
+        ctx.fillRect(
+            x,
+            y,
+            size,
+            size
+        );
+
+    }
+
+    ctx.globalAlpha = 1;
+
+
+    /*
+        Parallax mountain layers.
+    */
+
+    drawMountains(
+        .12,
+        H * .68,
+        "#101538"
+    );
+
+    drawMountains(
+        .22,
+        H * .75,
+        "#0c1128"
+    );
+
+}
+
+
+/* =========================================================
+   MOUNTAINS
+========================================================= */
+
+function drawMountains(
+    parallax,
+    baseY,
+    color
+) {
+
+    ctx.fillStyle =
+        color;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        H
+    );
+
+    for (
+        let x = -100;
+        x <= W + 100;
+        x += 180
+    ) {
+
+        const worldX =
+            x +
+            cameraX *
+            parallax;
+
+        const height =
+            80 +
+            (
+                Math.sin(
+                    worldX * .002
+                ) + 1
+            ) *
+            80;
+
+        ctx.lineTo(
+            x,
+            baseY -
+            height
+        );
+
+    }
+
+    ctx.lineTo(
+        W,
+        H
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+}
+
+
+/* =========================================================
+   DRAW WORLD
+========================================================= */
+
+function drawWorld() {
+
+    ctx.save();
+
+    ctx.translate(
+        -cameraX,
+        0
+    );
+
+
+    /*
+        Platforms.
+    */
+
+    for (
+        const platform
+        of platforms
+    ) {
+
+        drawPlatform(
+            platform.x,
+            platform.y,
+            platform.w,
+            platform.h
+        );
+
+    }
+
+
+    /*
+        Moving platforms.
+    */
+
+    for (
+        const mp
+        of movingPlatforms
+    ) {
+
+        const pos =
+            getMovingPlatformData(
+                mp
+            );
+
+        drawPlatform(
+            pos.x,
+            pos.y,
+            mp.w,
+            mp.h,
+            true
+        );
+
+    }
+
+
+    /*
+        Finish line.
+    */
+
+    drawFinish();
+
+
+    /*
+        Players.
+    */
+
+    for (
+        const p
+        of players.values()
+    ) {
+
+        if (!p.dead) {
+
+            drawPlayer(
+                p
+            );
+
+        }
+
+    }
+
+
+    /*
+        Chain goes ON TOP of players
+        for visibility.
+    */
+
+    drawChain();
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   PLATFORM
+========================================================= */
+
+function drawPlatform(
+    x,
+    y,
+    w,
+    h,
+    moving = false
+) {
+
+    /*
+        Glow.
+    */
+
+    ctx.shadowBlur =
+        moving
+            ? 25
+            : 18;
+
+    ctx.shadowColor =
+        moving
+            ? "#52d9ff"
+            : "#795cff";
+
+
+    const gradient =
+        ctx.createLinearGradient(
+            x,
+            y,
+            x,
+            y + h
+        );
+
+    gradient.addColorStop(
+        0,
+        moving
+            ? "#3c789d"
+            : "#40376f"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#17172e"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    ctx.shadowBlur = 0;
+
+
+    /*
+        Bright top edge.
+    */
+
+    ctx.fillStyle =
+        moving
+            ? "#63dcff"
+            : "#8d72ff";
+
+    ctx.fillRect(
+        x,
+        y,
+        w,
+        4
+    );
+
+
+    /*
+        Little platform details.
+    */
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.06)";
+
+    for (
+        let px = x + 15;
+        px < x + w - 10;
+        px += 35
+    ) {
+
+        ctx.fillRect(
+            px,
+            y + 12,
+            15,
+            3
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+function drawFinish() {
+
+    const x =
+        finishX;
+
+    /*
+        Pole.
+    */
+
+    ctx.fillStyle =
+        "#dfe7ff";
+
+    ctx.fillRect(
+        x,
+        250,
+        7,
+        250
+    );
+
+
+    /*
+        Flag.
+    */
+
+    const wave =
+        Math.sin(
+            performance.now() / 350
+        ) *
+        8;
+
+
+    ctx.fillStyle =
+        "#6c5cff";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x + 7,
+        250
+    );
+
+    ctx.lineTo(
+        x + 105,
+        270 + wave
+    );
+
+    ctx.lineTo(
+        x + 7,
+        310
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.font =
+        "900 18px system-ui";
+
+    ctx.fillText(
+        "FINISH",
+        x + 18,
+        290
+    );
+
+
+    /*
+        Glow.
+    */
+
+    ctx.shadowBlur =
+        30;
+
+    ctx.shadowColor =
+        "#7565ff";
+
+    ctx.strokeStyle =
+        "#7565ff";
+
+    ctx.lineWidth =
+        4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x - 30,
+        500
+    );
+
+    ctx.lineTo(
+        x - 30,
+        300
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function drawPlayer(p) {
+
+    const cx =
+        p.x +
+        p.width / 2;
+
+    const bottom =
+        p.y +
+        p.height;
+
+
+    const primary =
+        p.color === "red"
+            ? "#ff5270"
+            : "#4fcaff";
+
+
+    const secondary =
+        p.color === "red"
+            ? "#a9284a"
+            : "#247eb0";
+
+
+    /*
+        Shadow.
+    */
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.3)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        cx,
+        bottom + 5,
+        25,
+        7,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+        Character glow.
+    */
+
+    ctx.shadowBlur =
+        22;
+
+    ctx.shadowColor =
+        primary;
+
+
+    /*
+        Body.
+    */
+
+    const bodyGradient =
+        ctx.createLinearGradient(
+            p.x,
+            p.y,
+            p.x + p.width,
+            bottom
+        );
+
+    bodyGradient.addColorStop(
+        0,
+        primary
+    );
+
+    bodyGradient.addColorStop(
+        1,
+        secondary
+    );
+
+
+    ctx.fillStyle =
+        bodyGradient;
+
+
+    roundRect(
+        p.x + 4,
+        p.y + 20,
+        p.width - 8,
+        32,
+        9
+    );
+
+
+    /*
+        Head.
+    */
+
+    ctx.fillStyle =
+        primary;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        p.y + 15,
+        14,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.shadowBlur = 0;
+
+
+    /*
+        Helmet / hair.
+    */
+
+    ctx.fillStyle =
+        "#17192d";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        p.y + 12,
+        14,
+        Math.PI,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+        Face.
+    */
+
+    ctx.fillStyle =
+        "white";
+
+    const eyeOffset =
+        p.facing * 4;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx + eyeOffset - 5,
+        p.y + 16,
+        2.3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        cx + eyeOffset + 5,
+        p.y + 16,
+        2.3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+        Legs animation.
+    */
+
+    const walking =
+        Math.abs(p.vx) > 20 &&
+        p.grounded;
+
+    const legSwing =
+        walking
+            ? Math.sin(p.anim) * 5
+            : 0;
+
+
+    ctx.strokeStyle =
+        secondary;
+
+    ctx.lineWidth =
+        7;
+
+    ctx.lineCap =
+        "round";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        cx - 8,
+        p.y + 49
+    );
+
+    ctx.lineTo(
+        cx - 10 + legSwing,
+        bottom
+    );
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        cx + 8,
+        p.y + 49
+    );
+
+    ctx.lineTo(
+        cx + 10 - legSwing,
+        bottom
+    );
+
+    ctx.stroke();
+
+}
+
+
+/* =========================================================
+   CHAIN DRAWING
+========================================================= */
+
+function drawChain() {
+
+    if (players.size < 2) {
+        return;
+    }
+
+    const list =
+        [...players.values()];
+
+    const a =
+        list[0];
+
+    const b =
+        list[1];
+
+
+    if (
+        a.dead ||
+        b.dead
+    ) {
+        return;
+    }
+
+
+    const ax =
+        a.x +
+        a.width / 2;
+
+    const ay =
+        a.y +
+        a.height / 2;
+
+    const bx =
+        b.x +
+        b.width / 2;
+
+    const by =
+        b.y +
+        b.height / 2;
+
+
+    const dx =
+        bx - ax;
+
+    const dy =
+        by - ay;
+
+    const distance =
+        Math.hypot(
+            dx,
+            dy
+        );
+
+
+    /*
+        Chain gets more red when stretched.
+    */
+
+    const danger =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                (
+                    distance -
+                    chain.softLength
+                ) /
+                (
+                    chain.maxLength -
+                    chain.softLength
+                )
+            )
         );
 
 
     ctx.save();
 
     ctx.lineWidth =
-        dist > chain.softLength
-            ? 7
-            : 5;
+        5;
 
-    ctx.strokeStyle =
-        dist > chain.softLength
-            ? "#f97316"
-            : "#a78bfa";
+    ctx.lineCap =
+        "round";
 
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur =
+        15;
 
     ctx.shadowColor =
-        ctx.strokeStyle;
+        danger > .5
+            ? "#ff526d"
+            : "#72dfff";
+
+
+    /*
+        Main rope.
+    */
+
+    ctx.strokeStyle =
+        danger > .5
+            ? "#ff526d"
+            : "#62d8ff";
 
 
     ctx.beginPath();
@@ -2570,17 +3218,28 @@ function drawChain() {
     ctx.stroke();
 
 
-    /* chain links */
+    /*
+        Metal links.
+    */
 
     const links =
-        Math.floor(
-            dist / 22
+        Math.max(
+            3,
+            Math.floor(
+                distance / 24
+            )
         );
 
 
+    ctx.lineWidth =
+        3;
+
+    ctx.strokeStyle =
+        "#d6f8ff";
+
     for (
-        let i = 1;
-        i < links;
+        let i = 0;
+        i <= links;
         i++
     ) {
 
@@ -2596,12 +3255,26 @@ function drawChain() {
             dy * t;
 
 
+        const size =
+            7;
+
+
         ctx.beginPath();
 
-        ctx.arc(
+        ctx.ellipse(
             x,
             y,
+            size,
             4,
+            Math.atan2(
+                dy,
+                dx
+            ) +
+            (
+                i % 2
+                    ? Math.PI / 2
+                    : 0
+            ),
             0,
             Math.PI * 2
         );
@@ -2610,444 +3283,148 @@ function drawChain() {
 
     }
 
-
     ctx.restore();
 
 }
 
 
-/* =========================
-   PLAYER
-========================= */
+/* =========================================================
+   ROUND RECT
+========================================================= */
 
-function drawPlayer(p) {
-
-    if (p.dead) return;
-
-
-    const x = p.x;
-
-    const y = p.y;
-
-
-    ctx.save();
-
-
-    /* shadow */
-
-    ctx.fillStyle =
-        "rgba(0,0,0,.35)";
+function roundRect(
+    x,
+    y,
+    w,
+    h,
+    r
+) {
 
     ctx.beginPath();
 
-    ctx.ellipse(
-        x + p.width / 2,
-        y + p.height + 5,
-        20,
-        6,
-        0,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    /* body */
-
-    ctx.fillStyle =
-        p.color === "red"
-            ? "#ef4444"
-            : "#3b82f6";
-
-
-    ctx.fillRect(
+    ctx.roundRect(
         x,
-        y + 18,
-        p.width,
-        p.height - 18
-    );
-
-
-    /* head */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x + p.width / 2,
-        y + 14,
-        14,
-        0,
-        Math.PI * 2
+        y,
+        w,
+        h,
+        r
     );
 
     ctx.fill();
 
-
-    /* eyes */
-
-    ctx.fillStyle =
-        "#fff";
+}
 
 
-    const eyeOffset =
-        p.facing === 1
-            ? 5
-            : -5;
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(text) {
+
+    errorBox.textContent =
+        text;
+
+}
 
 
-    ctx.beginPath();
+/* =========================================================
+   GAME LOOP
+========================================================= */
 
-    ctx.arc(
-        x + p.width / 2 + eyeOffset,
-        y + 11,
-        3,
-        0,
-        Math.PI * 2
-    );
+function gameLoop(now) {
 
-    ctx.fill();
+    const dt =
+        Math.min(
+            .033,
+            (now - lastTime) /
+            1000
+        );
 
-
-    /* name */
-
-    ctx.fillStyle =
-        "#fff";
-
-    ctx.font =
-        "bold 13px Arial";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.fillText(
-        p.name,
-        x + p.width / 2,
-        y - 12
-    );
+    lastTime =
+        now;
 
 
-    /* sprint effect */
+    if (gameStarted) {
 
-    if (
-        p.running &&
-        Math.abs(p.vx) > 150
-    ) {
+        const me =
+            players.get(myId);
 
-        ctx.strokeStyle =
-            "rgba(255,255,255,.35)";
+        if (me) {
 
-        ctx.lineWidth = 3;
+            updateLocalPlayer(
+                me,
+                dt
+            );
 
-        for (
-            let i = 0;
-            i < 3;
-            i++
+        }
+
+
+        updateRemotePlayers(
+            dt
+        );
+
+
+        updateChain(
+            dt
+        );
+
+
+        updateCamera(
+            dt
+        );
+
+
+        sendMovement(
+            now
+        );
+
+
+        /*
+            Finish check.
+        */
+
+        if (
+            me &&
+            !me.dead &&
+            me.x >= finishX - 30
         ) {
 
-            ctx.beginPath();
-
-            ctx.moveTo(
-                x +
-                (p.facing === 1
-                    ? -5
-                    : p.width + 5),
-                y + 30 + i * 8
+            showMessage(
+                "🏆 YOU MADE IT!"
             );
 
-            ctx.lineTo(
-                x +
-                (p.facing === 1
-                    ? -20
-                    : p.width + 20),
-                y + 30 + i * 8
-            );
-
-            ctx.stroke();
+            gameStarted = false;
 
         }
 
     }
 
 
-    ctx.restore();
-
-}
-
-
-/* =========================
-   DRAW
-========================= */
-
-function draw() {
-
     drawBackground();
 
     drawWorld();
 
-}
 
-
-/* =========================
-   MESSAGE
-========================= */
-
-function showMessage(text) {
-
-    const msg =
-        document.getElementById(
-            "message"
-        );
-
-    msg.innerHTML =
-        text;
-
-    msg.classList.add(
-        "show"
+    requestAnimationFrame(
+        gameLoop
     );
 
 }
 
+requestAnimationFrame(
+    gameLoop
+);
 
-function hideMessage() {
 
-    document
-        .getElementById(
-            "message"
-        )
-        .classList.remove(
-            "show"
-        );
+/* =========================================================
+   INITIAL STATE
+========================================================= */
 
-}
+loading.style.display =
+    "none";
 
-
-/* =========================
-   MENU NAVIGATION
-========================= */
-
-const mainMenu =
-    document.getElementById(
-        "mainMenu"
-    );
-
-const hostNameMenu =
-    document.getElementById(
-        "hostNameMenu"
-    );
-
-const joinMenu =
-    document.getElementById(
-        "joinMenu"
-    );
-
-
-document
-    .getElementById("hostBtn")
-    .onclick = () => {
-
-        mainMenu.classList.add(
-            "hidden"
-        );
-
-        hostNameMenu.classList.remove(
-            "hidden"
-        );
-
-    };
-
-
-document
-    .getElementById("joinBtn")
-    .onclick = () => {
-
-        mainMenu.classList.add(
-            "hidden"
-        );
-
-        joinMenu.classList.remove(
-            "hidden"
-        );
-
-    };
-
-
-document
-    .getElementById("hostBack")
-    .onclick = () => {
-
-        hostNameMenu.classList.add(
-            "hidden"
-        );
-
-        mainMenu.classList.remove(
-            "hidden"
-        );
-
-    };
-
-
-document
-    .getElementById("joinBack")
-    .onclick = () => {
-
-        joinMenu.classList.add(
-            "hidden"
-        );
-
-        mainMenu.classList.remove(
-            "hidden"
-        );
-
-    };
-
-
-document
-    .getElementById("createRoomBtn")
-    .onclick = () => {
-
-        const name =
-            document
-                .getElementById(
-                    "hostName"
-                )
-                .value
-                .trim();
-
-
-        if (!name) {
-
-            alert(
-                "Enter a name first!"
-            );
-
-            return;
-
-        }
-
-
-        hostGame(name);
-
-    };
-
-
-document
-    .getElementById("joinRoomBtn")
-    .onclick = () => {
-
-        const name =
-            document
-                .getElementById(
-                    "joinName"
-                )
-                .value
-                .trim();
-
-
-        const code =
-            document
-                .getElementById(
-                    "roomInput"
-                )
-                .value
-                .trim()
-                .toUpperCase();
-
-
-        if (!name) {
-
-            alert(
-                "Enter a name first!"
-            );
-
-            return;
-
-        }
-
-
-        if (
-            code.length !== 4
-        ) {
-
-            alert(
-                "Room code must be 4 characters."
-            );
-
-            return;
-
-        }
-
-
-        joinGame(
-            name,
-            code
-        );
-
-    };
-
-
-document
-    .getElementById("practiceBtn")
-    .onclick =
-        startPractice;
-
-
-document
-    .getElementById("startBtn")
-    .onclick =
-        startGame;
-
-
-/* =========================
-   LEAVE
-========================= */
-
-document
-    .getElementById("leaveBtn")
-    .onclick = () => {
-
-        if (socket) {
-
-            socket.close();
-
-        }
-
-        location.reload();
-
-    };
-
-
-/* =========================
-   ROOM CODE
-========================= */
-
-document
-    .getElementById("roomInput")
-    .addEventListener(
-        "input",
-        e => {
-
-            e.target.value =
-                e.target.value
-                    .replace(
-                        /[^a-zA-Z0-9]/g,
-                        ""
-                    )
-                    .substring(
-                        0,
-                        4
-                    )
-                    .toUpperCase();
-
-        }
-    );
-
-
-/* =========================
-   INITIAL DRAW
-========================= */
-
-draw();
+lobby.style.display =
+    "flex";
 
 </script>
 

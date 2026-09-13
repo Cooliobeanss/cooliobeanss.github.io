@@ -230,7 +230,8 @@ button:active{
     margin-top:12px;
 }
 
-#error,#roomError{
+#error,
+#roomError{
     color:#ff7080;
     font-size:13px;
     min-height:18px;
@@ -325,8 +326,6 @@ button:active{
     transform:translate(-50%,-50%) scale(1);
 }
 
-/* checkpoint notification */
-
 #checkpoint{
     position:absolute;
     left:50%;
@@ -356,10 +355,6 @@ button:active{
     visibility:visible;
     transform:translateX(-50%) translateY(0);
 }
-
-/* =========================================================
-   LOADING
-========================================================= */
 
 #loading{
     position:fixed;
@@ -516,12 +511,9 @@ START CLIMB
 Share the room code with your friend.
 </div>
 
-<div id="roomError"></div>
-
 </div>
 
 </div>
-
 </div>
 
 <!-- =======================================================
@@ -533,23 +525,15 @@ Share the room code with your friend.
 <div class="topbar">
 
 <div class="panel controls">
-
 <b>MOVE</b> A / D or ← / →<br>
 <b>JUMP</b> W / SPACE / ↑<br>
 <b>RUN</b> SHIFT
-
 </div>
 
 <div class="panel">
-
-<span id="location">
-🏠 THE HOUSE
-</span>
-
+<span id="location">🏠 THE HOUSE</span>
 <br>
-
 🔗 <span id="chainDistance">0</span> px
-
 </div>
 
 </div>
@@ -565,7 +549,6 @@ CHECKPOINT REACHED
 <div id="loading">
 
 <div class="spinner"></div>
-
 Connecting...
 
 </div>
@@ -601,17 +584,11 @@ function resize(){
     H = innerHeight;
     DPR = devicePixelRatio || 1;
 
-    canvas.width =
-        W * DPR;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
 
-    canvas.height =
-        H * DPR;
-
-    canvas.style.width =
-        W + "px";
-
-    canvas.style.height =
-        H + "px";
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
 
     ctx.setTransform(
         DPR,
@@ -705,11 +682,9 @@ let cameraX = 0;
 let cameraY = 0;
 
 let messageTimer = null;
-
 let checkpointTimer = null;
 
 let shake = 0;
-
 let worldTime = 0;
 
 
@@ -717,8 +692,7 @@ let worldTime = 0;
    PLAYERS
 ========================================================= */
 
-const players =
-    new Map();
+const players = new Map();
 
 function createPlayer(
     id,
@@ -768,308 +742,841 @@ function createPlayer(
                 : 1,
 
         anim:0,
-
-        fallDistance:0,
-
-        squash:0,
-
-        trail:[]
+        squash:0
 
     };
-
 }
 
 
 /* =========================================================
-   VERTICAL WORLD
+   ACTUAL ENVIRONMENT
+=========================================================
+
+   The level is NOT a collection of floating platforms.
+
+   It is one giant continuous climb:
+
+   HOUSE
+      ↓
+   OFFICE BUILDING
+      ↓
+   CLOUDS
+      ↓
+   SPACE
+      ↓
+   MOON
+
 ========================================================= */
 
-/*
-    WORLD COORDINATES:
 
-    X = left/right
-    Y = vertical height
-
-    Smaller Y = higher.
-
-    Start around Y 900.
-    Final summit around Y -15000.
-*/
-
+/* =========================================================
+   COLLISION GEOMETRY
+========================================================= */
 
 const platforms = [
 
 /* =========================================================
-   HOUSE
+   🏠 HOUSE
 ========================================================= */
 
-/* Ground */
+/* outside ground */
 
-{x:-900,y:950,w:2500,h:120,type:"floor"},
+{
+    x:-900,
+    y:900,
+    w:1900,
+    h:180,
+    type:"grass"
+},
 
-/* Living room */
+/* house foundation */
 
-{x:300,y:820,w:300,h:35,type:"wood"},
-{x:720,y:730,w:260,h:35,type:"wood"},
-{x:1030,y:620,w:300,h:35,type:"wood"},
+{
+    x:600,
+    y:720,
+    w:3400,
+    h:120,
+    type:"houseFloor"
+},
 
-/* Furniture */
+/* living room floor */
 
-{x:-100,y:790,w:170,h:30,type:"furniture"},
-{x:470,y:670,w:140,h:30,type:"furniture"},
+{
+    x:700,
+    y:590,
+    w:950,
+    h:40,
+    type:"floor"
+},
 
-/* Staircase */
+/* kitchen floor */
 
-{x:1350,y:540,w:280,h:35,type:"wood"},
-{x:1080,y:460,w:230,h:35,type:"wood"},
-{x:1370,y:380,w:260,h:35,type:"wood"},
+{
+    x:1650,
+    y:590,
+    w:800,
+    h:40,
+    type:"floor"
+},
 
-/* Second floor */
+/* hallway */
 
-{x:900,y:300,w:350,h:40,type:"wood"},
-{x:520,y:210,w:300,h:35,type:"wood"},
-{x:900,y:120,w:330,h:40,type:"wood"},
+{
+    x:2450,
+    y:590,
+    w:600,
+    h:40,
+    type:"floor"
+},
 
-/* Attic */
+/* stairs */
 
-{x:1350,y:40,w:300,h:40,type:"wood"},
-{x:1750,y:-60,w:330,h:40,type:"wood"},
+{
+    x:3000,
+    y:540,
+    w:140,
+    h:30,
+    type:"wood"
+},
 
-/* Roof */
+{
+    x:3130,
+    y:490,
+    w:140,
+    h:30,
+    type:"wood"
+},
 
-{x:2200,y:-160,w:500,h:55,type:"roof"},
+{
+    x:3260,
+    y:440,
+    w:140,
+    h:30,
+    type:"wood"
+},
 
+{
+    x:3390,
+    y:390,
+    w:140,
+    h:30,
+    type:"wood"
+},
 
-/* =========================================================
-   OFFICE BUILDING
-========================================================= */
+/* second floor */
 
-{x:2850,y:-260,w:520,h:55,type:"office"},
+{
+    x:3500,
+    y:350,
+    w:1200,
+    h:45,
+    type:"floor"
+},
 
-{x:3500,y:-370,w:280,h:35,type:"office"},
-{x:3900,y:-470,w:330,h:35,type:"office"},
-{x:4400,y:-580,w:260,h:35,type:"office"},
+/* bedroom 1 */
 
-/* cubicle jumps */
+{
+    x:3650,
+    y:230,
+    w:360,
+    h:35,
+    type:"furniture"
+},
 
-{x:4750,y:-700,w:190,h:30,type:"office"},
-{x:5050,y:-810,w:220,h:30,type:"office"},
-{x:5400,y:-920,w:260,h:35,type:"office"},
+/* bedroom 2 */
 
-/* central staircase */
+{
+    x:4200,
+    y:190,
+    w:350,
+    h:35,
+    type:"furniture"
+},
 
-{x:5850,y:-1030,w:300,h:35,type:"office"},
-{x:6200,y:-1140,w:250,h:35,type:"office"},
-{x:6550,y:-1250,w:300,h:35,type:"office"},
+/* attic stairs */
 
-/* windows */
+{
+    x:4550,
+    y:150,
+    w:130,
+    h:30,
+    type:"wood"
+},
 
-{x:7000,y:-1370,w:350,h:40,type:"glass"},
-{x:7500,y:-1480,w:260,h:35,type:"glass"},
-{x:7900,y:-1590,w:300,h:35,type:"glass"},
+{
+    x:4670,
+    y:100,
+    w:130,
+    h:30,
+    type:"wood"
+},
 
-/* construction zone */
+{
+    x:4790,
+    y:50,
+    w:130,
+    h:30,
+    type:"wood"
+},
 
-{x:8350,y:-1720,w:230,h:35,type:"construction"},
-{x:8700,y:-1840,w:300,h:35,type:"construction"},
-{x:9150,y:-1960,w:240,h:35,type:"construction"},
+/* attic */
+
+{
+    x:4900,
+    y:0,
+    w:850,
+    h:45,
+    type:"attic"
+},
 
 /* roof */
 
-{x:9500,y:-2080,w:500,h:55,type:"roof"},
+{
+    x:5750,
+    y:-100,
+    w:850,
+    h:55,
+    type:"roof"
+},
 
 
 /* =========================================================
-   CLOUDS
+   🏢 OFFICE BUILDING
 ========================================================= */
 
-{x:10300,y:-2200,w:500,h:55,type:"cloud"},
+/* building entrance */
 
-{x:10950,y:-2320,w:280,h:35,type:"cloud"},
-{x:11350,y:-2430,w:330,h:35,type:"cloud"},
-{x:11800,y:-2540,w:250,h:35,type:"cloud"},
+{
+    x:6500,
+    y:-200,
+    w:1000,
+    h:55,
+    type:"officeFloor"
+},
 
-{x:12150,y:-2670,w:300,h:35,type:"cloud"},
-{x:12600,y:-2780,w:350,h:35,type:"cloud"},
-{x:13100,y:-2890,w:260,h:35,type:"cloud"},
+/* office floor 1 */
 
-{x:13500,y:-3020,w:330,h:35,type:"cloud"},
-{x:14000,y:-3130,w:260,h:35,type:"cloud"},
-{x:14400,y:-3240,w:350,h:35,type:"cloud"},
+{
+    x:6500,
+    y:-380,
+    w:1000,
+    h:40,
+    type:"officeFloor"
+},
 
-/* sky ruins */
+/* office floor 2 */
 
-{x:14900,y:-3370,w:300,h:35,type:"sky"},
-{x:15300,y:-3490,w:230,h:35,type:"sky"},
-{x:15700,y:-3610,w:350,h:35,type:"sky"},
+{
+    x:6500,
+    y:-560,
+    w:1000,
+    h:40,
+    type:"officeFloor"
+},
 
-/* storm tower */
+/* office floor 3 */
 
-{x:16200,y:-3750,w:300,h:35,type:"storm"},
-{x:16600,y:-3890,w:250,h:35,type:"storm"},
-{x:17000,y:-4030,w:320,h:35,type:"storm"},
+{
+    x:6500,
+    y:-740,
+    w:1000,
+    h:40,
+    type:"officeFloor"
+},
+
+/* office floor 4 */
+
+{
+    x:6500,
+    y:-920,
+    w:1000,
+    h:40,
+    type:"officeFloor"
+},
+
+/* office floor 5 */
+
+{
+    x:6500,
+    y:-1100,
+    w:1000,
+    h:40,
+    type:"officeFloor"
+},
+
+/* stairs */
+
+{
+    x:7350,
+    y:-330,
+    w:150,
+    h:30,
+    type:"office"
+},
+
+{
+    x:7200,
+    y:-510,
+    w:150,
+    h:30,
+    type:"office"
+},
+
+{
+    x:7350,
+    y:-690,
+    w:150,
+    h:30,
+    type:"office"
+},
+
+{
+    x:7200,
+    y:-870,
+    w:150,
+    h:30,
+    type:"office"
+},
+
+{
+    x:7350,
+    y:-1050,
+    w:150,
+    h:30,
+    type:"office"
+},
+
+/* building roof */
+
+{
+    x:6400,
+    y:-1250,
+    w:1250,
+    h:60,
+    type:"officeRoof"
+},
+
 
 /* =========================================================
-   SPACE
+   ☁️ CLOUDS
 ========================================================= */
 
-{x:17500,y:-4200,w:500,h:45,type:"space"},
+/* giant cloud bridge */
 
-{x:18100,y:-4370,w:280,h:35,type:"space"},
-{x:18500,y:-4520,w:230,h:35,type:"space"},
-{x:18900,y:-4680,w:320,h:35,type:"space"},
+{
+    x:7800,
+    y:-1320,
+    w:800,
+    h:80,
+    type:"cloud"
+},
 
-/* satellites */
+{
+    x:8700,
+    y:-1460,
+    w:700,
+    h:75,
+    type:"cloud"
+},
 
-{x:19400,y:-4850,w:250,h:30,type:"satellite"},
-{x:19800,y:-5020,w:300,h:30,type:"satellite"},
-{x:20300,y:-5190,w:230,h:30,type:"satellite"},
+{
+    x:9500,
+    y:-1580,
+    w:850,
+    h:75,
+    type:"cloud"
+},
 
-/* station */
+{
+    x:10450,
+    y:-1740,
+    w:700,
+    h:75,
+    type:"cloud"
+},
 
-{x:20700,y:-5370,w:500,h:45,type:"station"},
+{
+    x:11300,
+    y:-1880,
+    w:850,
+    h:75,
+    type:"cloud"
+},
 
-{x:21400,y:-5560,w:270,h:35,type:"space"},
-{x:21800,y:-5740,w:330,h:35,type:"space"},
-{x:22300,y:-5930,w:240,h:35,type:"space"},
+{
+    x:12300,
+    y:-2050,
+    w:800,
+    h:75,
+    type:"cloud"
+},
 
-/* asteroid climb */
+{
+    x:13250,
+    y:-2220,
+    w:850,
+    h:75,
+    type:"cloud"
+},
 
-{x:22700,y:-6130,w:250,h:35,type:"asteroid"},
-{x:23100,y:-6330,w:200,h:35,type:"asteroid"},
-{x:23500,y:-6530,w:300,h:35,type:"asteroid"},
+/* storm cloud */
+
+{
+    x:14300,
+    y:-2400,
+    w:900,
+    h:90,
+    type:"storm"
+},
+
+/* final cloud */
+
+{
+    x:15300,
+    y:-2600,
+    w:1000,
+    h:85,
+    type:"cloud"
+},
+
 
 /* =========================================================
-   COSMIC SUMMIT
+   🚀 SPACE
 ========================================================= */
 
-{x:24000,y:-6750,w:500,h:50,type:"cosmic"},
+/* space station */
 
-{x:24700,y:-6970,w:300,h:35,type:"cosmic"},
-{x:25200,y:-7190,w:260,h:35,type:"cosmic"},
-{x:25700,y:-7410,w:340,h:35,type:"cosmic"},
+{
+    x:16500,
+    y:-2780,
+    w:900,
+    h:60,
+    type:"station"
+},
 
-{x:26300,y:-7650,w:280,h:35,type:"cosmic"},
-{x:26800,y:-7890,w:330,h:35,type:"cosmic"},
-{x:27400,y:-8130,w:280,h:35,type:"cosmic"},
+/* satellite */
 
-{x:28000,y:-8380,w:400,h:45,type:"cosmic"},
+{
+    x:17600,
+    y:-2960,
+    w:500,
+    h:45,
+    type:"satellite"
+},
 
-{x:28700,y:-8650,w:320,h:35,type:"cosmic"},
-{x:29300,y:-8920,w:280,h:35,type:"cosmic"},
-{x:29900,y:-9190,w:350,h:35,type:"cosmic"},
+/* satellite 2 */
 
-/* FINAL */
+{
+    x:18400,
+    y:-3180,
+    w:550,
+    h:45,
+    type:"satellite"
+},
 
-{x:30600,y:-9500,w:700,h:70,type:"summit"}
+/* asteroid */
+
+{
+    x:19300,
+    y:-3400,
+    w:500,
+    h:55,
+    type:"asteroid"
+},
+
+{
+    x:20100,
+    y:-3650,
+    w:420,
+    h:55,
+    type:"asteroid"
+},
+
+{
+    x:20900,
+    y:-3900,
+    w:500,
+    h:55,
+    type:"asteroid"
+},
+
+/* lunar transfer station */
+
+{
+    x:21900,
+    y:-4150,
+    w:1000,
+    h:65,
+    type:"station"
+},
+
+/* final asteroid chain */
+
+{
+    x:23100,
+    y:-4400,
+    w:500,
+    h:55,
+    type:"asteroid"
+},
+
+{
+    x:24000,
+    y:-4670,
+    w:550,
+    h:55,
+    type:"asteroid"
+},
+
+{
+    x:24900,
+    y:-4930,
+    w:600,
+    h:60,
+    type:"asteroid"
+},
+
+
+/* =========================================================
+   🌕 MOON
+========================================================= */
+
+/* moon landing platform */
+
+{
+    x:26000,
+    y:-5200,
+    w:1200,
+    h:100,
+    type:"moon"
+},
+
+/* moon surface */
+
+{
+    x:27200,
+    y:-5310,
+    w:2600,
+    h:120,
+    type:"moon"
+},
+
+/* crater edges */
+
+{
+    x:28100,
+    y:-5500,
+    w:300,
+    h:50,
+    type:"moonRock"
+},
+
+{
+    x:28800,
+    y:-5700,
+    w:380,
+    h:50,
+    type:"moonRock"
+},
+
+{
+    x:29600,
+    y:-5900,
+    w:450,
+    h:50,
+    type:"moonRock"
+},
+
+/* moon hill */
+
+{
+    x:30400,
+    y:-6150,
+    w:700,
+    h:70,
+    type:"moon"
+},
+
+/* FINAL SUMMIT */
+
+{
+    x:31600,
+    y:-6500,
+    w:1200,
+    h:100,
+    type:"finish"
+}
 
 ];
 
 
 /* =========================================================
-   MOVING PLATFORMS
+   HOUSE FURNITURE
+========================================================= */
+
+const furniture = [
+
+/* couch */
+
+{
+    x:850,
+    y:520,
+    w:280,
+    h:70,
+    kind:"couch"
+},
+
+/* coffee table */
+
+{
+    x:1180,
+    y:535,
+    w:150,
+    h:45,
+    kind:"table"
+},
+
+/* TV cabinet */
+
+{
+    x:1420,
+    y:480,
+    w:180,
+    h:110,
+    kind:"tv"
+},
+
+/* kitchen counter */
+
+{
+    x:1700,
+    y:470,
+    w:300,
+    h:120,
+    kind:"counter"
+},
+
+/* island */
+
+{
+    x:2100,
+    y:510,
+    w:220,
+    h:80,
+    kind:"island"
+},
+
+/* fridge */
+
+{
+    x:2350,
+    y:400,
+    w:100,
+    h:190,
+    kind:"fridge"
+},
+
+/* dining table */
+
+{
+    x:2600,
+    y:500,
+    w:250,
+    h:90,
+    kind:"table"
+},
+
+/* upstairs bed */
+
+{
+    x:3650,
+    y:165,
+    w:260,
+    h:65,
+    kind:"bed"
+},
+
+/* desk */
+
+{
+    x:4000,
+    y:280,
+    w:220,
+    h:70,
+    kind:"desk"
+},
+
+/* second bed */
+
+{
+    x:4250,
+    y:125,
+    w:260,
+    h:65,
+    kind:"bed"
+},
+
+/* bookshelf */
+
+{
+    x:4550,
+    y:200,
+    w:100,
+    h:150,
+    kind:"bookshelf"
+},
+
+/* attic boxes */
+
+{
+    x:5100,
+    y:-70,
+    w:120,
+    h:70,
+    kind:"box"
+},
+
+{
+    x:5280,
+    y:-70,
+    w:140,
+    h:70,
+    kind:"box"
+}
+
+];
+
+
+/* =========================================================
+   OFFICE FURNITURE
+========================================================= */
+
+const officeFurniture = [];
+
+for(let floor=0;floor<5;floor++){
+
+    const baseY =
+        -380 - floor * 180;
+
+    for(let i=0;i<4;i++){
+
+        officeFurniture.push({
+
+            x:
+                6650 +
+                i * 190,
+
+            y:
+                baseY - 75,
+
+            w:140,
+            h:75,
+
+            kind:"desk"
+
+        });
+
+    }
+
+    officeFurniture.push({
+
+        x:6850,
+        y:baseY - 140,
+        w:120,
+        h:65,
+        kind:"plant"
+
+    });
+
+    officeFurniture.push({
+
+        x:7100,
+        y:baseY - 85,
+        w:160,
+        h:85,
+        kind:"cubicle"
+
+    });
+
+}
+
+
+/* =========================================================
+   WINDOWS
+========================================================= */
+
+const windows = [];
+
+for(let floor=0;floor<5;floor++){
+
+    const y =
+        -300 - floor * 180;
+
+    for(let i=0;i<5;i++){
+
+        windows.push({
+
+            x:6500 + i * 190,
+            y,
+            w:135,
+            h:115
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   MOVING OBJECTS
 ========================================================= */
 
 const movingPlatforms = [
 
-{
-    baseX:1600,
-    baseY:270,
-    w:170,
-    h:30,
-    distance:130,
-    speed:.8,
-    phase:0,
-    type:"wood"
-},
+    {
+        baseX:9000,
+        baseY:-1380,
+        w:260,
+        h:45,
+        distance:180,
+        speed:.7,
+        phase:0,
+        type:"cloud"
+    },
 
-{
-    baseX:3300,
-    baseY:-330,
-    w:160,
-    h:30,
-    distance:130,
-    speed:1,
-    phase:1,
-    type:"office"
-},
+    {
+        baseX:12000,
+        baseY:-1980,
+        w:280,
+        h:45,
+        distance:200,
+        speed:.8,
+        phase:2,
+        type:"cloud"
+    },
 
-{
-    baseX:5600,
-    baseY:-970,
-    w:170,
-    h:30,
-    distance:150,
-    speed:.8,
-    phase:2,
-    type:"office"
-},
+    {
+        baseX:18000,
+        baseY:-3050,
+        w:260,
+        h:40,
+        distance:180,
+        speed:.8,
+        phase:1,
+        type:"satellite"
+    },
 
-{
-    baseX:8800,
-    baseY:-1770,
-    w:180,
-    h:30,
-    distance:150,
-    speed:1,
-    phase:0,
-    type:"construction"
-},
-
-{
-    baseX:11600,
-    baseY:-2470,
-    w:190,
-    h:30,
-    distance:170,
-    speed:.8,
-    phase:2,
-    type:"cloud"
-},
-
-{
-    baseX:14500,
-    baseY:-3300,
-    w:190,
-    h:30,
-    distance:180,
-    speed:.9,
-    phase:1,
-    type:"storm"
-},
-
-{
-    baseX:18800,
-    baseY:-4600,
-    w:180,
-    h:30,
-    distance:170,
-    speed:1,
-    phase:0,
-    type:"space"
-},
-
-{
-    baseX:21600,
-    baseY:-5650,
-    w:180,
-    h:30,
-    distance:180,
-    speed:.8,
-    phase:2,
-    type:"space"
-},
-
-{
-    baseX:26500,
-    baseY:-7800,
-    w:200,
-    h:30,
-    distance:170,
-    speed:.9,
-    phase:1,
-    type:"cosmic"
-}
+    {
+        baseX:22600,
+        baseY:-4300,
+        w:280,
+        h:45,
+        distance:180,
+        speed:.7,
+        phase:0,
+        type:"space"
+    }
 
 ];
 
@@ -1082,32 +1589,83 @@ const hazards = [
 
 /* house */
 
-{x:1780,y:-20,w:80,h:120,type:"chimney"},
-{x:2080,y:-130,w:100,h:90,type:"antenna"},
+{
+    x:1480,
+    y:520,
+    w:55,
+    h:70,
+    type:"tvStatic"
+},
+
+{
+    x:2350,
+    y:390,
+    w:100,
+    h:20,
+    type:"hot"
+},
 
 /* office */
 
-{x:4050,y:-520,w:90,h:45,type:"laser"},
-{x:5300,y:-860,w:90,h:45,type:"laser"},
-{x:6700,y:-1290,w:90,h:45,type:"laser"},
-{x:9000,y:-1900,w:120,h:50,type:"falling"},
+{
+    x:7000,
+    y:-425,
+    w:40,
+    h:120,
+    type:"laser"
+},
+
+{
+    x:7450,
+    y:-780,
+    w:40,
+    h:120,
+    type:"laser"
+},
+
+{
+    x:7000,
+    y:-1140,
+    w:40,
+    h:120,
+    type:"laser"
+},
 
 /* clouds */
 
-{x:12800,y:-2820,w:100,h:100,type:"lightning"},
-{x:14000,y:-3170,w:120,h:80,type:"lightning"},
-{x:16600,y:-3950,w:100,h:80,type:"lightning"},
+{
+    x:10000,
+    y:-1670,
+    w:120,
+    h:90,
+    type:"lightning"
+},
+
+{
+    x:14400,
+    y:-2510,
+    w:140,
+    h:90,
+    type:"lightning"
+},
 
 /* space */
 
-{x:20100,y:-5100,w:110,h:110,type:"asteroid"},
-{x:22000,y:-5800,w:100,h:100,type:"asteroid"},
-{x:23000,y:-6450,w:120,h:100,type:"asteroid"},
+{
+    x:19900,
+    y:-3600,
+    w:120,
+    h:120,
+    type:"asteroid"
+},
 
-/* cosmic */
-
-{x:27000,y:-8050,w:100,h:100,type:"energy"},
-{x:29200,y:-9000,w:120,h:100,type:"energy"}
+{
+    x:24000,
+    y:-4780,
+    w:120,
+    h:120,
+    type:"asteroid"
+}
 
 ];
 
@@ -1118,25 +1676,60 @@ const hazards = [
 
 const checkpoints = [
 
-{x:2850,y:-210},
-{x:9500,y:-2030},
-{x:10300,y:-2150},
-{x:14900,y:-3320},
-{x:17500,y:-4150},
-{x:20700,y:-5320},
-{x:24000,y:-6700},
-{x:28000,y:-8330},
-{x:30600,y:-9440}
+    {
+        x:600,
+        y:700
+    },
+
+    {
+        x:3500,
+        y:300
+    },
+
+    {
+        x:6500,
+        y:-1200
+    },
+
+    {
+        x:10500,
+        y:-1690
+    },
+
+    {
+        x:15300,
+        y:-2550
+    },
+
+    {
+        x:16500,
+        y:-2730
+    },
+
+    {
+        x:21900,
+        y:-4100
+    },
+
+    {
+        x:26000,
+        y:-5150
+    },
+
+    {
+        x:29600,
+        y:-5850
+    },
+
+    {
+        x:31600,
+        y:-6450
+    }
 
 ];
 
-
-/* =========================================================
-   FINISH
-========================================================= */
-
-const finishY =
-    -9500;
+const finishX = 31600;
+const finishY = -6500;
 
 
 /* =========================================================
@@ -1158,7 +1751,9 @@ addEventListener(
             "ArrowRight",
             "Space"
         ].includes(e.code)){
+
             e.preventDefault();
+
         }
 
     }
@@ -1167,7 +1762,9 @@ addEventListener(
 addEventListener(
     "keyup",
     e => {
+
         keys[e.code] = false;
+
     }
 );
 
@@ -1238,8 +1835,7 @@ function connect(){
 
             socket.onopen = () => {
 
-                loading.style.display =
-                    "none";
+                loading.style.display = "none";
 
                 resolve();
 
@@ -1326,8 +1922,8 @@ function handleServerMessage(data){
                 myId,
                 myName,
                 myColor,
-                300,
-                890
+                760,
+                530
             )
         );
 
@@ -1355,8 +1951,8 @@ function handleServerMessage(data){
                 myId,
                 myName,
                 myColor,
-                370,
-                890
+                820,
+                530
             )
         );
 
@@ -1480,7 +2076,7 @@ function handleServerMessage(data){
 
 
 /* =========================================================
-   HOST
+   HOST / JOIN
 ========================================================= */
 
 async function hostGame(){
@@ -1518,10 +2114,6 @@ async function hostGame(){
 
 }
 
-
-/* =========================================================
-   JOIN
-========================================================= */
 
 async function joinGame(){
 
@@ -1572,23 +2164,19 @@ async function joinGame(){
 
 
 /* =========================================================
-   ROOM UI
+   ROOM
 ========================================================= */
 
 function showRoomPanel(){
 
-    mainPanel.style.display =
-        "none";
-
-    joinPanel.style.display =
-        "none";
-
-    roomPanel.style.display =
-        "block";
+    mainPanel.style.display = "none";
+    joinPanel.style.display = "none";
+    roomPanel.style.display = "block";
 
     updatePlayerList();
 
 }
+
 
 function updatePlayerList(){
 
@@ -1608,9 +2196,11 @@ function updatePlayerList(){
         div.innerHTML = `
             <span class="dot ${p.color}"></span>
             <strong>${escapeHTML(p.name)}</strong>
-            ${p.id === myId
-                ? "<small style='color:#888'> YOU</small>"
-                : ""}
+            ${
+                p.id === myId
+                    ? "<small style='color:#888'> YOU</small>"
+                    : ""
+            }
         `;
 
         playerList.appendChild(div);
@@ -1618,6 +2208,7 @@ function updatePlayerList(){
     }
 
 }
+
 
 function escapeHTML(text){
 
@@ -1651,8 +2242,8 @@ function startPractice(){
             myId,
             myName,
             myColor,
-            300,
-            890
+            760,
+            530
         )
     );
 
@@ -1662,15 +2253,14 @@ function startPractice(){
 
 
 /* =========================================================
-   BEGIN GAME
+   GAME START
 ========================================================= */
 
 function beginGame(){
 
     gameStarted = true;
 
-    lobby.style.display =
-        "none";
+    lobby.style.display = "none";
 
     hideMessage();
 
@@ -1904,22 +2494,18 @@ function updateLocalPlayer(p,dt){
         );
 
 
-    /* Falling */
-
-    if(p.y > cameraY + H + 600){
+    if(p.y > cameraY + H + 700){
 
         killPlayer(p);
 
     }
 
 
-    /* Left/right soft boundary */
-
     p.x =
         Math.max(
             -1000,
             Math.min(
-                31500,
+                33000,
                 p.x
             )
         );
@@ -1937,7 +2523,7 @@ function updateLocalPlayer(p,dt){
 function getMovingPlatformData(mp){
 
     const t =
-        performance.now() / 1000;
+        worldTime;
 
     return {
 
@@ -1990,11 +2576,68 @@ function collideWithWorld(p,oldY){
                 p.height;
 
             p.vy = 0;
+            p.grounded = true;
 
-            if(!p.grounded){
-                p.squash = 1;
-            }
+            p.squash = 1;
 
+        }
+
+    }
+
+
+    for(
+        const f
+        of furniture
+    ){
+
+        const top =
+            f.y;
+
+        if(
+            p.x + p.width >
+                f.x &&
+            p.x <
+                f.x + f.w &&
+            oldBottom <= top &&
+            newBottom >= top &&
+            p.vy >= 0
+        ){
+
+            p.y =
+                top -
+                p.height;
+
+            p.vy = 0;
+            p.grounded = true;
+
+        }
+
+    }
+
+
+    for(
+        const f
+        of officeFurniture
+    ){
+
+        const top =
+            f.y;
+
+        if(
+            p.x + p.width >
+                f.x &&
+            p.x <
+                f.x + f.w &&
+            oldBottom <= top &&
+            newBottom >= top &&
+            p.vy >= 0
+        ){
+
+            p.y =
+                top -
+                p.height;
+
+            p.vy = 0;
             p.grounded = true;
 
         }
@@ -2035,7 +2678,7 @@ function collideWithWorld(p,oldY){
 
 
 /* =========================================================
-   CHECKPOINTS
+   CHECKPOINT
 ========================================================= */
 
 function updateCheckpoint(p){
@@ -2046,11 +2689,6 @@ function updateCheckpoint(p){
         const cp
         of checkpoints
     ){
-
-        /*
-            Checkpoints are activated once
-            the player climbs above them.
-        */
 
         if(
             p.y <= cp.y + 120 &&
@@ -2089,10 +2727,6 @@ function updateCheckpoint(p){
 
 }
 
-
-/* =========================================================
-   CHECKPOINT UI
-========================================================= */
 
 function showCheckpoint(){
 
@@ -2340,10 +2974,6 @@ function killPlayer(p){
 }
 
 
-/* =========================================================
-   RESPAWN
-========================================================= */
-
 function respawnPlayer(p){
 
     p.x =
@@ -2365,6 +2995,9 @@ function respawnPlayer(p){
 
     cameraY =
         p.y - H * .65;
+
+    cameraX =
+        p.x - W * .38;
 
     hideMessage();
 
@@ -2390,6 +3023,11 @@ function showMessage(text){
     message.textContent =
         text;
 
+    message.style.opacity = "1";
+    message.style.visibility = "visible";
+    message.style.transform =
+        "translate(-50%,-50%) scale(1)";
+
     message.classList.add(
         "show"
     );
@@ -2403,13 +3041,9 @@ function hideMessage(){
         "show"
     );
 
-    /*
-        Hard reset so the old
-        YOU FELL bug cannot stick.
-    */
-
     message.style.opacity = "0";
     message.style.visibility = "hidden";
+
     message.style.transform =
         "translate(-50%,-50%) scale(.8)";
 
@@ -2500,11 +3134,6 @@ function updateCamera(dt){
     }
 
 
-    /*
-        Camera follows vertical height
-        much more strongly than horizontal.
-    */
-
     const targetY =
         me.y -
         H * .58;
@@ -2539,13 +3168,13 @@ function updateCamera(dt){
 
     cameraY =
         Math.min(
-            1100,
+            1000,
             cameraY
         );
 
     cameraY =
         Math.max(
-            -9000,
+            -6500,
             cameraY
         );
 
@@ -2554,44 +3183,49 @@ function updateCamera(dt){
         Math.max(
             0,
             Math.min(
-                30000,
+                32000,
                 cameraX
             )
         );
-
-
-    /*
-        Determine environment.
-    */
-
-    const y =
-        me.y;
 
 
     let area =
         "🏠 THE HOUSE";
 
 
-    if(y < -200){
+    if(me.y < -120){
         area = "🏢 THE OFFICE";
     }
 
-    if(y < -2100){
+    if(me.y < -1300){
         area = "☁️ THE CLOUDS";
     }
 
-    if(y < -4150){
+    if(me.y < -2750){
         area = "🚀 SPACE";
     }
 
-    if(y < -6700){
-        area = "🌌 THE COSMIC SUMMIT";
+    if(me.y < -5150){
+        area = "🌕 THE MOON";
     }
 
 
     locationText.textContent =
         area;
 
+}
+
+
+/* =========================================================
+   WORLD DRAWING
+========================================================= */
+
+function worldToScreenX(x){
+    return x - cameraX;
+}
+
+function worldToScreenY(y){
+    return y - cameraY;
 }
 
 
@@ -2604,69 +3238,100 @@ function drawBackground(){
     const me =
         players.get(myId);
 
-    const worldY =
-        me
-            ? me.y
-            : 900;
+    const y =
+        me ? me.y : 800;
 
 
-    /*
-        HOUSE
-    */
+    /* HOUSE */
 
-    if(worldY > -200){
+    if(y > -120){
+
+        const g =
+            ctx.createLinearGradient(
+                0,0,
+                0,H
+            );
+
+        g.addColorStop(
+            0,
+            "#91c9ff"
+        );
+
+        g.addColorStop(
+            1,
+            "#f5d9b5"
+        );
+
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,W,H);
 
         drawHouseBackground();
 
         return;
-
     }
 
 
-    /*
-        OFFICE
-    */
+    /* OFFICE */
 
-    if(worldY > -2100){
+    if(y > -1300){
+
+        ctx.fillStyle =
+            "#101522";
+
+        ctx.fillRect(
+            0,0,W,H
+        );
 
         drawOfficeBackground();
 
         return;
-
     }
 
 
-    /*
-        CLOUDS
-    */
+    /* CLOUDS */
 
-    if(worldY > -4150){
+    if(y > -2750){
+
+        const g =
+            ctx.createLinearGradient(
+                0,0,
+                0,H
+            );
+
+        g.addColorStop(
+            0,
+            "#5b79c9"
+        );
+
+        g.addColorStop(
+            1,
+            "#d9efff"
+        );
+
+        ctx.fillStyle = g;
+        ctx.fillRect(
+            0,0,W,H
+        );
 
         drawCloudBackground();
 
         return;
-
     }
 
 
-    /*
-        SPACE
-    */
+    /* SPACE */
 
-    if(worldY > -6700){
+    if(y > -5150){
 
         drawSpaceBackground();
 
         return;
-
     }
 
 
-    /*
-        COSMIC
-    */
+    /* MOON */
 
-    drawCosmicBackground();
+    drawMoonBackground();
 
 }
 
@@ -2677,102 +3342,47 @@ function drawBackground(){
 
 function drawHouseBackground(){
 
-    const g =
-        ctx.createLinearGradient(
-            0,0,0,H
-        );
-
-    g.addColorStop(
-        0,
-        "#20152c"
-    );
-
-    g.addColorStop(
-        .55,
-        "#6f4050"
-    );
-
-    g.addColorStop(
-        1,
-        "#d18365"
-    );
-
-    ctx.fillStyle = g;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    /*
-        Sunset window.
-    */
+    /* distant neighborhood */
 
     ctx.fillStyle =
-        "rgba(255,200,130,.18)";
-
-    ctx.fillRect(
-        W*.7,
-        H*.12,
-        W*.2,
-        H*.45
-    );
-
-
-    ctx.strokeStyle =
-        "rgba(255,255,255,.1)";
-
-    ctx.lineWidth = 6;
-
-    ctx.strokeRect(
-        W*.7,
-        H*.12,
-        W*.2,
-        H*.45
-    );
-
-
-    /*
-        Distant houses.
-    */
-
-    ctx.fillStyle =
-        "rgba(30,20,45,.5)";
+        "rgba(80,100,130,.25)";
 
     for(
-        let i=0;
-        i<8;
-        i++
+        let x=-100;
+        x<W+100;
+        x+=170
     ){
 
-        const x =
-            (
-                i*260 -
-                cameraX*.15
-            ) %
-            (W+300);
-
-        const y =
-            H*.72 -
-            (i%3)*35;
+        const h =
+            90 +
+            ((x * 17) % 90);
 
         ctx.fillRect(
             x,
-            y,
-            190,
-            H
+            H-h,
+            130,
+            h
         );
 
     }
 
 
-    drawDust(
-        "rgba(255,220,170,.5)",
-        70
+    /* sun */
+
+    ctx.fillStyle =
+        "rgba(255,240,170,.8)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W-130,
+        110,
+        55,
+        0,
+        Math.PI*2
     );
+
+    ctx.fill();
 
 }
 
@@ -2783,93 +3393,59 @@ function drawHouseBackground(){
 
 function drawOfficeBackground(){
 
-    const g =
-        ctx.createLinearGradient(
-            0,0,0,H
-        );
-
-    g.addColorStop(
-        0,
-        "#101727"
-    );
-
-    g.addColorStop(
-        1,
-        "#050811"
-    );
-
-    ctx.fillStyle = g;
-
-    ctx.fillRect(
-        0,0,W,H
-    );
-
-
-    /*
-        Window grid.
-    */
-
-    for(
-        let x=-100;
-        x<W+200;
-        x+=150
-    ){
-
-        const px =
-            x -
-            (cameraX*.12)%150;
-
-        ctx.fillStyle =
-            "rgba(70,150,210,.07)";
-
-        ctx.fillRect(
-            px,
-            0,
-            105,
-            H
-        );
-
-        ctx.strokeStyle =
-            "rgba(100,190,255,.06)";
-
-        ctx.strokeRect(
-            px,
-            0,
-            105,
-            H
-        );
-
-    }
-
-
-    /*
-        Office lights.
-    */
+    /* skyscrapers */
 
     for(
         let i=0;
-        i<12;
+        i<14;
         i++
     ){
 
         const x =
-            (i*170 -
-            cameraX*.18)
-            % (W+200);
+            i * 170 -
+            (cameraX*.12 % 170);
 
-        const y =
-            70 +
-            (i%4)*120;
+        const height =
+            220 +
+            (i%5)*90;
 
         ctx.fillStyle =
-            "rgba(190,220,255,.07)";
+            i%2
+                ? "#151d30"
+                : "#111827";
 
         ctx.fillRect(
             x,
-            y,
-            90,
-            4
+            H-height,
+            140,
+            height
         );
+
+
+        for(
+            let wy=H-height+30;
+            wy<H-20;
+            wy+=45
+        ){
+
+            ctx.fillStyle =
+                "rgba(100,190,255,.13)";
+
+            ctx.fillRect(
+                x+20,
+                wy,
+                20,
+                18
+            );
+
+            ctx.fillRect(
+                x+65,
+                wy,
+                20,
+                18
+            );
+
+        }
 
     }
 
@@ -2882,100 +3458,25 @@ function drawOfficeBackground(){
 
 function drawCloudBackground(){
 
-    const g =
-        ctx.createLinearGradient(
-            0,0,0,H
-        );
-
-    g.addColorStop(
-        0,
-        "#3b72c9"
-    );
-
-    g.addColorStop(
-        .55,
-        "#79bce8"
-    );
-
-    g.addColorStop(
-        1,
-        "#d9f5ff"
-    );
-
-    ctx.fillStyle = g;
-
-    ctx.fillRect(
-        0,0,W,H
-    );
-
-
-    /*
-        Sun.
-    */
-
-    const sunX =
-        W*.78;
-
-    const sunY =
-        H*.2;
-
-    const glow =
-        ctx.createRadialGradient(
-            sunX,
-            sunY,
-            20,
-            sunX,
-            sunY,
-            220
-        );
-
-    glow.addColorStop(
-        0,
-        "rgba(255,255,210,.65)"
-    );
-
-    glow.addColorStop(
-        1,
-        "rgba(255,255,255,0)"
-    );
-
-    ctx.fillStyle =
-        glow;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    /*
-        Huge clouds.
-    */
-
     for(
         let i=0;
-        i<12;
+        i<14;
         i++
     ){
 
         const x =
-            (
-                i*260 -
-                cameraX*.08
-            ) %
-            (W+500);
+            i*260 -
+            (cameraX*.25 % 260);
 
         const y =
             100 +
-            (i%6)*110;
+            (i%4)*120;
 
         drawCloud(
             x,
             y,
-            170 +
-            (i%3)*80
+            220,
+            90
         );
 
     }
@@ -2993,217 +3494,447 @@ function drawSpaceBackground(){
         "#02030b";
 
     ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    /*
-        Nebula.
-    */
-
-    const nebula =
-        ctx.createRadialGradient(
-            W*.5,
-            H*.4,
-            50,
-            W*.5,
-            H*.4,
-            500
-        );
-
-    nebula.addColorStop(
-        0,
-        "rgba(115,65,255,.24)"
-    );
-
-    nebula.addColorStop(
-        .45,
-        "rgba(35,100,255,.1)"
-    );
-
-    nebula.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle =
-        nebula;
-
-    ctx.fillRect(
         0,0,W,H
     );
 
 
-    drawStars(180);
-
-}
-
-
-/* =========================================================
-   COSMIC BACKGROUND
-========================================================= */
-
-function drawCosmicBackground(){
-
-    ctx.fillStyle =
-        "#010107";
-
-    ctx.fillRect(
-        0,0,W,H
-    );
-
-
-    const g =
-        ctx.createRadialGradient(
-            W*.5,
-            H*.45,
-            20,
-            W*.5,
-            H*.45,
-            650
-        );
-
-    g.addColorStop(
-        0,
-        "rgba(255,70,240,.25)"
-    );
-
-    g.addColorStop(
-        .3,
-        "rgba(100,50,255,.18)"
-    );
-
-    g.addColorStop(
-        .7,
-        "rgba(0,190,255,.07)"
-    );
-
-    g.addColorStop(
-        1,
-        "rgba(0,0,0,0)"
-    );
-
-    ctx.fillStyle = g;
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    drawStars(260);
-
-}
-
-
-/* =========================================================
-   STARS
-========================================================= */
-
-function drawStars(count){
+    /* stars */
 
     for(
         let i=0;
-        i<count;
+        i<180;
         i++
     ){
 
         const x =
-            (
-                i*137 -
-                cameraX*.05
-            ) %
-            (W+100);
+            ((i*137) -
+            cameraX*.08) %
+            (W+50);
 
         const y =
-            (
-                i*73 +
-                Math.floor(
-                    Math.abs(cameraY)*.07
-                )
-            ) %
-            H;
+            ((i*83) -
+            cameraY*.05) %
+            (H+50);
 
-        const size =
-            i%17===0
-                ? 2.5
-                : 1;
+        const sx =
+            x < 0 ? x+W+50 : x;
 
+        const sy =
+            y < 0 ? y+H+50 : y;
+
+        ctx.fillStyle =
+            i%7===0
+                ? "#9fdcff"
+                : "#ffffff";
 
         ctx.globalAlpha =
-            .25 +
-            (i%9)/14;
+            .35 +
+            (i%5)*.1;
+
+        ctx.fillRect(
+            sx,
+            sy,
+            i%3===0 ? 3 : 2,
+            i%3===0 ? 3 : 2
+        );
+
+    }
+
+    ctx.globalAlpha = 1;
+
+
+    /* earth */
+
+    ctx.save();
+
+    ctx.globalAlpha=.7;
+
+    ctx.fillStyle="#315dff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W-80,
+        H-100,
+        95,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   MOON BACKGROUND
+========================================================= */
+
+function drawMoonBackground(){
+
+    ctx.fillStyle =
+        "#02030a";
+
+    ctx.fillRect(
+        0,0,W,H
+    );
+
+
+    /* stars */
+
+    for(
+        let i=0;
+        i<130;
+        i++
+    ){
+
+        const x =
+            (i*173)%W;
+
+        const y =
+            (i*71)%H;
 
         ctx.fillStyle =
             "#ffffff";
 
+        ctx.globalAlpha =
+            .35+(i%4)*.12;
+
         ctx.fillRect(
             x,
             y,
-            size,
-            size
+            2,
+            2
         );
 
     }
 
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha=1;
+
+
+    /* giant earth */
+
+    ctx.fillStyle =
+        "#2870d8";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W*.82,
+        H*.25,
+        150,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.15)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W*.77,
+        H*.20,
+        130,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
 
 }
 
 
 /* =========================================================
-   DUST
+   ENVIRONMENT DRAWING
 ========================================================= */
 
-function drawDust(color,count){
+function drawEnvironment(){
 
-    ctx.fillStyle =
-        color;
+    drawPlatforms();
+
+    drawHouseFurniture();
+
+    drawOfficeFurniture();
+
+    drawWindows();
+
+    drawHazards();
+
+    drawMovingPlatforms();
+
+}
+
+
+/* =========================================================
+   PLATFORMS
+========================================================= */
+
+function drawPlatforms(){
 
     for(
-        let i=0;
-        i<count;
-        i++
+        const p
+        of platforms
     ){
 
         const x =
-            (
-                i*149 -
-                cameraX*.08
-            ) %
-            W;
+            worldToScreenX(p.x);
 
         const y =
-            (
-                i*97 +
-                worldTime*8
-            ) %
-            H;
+            worldToScreenY(p.y);
 
-        ctx.globalAlpha =
-            .15 +
-            (i%5)*.04;
 
-        ctx.beginPath();
+        if(
+            x+p.w < -100 ||
+            x > W+100 ||
+            y > H+100 ||
+            y < -150
+        ){
+            continue;
+        }
 
-        ctx.arc(
-            x,
-            y,
-            1+(i%3),
-            0,
-            Math.PI*2
-        );
 
-        ctx.fill();
+        if(p.type === "grass"){
+
+            ctx.fillStyle =
+                "#416b38";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#77a94f";
+
+            ctx.fillRect(
+                x,y,
+                p.w,15
+            );
+
+        }
+
+
+        else if(
+            p.type === "houseFloor" ||
+            p.type === "floor"
+        ){
+
+            ctx.fillStyle =
+                "#8b5b3e";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#b97951";
+
+            ctx.fillRect(
+                x,y,
+                p.w,8
+            );
+
+        }
+
+
+        else if(p.type === "wood"){
+
+            ctx.fillStyle =
+                "#9a6242";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#d18a5b";
+
+            ctx.fillRect(
+                x,y,
+                p.w,6
+            );
+
+        }
+
+
+        else if(p.type === "roof"){
+
+            ctx.fillStyle =
+                "#573c55";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#a06a91";
+
+            ctx.fillRect(
+                x,y,
+                p.w,8
+            );
+
+        }
+
+
+        else if(p.type === "attic"){
+
+            ctx.fillStyle =
+                "#654936";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+        }
+
+
+        else if(
+            p.type === "officeFloor" ||
+            p.type === "office"
+        ){
+
+            ctx.fillStyle =
+                "#4d5666";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#8a95a8";
+
+            ctx.fillRect(
+                x,y,
+                p.w,6
+            );
+
+        }
+
+
+        else if(p.type === "officeRoof"){
+
+            ctx.fillStyle =
+                "#303746";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+        }
+
+
+        else if(p.type === "cloud"){
+
+            drawCloud(
+                x,
+                y,
+                p.w,
+                p.h
+            );
+
+        }
+
+
+        else if(p.type === "storm"){
+
+            ctx.fillStyle =
+                "#626477";
+
+            ctx.fillRect(
+                x,y,
+                p.w,p.h
+            );
+
+        }
+
+
+        else if(
+            p.type === "station" ||
+            p.type === "satellite"
+        ){
+
+            drawMetalPlatform(
+                x,y,p.w,p.h
+            );
+
+        }
+
+
+        else if(
+            p.type === "asteroid"
+        ){
+
+            drawAsteroid(
+                x,
+                y,
+                p.w,
+                p.h
+            );
+
+        }
+
+
+        else if(
+            p.type === "moon" ||
+            p.type === "moonRock"
+        ){
+
+            drawMoonRock(
+                x,y,p.w,p.h
+            );
+
+        }
+
+
+        else if(p.type === "finish"){
+
+            drawMoonRock(
+                x,y,p.w,p.h
+            );
+
+            ctx.fillStyle =
+                "#8ee7ff";
+
+            ctx.shadowBlur=30;
+            ctx.shadowColor="#67ddff";
+
+            ctx.fillRect(
+                x+20,
+                y-35,
+                p.w-40,
+                12
+            );
+
+            ctx.shadowBlur=0;
+
+            ctx.fillStyle="white";
+
+            ctx.font=
+                "900 25px system-ui";
+
+            ctx.textAlign="center";
+
+            ctx.fillText(
+                "🌕 THE END",
+                x+p.w/2,
+                y-50
+            );
+
+        }
 
     }
-
-    ctx.globalAlpha = 1;
 
 }
 
@@ -3215,583 +3946,104 @@ function drawDust(color,count){
 function drawCloud(
     x,
     y,
-    size
+    w,
+    h
 ){
 
+    ctx.save();
+
     ctx.fillStyle =
-        "rgba(255,255,255,.65)";
+        "rgba(255,255,255,.94)";
 
     ctx.beginPath();
 
-    ctx.arc(
-        x,
-        y,
-        size*.35,
-        0,
-        Math.PI*2
-    );
-
-    ctx.arc(
-        x+size*.3,
-        y-size*.12,
-        size*.42,
-        0,
-        Math.PI*2
-    );
-
-    ctx.arc(
-        x+size*.65,
-        y,
-        size*.32,
-        0,
-        Math.PI*2
+    ctx.ellipse(
+        x+w*.5,
+        y+h*.65,
+        w*.5,
+        h*.35,
+        0,0,Math.PI*2
     );
 
     ctx.fill();
 
-}
+    ctx.beginPath();
 
-
-/* =========================================================
-   WORLD DRAW
-========================================================= */
-
-function drawWorld(){
-
-    ctx.save();
-
-
-    const shakeX =
-        (Math.random()-.5)*shake;
-
-    const shakeY =
-        (Math.random()-.5)*shake;
-
-    ctx.translate(
-        shakeX,
-        shakeY
+    ctx.arc(
+        x+w*.25,
+        y+h*.55,
+        h*.4,
+        0,Math.PI*2
     );
 
+    ctx.fill();
 
-    ctx.translate(
-        -cameraX,
-        -cameraY
+    ctx.beginPath();
+
+    ctx.arc(
+        x+w*.5,
+        y+h*.35,
+        h*.5,
+        0,Math.PI*2
     );
 
+    ctx.fill();
 
-    /*
-        Environmental world art.
-    */
+    ctx.beginPath();
 
-    drawEnvironment();
+    ctx.arc(
+        x+w*.73,
+        y+h*.55,
+        h*.42,
+        0,Math.PI*2
+    );
 
-
-    /*
-        Platforms.
-    */
-
-    for(
-        const p
-        of platforms
-    ){
-
-        drawPlatform(
-            p
-        );
-
-    }
-
-
-    /*
-        Moving platforms.
-    */
-
-    for(
-        const mp
-        of movingPlatforms
-    ){
-
-        const pos =
-            getMovingPlatformData(mp);
-
-        drawPlatform({
-            x:pos.x,
-            y:pos.y,
-            w:mp.w,
-            h:mp.h,
-            type:mp.type
-        });
-
-    }
-
-
-    /*
-        Hazards.
-    */
-
-    for(
-        const h
-        of hazards
-    ){
-
-        drawHazard(h);
-
-    }
-
-
-    /*
-        Checkpoints.
-    */
-
-    for(
-        const cp
-        of checkpoints
-    ){
-
-        drawCheckpoint(
-            cp
-        );
-
-    }
-
-
-    /*
-        Finish.
-    */
-
-    drawFinish();
-
-
-    /*
-        Players.
-    */
-
-    for(
-        const p
-        of players.values()
-    ){
-
-        if(!p.dead){
-
-            drawPlayer(
-                p
-            );
-
-        }
-
-    }
-
-
-    /*
-        Chain on top.
-    */
-
-    drawChain();
-
+    ctx.fill();
 
     ctx.restore();
 
-
-    shake *=
-        Math.pow(.04,
-            1/60
-        );
-
 }
 
 
 /* =========================================================
-   ENVIRONMENT
+   METAL
 ========================================================= */
 
-function drawEnvironment(){
-
-    const me =
-        players.get(myId);
-
-    if(!me){
-        return;
-    }
-
-
-    const y =
-        me.y;
-
-
-    if(y > -200){
-
-        drawHouseWorld();
-
-    }else if(y > -2100){
-
-        drawOfficeWorld();
-
-    }else if(y > -4150){
-
-        drawCloudWorld();
-
-    }else if(y > -6700){
-
-        drawSpaceWorld();
-
-    }else{
-
-        drawCosmicWorld();
-
-    }
-
-}
-
-
-/* =========================================================
-   HOUSE WORLD
-========================================================= */
-
-function drawHouseWorld(){
-
-    /*
-        Giant house walls.
-    */
+function drawMetalPlatform(
+    x,y,w,h
+){
 
     ctx.fillStyle =
-        "rgba(55,33,40,.32)";
+        "#657184";
 
     ctx.fillRect(
-        -500,
-        -300,
-        3400,
-        1300
+        x,y,w,h
     );
-
-
-    /*
-        Wallpaper lines.
-    */
-
-    ctx.strokeStyle =
-        "rgba(255,255,255,.035)";
-
-    ctx.lineWidth = 2;
-
-    for(
-        let y=0;
-        y<900;
-        y+=70
-    ){
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            -500,
-            y
-        );
-
-        ctx.lineTo(
-            3000,
-            y
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    /*
-        Pictures.
-    */
-
-    for(
-        let i=0;
-        i<7;
-        i++
-    ){
-
-        const x =
-            i*450;
-
-        const y =
-            600 -
-            (i%3)*190;
-
-        ctx.fillStyle =
-            "#342437";
-
-        ctx.fillRect(
-            x,
-            y,
-            150,
-            100
-        );
-
-        ctx.strokeStyle =
-            "#b77a63";
-
-        ctx.lineWidth = 6;
-
-        ctx.strokeRect(
-            x,
-            y,
-            150,
-            100
-        );
-
-    }
-
-
-    /*
-        Lamps.
-    */
-
-    for(
-        let i=0;
-        i<5;
-        i++
-    ){
-
-        const x =
-            200 +
-            i*500;
-
-        ctx.strokeStyle =
-            "#332533";
-
-        ctx.lineWidth = 5;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x,
-            50
-        );
-
-        ctx.lineTo(
-            x,
-            180
-        );
-
-        ctx.stroke();
-
-        ctx.fillStyle =
-            "rgba(255,190,120,.45)";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
-            200,
-            35,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-    }
-
-}
-
-
-/* =========================================================
-   OFFICE WORLD
-========================================================= */
-
-function drawOfficeWorld(){
-
-    /*
-        Building frame.
-    */
 
     ctx.fillStyle =
-        "rgba(20,26,38,.55)";
+        "#a7b4c7";
 
     ctx.fillRect(
-        2500,
-        -2200,
-        8000,
-        2000
+        x,y,w,5
     );
 
-
-    /*
-        Floor columns.
-    */
-
-    for(
-        let x=2700;
-        x<10500;
-        x+=280
-    ){
-
-        ctx.fillStyle =
-            "rgba(150,170,190,.055)";
-
-        ctx.fillRect(
-            x,
-            -2200,
-            18,
-            2000
-        );
-
-    }
-
-
-    /*
-        Huge windows.
-    */
-
-    for(
-        let x=2800;
-        x<10300;
-        x+=420
-    ){
-
-        ctx.fillStyle =
-            "rgba(60,145,220,.08)";
-
-        ctx.fillRect(
-            x,
-            -2150,
-            300,
-            1750
-        );
-
-        ctx.strokeStyle =
-            "rgba(130,200,255,.08)";
-
-        ctx.lineWidth=4;
-
-        ctx.strokeRect(
-            x,
-            -2150,
-            300,
-            1750
-        );
-
-    }
-
-
-    /*
-        Elevator shaft.
-    */
-
     ctx.strokeStyle =
-        "rgba(255,255,255,.07)";
-
-    ctx.lineWidth = 12;
-
-    ctx.strokeRect(
-        6100,
-        -2200,
-        500,
-        2000
-    );
-
-
-    /*
-        Red warning lights.
-    */
-
-    for(
-        let y=-2150;
-        y<-300;
-        y+=180
-    ){
-
-        ctx.fillStyle =
-            "rgba(255,50,70,.4)";
-
-        ctx.beginPath();
-
-        ctx.arc(
-            6100,
-            y,
-            5,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-    }
-
-}
-
-
-/* =========================================================
-   CLOUD WORLD
-========================================================= */
-
-function drawCloudWorld(){
-
-    /*
-        Floating cloud banks.
-    */
-
-    for(
-        let i=0;
-        i<25;
-        i++
-    ){
-
-        const x =
-            i*650;
-
-        const y =
-            -2100 -
-            i*80;
-
-        drawCloud(
-            x,
-            y,
-            260 +
-            (i%4)*70
-        );
-
-    }
-
-
-    /*
-        Birds.
-    */
-
-    ctx.strokeStyle =
-        "rgba(20,50,80,.5)";
+        "#313a49";
 
     ctx.lineWidth=3;
 
     for(
         let i=0;
-        i<10;
-        i++
+        i<w;
+        i+=45
     ){
 
-        const x =
-            10500 +
-            i*550;
-
-        const y =
-            -2200 -
-            i*150;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            x,
+        ctx.strokeRect(
+            x+i,
             y,
-            15,
-            Math.PI,
-            Math.PI*2
+            30,
+            h
         );
-
-        ctx.arc(
-            x+30,
-            y,
-            15,
-            Math.PI,
-            Math.PI*2
-        );
-
-        ctx.stroke();
 
     }
 
@@ -3799,161 +4051,112 @@ function drawCloudWorld(){
 
 
 /* =========================================================
-   SPACE WORLD
+   ASTEROID
 ========================================================= */
 
-function drawSpaceWorld(){
-
-    /*
-        Earth below.
-    */
-
-    const earthX =
-        17000;
-
-    const earthY =
-        -3500;
-
-    const earth =
-        ctx.createRadialGradient(
-            earthX-100,
-            earthY-100,
-            20,
-            earthX,
-            earthY,
-            900
-        );
-
-    earth.addColorStop(
-        0,
-        "#59c8ff"
-    );
-
-    earth.addColorStop(
-        .5,
-        "#1b55a0"
-    );
-
-    earth.addColorStop(
-        1,
-        "#061026"
-    );
+function drawAsteroid(
+    x,y,w,h
+){
 
     ctx.fillStyle =
-        earth;
+        "#71685f";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+w*.05,
+        y+h*.6
+    );
+
+    ctx.lineTo(
+        x+w*.2,
+        y+h*.1
+    );
+
+    ctx.lineTo(
+        x+w*.65,
+        y
+    );
+
+    ctx.lineTo(
+        x+w*.95,
+        y+h*.3
+    );
+
+    ctx.lineTo(
+        x+w*.85,
+        y+h*.9
+    );
+
+    ctx.lineTo(
+        x+w*.35,
+        y+h
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.fillStyle =
+        "rgba(30,25,25,.35)";
 
     ctx.beginPath();
 
     ctx.arc(
-        earthX,
-        earthY,
-        900,
+        x+w*.3,
+        y+h*.45,
+        14,
         0,
         Math.PI*2
     );
 
     ctx.fill();
 
-
-    /*
-        Satellites.
-    */
-
-    for(
-        let i=0;
-        i<8;
-        i++
-    ){
-
-        const x =
-            17500 +
-            i*900;
-
-        const y =
-            -4400 -
-            i*260;
-
-        drawSatellite(
-            x,
-            y
-        );
-
-    }
-
 }
 
 
 /* =========================================================
-   COSMIC WORLD
+   MOON ROCK
 ========================================================= */
 
-function drawCosmicWorld(){
+function drawMoonRock(
+    x,y,w,h
+){
 
-    /*
-        Giant cosmic portal.
-    */
+    ctx.fillStyle =
+        "#8f919a";
 
-    const cx =
-        28500;
+    ctx.fillRect(
+        x,y,w,h
+    );
 
-    const cy =
-        -8200;
+    ctx.fillStyle =
+        "#b7bac2";
+
+    ctx.fillRect(
+        x,y,w,8
+    );
+
+    ctx.fillStyle =
+        "rgba(40,40,45,.3)";
 
     for(
-        let i=8;
-        i>0;
-        i--
+        let i=0;
+        i<Math.floor(w/100);
+        i++
     ){
-
-        ctx.strokeStyle =
-            `rgba(120,70,255,${.015+i*.008})`;
-
-        ctx.lineWidth =
-            15;
 
         ctx.beginPath();
 
         ctx.arc(
-            cx,
-            cy,
-            i*170,
+            x+50+i*100,
+            y+h*.55,
+            15,
             0,
             Math.PI*2
         );
 
-        ctx.stroke();
-
-    }
-
-
-    /*
-        Energy lines.
-    */
-
-    ctx.strokeStyle =
-        "rgba(80,220,255,.1)";
-
-    ctx.lineWidth=3;
-
-    for(
-        let i=0;
-        i<20;
-        i++
-    ){
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            24000+i*400,
-            -6500
-        );
-
-        ctx.lineTo(
-            28500,
-            -8200
-        );
-
-        ctx.stroke();
+        ctx.fill();
 
     }
 
@@ -3961,290 +4164,414 @@ function drawCosmicWorld(){
 
 
 /* =========================================================
-   PLATFORM
+   HOUSE FURNITURE
 ========================================================= */
 
-function drawPlatform(p){
-
-    let top =
-        "#7f6aff";
-
-    let bottom =
-        "#24213e";
-
-    let glow =
-        "#7766ff";
-
-
-    if(p.type==="wood"){
-
-        top="#d59465";
-        bottom="#56362e";
-        glow="#ffad78";
-
-    }
-
-    if(p.type==="furniture"){
-
-        top="#a86fbd";
-        bottom="#39283e";
-        glow="#d078e8";
-
-    }
-
-    if(p.type==="roof"){
-
-        top="#6d3945";
-        bottom="#271824";
-        glow="#d15a6e";
-
-    }
-
-    if(p.type==="office"){
-
-        top="#7194ad";
-        bottom="#182332";
-        glow="#65c7ff";
-
-    }
-
-    if(p.type==="glass"){
-
-        top="#72e9ff";
-        bottom="#16354d";
-        glow="#55eaff";
-
-    }
-
-    if(p.type==="construction"){
-
-        top="#ffb94f";
-        bottom="#633e1d";
-        glow="#ffb13e";
-
-    }
-
-    if(p.type==="cloud"){
-
-        top="#ffffff";
-        bottom="#a9cde5";
-        glow="#ffffff";
-
-    }
-
-    if(p.type==="sky"){
-
-        top="#9aeaff";
-        bottom="#3b7fb0";
-        glow="#69ddff";
-
-    }
-
-    if(p.type==="storm"){
-
-        top="#9a8bff";
-        bottom="#29254f";
-        glow="#8b7aff";
-
-    }
-
-    if(p.type==="space"){
-
-        top="#7f8bff";
-        bottom="#161a3b";
-        glow="#6978ff";
-
-    }
-
-    if(p.type==="satellite"){
-
-        top="#b5c3d6";
-        bottom="#374354";
-        glow="#93caff";
-
-    }
-
-    if(p.type==="station"){
-
-        top="#b8d6ff";
-        bottom="#283a54";
-        glow="#8ac8ff";
-
-    }
-
-    if(p.type==="asteroid"){
-
-        top="#9c8b8b";
-        bottom="#423b43";
-        glow="#9e7e8e";
-
-    }
-
-    if(p.type==="cosmic"){
-
-        top="#d37cff";
-        bottom="#34205d";
-        glow="#c85dff";
-
-    }
-
-    if(p.type==="summit"){
-
-        top="#ffffff";
-        bottom="#5c3aff";
-        glow="#b879ff";
-
-    }
-
-
-    ctx.save();
-
-    ctx.shadowBlur =
-        24;
-
-    ctx.shadowColor =
-        glow;
-
-
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            p.y,
-            0,
-            p.y+p.h
-        );
-
-    gradient.addColorStop(
-        0,
-        top
-    );
-
-    gradient.addColorStop(
-        1,
-        bottom
-    );
-
-    ctx.fillStyle =
-        gradient;
-
-
-    roundRect(
-        p.x,
-        p.y,
-        p.w,
-        p.h,
-        8
-    );
-
-
-    ctx.shadowBlur=0;
-
-
-    /*
-        Highlight.
-    */
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.3)";
-
-    roundRect(
-        p.x+5,
-        p.y+3,
-        Math.max(
-            10,
-            p.w-10
-        ),
-        3,
-        2
-    );
-
-
-    /*
-        Material details.
-    */
-
-    if(
-        p.type==="wood"
+function drawHouseFurniture(){
+
+    for(
+        const f
+        of furniture
     ){
 
-        ctx.strokeStyle =
-            "rgba(70,35,20,.35)";
+        const x =
+            worldToScreenX(f.x);
 
-        ctx.lineWidth=2;
+        const y =
+            worldToScreenY(f.y);
 
-        for(
-            let x=p.x+20;
-            x<p.x+p.w;
-            x+=40
+
+        if(
+            x+f.w < -100 ||
+            x > W+100
         ){
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                x,
-                p.y+8
-            );
-
-            ctx.lineTo(
-                x+10,
-                p.y+p.h-4
-            );
-
-            ctx.stroke();
-
+            continue;
         }
 
-    }
 
+        if(f.kind === "couch"){
 
-    if(
-        p.type==="office" ||
-        p.type==="construction"
-    ){
+            ctx.fillStyle =
+                "#4c3268";
 
-        ctx.fillStyle =
-            "rgba(255,255,255,.09)";
+            ctx.fillRect(
+                x,y+15,
+                f.w,f.h-15
+            );
 
-        for(
-            let x=p.x+15;
-            x<p.x+p.w-10;
-            x+=32
-        ){
+            ctx.fillStyle =
+                "#684582";
+
+            ctx.fillRect(
+                x-10,y,
+                f.w+20,
+                35
+            );
+
+            ctx.fillStyle =
+                "#39264f";
 
             ctx.fillRect(
                 x,
-                p.y+12,
+                y+f.h-12,
+                18,
+                12
+            );
+
+            ctx.fillRect(
+                x+f.w-18,
+                y+f.h-12,
+                18,
+                12
+            );
+
+        }
+
+
+        else if(f.kind === "table"){
+
+            ctx.fillStyle =
+                "#70472f";
+
+            ctx.fillRect(
+                x,
+                y,
+                f.w,
+                25
+            );
+
+            ctx.fillRect(
+                x+15,
+                y+25,
+                18,
+                55
+            );
+
+            ctx.fillRect(
+                x+f.w-33,
+                y+25,
+                18,
+                55
+            );
+
+        }
+
+
+        else if(f.kind === "tv"){
+
+            ctx.fillStyle =
+                "#292b35";
+
+            ctx.fillRect(
+                x,
+                y,
+                f.w,
+                75
+            );
+
+            ctx.fillStyle =
+                "#72cfff";
+
+            ctx.fillRect(
+                x+15,
+                y+12,
+                f.w-30,
+                48
+            );
+
+            ctx.fillStyle =
+                "#171821";
+
+            ctx.fillRect(
+                x+f.w*.45,
+                y+75,
+                25,
+                35
+            );
+
+        }
+
+
+        else if(
+            f.kind === "counter" ||
+            f.kind === "island"
+        ){
+
+            ctx.fillStyle =
+                "#d1d4da";
+
+            ctx.fillRect(
+                x,
+                y,
+                f.w,
+                25
+            );
+
+            ctx.fillStyle =
+                "#777d88";
+
+            ctx.fillRect(
+                x,
+                y+25,
+                f.w,
+                f.h-25
+            );
+
+        }
+
+
+        else if(f.kind === "fridge"){
+
+            ctx.fillStyle =
+                "#c8ccd2";
+
+            ctx.fillRect(
+                x,y,
+                f.w,f.h
+            );
+
+            ctx.fillStyle =
+                "#777b83";
+
+            ctx.fillRect(
+                x+70,
+                y+30,
+                8,
+                70
+            );
+
+        }
+
+
+        else if(f.kind === "bed"){
+
+            ctx.fillStyle =
+                "#383b5e";
+
+            ctx.fillRect(
+                x,
+                y+20,
+                f.w,
+                f.h-20
+            );
+
+            ctx.fillStyle =
+                "#a6a9dd";
+
+            ctx.fillRect(
+                x+10,
+                y,
+                f.w-20,
+                45
+            );
+
+            ctx.fillStyle =
+                "#eceaff";
+
+            ctx.fillRect(
+                x+20,
+                y+8,
+                65,
+                28
+            );
+
+        }
+
+
+        else if(f.kind === "desk"){
+
+            ctx.fillStyle =
+                "#654633";
+
+            ctx.fillRect(
+                x,
+                y,
+                f.w,
+                18
+            );
+
+            ctx.fillRect(
+                x+12,
+                y+18,
                 15,
-                3
+                55
+            );
+
+            ctx.fillRect(
+                x+f.w-27,
+                y+18,
+                15,
+                55
+            );
+
+        }
+
+
+        else if(f.kind === "bookshelf"){
+
+            ctx.fillStyle =
+                "#633f2d";
+
+            ctx.fillRect(
+                x,y,
+                f.w,f.h
+            );
+
+            for(
+                let i=0;
+                i<4;
+                i++
+            ){
+
+                ctx.fillStyle =
+                    i%2
+                        ? "#8c5b43"
+                        : "#d28762";
+
+                ctx.fillRect(
+                    x+10,
+                    y+15+i*32,
+                    f.w-20,
+                    20
+                );
+
+            }
+
+        }
+
+
+        else if(f.kind === "box"){
+
+            ctx.fillStyle =
+                "#9a7049";
+
+            ctx.fillRect(
+                x,y,
+                f.w,f.h
+            );
+
+            ctx.strokeStyle =
+                "#63462e";
+
+            ctx.strokeRect(
+                x,y,
+                f.w,f.h
             );
 
         }
 
     }
 
+}
 
-    if(
-        p.type==="summit"
+
+/* =========================================================
+   OFFICE FURNITURE
+========================================================= */
+
+function drawOfficeFurniture(){
+
+    for(
+        const f
+        of officeFurniture
     ){
 
-        ctx.fillStyle =
-            "rgba(255,255,255,.65)";
+        const x =
+            worldToScreenX(f.x);
 
-        for(
-            let x=p.x+20;
-            x<p.x+p.w;
-            x+=45
+        const y =
+            worldToScreenY(f.y);
+
+
+        if(
+            x+f.w < -100 ||
+            x > W+100 ||
+            y > H+100 ||
+            y < -150
         ){
+            continue;
+        }
+
+
+        if(f.kind === "desk"){
+
+            ctx.fillStyle =
+                "#383e4a";
+
+            ctx.fillRect(
+                x,y,
+                f.w,
+                f.h
+            );
+
+            ctx.fillStyle =
+                "#151a22";
+
+            ctx.fillRect(
+                x+20,
+                y+10,
+                f.w-40,
+                35
+            );
+
+            ctx.fillStyle =
+                "#54bfff";
+
+            ctx.fillRect(
+                x+30,
+                y+18,
+                f.w-60,
+                18
+            );
+
+        }
+
+
+        else if(f.kind === "cubicle"){
+
+            ctx.fillStyle =
+                "#5c6574";
+
+            ctx.fillRect(
+                x,y,
+                f.w,
+                f.h
+            );
+
+            ctx.fillStyle =
+                "#757f90";
+
+            ctx.fillRect(
+                x,
+                y,
+                f.w,
+                8
+            );
+
+        }
+
+
+        else if(f.kind === "plant"){
+
+            ctx.fillStyle =
+                "#5d402b";
+
+            ctx.fillRect(
+                x+35,
+                y+40,
+                45,
+                25
+            );
+
+            ctx.fillStyle =
+                "#4a9c5d";
 
             ctx.beginPath();
 
             ctx.arc(
-                x,
-                p.y-8-
-                    Math.sin(
-                        worldTime*2+x
-                    )*4,
-                3,
+                x+55,
+                y+20,
+                30,
                 0,
                 Math.PI*2
             );
@@ -4255,8 +4582,70 @@ function drawPlatform(p){
 
     }
 
+}
 
-    ctx.restore();
+
+/* =========================================================
+   WINDOWS
+========================================================= */
+
+function drawWindows(){
+
+    for(
+        const win
+        of windows
+    ){
+
+        const x =
+            worldToScreenX(win.x);
+
+        const y =
+            worldToScreenY(win.y);
+
+
+        if(
+            x+win.w < 0 ||
+            x > W ||
+            y+win.h < 0 ||
+            y > H
+        ){
+            continue;
+        }
+
+
+        ctx.fillStyle =
+            "#172338";
+
+        ctx.fillRect(
+            x,
+            y,
+            win.w,
+            win.h
+        );
+
+        ctx.fillStyle =
+            "rgba(75,180,255,.35)";
+
+        ctx.fillRect(
+            x+5,
+            y+5,
+            win.w-10,
+            win.h-10
+        );
+
+        ctx.strokeStyle =
+            "#5d687b";
+
+        ctx.lineWidth=5;
+
+        ctx.strokeRect(
+            x,
+            y,
+            win.w,
+            win.h
+        );
+
+    }
 
 }
 
@@ -4265,157 +4654,499 @@ function drawPlatform(p){
    HAZARDS
 ========================================================= */
 
-function drawHazard(h){
+function drawHazards(){
 
-    if(h.type==="laser"){
+    for(
+        const h
+        of hazards
+    ){
 
-        ctx.save();
+        const x =
+            worldToScreenX(h.x);
 
-        ctx.shadowBlur=25;
-        ctx.shadowColor="#ff385d";
+        const y =
+            worldToScreenY(h.y);
 
-        ctx.fillStyle="#ff3155";
 
-        ctx.fillRect(
-            h.x,
-            h.y,
-            h.w,
-            h.h
-        );
+        if(h.type === "laser"){
 
-        ctx.fillStyle=
-            "rgba(255,255,255,.8)";
+            ctx.fillStyle =
+                "rgba(255,60,80,.15)";
 
-        ctx.fillRect(
-            h.x,
-            h.y+h.h/2-2,
-            h.w,
-            4
-        );
+            ctx.fillRect(
+                x,
+                y,
+                h.w,
+                h.h
+            );
 
-        ctx.restore();
+            ctx.fillStyle =
+                "#ff405e";
+
+            ctx.shadowBlur=20;
+            ctx.shadowColor="#ff405e";
+
+            ctx.fillRect(
+                x+h.w/2-3,
+                y,
+                6,
+                h.h
+            );
+
+            ctx.shadowBlur=0;
+
+        }
+
+
+        else if(
+            h.type === "lightning"
+        ){
+
+            ctx.strokeStyle =
+                "#b7e8ff";
+
+            ctx.lineWidth=7;
+
+            ctx.shadowBlur=30;
+            ctx.shadowColor="#6de4ff";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x+50,
+                y
+            );
+
+            ctx.lineTo(
+                x+20,
+                y+40
+            );
+
+            ctx.lineTo(
+                x+65,
+                y+35
+            );
+
+            ctx.lineTo(
+                x+35,
+                y+h.h
+            );
+
+            ctx.stroke();
+
+            ctx.shadowBlur=0;
+
+        }
+
+
+        else if(
+            h.type === "asteroid"
+        ){
+
+            drawAsteroid(
+                x,
+                y,
+                h.w,
+                h.h
+            );
+
+        }
 
     }
 
+}
 
-    if(h.type==="lightning"){
 
-        ctx.save();
+/* =========================================================
+   MOVING PLATFORMS
+========================================================= */
 
-        ctx.strokeStyle="#dffaff";
-        ctx.shadowBlur=30;
-        ctx.shadowColor="#64dfff";
+function drawMovingPlatforms(){
 
-        ctx.lineWidth=8;
+    for(
+        const mp
+        of movingPlatforms
+    ){
 
-        ctx.beginPath();
+        const pos =
+            getMovingPlatformData(mp);
 
-        ctx.moveTo(
-            h.x,
-            h.y
-        );
+        const x =
+            worldToScreenX(pos.x);
 
-        ctx.lineTo(
-            h.x+35,
-            h.y+35
-        );
+        const y =
+            worldToScreenY(pos.y);
 
-        ctx.lineTo(
-            h.x+15,
-            h.y+35
-        );
 
-        ctx.lineTo(
-            h.x+55,
-            h.y+80
-        );
+        if(mp.type === "cloud"){
 
-        ctx.stroke();
+            drawCloud(
+                x,
+                y,
+                mp.w,
+                mp.h
+            );
 
-        ctx.restore();
+        }else{
+
+            drawMetalPlatform(
+                x,
+                y,
+                mp.w,
+                mp.h
+            );
+
+        }
 
     }
+
+}
+
+
+/* =========================================================
+   HOUSE STRUCTURE
+========================================================= */
+
+function drawHouseStructure(){
+
+    const x =
+        worldToScreenX(600);
+
+    const y =
+        worldToScreenY(720);
 
 
     if(
-        h.type==="asteroid" ||
-        h.type==="energy"
+        x > W ||
+        x+4000 < 0
     ){
-
-        ctx.save();
-
-        ctx.shadowBlur =
-            h.type==="energy"
-                ? 30
-                : 12;
-
-        ctx.shadowColor =
-            h.type==="energy"
-                ? "#c05cff"
-                : "#a47c83";
-
-        ctx.fillStyle =
-            h.type==="energy"
-                ? "#a74dff"
-                : "#62545d";
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            h.x+20,
-            h.y
-        );
-
-        ctx.lineTo(
-            h.x+h.w-10,
-            h.y+15
-        );
-
-        ctx.lineTo(
-            h.x+h.w,
-            h.y+h.h-20
-        );
-
-        ctx.lineTo(
-            h.x+35,
-            h.y+h.h
-        );
-
-        ctx.lineTo(
-            h.x,
-            h.y+35
-        );
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        ctx.restore();
-
+        return;
     }
 
 
-    if(h.type==="chimney"){
+    /* walls */
+
+    ctx.fillStyle =
+        "#e7d5b8";
+
+    ctx.fillRect(
+        x,
+        y-700,
+        4000,
+        700
+    );
+
+
+    /* cut out lower interior */
+
+    ctx.clearRect(
+        x+20,
+        y-680,
+        3960,
+        660
+    );
+
+
+    /* wall outlines */
+
+    ctx.strokeStyle =
+        "#9d7659";
+
+    ctx.lineWidth=8;
+
+    ctx.strokeRect(
+        x,
+        y-700,
+        4000,
+        700
+    );
+
+
+    /* rooms */
+
+    ctx.strokeStyle =
+        "rgba(100,70,55,.55)";
+
+    ctx.lineWidth=5;
+
+
+    /* living/kitchen divider */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        worldToScreenX(1650),
+        worldToScreenY(720)
+    );
+
+    ctx.lineTo(
+        worldToScreenX(1650),
+        worldToScreenY(350)
+    );
+
+    ctx.stroke();
+
+
+    /* kitchen/hall divider */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        worldToScreenX(2450),
+        worldToScreenY(720)
+    );
+
+    ctx.lineTo(
+        worldToScreenX(2450),
+        worldToScreenY(350)
+    );
+
+    ctx.stroke();
+
+
+    /* upstairs ceiling */
+
+    ctx.fillStyle =
+        "#d6c2a3";
+
+    ctx.fillRect(
+        worldToScreenX(3500),
+        worldToScreenY(350),
+        1200,
+        35
+    );
+
+
+    /* windows */
+
+    for(
+        let i=0;
+        i<5;
+        i++
+    ){
+
+        const wx =
+            worldToScreenX(
+                800+i*600
+            );
+
+        const wy =
+            worldToScreenY(
+                330
+            );
 
         ctx.fillStyle =
-            "#49323a";
+            "#72c9ee";
 
         ctx.fillRect(
-            h.x,
-            h.y,
-            h.w,
-            h.h
+            wx,
+            wy,
+            170,
+            150
+        );
+
+        ctx.strokeStyle =
+            "#8b705c";
+
+        ctx.lineWidth=8;
+
+        ctx.strokeRect(
+            wx,
+            wy,
+            170,
+            150
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   OFFICE STRUCTURE
+========================================================= */
+
+function drawOfficeStructure(){
+
+    const x =
+        worldToScreenX(6400);
+
+    const y =
+        worldToScreenY(-1250);
+
+
+    if(
+        x > W ||
+        x+1300 < 0
+    ){
+        return;
+    }
+
+
+    /* outside building */
+
+    ctx.fillStyle =
+        "#252b37";
+
+    ctx.fillRect(
+        x,
+        y,
+        1250,
+        1050
+    );
+
+
+    /* glass windows */
+
+    for(
+        let floor=0;
+        floor<5;
+        floor++
+    ){
+
+        const fy =
+            worldToScreenY(
+                -1120-floor*180
+            );
+
+        for(
+            let i=0;
+            i<6;
+            i++
+        ){
+
+            const fx =
+                worldToScreenX(
+                    6530+i*180
+                );
+
+            ctx.fillStyle =
+                "rgba(70,170,230,.28)";
+
+            ctx.fillRect(
+                fx,
+                fy,
+                130,
+                120
+            );
+
+            ctx.strokeStyle =
+                "#566273";
+
+            ctx.lineWidth=5;
+
+            ctx.strokeRect(
+                fx,
+                fy,
+                130,
+                120
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   WORLD DRAW
+========================================================= */
+
+function drawWorld(){
+
+    drawBackground();
+
+    const me =
+        players.get(myId);
+
+    if(
+        me &&
+        me.y > -1300
+    ){
+
+        drawHouseStructure();
+
+    }
+
+    if(
+        me &&
+        me.y < -100 &&
+        me.y > -1450
+    ){
+
+        drawOfficeStructure();
+
+    }
+
+    drawEnvironment();
+
+    drawCheckpoints();
+
+    drawChain();
+
+    drawPlayers();
+
+}
+
+
+/* =========================================================
+   CHECKPOINT VISUALS
+========================================================= */
+
+function drawCheckpoints(){
+
+    for(
+        const cp
+        of checkpoints
+    ){
+
+        const x =
+            worldToScreenX(cp.x);
+
+        const y =
+            worldToScreenY(cp.y);
+
+
+        if(
+            x < -100 ||
+            x > W+100 ||
+            y < -100 ||
+            y > H+100
+        ){
+            continue;
+        }
+
+
+        ctx.fillStyle =
+            "rgba(120,100,255,.18)";
+
+        ctx.fillRect(
+            x-5,
+            y-100,
+            10,
+            100
         );
 
         ctx.fillStyle =
-            "rgba(255,130,100,.2)";
+            "#8f7dff";
+
+        ctx.fillRect(
+            x-4,
+            y-100,
+            8,
+            100
+        );
+
+        ctx.fillStyle =
+            "#c3b9ff";
 
         ctx.beginPath();
 
         ctx.arc(
-            h.x+h.w/2,
-            h.y-15,
-            25,
+            x,
+            y-105,
+            12,
             0,
             Math.PI*2
         );
@@ -4428,472 +5159,20 @@ function drawHazard(h){
 
 
 /* =========================================================
-   CHECKPOINT
-========================================================= */
-
-function drawCheckpoint(cp){
-
-    const active =
-        players.get(myId) &&
-        cp.y <=
-            players.get(myId).checkpointY;
-
-
-    ctx.save();
-
-    ctx.shadowBlur =
-        active
-            ? 25
-            : 10;
-
-    ctx.shadowColor =
-        "#8d6cff";
-
-    ctx.strokeStyle =
-        active
-            ? "#a48aff"
-            : "rgba(130,110,220,.35)";
-
-    ctx.lineWidth=4;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cp.x,
-        cp.y,
-        28,
-        0,
-        Math.PI*2
-    );
-
-    ctx.stroke();
-
-    ctx.fillStyle =
-        active
-            ? "rgba(140,100,255,.2)"
-            : "rgba(80,70,120,.1)";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cp.x,
-        cp.y,
-        17+
-            Math.sin(
-                worldTime*4
-            )*3,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-    ctx.restore();
-
-}
-
-
-/* =========================================================
-   FINISH
-========================================================= */
-
-function drawFinish(){
-
-    const x =
-        30950;
-
-    const y =
-        -9620;
-
-
-    ctx.save();
-
-    ctx.shadowBlur=40;
-    ctx.shadowColor="#c25cff";
-
-
-    /*
-        Portal.
-    */
-
-    ctx.strokeStyle =
-        "#d58cff";
-
-    ctx.lineWidth=8;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        130+
-            Math.sin(
-                worldTime*3
-            )*10,
-        0,
-        Math.PI*2
-    );
-
-    ctx.stroke();
-
-
-    ctx.strokeStyle =
-        "#6eeaff";
-
-    ctx.lineWidth=3;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        100,
-        0,
-        Math.PI*2
-    );
-
-    ctx.stroke();
-
-
-    /*
-        Text.
-    */
-
-    ctx.shadowBlur=20;
-
-    ctx.fillStyle =
-        "#ffffff";
-
-    ctx.font =
-        "1000 34px system-ui";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.fillText(
-        "COSMIC SUMMIT",
-        x,
-        y-170
-    );
-
-
-    ctx.font =
-        "800 15px system-ui";
-
-    ctx.fillStyle =
-        "#cdbaff";
-
-    ctx.fillText(
-        "YOU ACTUALLY MADE IT",
-        x,
-        y-140
-    );
-
-
-    ctx.restore();
-
-}
-
-
-/* =========================================================
-   PLAYER
-========================================================= */
-
-function drawPlayer(p){
-
-    const cx =
-        p.x +
-        p.width/2;
-
-    const bottom =
-        p.y +
-        p.height;
-
-
-    const primary =
-        p.color==="red"
-            ? "#ff5272"
-            : "#4fcaff";
-
-    const secondary =
-        p.color==="red"
-            ? "#a92549"
-            : "#247db0";
-
-
-    /*
-        Shadow.
-    */
-
-    ctx.fillStyle =
-        "rgba(0,0,0,.28)";
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        cx,
-        bottom+5,
-        25,
-        7,
-        0,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /*
-        Glow.
-    */
-
-    ctx.save();
-
-    ctx.shadowBlur=24;
-    ctx.shadowColor=primary;
-
-
-    /*
-        Body.
-    */
-
-    const body =
-        ctx.createLinearGradient(
-            p.x,
-            p.y,
-            p.x+p.width,
-            bottom
-        );
-
-    body.addColorStop(
-        0,
-        primary
-    );
-
-    body.addColorStop(
-        1,
-        secondary
-    );
-
-    ctx.fillStyle =
-        body;
-
-    roundRect(
-        p.x+4,
-        p.y+20,
-        p.width-8,
-        32,
-        9
-    );
-
-
-    /*
-        Head.
-    */
-
-    ctx.fillStyle =
-        "#ffd4bd";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        p.y+15,
-        14,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /*
-        Hair / helmet.
-    */
-
-    ctx.fillStyle =
-        "#15182a";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx,
-        p.y+12,
-        14,
-        Math.PI,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    ctx.shadowBlur=0;
-
-
-    /*
-        Face.
-    */
-
-    ctx.fillStyle =
-        "#141522";
-
-    const eyeOffset =
-        p.facing*4;
-
-    ctx.beginPath();
-
-    ctx.arc(
-        cx+eyeOffset-5,
-        p.y+16,
-        2,
-        0,
-        Math.PI*2
-    );
-
-    ctx.arc(
-        cx+eyeOffset+5,
-        p.y+16,
-        2,
-        0,
-        Math.PI*2
-    );
-
-    ctx.fill();
-
-
-    /*
-        Backpack.
-    */
-
-    ctx.fillStyle =
-        secondary;
-
-    roundRect(
-        p.x-1,
-        p.y+26,
-        8,
-        19,
-        3
-    );
-
-
-    /*
-        Legs.
-    */
-
-    const walking =
-        Math.abs(p.vx)>20 &&
-        p.grounded;
-
-    const swing =
-        walking
-            ? Math.sin(p.anim)*6
-            : 0;
-
-
-    ctx.strokeStyle =
-        secondary;
-
-    ctx.lineWidth=7;
-    ctx.lineCap="round";
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        cx-8,
-        p.y+49
-    );
-
-    ctx.lineTo(
-        cx-10+swing,
-        bottom
-    );
-
-    ctx.stroke();
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        cx+8,
-        p.y+49
-    );
-
-    ctx.lineTo(
-        cx+10-swing,
-        bottom
-    );
-
-    ctx.stroke();
-
-
-    /*
-        Shoes.
-    */
-
-    ctx.fillStyle =
-        "#101321";
-
-    ctx.fillRect(
-        cx-15+swing,
-        bottom-3,
-        11,
-        6
-    );
-
-    ctx.fillRect(
-        cx+4-swing,
-        bottom-3,
-        11,
-        6
-    );
-
-
-    /*
-        Name.
-    */
-
-    ctx.font =
-        "800 12px system-ui";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.fillStyle =
-        "rgba(255,255,255,.8)";
-
-    ctx.fillText(
-        p.name,
-        cx,
-        p.y-12
-    );
-
-
-    ctx.restore();
-
-}
-
-
-/* =========================================================
-   CHAIN DRAWING
+   CHAIN DRAW
 ========================================================= */
 
 function drawChain(){
 
-    if(players.size<2){
+    if(players.size < 2){
         return;
     }
 
     const list =
         [...players.values()];
 
-    const a =
-        list[0];
-
-    const b =
-        list[1];
-
+    const a=list[0];
+    const b=list[1];
 
     if(a.dead || b.dead){
         return;
@@ -4901,91 +5180,48 @@ function drawChain(){
 
 
     const ax =
-        a.x+a.width/2;
+        worldToScreenX(
+            a.x+a.width/2
+        );
 
     const ay =
-        a.y+a.height/2;
+        worldToScreenY(
+            a.y+a.height/2
+        );
 
     const bx =
-        b.x+b.width/2;
+        worldToScreenX(
+            b.x+b.width/2
+        );
 
     const by =
-        b.y+b.height/2;
-
-
-    const dx =
-        bx-ax;
-
-    const dy =
-        by-ay;
-
-    const distance =
-        Math.hypot(dx,dy);
-
-
-    const danger =
-        Math.max(
-            0,
-            Math.min(
-                1,
-                (
-                    distance-
-                    chain.softLength
-                )/
-                (
-                    chain.maxLength-
-                    chain.softLength
-                )
-            )
+        worldToScreenY(
+            b.y+b.height/2
         );
 
 
-    ctx.save();
+    const distance =
+        Math.hypot(
+            bx-ax,
+            by-ay
+        );
 
-    /*
-        Thick shadow.
-    */
 
-    ctx.lineWidth=9;
+    const danger =
+        distance >
+        chain.softLength;
 
-    ctx.lineCap="round";
 
     ctx.strokeStyle =
-        "rgba(0,0,0,.35)";
+        danger
+            ? "#ff6a83"
+            : "#b9c2d5";
 
-    ctx.beginPath();
+    ctx.lineWidth =
+        danger
+            ? 8
+            : 6;
 
-    ctx.moveTo(
-        ax+3,
-        ay+5
-    );
-
-    ctx.lineTo(
-        bx+3,
-        by+5
-    );
-
-    ctx.stroke();
-
-
-    /*
-        Main chain.
-    */
-
-    ctx.shadowBlur =
-        18;
-
-    ctx.shadowColor =
-        danger>.5
-            ? "#ff4568"
-            : "#64eaff";
-
-    ctx.strokeStyle =
-        danger>.5
-            ? "#ff4d70"
-            : "#67dcff";
-
-    ctx.lineWidth=5;
 
     ctx.beginPath();
 
@@ -5002,39 +5238,24 @@ function drawChain(){
     ctx.stroke();
 
 
-    /*
-        Individual metal links.
-    */
-
     const links =
         Math.max(
             3,
             Math.floor(
-                distance/23
+                distance/24
             )
         );
 
 
-    ctx.shadowBlur=8;
-
-    ctx.strokeStyle =
-        danger>.5
-            ? "#ffd0d8"
-            : "#e4fbff";
-
-    ctx.lineWidth=3;
-
-
-    const angle =
-        Math.atan2(
-            dy,
-            dx
-        );
+    ctx.fillStyle =
+        danger
+            ? "#ff93a5"
+            : "#e5e9f1";
 
 
     for(
-        let i=0;
-        i<=links;
+        let i=1;
+        i<links;
         i++
     ){
 
@@ -5042,196 +5263,265 @@ function drawChain(){
             i/links;
 
         const x =
-            ax+dx*t;
+            ax+
+            (bx-ax)*t;
 
         const y =
-            ay+dy*t;
-
+            ay+
+            (by-ay)*t;
 
         ctx.beginPath();
 
-        ctx.ellipse(
+        ctx.arc(
             x,
             y,
-            7,
             4,
-            angle+
-                (
-                    i%2
-                        ? Math.PI/2
-                        : 0
-                ),
             0,
             Math.PI*2
         );
 
-        ctx.stroke();
+        ctx.fill();
 
     }
-
-
-    /*
-        Chain tension indicator.
-    */
-
-    if(danger>.7){
-
-        ctx.fillStyle =
-            "rgba(255,50,80,.9)";
-
-        ctx.font =
-            "900 12px system-ui";
-
-        ctx.textAlign =
-            "center";
-
-        ctx.fillText(
-            "CHAIN TAUT!",
-            (ax+bx)/2,
-            (ay+by)/2-18
-        );
-
-    }
-
-
-    ctx.restore();
 
 }
 
 
 /* =========================================================
-   SATELLITE
+   PLAYERS
 ========================================================= */
 
-function drawSatellite(x,y){
+function drawPlayers(){
 
-    ctx.save();
+    for(
+        const p
+        of players.values()
+    ){
 
-    ctx.translate(
-        x,
-        y
-    );
+        if(p.dead){
+            continue;
+        }
 
-    ctx.rotate(
-        Math.sin(
-            worldTime*.5+x
-        )*.08
-    );
 
+        const x =
+            worldToScreenX(p.x);
+
+        const y =
+            worldToScreenY(p.y);
+
+
+        if(
+            x+p.width < 0 ||
+            x > W ||
+            y+p.height < 0 ||
+            y > H
+        ){
+            continue;
+        }
+
+
+        drawPlayer(
+            p,
+            x,
+            y
+        );
+
+    }
+
+}
+
+
+function drawPlayer(
+    p,
+    x,
+    y
+){
+
+    const moving =
+        Math.abs(p.vx)>20;
+
+    const bob =
+        moving
+            ? Math.sin(p.anim*12)*2
+            : 0;
+
+
+    const bodyColor =
+        p.color === "blue"
+            ? "#48bfff"
+            : "#ff5270";
+
+
+    /* shadow */
 
     ctx.fillStyle =
-        "#8796aa";
+        "rgba(0,0,0,.22)";
 
-    ctx.fillRect(
-        -30,
-        -12,
-        60,
-        24
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x+p.width/2,
+        y+p.height+4,
+        23,
+        7,
+        0,
+        0,
+        Math.PI*2
     );
 
+    ctx.fill();
 
-    ctx.fillStyle =
-        "#3f91c7";
 
-    ctx.fillRect(
-        -80,
-        -9,
-        45,
-        18
-    );
-
-    ctx.fillRect(
-        35,
-        -9,
-        45,
-        18
-    );
-
+    /* legs */
 
     ctx.strokeStyle =
-        "#aab5c4";
+        "#202331";
 
-    ctx.lineWidth=4;
+    ctx.lineWidth=8;
+
+    ctx.lineCap="round";
+
+    const legMove =
+        moving
+            ? Math.sin(p.anim*14)*6
+            : 0;
 
     ctx.beginPath();
 
     ctx.moveTo(
-        0,
-        12
+        x+11,
+        y+42
     );
 
     ctx.lineTo(
-        0,
-        55
+        x+8-legMove,
+        y+58
+    );
+
+    ctx.moveTo(
+        x+23,
+        y+42
+    );
+
+    ctx.lineTo(
+        x+26+legMove,
+        y+58
     );
 
     ctx.stroke();
 
 
-    ctx.restore();
+    /* body */
 
-}
+    ctx.fillStyle =
+        bodyColor;
+
+    ctx.fillRect(
+        x+6,
+        y+17+bob,
+        23,
+        28
+    );
 
 
-/* =========================================================
-   ROUND RECT
-========================================================= */
+    /* head */
 
-function roundRect(
-    x,
-    y,
-    w,
-    h,
-    r
-){
+    ctx.fillStyle =
+        "#ffd0ad";
 
     ctx.beginPath();
 
-    ctx.roundRect(
-        x,
-        y,
-        w,
-        h,
-        r
+    ctx.arc(
+        x+17,
+        y+10+bob,
+        13,
+        0,
+        Math.PI*2
     );
 
     ctx.fill();
 
+
+    /* hair */
+
+    ctx.fillStyle =
+        "#2c2430";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+17,
+        y+6+bob,
+        13,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /* eyes */
+
+    ctx.fillStyle =
+        "#11131b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+12,
+        y+10+bob,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+21,
+        y+10+bob,
+        2,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /* name */
+
+    ctx.font =
+        "800 12px system-ui";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.9)";
+
+    ctx.fillText(
+        p.name,
+        x+p.width/2,
+        y-13
+    );
+
 }
 
 
 /* =========================================================
-   SEND MOVEMENT
+   NETWORK
 ========================================================= */
 
-function sendMovement(now){
+function sendMovement(){
+
+    const me =
+        players.get(myId);
 
     if(
+        !me ||
         practiceMode ||
         !socket ||
         socket.readyState !==
-            WebSocket.OPEN ||
-        !gameStarted
+            WebSocket.OPEN
     ){
-        return;
-    }
-
-
-    if(
-        now-lastSend<33
-    ){
-        return;
-    }
-
-
-    lastSend =
-        now;
-
-
-    const p =
-        players.get(myId);
-
-    if(!p){
         return;
     }
 
@@ -5241,83 +5531,18 @@ function sendMovement(now){
 
             type:"move",
 
-            x:p.x,
-            y:p.y,
+            x:me.x,
+            y:me.y,
 
-            vx:p.vx,
-            vy:p.vy,
+            vx:me.vx,
+            vy:me.vy,
 
-            grounded:p.grounded,
-
-            running:p.running,
-
-            dead:p.dead
+            grounded:me.grounded,
+            running:me.running,
+            dead:me.dead
 
         })
     );
-
-}
-
-
-/* =========================================================
-   FINISH CHECK
-========================================================= */
-
-let finished = false;
-
-function checkFinish(){
-
-    if(finished){
-        return;
-    }
-
-
-    const list =
-        [...players.values()];
-
-    if(list.length===0){
-        return;
-    }
-
-
-    /*
-        Both players need to reach
-        the summit.
-    */
-
-    const allFinished =
-        list.length>=2 &&
-        list.every(
-            p =>
-                !p.dead &&
-                p.y <= finishY+180
-        );
-
-
-    /*
-        Practice can finish alone.
-    */
-
-    const practiceFinished =
-        practiceMode &&
-        list[0] &&
-        list[0].y <= finishY+180;
-
-
-    if(
-        allFinished ||
-        practiceFinished
-    ){
-
-        finished = true;
-
-        showMessage(
-            "🏆 YOU CONQUERED THE CLIMB!"
-        );
-
-        gameStarted = false;
-
-    }
 
 }
 
@@ -5335,22 +5560,70 @@ function showError(text){
 
 
 /* =========================================================
-   GAME LOOP
+   FINISH
 ========================================================= */
 
-function gameLoop(now){
+let finished = false;
+
+function checkFinish(){
+
+    if(finished){
+        return;
+    }
+
+    const me =
+        players.get(myId);
+
+    if(!me){
+        return;
+    }
+
+
+    if(
+        me.x > finishX &&
+        me.y < finishY + 150
+    ){
+
+        finished = true;
+
+        showMessage(
+            "🌕 YOU REACHED THE MOON!"
+        );
+
+        shake=20;
+
+        setTimeout(
+            () => {
+
+                showMessage(
+                    "🏆 YOU CONQUERED THE CLIMB"
+                );
+
+            },
+            1800
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MAIN LOOP
+========================================================= */
+
+function loop(now){
 
     const dt =
         Math.min(
-            .033,
-            (now-lastTime)/1000
+            (now-lastTime)/1000,
+            .033
         );
 
     lastTime =
         now;
 
-    worldTime +=
-        dt;
+    worldTime += dt;
 
 
     if(gameStarted){
@@ -5369,55 +5642,84 @@ function gameLoop(now){
         }
 
 
-        updateRemotePlayers(
-            dt
-        );
+        updateRemotePlayers(dt);
 
+        updateChain(dt);
 
-        updateChain(
-            dt
-        );
-
-
-        updateCamera(
-            dt
-        );
-
-
-        sendMovement(
-            now
-        );
-
+        updateCamera(dt);
 
         checkFinish();
+
+
+        if(
+            now-lastSend >
+            50
+        ){
+
+            sendMovement();
+
+            lastSend =
+                now;
+
+        }
 
     }
 
 
-    drawBackground();
+    if(shake>0){
+
+        shake =
+            Math.max(
+                0,
+                shake-dt*35
+            );
+
+    }
+
+
+    ctx.save();
+
+
+    if(shake>0){
+
+        ctx.translate(
+            (Math.random()-.5)*shake,
+            (Math.random()-.5)*shake
+        );
+
+    }
+
 
     drawWorld();
 
 
+    ctx.restore();
+
+
     requestAnimationFrame(
-        gameLoop
+        loop
     );
 
 }
 
 
+requestAnimationFrame(
+    loop
+);
+
+
 /* =========================================================
-   START
+   INITIAL LOADING
 ========================================================= */
 
-loading.style.display =
-    "none";
+setTimeout(
+    () => {
 
-lobby.style.display =
-    "flex";
+        loading.style.display =
+            "none";
 
-requestAnimationFrame(
-    gameLoop
+    },
+    700
 );
 
 </script>

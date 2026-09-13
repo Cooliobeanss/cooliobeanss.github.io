@@ -6,11 +6,7 @@
 <title>Space Salvage</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    user-select:none;
-}
-
+*{box-sizing:border-box;user-select:none}
 html,body{
     margin:0;
     width:100%;
@@ -18,91 +14,22 @@ html,body{
     overflow:hidden;
     background:#02040a;
     color:#eaf1ff;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:Arial,Helvetica,sans-serif
 }
-
-body{
-    position:relative;
-}
-
 canvas{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
-    display:block;
-    background:#02040a;
+    display:block
 }
-
-.hidden{
-    display:none!important;
-}
+.hidden{display:none!important}
 
 /* =========================================================
-   TOP HUD
+   GENERAL UI
 ========================================================= */
 
-#hud{
-    position:absolute;
-    top:18px;
-    left:18px;
-    right:18px;
-    z-index:20;
-    display:flex;
-    justify-content:space-between;
-    pointer-events:none;
-}
-
-.hud-panel{
-    min-width:220px;
-    padding:13px 16px;
-    border:1px solid rgba(130,160,220,.25);
-    border-radius:12px;
-    background:rgba(5,10,20,.78);
-    backdrop-filter:blur(12px);
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
-}
-
-.hud-title{
-    color:#8396bd;
-    font-size:10px;
-    letter-spacing:2px;
-    margin-bottom:4px;
-}
-
-.hud-value{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.bar{
-    width:190px;
-    height:7px;
-    margin-top:7px;
-    overflow:hidden;
-    border-radius:10px;
-    background:#101827;
-}
-
-.bar-fill{
-    width:100%;
-    height:100%;
-    transition:width .15s;
-}
-
-#oxygenFill{
-    background:#65d9ff;
-}
-
-#healthFill{
-    background:#ff526b;
-}
-
-/* =========================================================
-   LOBBY
-========================================================= */
-
-#lobby{
+.screen{
     position:absolute;
     inset:0;
     z-index:100;
@@ -110,49 +37,47 @@ canvas{
     align-items:center;
     justify-content:center;
     background:
-        radial-gradient(circle at 50% 35%,rgba(38,65,125,.2),transparent 40%),
-        rgba(1,3,8,.88);
+        radial-gradient(circle at 50% 40%,rgba(50,80,150,.2),transparent 45%),
+        rgba(1,3,8,.94)
 }
 
-.lobby-card{
-    width:min(470px,calc(100vw - 35px));
+.panel{
+    width:min(850px,94vw);
+    max-height:90vh;
+    overflow:auto;
     padding:35px;
-    border:1px solid rgba(130,160,220,.25);
+    border:1px solid rgba(120,150,210,.25);
     border-radius:22px;
-    background:rgba(7,12,23,.91);
-    box-shadow:0 30px 100px rgba(0,0,0,.65);
-    text-align:center;
+    background:rgba(7,12,23,.94);
+    box-shadow:0 35px 120px rgba(0,0,0,.7)
 }
 
 .logo{
-    font-size:42px;
+    font-size:44px;
     font-weight:900;
     letter-spacing:-2px;
-    background:linear-gradient(90deg,#72a9ff,#b48cff,#67e4ff);
+    background:linear-gradient(90deg,#70aaff,#b47dff,#64e4ff);
     -webkit-background-clip:text;
-    color:transparent;
+    color:transparent
 }
 
 .subtitle{
-    margin:8px 0 30px;
-    color:#7888a8;
-    font-size:13px;
+    color:#7283a3;
+    font-size:12px;
+    letter-spacing:1px;
+    margin-top:5px
 }
 
 input{
     width:100%;
-    padding:15px;
-    margin:6px 0;
+    padding:14px;
+    margin-top:10px;
     border:1px solid #263550;
-    border-radius:10px;
+    border-radius:9px;
+    background:#090f1b;
+    color:#fff;
     outline:none;
-    background:#090f1d;
-    color:white;
-    font-size:15px;
-}
-
-input:focus{
-    border-color:#668cff;
+    font-size:14px
 }
 
 button{
@@ -160,139 +85,343 @@ button{
     padding:14px;
     margin-top:10px;
     border:0;
-    border-radius:10px;
-    cursor:pointer;
-    background:#263a68;
+    border-radius:9px;
+    background:#1b2b48;
     color:white;
+    cursor:pointer;
     font-weight:bold;
-    font-size:14px;
-    transition:.15s;
+    transition:.15s
 }
 
 button:hover{
-    background:#38558e;
-    transform:translateY(-1px);
+    background:#304b78;
+    transform:translateY(-1px)
 }
 
 button.primary{
-    background:linear-gradient(135deg,#506eea,#7657d9);
-}
-
-button.practice{
-    background:#172337;
+    background:linear-gradient(135deg,#526de9,#7653d4)
 }
 
 button.back{
-    background:#0e1625;
+    background:#101927
 }
 
 .status{
-    margin-top:18px;
-    color:#6e82a7;
+    margin-top:15px;
+    color:#667a9d;
     font-size:11px;
+    text-align:center
 }
 
 /* =========================================================
-   ROOM
+   ORPHEUS HUB
+========================================================= */
+
+#hub{
+    position:absolute;
+    inset:0;
+    z-index:90;
+    background:#02050b
+}
+
+#hubCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%
+}
+
+.hub-ui{
+    position:absolute;
+    inset:0;
+    pointer-events:none
+}
+
+.hub-top{
+    position:absolute;
+    top:25px;
+    left:30px;
+    right:30px;
+    display:flex;
+    justify-content:space-between
+}
+
+.hub-title{
+    font-size:24px;
+    font-weight:900
+}
+
+.hub-sub{
+    color:#647797;
+    font-size:10px;
+    letter-spacing:2px;
+    margin-top:4px
+}
+
+.hub-money{
+    padding:12px 18px;
+    border:1px solid #263752;
+    border-radius:10px;
+    background:rgba(5,10,18,.8);
+    color:#65e3b0;
+    font-weight:bold
+}
+
+.hub-terminal{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:300px;
+    pointer-events:auto;
+    padding:22px;
+    border:1px solid #344969;
+    border-radius:15px;
+    background:rgba(7,13,23,.92);
+    box-shadow:0 20px 80px #000;
+    text-align:center
+}
+
+.terminal-icon{
+    font-size:50px;
+    margin-bottom:8px
+}
+
+.terminal-title{
+    font-size:18px;
+    font-weight:bold
+}
+
+.terminal-text{
+    color:#7183a3;
+    font-size:11px;
+    margin:8px 0 15px
+}
+
+/* =========================================================
+   SHIP SELECT
+========================================================= */
+
+#shipSelect{
+    z-index:120
+}
+
+.ship-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:13px;
+    margin-top:25px
+}
+
+.ship-card{
+    position:relative;
+    min-height:210px;
+    padding:18px;
+    border:1px solid #263751;
+    border-radius:14px;
+    background:linear-gradient(145deg,#0b1423,#070d18);
+    cursor:pointer;
+    transition:.18s;
+    overflow:hidden
+}
+
+.ship-card:hover{
+    transform:translateY(-5px);
+    border-color:#5978aa;
+    box-shadow:0 15px 40px rgba(30,70,130,.25)
+}
+
+.ship-card.locked{
+    opacity:.48;
+    filter:grayscale(.7)
+}
+
+.ship-card.impossible{
+    border-color:#692c3b;
+    background:linear-gradient(145deg,#180b11,#08070c)
+}
+
+.ship-icon{
+    font-size:38px
+}
+
+.ship-name{
+    margin-top:8px;
+    font-weight:900;
+    font-size:15px
+}
+
+.ship-type{
+    margin-top:3px;
+    color:#60718e;
+    font-size:9px;
+    letter-spacing:1px
+}
+
+.difficulty{
+    margin-top:13px;
+    font-size:11px
+}
+
+.dots{
+    letter-spacing:2px
+}
+
+.ship-loot{
+    margin-top:8px;
+    color:#68d9ad;
+    font-size:11px
+}
+
+.ship-threat{
+    margin-top:5px;
+    color:#a06d78;
+    font-size:10px
+}
+
+.lock{
+    position:absolute;
+    right:13px;
+    top:13px;
+    font-size:16px
+}
+
+.ship-warning{
+    margin-top:18px;
+    padding:12px;
+    border-radius:9px;
+    background:#0b111d;
+    color:#687b9d;
+    font-size:10px;
+    text-align:center
+}
+
+@media(max-width:700px){
+    .ship-grid{
+        grid-template-columns:1fr
+    }
+}
+
+/* =========================================================
+   ROOM LOBBY
 ========================================================= */
 
 #roomLobby{
-    position:absolute;
-    inset:0;
-    z-index:110;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(1,3,8,.9);
+    z-index:130
 }
 
 .room-code{
-    margin:12px 0 25px;
+    margin:15px 0;
+    text-align:center;
     font-size:42px;
     letter-spacing:10px;
-    font-weight:900;
-    color:#78a6ff;
-}
-
-.player-list{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    margin-bottom:15px;
+    color:#77a5ff;
+    font-weight:900
 }
 
 .player{
     padding:11px;
-    border:1px solid #1d2b42;
+    margin:6px 0;
+    border:1px solid #202f47;
     border-radius:8px;
-    background:#0a1220;
-    text-align:left;
-}
-
-#roomStatus{
-    color:#7185aa;
-    font-size:12px;
-    margin:12px 0;
+    background:#0b1422
 }
 
 /* =========================================================
-   GAME UI
+   GAME HUD
 ========================================================= */
 
 #gameUI{
     position:absolute;
     inset:0;
-    z-index:10;
-    pointer-events:none;
+    z-index:20;
+    pointer-events:none
 }
 
-#shipLabel{
+.hud{
     position:absolute;
-    left:50%;
-    bottom:18px;
-    transform:translateX(-50%);
-    padding:8px 14px;
-    border:1px solid rgba(100,130,180,.2);
-    border-radius:20px;
-    background:rgba(5,9,17,.72);
-    color:#7889a8;
-    font-size:10px;
-    letter-spacing:2px;
+    top:18px;
+    left:18px;
+    right:18px;
+    display:flex;
+    justify-content:space-between
 }
+
+.hud-box{
+    min-width:190px;
+    padding:12px 15px;
+    border:1px solid rgba(120,150,210,.2);
+    border-radius:11px;
+    background:rgba(5,10,19,.8);
+    backdrop-filter:blur(8px)
+}
+
+.hud-label{
+    color:#667a9e;
+    font-size:9px;
+    letter-spacing:2px
+}
+
+.hud-value{
+    margin-top:4px;
+    font-size:19px;
+    font-weight:bold
+}
+
+.bar{
+    width:170px;
+    height:6px;
+    margin-top:7px;
+    background:#101a29;
+    border-radius:5px;
+    overflow:hidden
+}
+
+.fill{
+    height:100%;
+    width:100%
+}
+
+#oxygenFill{background:#5fd8ff}
+#healthFill{background:#ff536b}
 
 #message{
     position:absolute;
     left:50%;
-    top:115px;
+    top:105px;
     transform:translateX(-50%);
-    padding:12px 22px;
-    border:1px solid rgba(150,170,220,.2);
+    padding:12px 20px;
     border-radius:10px;
-    background:rgba(4,8,15,.88);
+    background:rgba(3,7,14,.9);
+    border:1px solid #263750;
     opacity:0;
-    transition:.2s;
+    transition:.2s
 }
 
-#message.show{
-    opacity:1;
-}
+#message.show{opacity:1}
 
 #interaction{
     position:absolute;
     left:50%;
-    bottom:75px;
+    bottom:65px;
     transform:translateX(-50%);
     padding:12px 18px;
-    border:1px solid rgba(110,150,220,.3);
-    border-radius:10px;
-    background:rgba(5,9,18,.9);
-    color:#b9ccf7;
-    opacity:0;
-    transition:.15s;
+    border-radius:9px;
+    background:rgba(5,10,18,.9);
+    border:1px solid #304463;
+    opacity:0
 }
 
-#interaction.show{
-    opacity:1;
+#interaction.show{opacity:1}
+
+#shipNameHud{
+    position:absolute;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#667a99;
+    font-size:9px;
+    letter-spacing:2px
 }
 
 /* =========================================================
@@ -305,49 +434,34 @@ button.back{
     z-index:200;
     display:none;
     place-items:center;
-    background:rgba(0,0,0,.7);
+    background:rgba(0,0,0,.72)
 }
 
 .inventory-box{
     width:min(650px,90vw);
-    max-height:80vh;
-    overflow:auto;
     padding:25px;
-    border:1px solid #293a59;
-    border-radius:18px;
-    background:#080e1a;
-    box-shadow:0 30px 100px #000;
-}
-
-.inventory-title{
-    margin-bottom:18px;
-    font-size:20px;
-    font-weight:bold;
+    border-radius:17px;
+    border:1px solid #2a3b58;
+    background:#080e18
 }
 
 #inventoryGrid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
     gap:10px;
+    margin-top:15px
 }
 
 .item{
-    min-height:110px;
     padding:12px;
-    border:1px solid #1e2d45;
-    border-radius:10px;
-    background:#0c1525;
+    min-height:100px;
+    border:1px solid #1d2c43;
+    border-radius:9px;
+    background:#0c1524
 }
 
-.item-icon{
-    font-size:30px;
-}
-
-.item-name{
-    margin-top:6px;
-    color:#9aaac6;
-    font-size:11px;
-}
+.item-icon{font-size:28px}
+.item-name{font-size:10px;color:#8393ae;margin-top:5px}
 </style>
 </head>
 
@@ -356,17 +470,17 @@ button.back{
 <canvas id="canvas"></canvas>
 
 <!-- =======================================================
-     LOBBY
-======================================================== -->
+     MAIN LOBBY
+======================================================= -->
 
-<div id="lobby">
+<div id="lobby" class="screen">
 
-    <div class="lobby-card" id="mainLobby">
+    <div class="panel" style="max-width:470px">
 
         <div class="logo">SPACE SALVAGE</div>
 
         <div class="subtitle">
-            BOARD DEAD SHIPS · STEAL EVERYTHING · GET OUT ALIVE
+            SCAVENGE THE DEAD · SURVIVE THE LIVING
         </div>
 
         <input
@@ -375,42 +489,38 @@ button.back{
             placeholder="Crew name"
         >
 
-        <button
-            id="hostBtn"
-            class="primary"
-        >
-            CREATE SALVAGE RUN
+        <button id="hostBtn" class="primary">
+            CREATE CREW
         </button>
 
         <button id="joinBtn">
-            JOIN A CREW
+            JOIN CREW
         </button>
 
-        <button
-            id="practiceBtn"
-            class="practice"
-        >
-            PRACTICE ALONE
+        <button id="practiceBtn">
+            PLAY ALONE
         </button>
 
-        <div
-            class="status"
-            id="connectionStatus"
-        >
-            Connecting to salvage network...
+        <div id="connectionStatus" class="status">
+            Connecting...
         </div>
 
     </div>
 
-    <div
-        class="lobby-card hidden"
-        id="joinLobby"
-    >
+</div>
+
+<!-- =======================================================
+     JOIN
+======================================================= -->
+
+<div id="joinLobby" class="screen hidden">
+
+    <div class="panel" style="max-width:470px">
 
         <div class="logo">JOIN CREW</div>
 
         <div class="subtitle">
-            ENTER THE FOUR CHARACTER ROOM CODE
+            ENTER YOUR CREW'S ROOM CODE
         </div>
 
         <input
@@ -425,17 +535,11 @@ button.back{
             placeholder="ROOM CODE"
         >
 
-        <button
-            id="joinConfirm"
-            class="primary"
-        >
-            JOIN SHIP
+        <button id="joinConfirm" class="primary">
+            JOIN CREW
         </button>
 
-        <button
-            id="joinBack"
-            class="back"
-        >
+        <button id="joinBack" class="back">
             BACK
         </button>
 
@@ -444,43 +548,37 @@ button.back{
 </div>
 
 <!-- =======================================================
-     ROOM LOBBY
-======================================================== -->
+     ROOM
+======================================================= -->
 
-<div
-    id="roomLobby"
-    class="hidden"
->
+<div id="roomLobby" class="screen hidden">
 
-    <div class="lobby-card">
+    <div class="panel" style="max-width:500px">
 
-        <div class="logo">SALVAGE CREW</div>
+        <div class="logo">CREW READY</div>
 
         <div class="subtitle">
             ROOM CODE
         </div>
 
-        <div
-            class="room-code"
-            id="roomCode"
-        >
+        <div id="roomCode" class="room-code">
             ----
         </div>
 
-        <div
-            class="player-list"
-            id="playerList"
-        ></div>
+        <div id="playerList"></div>
 
-        <div id="roomStatus">
-            Waiting for crew...
+        <div
+            id="roomStatus"
+            class="status"
+        >
+            Waiting...
         </div>
 
         <button
-            id="startBtn"
+            id="launchBtn"
             class="primary"
         >
-            LAUNCH SALVAGE RUN
+            GO TO ORPHEUS
         </button>
 
     </div>
@@ -488,20 +586,106 @@ button.back{
 </div>
 
 <!-- =======================================================
-     GAME HUD
-======================================================== -->
+     ORPHEUS HUB
+======================================================= -->
 
-<div
-    id="gameUI"
-    class="hidden"
->
+<div id="hub" class="hidden">
 
-    <div id="hud">
+    <canvas id="hubCanvas"></canvas>
 
-        <div class="hud-panel">
+    <div class="hub-ui">
 
-            <div class="hud-title">
-                SALVAGE VALUE
+        <div class="hub-top">
+
+            <div>
+                <div class="hub-title">
+                    ORPHEUS
+                </div>
+
+                <div class="hub-sub">
+                    CREW SALVAGE VESSEL · SAFE ZONE
+                </div>
+            </div>
+
+            <div class="hub-money">
+                BANK $<span id="hubMoney">0</span>
+            </div>
+
+        </div>
+
+        <div class="hub-terminal">
+
+            <div class="terminal-icon">
+                🖥️
+            </div>
+
+            <div class="terminal-title">
+                SALVAGE TERMINAL
+            </div>
+
+            <div class="terminal-text">
+                Scan abandoned vessels and select your next raid.
+            </div>
+
+            <button
+                id="selectRaidBtn"
+                class="primary"
+            >
+                SELECT RAID
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+     SHIP SELECT
+======================================================= -->
+
+<div id="shipSelect" class="screen hidden">
+
+    <div class="panel">
+
+        <div class="logo">
+            SELECT DERELICT
+        </div>
+
+        <div class="subtitle">
+            THE DEEPER YOU GO, THE MORE THEY EXPECT YOU
+        </div>
+
+        <div
+            id="shipGrid"
+            class="ship-grid"
+        ></div>
+
+        <div class="ship-warning">
+            ⚠ Ship difficulty affects enemy count, enemy strength,
+            hazards, darkness, loot value and oxygen consumption.
+        </div>
+
+        <button id="shipBack" class="back">
+            RETURN TO ORPHEUS
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =======================================================
+     GAME UI
+======================================================= -->
+
+<div id="gameUI" class="hidden">
+
+    <div class="hud">
+
+        <div class="hud-box">
+
+            <div class="hud-label">
+                SALVAGE
             </div>
 
             <div
@@ -513,9 +697,9 @@ button.back{
 
         </div>
 
-        <div class="hud-panel">
+        <div class="hud-box">
 
-            <div class="hud-title">
+            <div class="hud-label">
                 OXYGEN
             </div>
 
@@ -528,16 +712,16 @@ button.back{
 
             <div class="bar">
                 <div
-                    class="bar-fill"
                     id="oxygenFill"
+                    class="fill"
                 ></div>
             </div>
 
         </div>
 
-        <div class="hud-panel">
+        <div class="hud-box">
 
-            <div class="hud-title">
+            <div class="hud-label">
                 HEALTH
             </div>
 
@@ -550,8 +734,8 @@ button.back{
 
             <div class="bar">
                 <div
-                    class="bar-fill"
                     id="healthFill"
+                    class="fill"
                 ></div>
             </div>
 
@@ -563,21 +747,21 @@ button.back{
 
     <div id="interaction"></div>
 
-    <div id="shipLabel">
-        ORPHEUS-7 · DERELICT CLASS FREIGHTER
+    <div id="shipNameHud">
+        DERELICT
     </div>
 
 </div>
 
 <!-- =======================================================
      INVENTORY
-======================================================== -->
+======================================================= -->
 
 <div id="inventory">
 
     <div class="inventory-box">
 
-        <div class="inventory-title">
+        <div style="font-size:20px;font-weight:bold">
             SALVAGE INVENTORY
         </div>
 
@@ -598,26 +782,23 @@ button.back{
    CANVAS
 ========================================================= */
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+    document.getElementById("canvas");
 
-let W = innerWidth;
-let H = innerHeight;
-let DPR = Math.min(devicePixelRatio || 1,2);
+const ctx =
+    canvas.getContext("2d");
+
+let W=innerWidth;
+let H=innerHeight;
 
 function resize(){
 
-    W = innerWidth;
-    H = innerHeight;
-    DPR = Math.min(devicePixelRatio || 1,2);
+    W=innerWidth;
+    H=innerHeight;
 
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
+    canvas.width=W;
+    canvas.height=H;
 
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
-
-    ctx.setTransform(DPR,0,0,DPR,0,0);
 }
 
 addEventListener("resize",resize);
@@ -630,72 +811,738 @@ resize();
 const SERVER =
     "wss://cooliobeans-multiplayer.onrender.com";
 
-let socket = null;
-let myId = null;
-let room = null;
-let isHost = false;
-let practiceMode = false;
+let socket=null;
+let myId=null;
+let room=null;
+let isHost=false;
+let practiceMode=false;
 
 /* =========================================================
-   GAME STATE
+   SHIPS
 ========================================================= */
 
-let gameStarted = false;
-let gameOver = false;
+const raidShips=[
 
-const players = {};
+    {
+        id:"mercury",
+        name:"MERCURY-12",
+        type:"LIGHT CARGO SHIP",
+        icon:"🚚",
+        difficulty:1,
+        loot:"$500 — $1,500",
+        threat:"LOW",
+        description:"A small abandoned courier. Good for new crews.",
+        color:"#4f9c75"
+    },
 
-let me = null;
+    {
+        id:"atlas",
+        name:"ATLAS-4",
+        type:"MINING FREIGHTER",
+        icon:"⛏️",
+        difficulty:2,
+        loot:"$900 — $2,500",
+        threat:"LOW",
+        description:"Old mining equipment and surprisingly valuable ore.",
+        color:"#67a5bd"
+    },
 
-const camera = {
+    {
+        id:"titan",
+        name:"TITAN HAULER",
+        type:"HEAVY FREIGHTER",
+        icon:"📦",
+        difficulty:3,
+        loot:"$1,500 — $4,500",
+        threat:"MEDIUM",
+        description:"Massive cargo holds. Something has been moving inside.",
+        color:"#b59b59"
+    },
+
+    {
+        id:"vanguard",
+        name:"VANGUARD-9",
+        type:"RESEARCH VESSEL",
+        icon:"🔬",
+        difficulty:4,
+        loot:"$3,000 — $7,000",
+        threat:"HIGH",
+        description:"Research crew disappeared without sending a distress call.",
+        color:"#c47a55"
+    },
+
+    {
+        id:"blackstar",
+        name:"BLACKSTAR",
+        type:"MILITARY WRECK",
+        icon:"☠️",
+        difficulty:5,
+        loot:"$5,000 — $12,000",
+        threat:"VERY HIGH",
+        description:"Weapons, classified technology and things that should stay dead.",
+        color:"#c34e64"
+    },
+
+    {
+        id:"abyssal",
+        name:"THE ABYSSAL",
+        type:"UNKNOWN VESSEL",
+        icon:"👁️",
+        difficulty:6,
+        loot:"$10,000 — $30,000",
+        threat:"IMPOSSIBLE",
+        description:"No registration. No crew manifest. No explanation.",
+        color:"#9e3551",
+        impossible:true
+    }
+
+];
+
+let selectedShip=null;
+
+/* =========================================================
+   SHIP SELECT UI
+========================================================= */
+
+function buildShipCards(){
+
+    const grid =
+        document.getElementById(
+            "shipGrid"
+        );
+
+    grid.innerHTML="";
+
+    for(const ship of raidShips){
+
+        const card =
+            document.createElement("div");
+
+        card.className=
+            "ship-card" +
+            (
+                ship.impossible
+                    ? " impossible"
+                    : ""
+            );
+
+        let dots="";
+
+        for(let i=0;i<6;i++){
+
+            dots +=
+                i<ship.difficulty
+                    ? "●"
+                    : "○";
+
+        }
+
+        card.innerHTML=`
+
+            ${
+                ship.impossible
+                    ? "<div class='lock'>☠</div>"
+                    : ""
+            }
+
+            <div class="ship-icon">
+                ${ship.icon}
+            </div>
+
+            <div class="ship-name">
+                ${ship.name}
+            </div>
+
+            <div class="ship-type">
+                ${ship.type}
+            </div>
+
+            <div class="difficulty">
+                DIFFICULTY:
+                <span class="dots">
+                    ${dots}
+                </span>
+            </div>
+
+            <div class="ship-loot">
+                💰 ${ship.loot}
+            </div>
+
+            <div class="ship-threat">
+                ☠ ${ship.threat}
+            </div>
+
+        `;
+
+        card.onclick=()=>{
+
+            selectedShip=ship;
+
+            launchRaid();
+
+        };
+
+        grid.appendChild(card);
+
+    }
+
+}
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let gameStarted=false;
+
+let me=null;
+
+const players={};
+
+const keys={};
+
+const camera={
     x:0,
     y:0,
     shake:0
 };
 
-const keys = {};
+let lastTime=performance.now();
+let dt=0;
 
-let dt = 0;
-let lastTime = performance.now();
+/* =========================================================
+   WORLD
+========================================================= */
 
-const world = {
+const world={
     width:7600,
     height:1200
 };
+
+let solids=[];
+let props=[];
+let salvageObjects=[];
+let enemies=[];
+
+function resetRaidWorld(){
+
+    solids=[];
+    props=[];
+    salvageObjects=[];
+    enemies=[];
+
+    /*
+       Every raid ship uses the same broad skeleton,
+       but its difficulty changes the contents.
+    */
+
+    solids.push({
+        x:0,
+        y:900,
+        w:7600,
+        h:180
+    });
+
+    solids.push({
+        x:0,
+        y:0,
+        w:7600,
+        h:45
+    });
+
+    solids.push({
+        x:-80,
+        y:0,
+        w:80,
+        h:1080
+    });
+
+    solids.push({
+        x:7600,
+        y:0,
+        w:80,
+        h:1080
+    });
+
+    /*
+       Catwalks
+    */
+
+    solids.push({
+        x:150,
+        y:680,
+        w:950,
+        h:30
+    });
+
+    solids.push({
+        x:1300,
+        y:680,
+        w:900,
+        h:30
+    });
+
+    solids.push({
+        x:2500,
+        y:680,
+        w:1000,
+        h:30
+    });
+
+    solids.push({
+        x:3700,
+        y:680,
+        w:850,
+        h:30
+    });
+
+    solids.push({
+        x:4800,
+        y:680,
+        w:950,
+        h:30
+    });
+
+    solids.push({
+        x:6100,
+        y:680,
+        w:1000,
+        h:30
+    });
+
+    /*
+       Upper paths
+    */
+
+    solids.push({
+        x:300,
+        y:430,
+        w:600,
+        h:25
+    });
+
+    solids.push({
+        x:1450,
+        y:430,
+        w:650,
+        h:25
+    });
+
+    solids.push({
+        x:2750,
+        y:450,
+        w:500,
+        h:25
+    });
+
+    solids.push({
+        x:3850,
+        y:400,
+        w:600,
+        h:25
+    });
+
+    solids.push({
+        x:5150,
+        y:440,
+        w:600,
+        h:25
+    });
+
+    solids.push({
+        x:6250,
+        y:450,
+        w:600,
+        h:25
+    });
+
+    /*
+       Difficulty determines how much junk
+       is actually inside the ship.
+    */
+
+    const difficulty =
+        selectedShip
+            ? selectedShip.difficulty
+            : 1;
+
+    /*
+       Cargo
+    */
+
+    for(
+        let i=0;
+        i<4+difficulty*2;
+        i++
+    ){
+
+        addProp(
+            "crate",
+            2200+(i%5)*150,
+            820-Math.floor(i/5)*90,
+            120,
+            80
+        );
+
+    }
+
+    /*
+       Consoles
+    */
+
+    addProp(
+        "console",
+        700,
+        620,
+        120,
+        70
+    );
+
+    addProp(
+        "console",
+        900,
+        620,
+        120,
+        70
+    );
+
+    addProp(
+        "console",
+        1850,
+        620,
+        120,
+        70
+    );
+
+    addProp(
+        "console",
+        4200,
+        620,
+        120,
+        70
+    );
+
+    addProp(
+        "console",
+        6800,
+        620,
+        120,
+        70
+    );
+
+    /*
+       Windows
+    */
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        addProp(
+            "window",
+            120+i*590,
+            120,
+            230,
+            110
+        );
+
+    }
+
+    /*
+       Pipes
+    */
+
+    for(
+        let i=0;
+        i<10+difficulty*2;
+        i++
+    ){
+
+        addProp(
+            "pipe",
+            500+i*620,
+            250,
+            18,
+            400
+        );
+
+    }
+
+    /*
+       Reactor at the end
+    */
+
+    addProp(
+        "reactor",
+        6250,
+        260,
+        370,
+        420
+    );
+
+    /*
+       Extraction
+    */
+
+    addProp(
+        "airlock",
+        7100,
+        650,
+        350,
+        250
+    );
+
+    /*
+       Loot
+    */
+
+    const lootTable=[
+
+        ["Battery","🔋",80],
+        ["Navigation Computer","💻",140],
+        ["Medical Kit","🩹",130],
+        ["Pressure Helmet","🪖",190],
+        ["Cargo Crate","📦",200],
+        ["Power Core","🔵",400],
+        ["Unknown Alloy","🧱",550],
+        ["Engine Component","⚙️",500],
+        ["Black Box","⬛",750],
+        ["Research Sample","🧬",900],
+        ["Prototype Core","🔮",1500],
+        ["Unknown Artifact","💎",2200]
+
+    ];
+
+    const amount =
+        5+
+        difficulty*3;
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        const entry =
+            lootTable[
+                Math.floor(
+                    Math.random()*
+                    lootTable.length
+                )
+            ];
+
+        const x =
+            300+
+            Math.random()*6700;
+
+        const y =
+            800-
+            Math.random()*350;
+
+        addLoot(
+            "loot_"+i,
+            entry[0],
+            entry[1],
+            Math.round(
+                entry[2]*
+                (
+                    .7+
+                    Math.random()*.7
+                )*
+                (
+                    1+
+                    difficulty*.18
+                )
+            ),
+            x,
+            y
+        );
+
+    }
+
+    /*
+       Enemies increase dramatically.
+    */
+
+    const enemyCount =
+        1+
+        difficulty*2;
+
+    for(
+        let i=0;
+        i<enemyCount;
+        i++
+    ){
+
+        const type =
+            (
+                difficulty>=4 &&
+                i%3===0
+            )
+                ? "stalker"
+                : "crawler";
+
+        addEnemy(
+            type,
+            700+
+                Math.random()*6200,
+            840,
+            400+
+                Math.random()*6000,
+            900+
+                Math.random()*6000
+        );
+
+    }
+
+}
+
+/* =========================================================
+   PROPS
+========================================================= */
+
+function addProp(
+    type,
+    x,
+    y,
+    w,
+    h
+){
+
+    props.push({
+        type,
+        x,
+        y,
+        w,
+        h
+    });
+
+}
+
+/* =========================================================
+   LOOT
+========================================================= */
+
+function addLoot(
+    id,
+    name,
+    icon,
+    value,
+    x,
+    y
+){
+
+    salvageObjects.push({
+
+        id,
+        name,
+        icon,
+        value,
+
+        x,
+        y,
+
+        w:35,
+        h:35,
+
+        carried:false,
+        extracted:false,
+        holder:null
+
+    });
+
+}
+
+/* =========================================================
+   ENEMIES
+========================================================= */
+
+function addEnemy(
+    type,
+    x,
+    y,
+    a,
+    b
+){
+
+    enemies.push({
+
+        type,
+
+        x,
+        y,
+
+        w:40,
+        h:45,
+
+        patrolA:Math.min(a,b),
+        patrolB:Math.max(a,b),
+
+        dir:Math.random()>.5?1:-1,
+
+        speed:
+            type==="stalker"
+                ? 105
+                : 60,
+
+        alive:true,
+
+        alert:0,
+        attackCooldown:0
+
+    });
+
+}
 
 /* =========================================================
    INPUT
 ========================================================= */
 
-addEventListener("keydown",e=>{
+addEventListener(
+    "keydown",
+    e=>{
 
-    if(
-        e.code === "Tab" ||
-        e.code === "Space" ||
-        e.code === "ArrowUp" ||
-        e.code === "ArrowDown"
-    ){
-        e.preventDefault();
+        keys[e.code]=true;
+
+        if(
+            e.code==="Space" ||
+            e.code==="ArrowUp" ||
+            e.code==="ArrowDown" ||
+            e.code==="Tab"
+        ){
+
+            e.preventDefault();
+
+        }
+
+        if(
+            e.code==="KeyE" &&
+            gameStarted
+        ){
+
+            interact();
+
+        }
+
+        if(
+            e.code==="Tab" &&
+            gameStarted
+        ){
+
+            toggleInventory();
+
+        }
+
     }
+);
 
-    keys[e.code] = true;
-
-    if(e.code === "Tab" && gameStarted){
-        toggleInventory();
+addEventListener(
+    "keyup",
+    e=>{
+        keys[e.code]=false;
     }
-
-    if(
-        e.code === "KeyE" &&
-        gameStarted
-    ){
-        interact();
-    }
-
-});
-
-addEventListener("keyup",e=>{
-    keys[e.code] = false;
-});
+);
 
 /* =========================================================
    PLAYER
@@ -725,780 +1572,107 @@ function makePlayer(
 
         grounded:false,
 
-        dead:false,
-
         health:100,
         oxygen:100,
 
+        dead:false,
+
         color,
+
+        facing:1,
 
         holding:null,
 
         salvage:0,
 
-        facing:1,
-
-        run:false,
-
         targetX:x,
-        targetY:y,
-
-        lastNetwork:0
+        targetY:y
 
     };
+
 }
 
 /* =========================================================
-   ROOMS / SHIP COLLISION
+   PHYSICS
 ========================================================= */
 
-/*
-    The ship is NOT just floating platforms.
+function overlap(a,b){
 
-    It is built as a connected interior:
-    exterior wall
-    floor
-    ceiling
-    rooms
-    bulkheads
-    corridors
-    cargo bays
-    reactor
-    extraction airlock
-*/
-
-const solids = [];
-
-/* Main hull floor */
-solids.push({
-    x:0,
-    y:900,
-    w:7600,
-    h:180,
-    type:"floor"
-});
-
-/* Main ceiling */
-solids.push({
-    x:0,
-    y:0,
-    w:7600,
-    h:45,
-    type:"ceiling"
-});
-
-/* Exterior walls */
-solids.push({
-    x:-80,
-    y:0,
-    w:80,
-    h:1080,
-    type:"wall"
-});
-
-solids.push({
-    x:7600,
-    y:0,
-    w:80,
-    h:1080,
-    type:"wall"
-});
-
-/* Interior deck platforms */
-
-solids.push({
-    x:100,
-    y:690,
-    w:1000,
-    h:30,
-    type:"deck"
-});
-
-solids.push({
-    x:1280,
-    y:690,
-    w:1000,
-    h:30,
-    type:"deck"
-});
-
-solids.push({
-    x:2500,
-    y:690,
-    w:800,
-    h:30,
-    type:"deck"
-});
-
-solids.push({
-    x:3550,
-    y:690,
-    w:900,
-    h:30,
-    type:"deck"
-});
-
-solids.push({
-    x:4700,
-    y:690,
-    w:1000,
-    h:30,
-    type:"deck"
-});
-
-solids.push({
-    x:5950,
-    y:690,
-    w:1200,
-    h:30,
-    type:"deck"
-});
-
-/* Upper catwalks */
-
-solids.push({
-    x:250,
-    y:430,
-    w:650,
-    h:25,
-    type:"catwalk"
-});
-
-solids.push({
-    x:1450,
-    y:430,
-    w:620,
-    h:25,
-    type:"catwalk"
-});
-
-solids.push({
-    x:3800,
-    y:390,
-    w:600,
-    h:25,
-    type:"catwalk"
-});
-
-solids.push({
-    x:5200,
-    y:430,
-    w:620,
-    h:25,
-    type:"catwalk"
-});
-
-/* Cargo raised platforms */
-
-solids.push({
-    x:2700,
-    y:480,
-    w:430,
-    h:25,
-    type:"cargo"
-});
-
-solids.push({
-    x:3300,
-    y:540,
-    w:350,
-    h:25,
-    type:"cargo"
-});
-
-/* Reactor platform */
-
-solids.push({
-    x:6150,
-    y:510,
-    w:650,
-    h:25,
-    type:"reactor"
-});
-
-/* =========================================================
-   WALLS / BULKHEADS
-========================================================= */
-
-const walls = [
-
-    {x:1120,y:160,w:35,h:740},
-    {x:2380,y:160,w:35,h:740},
-
-    {x:4450,y:160,w:35,h:740},
-    {x:5850,y:160,w:35,h:740},
-
-    {x:760,y:45,w:28,h:180},
-    {x:1750,y:45,w:28,h:180},
-
-    {x:3050,y:45,w:28,h:250},
-    {x:5000,y:45,w:28,h:210}
-
-];
-
-/* Door openings */
-
-const doors = [
-
-    {
-        x:1120,
-        y:600,
-        w:35,
-        h:300,
-        open:true
-    },
-
-    {
-        x:2380,
-        y:600,
-        w:35,
-        h:300,
-        open:true
-    },
-
-    {
-        x:4450,
-        y:600,
-        w:35,
-        h:300,
-        open:false
-    },
-
-    {
-        x:5850,
-        y:600,
-        w:35,
-        h:300,
-        open:true
-    }
-
-];
-
-/* =========================================================
-   PROPS
-========================================================= */
-
-const props = [];
-
-function addProp(type,x,y,w,h,extra={}){
-    props.push({
-        type,
-        x,
-        y,
-        w,
-        h,
-        ...extra
-    });
-}
-
-/* Docking bay */
-
-addProp("window",180,150,180,115);
-addProp("window",400,150,180,115);
-
-addProp("console",850,625,110,65);
-addProp("console",980,625,110,65);
-
-addProp("crate",140,820,90,80);
-addProp("crate",245,810,100,90);
-addProp("crate",360,825,75,75);
-
-addProp("pipe",650,260,24,410);
-addProp("pipe",700,260,24,410);
-
-/* Crew section */
-
-addProp("bed",1330,610,180,70);
-addProp("bed",1550,610,180,70);
-
-addProp("locker",1780,590,65,120);
-addProp("locker",1860,590,65,120);
-addProp("locker",1940,590,65,120);
-
-addProp("table",2040,620,180,70);
-
-addProp("window",1420,150,200,110);
-
-addProp("window",1700,150,200,110);
-
-addProp("console",2160,625,110,65);
-
-/* Cargo */
-
-for(let i=0;i<8;i++){
-
-    addProp(
-        "cargo",
-        2550 + (i%4)*160,
-        810 - Math.floor(i/4)*95,
-        140,
-        80
+    return(
+        a.x<b.x+b.w &&
+        a.x+a.width>b.x &&
+        a.y<b.y+b.h &&
+        a.y+a.height>b.y
     );
 
 }
 
-for(let i=0;i<5;i++){
+function updatePlayer(){
 
-    addProp(
-        "cargo",
-        3350 + i*180,
-        810,
-        150,
-        80
-    );
-
-}
-
-/* Engineering */
-
-addProp("machine",3650,760,160,140);
-addProp("machine",3880,760,160,140);
-addProp("machine",4110,760,160,140);
-
-for(let i=0;i<7;i++){
-    addProp(
-        "pipe",
-        3700+i*130,
-        110,
-        18,
-        560
-    );
-}
-
-/* Reactor */
-
-addProp("reactor",6250,290,340,420);
-addProp("console",6710,625,120,65);
-addProp("console",6880,625,120,65);
-
-addProp("window",6150,120,240,120);
-addProp("window",6450,120,240,120);
-
-/* Extraction */
-
-addProp("airlock",7150,650,280,250);
-
-/* =========================================================
-   SALVAGE
-========================================================= */
-
-const salvageObjects = [];
-
-function addLoot(
-    id,
-    name,
-    icon,
-    value,
-    x,
-    y,
-    weight=1
-){
-
-    salvageObjects.push({
-
-        id,
-        name,
-        icon,
-        value,
-
-        x,
-        y,
-
-        w:34,
-        h:34,
-
-        weight,
-
-        carried:false,
-        extracted:false,
-
-        holder:null
-
-    });
-
-}
-
-/* Docking */
-
-addLoot(
-    "battery1",
-    "Industrial Battery",
-    "🔋",
-    85,
-    520,
-    835
-);
-
-addLoot(
-    "scanner1",
-    "Navigation Scanner",
-    "📡",
-    180,
-    920,
-    580
-);
-
-addLoot(
-    "tool1",
-    "Repair Tool",
-    "🔧",
-    120,
-    1050,
-    825
-);
-
-/* Crew */
-
-addLoot(
-    "med1",
-    "Medical Kit",
-    "🩹",
-    130,
-    1490,
-    570
-);
-
-addLoot(
-    "helmet1",
-    "Pressure Helmet",
-    "🪖",
-    190,
-    1860,
-    540
-);
-
-addLoot(
-    "tablet1",
-    "Crew Tablet",
-    "💻",
-    250,
-    2180,
-    580
-);
-
-/* Cargo */
-
-addLoot(
-    "crate1",
-    "Sealed Cargo",
-    "📦",
-    160,
-    2780,
-    430
-);
-
-addLoot(
-    "crate2",
-    "Sealed Cargo",
-    "📦",
-    210,
-    2950,
-    430
-);
-
-addLoot(
-    "core1",
-    "Power Core",
-    "🔵",
-    420,
-    3160,
-    825
-);
-
-addLoot(
-    "alloy1",
-    "Unknown Alloy",
-    "🧱",
-    550,
-    3450,
-    770
-);
-
-addLoot(
-    "blackbox1",
-    "Black Box",
-    "⬛",
-    700,
-    4220,
-    825
-);
-
-/* Engineering */
-
-addLoot(
-    "engine1",
-    "Engine Component",
-    "⚙️",
-    480,
-    3750,
-    730
-);
-
-addLoot(
-    "engine2",
-    "Engine Component",
-    "⚙️",
-    620,
-    4070,
-    730
-);
-
-addLoot(
-    "fuel1",
-    "Fuel Cell",
-    "🟨",
-    350,
-    4320,
-    825
-);
-
-/* Reactor */
-
-addLoot(
-    "reactor1",
-    "Reactor Component",
-    "☢️",
-    850,
-    6350,
-    440
-);
-
-addLoot(
-    "artifact1",
-    "Unknown Artifact",
-    "💎",
-    1600,
-    6750,
-    825
-);
-
-addLoot(
-    "prototype1",
-    "Prototype Core",
-    "🔮",
-    2200,
-    7040,
-    825
-);
-
-/* =========================================================
-   ENEMIES
-========================================================= */
-
-const enemies = [];
-
-function addEnemy(
-    type,
-    x,
-    y,
-    patrolA,
-    patrolB
-){
-
-    enemies.push({
-
-        type,
-
-        x,
-        y,
-
-        w:38,
-        h:45,
-
-        vx:0,
-
-        patrolA,
-        patrolB,
-
-        dir:1,
-
-        speed:type==="stalker"
-            ? 95
-            : 55,
-
-        alive:true,
-
-        attackCooldown:0,
-
-        alert:0
-
-    });
-
-}
-
-addEnemy("crawler",850,845,650,1080);
-addEnemy("crawler",1850,845,1450,2250);
-addEnemy("crawler",2800,845,2500,3400);
-addEnemy("stalker",3980,625,3600,4400);
-addEnemy("crawler",5200,845,4800,5700);
-addEnemy("stalker",6350,845,6000,7350);
-
-/* =========================================================
-   SHIP SECTIONS
-========================================================= */
-
-const sections = [
-
-    {
-        x:0,
-        w:1120,
-        name:"DOCKING BAY",
-        subtitle:"ENTRY / AIRLOCK"
-    },
-
-    {
-        x:1155,
-        w:1225,
-        name:"CREW DECK",
-        subtitle:"HABITATION"
-    },
-
-    {
-        x:2415,
-        w:2035,
-        name:"CARGO HOLD",
-        subtitle:"FREIGHT STORAGE"
-    },
-
-    {
-        x:4485,
-        w:1365,
-        name:"ENGINEERING",
-        subtitle:"PROPULSION"
-    },
-
-    {
-        x:5885,
-        w:1715,
-        name:"REACTOR",
-        subtitle:"CORE SYSTEMS"
-    }
-
-];
-
-/* =========================================================
-   COLLISION
-========================================================= */
-
-function rectsOverlap(a,b){
-
-    return (
-        a.x < b.x+b.w &&
-        a.x+a.width > b.x &&
-        a.y < b.y+b.h &&
-        a.y+a.height > b.y
-    );
-
-}
-
-function getCollisionSolids(){
-
-    const result = solids.slice();
-
-    for(const wall of walls){
-
-        result.push({
-            x:wall.x,
-            y:wall.y,
-            w:wall.w,
-            h:wall.h
-        });
-
-    }
-
-    for(const door of doors){
-
-        if(!door.open){
-
-            result.push({
-                x:door.x,
-                y:door.y,
-                w:door.w,
-                h:door.h
-            });
-
-        }
-
-    }
-
-    return result;
-}
-
-/* =========================================================
-   PLAYER PHYSICS
-========================================================= */
-
-const GRAVITY = 1800;
-const WALK_SPEED = 260;
-const RUN_SPEED = 420;
-const ACCEL = 1700;
-const AIR_ACCEL = 950;
-const FRICTION = 2200;
-const JUMP = 650;
-
-function updatePlayer(p){
-
-    if(!p || p.dead)
+    if(!me || me.dead)
         return;
 
-    let left =
+    let dir=0;
+
+    if(
         keys["KeyA"] ||
-        keys["ArrowLeft"];
+        keys["ArrowLeft"]
+    )
+        dir--;
 
-    let right =
+    if(
         keys["KeyD"] ||
-        keys["ArrowRight"];
+        keys["ArrowRight"]
+    )
+        dir++;
 
-    let run =
+    const sprint =
         keys["ShiftLeft"] ||
         keys["ShiftRight"];
 
-    let dir = 0;
+    const speed =
+        sprint
+            ? 420
+            : 260;
 
-    if(left) dir--;
-    if(right) dir++;
+    if(dir){
 
-    p.run = !!run;
-
-    const maxSpeed =
-        run
-            ? RUN_SPEED
-            : WALK_SPEED;
-
-    if(dir !== 0){
-
-        p.vx +=
-            dir *
-            (p.grounded
-                ? ACCEL
-                : AIR_ACCEL) *
+        me.vx +=
+            dir*
+            1800*
             dt;
 
-        p.facing = dir;
+        me.facing=dir;
 
     }else{
 
-        const amount =
-            FRICTION * dt;
+        const friction=
+            2200*dt;
 
-        if(Math.abs(p.vx) <= amount){
+        if(
+            Math.abs(me.vx)<=
+            friction
+        ){
 
-            p.vx = 0;
+            me.vx=0;
 
         }else{
 
-            p.vx -=
-                Math.sign(p.vx) *
-                amount;
+            me.vx -=
+                Math.sign(me.vx)*
+                friction;
 
         }
 
     }
 
-    p.vx =
+    me.vx=
         Math.max(
-            -maxSpeed,
-            Math.min(maxSpeed,p.vx)
+            -speed,
+            Math.min(
+                speed,
+                me.vx
+            )
         );
 
     if(
@@ -1507,124 +1681,88 @@ function updatePlayer(p){
             keys["KeyW"] ||
             keys["ArrowUp"]
         ) &&
-        p.grounded
+        me.grounded
     ){
 
-        p.vy = -JUMP;
-        p.grounded = false;
+        me.vy=-660;
+        me.grounded=false;
 
     }
 
-    p.vy += GRAVITY * dt;
+    me.vy+=1800*dt;
 
-    movePlayerHorizontal(p);
-    movePlayerVertical(p);
+    /*
+       Horizontal
+    */
 
-    if(p.y > 1050){
+    me.x+=me.vx*dt;
 
-        killPlayer(p);
+    for(const s of solids){
 
-    }
-
-}
-
-/* =========================================================
-   HORIZONTAL COLLISION
-========================================================= */
-
-function movePlayerHorizontal(p){
-
-    p.x += p.vx * dt;
-
-    const collisions =
-        getCollisionSolids();
-
-    for(const s of collisions){
-
-        const box = {
-            x:p.x,
-            y:p.y,
-            width:p.width,
-            height:p.height
+        const box={
+            x:me.x,
+            y:me.y,
+            width:me.width,
+            height:me.height
         };
 
-        if(!rectsOverlap(box,s))
+        if(!overlap(box,s))
             continue;
 
-        if(p.vx > 0){
+        if(me.vx>0)
+            me.x=s.x-me.width;
 
-            p.x =
-                s.x -
-                p.width;
+        if(me.vx<0)
+            me.x=s.x+s.w;
 
-        }else if(p.vx < 0){
+        me.vx=0;
 
-            p.x =
-                s.x +
-                s.w;
+    }
+
+    /*
+       Vertical
+    */
+
+    me.y+=me.vy*dt;
+    me.grounded=false;
+
+    for(const s of solids){
+
+        const box={
+            x:me.x,
+            y:me.y,
+            width:me.width,
+            height:me.height
+        };
+
+        if(!overlap(box,s))
+            continue;
+
+        if(me.vy>0){
+
+            me.y=s.y-me.height;
+            me.vy=0;
+            me.grounded=true;
 
         }
 
-        p.vx = 0;
+        if(me.vy<0){
+
+            me.y=s.y+s.h;
+            me.vy=0;
+
+        }
 
     }
 
-    p.x =
+    me.x=
         Math.max(
             0,
             Math.min(
-                world.width-p.width,
-                p.x
+                7560,
+                me.x
             )
         );
-
-}
-
-/* =========================================================
-   VERTICAL COLLISION
-========================================================= */
-
-function movePlayerVertical(p){
-
-    p.grounded = false;
-
-    p.y += p.vy * dt;
-
-    const collisions =
-        getCollisionSolids();
-
-    for(const s of collisions){
-
-        const box = {
-            x:p.x,
-            y:p.y,
-            width:p.width,
-            height:p.height
-        };
-
-        if(!rectsOverlap(box,s))
-            continue;
-
-        if(p.vy > 0){
-
-            p.y =
-                s.y -
-                p.height;
-
-            p.vy = 0;
-            p.grounded = true;
-
-        }else if(p.vy < 0){
-
-            p.y =
-                s.y +
-                s.h;
-
-            p.vy = 0;
-
-        }
-
-    }
 
 }
 
@@ -1637,27 +1775,33 @@ function updateOxygen(){
     if(!me || me.dead)
         return;
 
+    const difficulty =
+        selectedShip
+            ? selectedShip.difficulty
+            : 1;
+
     /*
-       The ship has oxygen in the safe docking/crew areas.
-       Deeper sections have damaged atmosphere.
+       Oxygen gets progressively worse
+       on harder ships.
     */
 
-    let dangerous =
-        me.x > 2450;
-
-    if(dangerous){
+    if(me.x>1800){
 
         me.oxygen -=
-            dt * 2.1;
+            dt*
+            (
+                1.2+
+                difficulty*.38
+            );
 
     }else{
 
         me.oxygen +=
-            dt * 3.5;
+            dt*4;
 
     }
 
-    me.oxygen =
+    me.oxygen=
         Math.max(
             0,
             Math.min(
@@ -1666,94 +1810,99 @@ function updateOxygen(){
             )
         );
 
-    if(me.oxygen <= 0){
+    if(me.oxygen<=0){
 
-        killPlayer(me);
+        killPlayer();
 
     }
 
 }
 
 /* =========================================================
-   ENEMY AI
+   ENEMIES
 ========================================================= */
 
 function updateEnemies(){
 
-    for(const enemy of enemies){
+    for(const e of enemies){
 
-        if(!enemy.alive)
+        if(!e.alive)
             continue;
 
-        enemy.attackCooldown =
+        e.attackCooldown=
             Math.max(
                 0,
-                enemy.attackCooldown-dt
+                e.attackCooldown-dt
             );
 
-        let target = null;
+        let chasing=false;
 
-        if(me && !me.dead){
+        if(
+            me &&
+            !me.dead
+        ){
 
-            const dx =
-                me.x -
-                enemy.x;
+            const dx=
+                me.x-e.x;
 
-            const distance =
+            const distance=
                 Math.abs(dx);
 
-            if(distance < 430){
+            const difficulty =
+                selectedShip
+                    ? selectedShip.difficulty
+                    : 1;
 
-                target = me;
-                enemy.alert = 1;
+            if(
+                distance<
+                260+
+                difficulty*55
+            ){
+
+                chasing=true;
+
+                e.alert=1;
+
+                e.dir=
+                    Math.sign(dx) ||
+                    e.dir;
 
             }
 
         }
 
-        if(target){
+        if(chasing){
 
-            const dx =
-                target.x -
-                enemy.x;
-
-            enemy.dir =
-                Math.sign(dx) || enemy.dir;
-
-            enemy.x +=
-                enemy.dir *
-                enemy.speed *
+            e.x+=
+                e.dir*
+                e.speed*
                 dt;
 
         }else{
 
-            enemy.x +=
-                enemy.dir *
-                enemy.speed *
-                .45 *
+            e.x+=
+                e.dir*
+                e.speed*
+                .45*
                 dt;
 
             if(
-                enemy.x <
-                enemy.patrolA
+                e.x<
+                e.patrolA
             ){
 
-                enemy.x =
-                    enemy.patrolA;
-
-                enemy.dir = 1;
+                e.x=e.patrolA;
+                e.dir=1;
 
             }
 
             if(
-                enemy.x >
-                enemy.patrolB
+                e.x>
+                e.patrolB
             ){
 
-                enemy.x =
-                    enemy.patrolB;
-
-                enemy.dir = -1;
+                e.x=e.patrolB;
+                e.dir=-1;
 
             }
 
@@ -1762,26 +1911,30 @@ function updateEnemies(){
         if(
             me &&
             !me.dead &&
-            rectOverlapEnemy(enemy,me)
+            enemyHitsPlayer(e)
         ){
 
             if(
-                enemy.attackCooldown <= 0
+                e.attackCooldown<=0
             ){
 
+                const difficulty =
+                    selectedShip
+                        ? selectedShip.difficulty
+                        : 1;
+
                 me.health -=
-                    enemy.type === "stalker"
-                        ? 30
-                        : 18;
+                    12+
+                    difficulty*3;
 
-                enemy.attackCooldown = 1;
+                e.attackCooldown=1;
 
-                camera.shake = 8;
+                camera.shake=10;
 
-                if(me.health <= 0){
+                if(me.health<=0){
 
-                    me.health = 0;
-                    killPlayer(me);
+                    me.health=0;
+                    killPlayer();
 
                 }
 
@@ -1793,72 +1946,50 @@ function updateEnemies(){
 
 }
 
-function rectOverlapEnemy(e,p){
+function enemyHitsPlayer(e){
 
-    return (
-        e.x < p.x+p.width &&
-        e.x+e.w > p.x &&
-        e.y < p.y+p.height &&
-        e.y+e.h > p.y
+    return(
+        e.x<me.x+me.width &&
+        e.x+e.w>me.x &&
+        e.y<me.y+me.height &&
+        e.y+e.h>me.y
     );
 
 }
 
 /* =========================================================
-   SALVAGE INTERACTION
+   INTERACTION
 ========================================================= */
 
-function distanceToLoot(item){
-
-    if(!me)
-        return Infinity;
-
-    const ax =
-        me.x +
-        me.width/2;
-
-    const ay =
-        me.y +
-        me.height/2;
-
-    const bx =
-        item.x +
-        item.w/2;
-
-    const by =
-        item.y +
-        item.h/2;
-
-    return Math.hypot(
-        ax-bx,
-        ay-by
-    );
-
-}
-
-function nearestSalvage(){
+function nearestLoot(){
 
     if(!me)
         return null;
 
-    let best = null;
-    let bestDistance = 95;
+    let best=null;
+    let distance=100;
 
     for(const item of salvageObjects){
 
-        if(item.extracted)
+        if(
+            item.extracted ||
+            item.carried
+        )
             continue;
 
-        if(item.carried)
-            continue;
+        const dx=
+            item.x-me.x;
 
-        const d =
-            distanceToLoot(item);
+        const dy=
+            item.y-me.y;
 
-        if(d < bestDistance){
+        const d=
+            Math.hypot(dx,dy);
 
-            bestDistance = d;
-            best = item;
+        if(d<distance){
+
+            distance=d;
+            best=item;
 
         }
 
@@ -1880,52 +2011,46 @@ function interact(){
 
     }
 
-    const item =
-        nearestSalvage();
+    const item=
+        nearestLoot();
 
     if(!item)
         return;
 
-    item.carried = true;
-    item.holder = me.id;
+    item.carried=true;
+    item.holder=me.id;
 
-    me.holding = item;
+    me.holding=item;
 
     showMessage(
-        "SALVAGE SECURED · " +
+        "SALVAGE SECURED · "+
         item.name
     );
 
 }
 
-/* =========================================================
-   DROP
-========================================================= */
-
 function dropLoot(){
 
-    if(!me || !me.holding)
+    if(!me.holding)
         return;
 
-    const item =
+    const item=
         me.holding;
 
-    item.carried = false;
-    item.holder = null;
+    item.carried=false;
+    item.holder=null;
 
-    item.x =
-        me.x +
-        me.width/2 -
-        item.w/2 +
+    item.x=
+        me.x+
+        me.width/2+
         me.facing*45;
 
-    item.y =
-        me.y +
-        me.height -
-        item.h -
-        3;
+    item.y=
+        me.y+
+        me.height-
+        item.h;
 
-    me.holding = null;
+    me.holding=null;
 
 }
 
@@ -1933,11 +2058,11 @@ function dropLoot(){
    EXTRACTION
 ========================================================= */
 
-const extraction = {
-    x:7080,
-    y:720,
-    w:430,
-    h:180
+const extraction={
+    x:7050,
+    y:700,
+    w:480,
+    h:200
 };
 
 function checkExtraction(){
@@ -1945,117 +2070,110 @@ function checkExtraction(){
     if(!me || me.dead)
         return;
 
-    if(
-        me.x+me.width >
+    const inside=
+        me.x+me.width>
             extraction.x &&
-        me.x <
-            extraction.x+extraction.w &&
-        me.y+me.height >
+        me.x<
+            extraction.x+
+            extraction.w &&
+        me.y+me.height>
             extraction.y &&
-        me.y <
-            extraction.y+extraction.h
+        me.y<
+            extraction.y+
+            extraction.h;
+
+    if(
+        inside &&
+        me.holding
     ){
 
-        if(me.holding){
+        const item=
+            me.holding;
 
-            const item =
-                me.holding;
+        me.salvage+=
+            item.value;
 
-            me.salvage +=
-                item.value;
+        item.extracted=true;
+        item.carried=false;
+        item.holder=null;
 
-            item.extracted = true;
-            item.carried = false;
-            item.holder = null;
-            item.x = -9999;
-            item.y = -9999;
+        item.x=-9999;
+        item.y=-9999;
 
-            me.holding = null;
+        me.holding=null;
 
-            updateMoney();
+        updateHUD();
 
-            showMessage(
-                "SALVAGED · +$" +
-                item.value
-            );
-
-        }
+        showMessage(
+            "EXTRACTED · +$"+
+            item.value
+        );
 
     }
 
 }
 
 /* =========================================================
-   DEATH / RESPAWN
+   DEATH
 ========================================================= */
 
-function killPlayer(p){
+function killPlayer(){
 
-    if(!p || p.dead)
+    if(!me || me.dead)
         return;
 
-    p.dead = true;
+    me.dead=true;
 
-    p.vx = 0;
-    p.vy = 0;
+    if(me.holding){
 
-    if(p.holding){
+        const item=
+            me.holding;
 
-        const item =
-            p.holding;
+        item.carried=false;
+        item.holder=null;
 
-        item.carried = false;
-        item.holder = null;
+        item.x=me.x;
+        item.y=me.y;
 
-        item.x = p.x;
-        item.y = p.y;
-
-        p.holding = null;
+        me.holding=null;
 
     }
 
-    camera.shake = 18;
+    camera.shake=20;
 
     showMessage(
-        "☠ LOST IN THE ORPHEUS-7"
+        "☠ CREW MEMBER LOST"
     );
 
-    setTimeout(()=>{
-
-        respawnPlayer(p);
-
-    },1800);
+    setTimeout(
+        respawn,
+        1800
+    );
 
 }
 
-function respawnPlayer(p){
+function respawn(){
 
-    p.dead = false;
+    if(!me)
+        return;
 
-    p.health = 100;
-    p.oxygen = 100;
+    me.dead=false;
+    me.health=100;
+    me.oxygen=100;
 
-    p.x =
+    me.x=
         isHost
             ? 250
-            : 340;
+            : 350;
 
-    p.y = 820;
+    me.y=820;
 
-    p.vx = 0;
-    p.vy = 0;
+    me.vx=0;
+    me.vy=0;
 
-    if(p.id === myId){
-
-        showMessage(
-            "BACK ON YOUR FEET"
-        );
-
-    }
-
-    send({
-        type:"respawn"
-    });
+    showMessage(
+        "BACK ON YOUR FEET"
+    );
 
 }
 
@@ -2068,35 +2186,22 @@ function updateCamera(){
     if(!me)
         return;
 
-    const targetX =
-        me.x +
-        me.width/2 -
+    const target=
+        me.x+
+        me.width/2-
         W/2;
 
-    const targetY =
-        me.y +
-        me.height/2 -
-        H/2;
-
-    camera.x +=
+    camera.x+=
         (
-            targetX-camera.x
-        ) *
+            target-
+            camera.x
+        )*
         Math.min(
             1,
             dt*7
         );
 
-    camera.y +=
-        (
-            targetY-camera.y
-        ) *
-        Math.min(
-            1,
-            dt*7
-        );
-
-    camera.x =
+    camera.x=
         Math.max(
             0,
             Math.min(
@@ -2105,22 +2210,13 @@ function updateCamera(){
             )
         );
 
-    camera.y =
-        Math.max(
-            0,
-            Math.min(
-                world.height-H,
-                camera.y
-            )
-        );
+    if(camera.shake>0){
 
-    if(camera.shake > 0){
-
-        camera.shake *=
-            Math.pow(.03,dt);
-
-        if(camera.shake < .2)
-            camera.shake = 0;
+        camera.shake*=
+            Math.pow(
+                .03,
+                dt
+            );
 
     }
 
@@ -2131,44 +2227,53 @@ function sx(x){
 }
 
 function sy(y){
-    return y-camera.y;
+    return y;
 }
 
 /* =========================================================
-   DRAW BACKGROUND
+   DRAW SPACE
 ========================================================= */
 
 function drawSpace(){
 
     ctx.fillStyle="#02040a";
-    ctx.fillRect(0,0,W,H);
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
 
-    for(let i=0;i<180;i++){
+    for(
+        let i=0;
+        i<180;
+        i++
+    ){
 
-        let x =
-            (i*271 -
-             camera.x*.12)
-            % (W+100);
+        let x=
+            (
+                i*271-
+                camera.x*.1
+            )%
+            (W+100);
 
         if(x<0)
-            x += W+100;
+            x+=W+100;
 
-        const y =
-            (i*137) % H;
+        const y=
+            (i*137)%H;
 
-        const r =
-            1+(i%2);
-
-        ctx.globalAlpha =
-            .25+(i%5)*.1;
+        ctx.globalAlpha=
+            .25+
+            (i%5)*.1;
 
         ctx.fillStyle="#dce8ff";
 
         ctx.fillRect(
             x,
             y,
-            r,
-            r
+            1+(i%2),
+            1+(i%2)
         );
 
     }
@@ -2178,16 +2283,21 @@ function drawSpace(){
 }
 
 /* =========================================================
-   SHIP HULL
+   DRAW SHIP
 ========================================================= */
 
 function drawShip(){
 
+    const difficulty =
+        selectedShip
+            ? selectedShip.difficulty
+            : 1;
+
     /*
-       Outer hull shadow
+       Hull
     */
 
-    ctx.fillStyle="#050a13";
+    ctx.fillStyle="#080e17";
 
     ctx.fillRect(
         sx(0),
@@ -2197,10 +2307,10 @@ function drawShip(){
     );
 
     /*
-       Main interior wall
+       Interior
     */
 
-    ctx.fillStyle="#0c1420";
+    ctx.fillStyle="#0d1622";
 
     ctx.fillRect(
         sx(0),
@@ -2210,15 +2320,19 @@ function drawShip(){
     );
 
     /*
-       wall panels
+       Wall panels
     */
 
-    for(let x=0;x<world.width;x+=120){
+    for(
+        let x=0;
+        x<world.width;
+        x+=120
+    ){
 
-        ctx.fillStyle =
+        ctx.fillStyle=
             x%240===0
-                ? "#101b2a"
-                : "#0e1826";
+                ? "#101b29"
+                : "#0d1724";
 
         ctx.fillRect(
             sx(x),
@@ -2227,8 +2341,7 @@ function drawShip(){
             840
         );
 
-        ctx.strokeStyle="#1d2a3d";
-        ctx.lineWidth=2;
+        ctx.strokeStyle="#1c2a3d";
 
         ctx.beginPath();
 
@@ -2247,23 +2360,10 @@ function drawShip(){
     }
 
     /*
-       Ceiling
+       Floor
     */
 
-    ctx.fillStyle="#080d16";
-
-    ctx.fillRect(
-        sx(0),
-        sy(0),
-        world.width,
-        45
-    );
-
-    /*
-       Floor foundation
-    */
-
-    ctx.fillStyle="#111a27";
+    ctx.fillStyle="#1a2634";
 
     ctx.fillRect(
         sx(0),
@@ -2273,15 +2373,16 @@ function drawShip(){
     );
 
     /*
-       floor panels
+       Floor panels
     */
 
-    for(let x=0;x<world.width;x+=90){
+    for(
+        let x=0;
+        x<world.width;
+        x+=80
+    ){
 
-        ctx.strokeStyle =
-            "#263244";
-
-        ctx.lineWidth=1;
+        ctx.strokeStyle="#293749";
 
         ctx.beginPath();
 
@@ -2300,61 +2401,42 @@ function drawShip(){
     }
 
     /*
-       ceiling lights
+       Ceiling
     */
 
-    for(let x=40;x<world.width;x+=170){
+    ctx.fillStyle="#080d15";
 
-        const broken =
-            Math.sin(x*.03)>0.72;
-
-        ctx.fillStyle =
-            broken
-                ? "#252b32"
-                : "#7b9bc7";
-
-        ctx.fillRect(
-            sx(x),
-            sy(18),
-            85,
-            8
-        );
-
-        if(!broken){
-
-            ctx.globalAlpha=.08;
-
-            ctx.fillStyle="#91baff";
-
-            ctx.fillRect(
-                sx(x-15),
-                sy(26),
-                115,
-                90
-            );
-
-            ctx.globalAlpha=1;
-
-        }
-
-    }
+    ctx.fillRect(
+        sx(0),
+        sy(0),
+        world.width,
+        45
+    );
 
     /*
-       Warning floor stripe
+       Lights become worse on harder ships.
     */
 
-    for(let x=0;x<world.width;x+=80){
+    for(
+        let x=30;
+        x<world.width;
+        x+=160
+    ){
 
-        ctx.fillStyle =
-            x%160===0
-                ? "#b18a32"
-                : "#17191c";
+        const broken =
+            Math.random()<0.0001+
+            difficulty*.02;
+
+        ctx.fillStyle=
+            broken
+                ? "#22272d"
+                : "#718eaf";
 
         ctx.fillRect(
             sx(x),
-            sy(890),
-            80,
-            8
+            sy(17),
+            85,
+            7
         );
 
     }
@@ -2362,131 +2444,7 @@ function drawShip(){
 }
 
 /* =========================================================
-   SECTION SIGNS
-========================================================= */
-
-function drawSectionSigns(){
-
-    for(const section of sections){
-
-        const x =
-            section.x+30;
-
-        ctx.fillStyle="#050a12";
-
-        ctx.fillRect(
-            sx(x),
-            sy(85),
-            250,
-            55
-        );
-
-        ctx.strokeStyle="#2c3d58";
-        ctx.strokeRect(
-            sx(x),
-            sy(85),
-            250,
-            55
-        );
-
-        ctx.fillStyle="#7e91b5";
-
-        ctx.font="bold 13px Arial";
-
-        ctx.fillText(
-            section.name,
-            sx(x+15),
-            sy(108)
-        );
-
-        ctx.fillStyle="#445572";
-
-        ctx.font="9px Arial";
-
-        ctx.fillText(
-            section.subtitle,
-            sx(x+15),
-            sy(126)
-        );
-
-    }
-
-}
-
-/* =========================================================
-   BULKHEADS
-========================================================= */
-
-function drawBulkheads(){
-
-    for(const wall of walls){
-
-        ctx.fillStyle="#202c3c";
-
-        ctx.fillRect(
-            sx(wall.x),
-            sy(wall.y),
-            wall.w,
-            wall.h
-        );
-
-        ctx.fillStyle="#3a4b63";
-
-        ctx.fillRect(
-            sx(wall.x),
-            sy(wall.y),
-            wall.w,
-            5
-        );
-
-    }
-
-    for(const door of doors){
-
-        ctx.fillStyle =
-            door.open
-                ? "#172638"
-                : "#251923";
-
-        ctx.fillRect(
-            sx(door.x),
-            sy(door.y),
-            door.w,
-            door.h
-        );
-
-        ctx.strokeStyle =
-            door.open
-                ? "#3d6c70"
-                : "#6e3b48";
-
-        ctx.lineWidth=3;
-
-        ctx.strokeRect(
-            sx(door.x-7),
-            sy(door.y),
-            door.w+14,
-            door.h
-        );
-
-        ctx.fillStyle =
-            door.open
-                ? "#5de0b1"
-                : "#ff4e63";
-
-        ctx.fillRect(
-            sx(door.x-15),
-            sy(door.y+20),
-            5,
-            22
-        );
-
-    }
-
-}
-
-/* =========================================================
-   PROP DRAWING
+   PROPS
 ========================================================= */
 
 function drawProps(){
@@ -2496,17 +2454,9 @@ function drawProps(){
         const x=sx(p.x);
         const y=sy(p.y);
 
-        if(
-            x+p.w<0 ||
-            x>W ||
-            y+p.h<0 ||
-            y>H
-        )
-            continue;
-
         if(p.type==="window"){
 
-            ctx.fillStyle="#050b14";
+            ctx.fillStyle="#030914";
 
             ctx.fillRect(
                 x,
@@ -2515,20 +2465,22 @@ function drawProps(){
                 p.h
             );
 
-            const g =
+            const g=
                 ctx.createLinearGradient(
-                    x,y,
-                    x+p.w,y+p.h
+                    x,
+                    y,
+                    x+p.w,
+                    y+p.h
                 );
 
             g.addColorStop(
                 0,
-                "#18365d"
+                "#183b64"
             );
 
             g.addColorStop(
                 .5,
-                "#081529"
+                "#07172b"
             );
 
             g.addColorStop(
@@ -2545,20 +2497,19 @@ function drawProps(){
                 p.h-16
             );
 
-            for(let i=0;i<8;i++){
+            for(
+                let i=0;
+                i<8;
+                i++
+            ){
 
-                ctx.fillStyle="#9cb9dc";
+                ctx.fillStyle="#b8d8ff";
 
-                ctx.globalAlpha =
-                    .25+(i%3)*.15;
+                ctx.globalAlpha=.4;
 
                 ctx.fillRect(
-                    x+15+(i*37)%(
-                        p.w-25
-                    ),
-                    y+20+(i*19)%(
-                        p.h-30
-                    ),
+                    x+20+i*31,
+                    y+20+(i%4)*19,
                     2,
                     2
                 );
@@ -2567,7 +2518,7 @@ function drawProps(){
 
             ctx.globalAlpha=1;
 
-            ctx.strokeStyle="#40516c";
+            ctx.strokeStyle="#40536e";
             ctx.lineWidth=4;
 
             ctx.strokeRect(
@@ -2579,64 +2530,11 @@ function drawProps(){
 
         }
 
-        else if(p.type==="console"){
-
-            ctx.fillStyle="#172333";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#050b13";
-
-            ctx.fillRect(
-                x+10,
-                y+10,
-                p.w-20,
-                28
-            );
-
-            ctx.fillStyle="#55d8ff";
-
-            ctx.fillRect(
-                x+18,
-                y+22,
-                p.w-36,
-                3
-            );
-
-            ctx.fillStyle="#38a2d0";
-
-            ctx.fillRect(
-                x+15,
-                y+47,
-                10,
-                5
-            );
-
-            ctx.fillStyle="#f0ba56";
-
-            ctx.fillRect(
-                x+35,
-                y+47,
-                10,
-                5
-            );
-
-        }
-
         else if(
-            p.type==="crate" ||
-            p.type==="cargo"
+            p.type==="crate"
         ){
 
-            ctx.fillStyle =
-                p.type==="crate"
-                    ? "#354252"
-                    : "#2a3949";
+            ctx.fillStyle="#354456";
 
             ctx.fillRect(
                 x,
@@ -2645,8 +2543,7 @@ function drawProps(){
                 p.h
             );
 
-            ctx.strokeStyle="#60718a";
-            ctx.lineWidth=2;
+            ctx.strokeStyle="#657890";
 
             ctx.strokeRect(
                 x,
@@ -2655,176 +2552,80 @@ function drawProps(){
                 p.h
             );
 
-            for(
-                let xx=x+15;
-                xx<x+p.w;
-                xx+=30
-            ){
+            ctx.strokeStyle="#202d3c";
 
-                ctx.strokeStyle="#1b2735";
+            for(
+                let xx=x+20;
+                xx<x+p.w;
+                xx+=35
+            ){
 
                 ctx.beginPath();
 
                 ctx.moveTo(
                     xx,
-                    y+4
+                    y
                 );
 
                 ctx.lineTo(
                     xx,
-                    y+p.h-4
+                    y+p.h
                 );
 
                 ctx.stroke();
 
             }
 
-            ctx.fillStyle="#d4aa43";
-
-            ctx.fillRect(
-                x+8,
-                y+8,
-                20,
-                4
-            );
-
-        }
-
-        else if(p.type==="bed"){
-
-            ctx.fillStyle="#222e40";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#8594ab";
+            ctx.fillStyle="#c7a64b";
 
             ctx.fillRect(
                 x+10,
-                y+8,
-                50,
-                28
-            );
-
-            ctx.fillStyle="#38485f";
-
-            ctx.fillRect(
-                x+65,
-                y+8,
-                p.w-75,
-                35
-            );
-
-        }
-
-        else if(p.type==="locker"){
-
-            ctx.fillStyle="#273546";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.strokeStyle="#52647b";
-
-            ctx.strokeRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#0c131e";
-
-            ctx.fillRect(
-                x+p.w/2-2,
-                y+15,
-                4,
-                p.h-30
-            );
-
-        }
-
-        else if(p.type==="table"){
-
-            ctx.fillStyle="#3a4656";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                14
-            );
-
-            ctx.fillRect(
-                x+15,
-                y+14,
-                10,
-                50
-            );
-
-            ctx.fillRect(
-                x+p.w-25,
-                y+14,
-                10,
-                50
-            );
-
-        }
-
-        else if(p.type==="machine"){
-
-            ctx.fillStyle="#172331";
-
-            ctx.fillRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.strokeStyle="#43546a";
-
-            ctx.strokeRect(
-                x,
-                y,
-                p.w,
-                p.h
-            );
-
-            ctx.fillStyle="#07101b";
-
-            ctx.fillRect(
-                x+15,
-                y+15,
-                p.w-30,
-                45
-            );
-
-            ctx.fillStyle="#63d7ff";
-
-            ctx.fillRect(
-                x+30,
-                y+36,
-                p.w-60,
+                y+10,
+                22,
                 4
             );
 
-            ctx.fillStyle="#ffbf55";
+        }
+
+        else if(
+            p.type==="console"
+        ){
+
+            ctx.fillStyle="#172536";
+
+            ctx.fillRect(
+                x,
+                y,
+                p.w,
+                p.h
+            );
+
+            ctx.fillStyle="#050a12";
+
+            ctx.fillRect(
+                x+10,
+                y+10,
+                p.w-20,
+                30
+            );
+
+            ctx.fillStyle="#59d8ff";
+
+            ctx.fillRect(
+                x+20,
+                y+23,
+                p.w-40,
+                3
+            );
+
+            ctx.fillStyle="#f0b94d";
 
             ctx.beginPath();
 
             ctx.arc(
-                x+p.w-25,
-                y+30,
-                5,
+                x+25,
+                y+53,
+                4,
                 0,
                 Math.PI*2
             );
@@ -2833,9 +2634,11 @@ function drawProps(){
 
         }
 
-        else if(p.type==="pipe"){
+        else if(
+            p.type==="pipe"
+        ){
 
-            ctx.fillStyle="#39485a";
+            ctx.fillStyle="#394a5c";
 
             ctx.fillRect(
                 x,
@@ -2844,25 +2647,20 @@ function drawProps(){
                 p.h
             );
 
-            ctx.fillStyle="#56677b";
+            ctx.fillStyle="#596b80";
 
             ctx.fillRect(
-                x-4,
-                y+30,
-                p.w+8,
-                8
-            );
-
-            ctx.fillRect(
-                x-4,
-                y+p.h-50,
-                p.w+8,
+                x-5,
+                y+25,
+                p.w+10,
                 8
             );
 
         }
 
-        else if(p.type==="reactor"){
+        else if(
+            p.type==="reactor"
+        ){
 
             ctx.fillStyle="#101b29";
 
@@ -2873,8 +2671,7 @@ function drawProps(){
                 p.h
             );
 
-            ctx.strokeStyle="#4b607c";
-
+            ctx.strokeStyle="#4d627d";
             ctx.lineWidth=4;
 
             ctx.strokeRect(
@@ -2884,66 +2681,64 @@ function drawProps(){
                 p.h
             );
 
-            const cx =
+            const cx=
                 x+p.w/2;
 
-            const cy =
-                y+150;
+            const cy=
+                y+160;
 
-            const g =
+            const glow=
                 ctx.createRadialGradient(
                     cx,
                     cy,
                     5,
                     cx,
                     cy,
-                    105
+                    120
                 );
 
-            g.addColorStop(
+            glow.addColorStop(
                 0,
-                "#d7fbff"
+                "#dffcff"
             );
 
-            g.addColorStop(
-                .25,
-                "#52d6ff"
+            glow.addColorStop(
+                .2,
+                "#5bdcff"
             );
 
-            g.addColorStop(
-                .7,
-                "#174b72"
+            glow.addColorStop(
+                .65,
+                "#17466b"
             );
 
-            g.addColorStop(
+            glow.addColorStop(
                 1,
-                "#07101b"
+                "#07101a"
             );
 
-            ctx.fillStyle=g;
+            ctx.fillStyle=glow;
 
             ctx.beginPath();
 
             ctx.arc(
                 cx,
                 cy,
-                105,
+                110,
                 0,
                 Math.PI*2
             );
 
             ctx.fill();
 
-            ctx.strokeStyle="#80eaff";
-
-            ctx.lineWidth=5;
+            ctx.strokeStyle="#79eaff";
 
             ctx.beginPath();
 
             ctx.arc(
                 cx,
                 cy,
-                82,
+                85,
                 performance.now()*.0005,
                 performance.now()*.0005+
                 Math.PI*1.5
@@ -2953,9 +2748,11 @@ function drawProps(){
 
         }
 
-        else if(p.type==="airlock"){
+        else if(
+            p.type==="airlock"
+        ){
 
-            ctx.fillStyle="#101a27";
+            ctx.fillStyle="#0f1b28";
 
             ctx.fillRect(
                 x,
@@ -2964,9 +2761,9 @@ function drawProps(){
                 p.h
             );
 
-            ctx.strokeStyle="#556b85";
+            ctx.strokeStyle="#5be0aa";
 
-            ctx.lineWidth=4;
+            ctx.lineWidth=3;
 
             ctx.strokeRect(
                 x,
@@ -2975,34 +2772,29 @@ function drawProps(){
                 p.h
             );
 
-            ctx.fillStyle="#65e4b0";
+            ctx.fillStyle="#5be0aa";
 
-            ctx.fillRect(
-                x+25,
-                y+30,
-                p.w-50,
-                8
-            );
+            ctx.font="bold 17px Arial";
 
-            ctx.fillStyle="#65758b";
-
-            ctx.font="bold 15px Arial";
+            ctx.textAlign="center";
 
             ctx.fillText(
-                "EXTRACTION AIRLOCK",
-                x+35,
-                y+70
+                "EXTRACTION",
+                x+p.w/2,
+                y+45
             );
-
-            ctx.fillStyle="#4f6179";
 
             ctx.font="10px Arial";
 
+            ctx.fillStyle="#6e9a88";
+
             ctx.fillText(
-                "RETURN TO YOUR SHIP",
-                x+55,
-                y+92
+                "RETURN TO ORPHEUS",
+                x+p.w/2,
+                y+65
             );
+
+            ctx.textAlign="left";
 
         }
 
@@ -3011,7 +2803,7 @@ function drawProps(){
 }
 
 /* =========================================================
-   PLATFORMS
+   SOLIDS
 ========================================================= */
 
 function drawSolids(){
@@ -3021,10 +2813,7 @@ function drawSolids(){
         const x=sx(s.x);
         const y=sy(s.y);
 
-        ctx.fillStyle =
-            s.type==="floor"
-                ? "#202b39"
-                : "#29394c";
+        ctx.fillStyle="#293a4e";
 
         ctx.fillRect(
             x,
@@ -3033,7 +2822,7 @@ function drawSolids(){
             s.h
         );
 
-        ctx.fillStyle="#566a83";
+        ctx.fillStyle="#526980";
 
         ctx.fillRect(
             x,
@@ -3042,83 +2831,42 @@ function drawSolids(){
             5
         );
 
-        if(s.type!=="floor"){
-
-            for(
-                let xx=s.x+25;
-                xx<s.x+s.w;
-                xx+=65
-            ){
-
-                ctx.strokeStyle="#182432";
-                ctx.lineWidth=2;
-
-                ctx.beginPath();
-
-                ctx.moveTo(
-                    sx(xx),
-                    sy(s.y+8)
-                );
-
-                ctx.lineTo(
-                    sx(xx+25),
-                    sy(s.y+8)
-                );
-
-                ctx.stroke();
-
-            }
-
-        }
-
     }
 
 }
 
 /* =========================================================
-   LOOT DRAWING
+   LOOT
 ========================================================= */
 
 function drawLoot(){
 
     for(const item of salvageObjects){
 
-        if(item.extracted)
-            continue;
-
-        if(item.carried)
-            continue;
-
-        const x =
-            sx(item.x+item.w/2);
-
-        const y =
-            sy(item.y+item.h/2);
-
         if(
-            x<-100 ||
-            x>W+100 ||
-            y<-100 ||
-            y>H+100
+            item.extracted ||
+            item.carried
         )
             continue;
 
-        const pulse =
-            Math.sin(
-                performance.now()/300+
-                item.x
-            )*3;
+        const x=
+            sx(item.x+
+            item.w/2);
+
+        const y=
+            sy(item.y+
+            item.h/2);
 
         ctx.globalAlpha=.08;
 
-        ctx.fillStyle="#75aaff";
+        ctx.fillStyle="#72aaff";
 
         ctx.beginPath();
 
         ctx.arc(
             x,
             y,
-            35+pulse,
+            35,
             0,
             Math.PI*2
         );
@@ -3127,43 +2875,43 @@ function drawLoot(){
 
         ctx.globalAlpha=1;
 
-        ctx.font="28px Arial";
+        ctx.font="27px Arial";
 
         ctx.textAlign="center";
 
         ctx.fillText(
             item.icon,
             x,
-            y+10
+            y+9
         );
 
-        ctx.textAlign="left";
-
         if(
-            distanceToLoot(item)<110
+            nearestLoot()===item
         ){
-
-            ctx.fillStyle="#d5e3ff";
 
             ctx.font="10px Arial";
 
-            ctx.textAlign="center";
+            ctx.fillStyle="#d7e4ff";
 
             ctx.fillText(
                 item.name,
                 x,
-                y+31
+                y+30
             );
-
-            ctx.textAlign="left";
 
         }
 
+        ctx.textAlign="left";
+
     }
 
-    if(me && me.holding){
+    if(
+        me &&
+        me.holding
+    ){
 
-        ctx.font="27px Arial";
+        ctx.font="28px Arial";
+
         ctx.textAlign="center";
 
         ctx.fillText(
@@ -3172,7 +2920,7 @@ function drawLoot(){
                 me.x+
                 me.width/2
             ),
-            sy(me.y-8)
+            me.y-10
         );
 
         ctx.textAlign="left";
@@ -3182,7 +2930,7 @@ function drawLoot(){
 }
 
 /* =========================================================
-   ENEMY DRAW
+   ENEMIES
 ========================================================= */
 
 function drawEnemies(){
@@ -3195,65 +2943,7 @@ function drawEnemies(){
         const x=sx(e.x);
         const y=sy(e.y);
 
-        /*
-           Shadow
-        */
-
-        ctx.fillStyle="rgba(0,0,0,.45)";
-
-        ctx.beginPath();
-
-        ctx.ellipse(
-            x+e.w/2,
-            y+e.h,
-            25,
-            6,
-            0,
-            0,
-            Math.PI*2
-        );
-
-        ctx.fill();
-
-        /*
-           Legs
-        */
-
-        ctx.strokeStyle="#161c27";
-        ctx.lineWidth=7;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            x+8,
-            y+e.h-4
-        );
-
-        ctx.lineTo(
-            x+2,
-            y+e.h+7
-        );
-
-        ctx.moveTo(
-            x+e.w-8,
-            y+e.h-4
-        );
-
-        ctx.lineTo(
-            x+e.w+5,
-            y+e.h+7
-        );
-
-        ctx.stroke();
-
-        /*
-           Body
-        */
-
-        ctx.fillStyle =
-            e.type==="stalker"
-                ? "#303442"
-                : "#242a35";
+        ctx.fillStyle="#222a36";
 
         ctx.beginPath();
 
@@ -3267,11 +2957,7 @@ function drawEnemies(){
 
         ctx.fill();
 
-        /*
-           Head
-        */
-
-        ctx.fillStyle="#3d4352";
+        ctx.fillStyle="#444c5a";
 
         ctx.beginPath();
 
@@ -3285,25 +2971,21 @@ function drawEnemies(){
 
         ctx.fill();
 
-        /*
-           Eyes
-        */
-
-        ctx.fillStyle =
+        ctx.fillStyle=
             e.alert
-                ? "#ff253f"
-                : "#9e3145";
+                ? "#ff2540"
+                : "#9d3044";
 
         ctx.fillRect(
             x+8,
-            y+8,
+            y+9,
             6,
             4
         );
 
         ctx.fillRect(
             x+e.w-14,
-            y+8,
+            y+9,
             6,
             4
         );
@@ -3313,7 +2995,7 @@ function drawEnemies(){
 }
 
 /* =========================================================
-   PLAYER DRAW
+   PLAYER
 ========================================================= */
 
 function drawPlayer(p){
@@ -3323,10 +3005,6 @@ function drawPlayer(p){
 
     const x=sx(p.x);
     const y=sy(p.y);
-
-    /*
-       Shadow
-    */
 
     ctx.fillStyle="rgba(0,0,0,.45)";
 
@@ -3344,22 +3022,14 @@ function drawPlayer(p){
 
     ctx.fill();
 
-    /*
-       backpack
-    */
-
-    ctx.fillStyle="#263447";
+    ctx.fillStyle="#27374b";
 
     ctx.fillRect(
         x-4,
         y+22,
         9,
-        27
+        28
     );
-
-    /*
-       body
-    */
 
     ctx.fillStyle=p.color;
 
@@ -3375,33 +3045,25 @@ function drawPlayer(p){
 
     ctx.fill();
 
-    /*
-       chest panel
-    */
-
-    ctx.fillStyle="#101b2b";
+    ctx.fillStyle="#0c1725";
 
     ctx.fillRect(
         x+9,
-        y+32,
+        y+33,
         p.width-18,
         13
     );
 
-    ctx.fillStyle="#61dcff";
+    ctx.fillStyle="#63dfff";
 
     ctx.fillRect(
         x+13,
-        y+36,
+        y+37,
         9,
         3
     );
 
-    /*
-       helmet
-    */
-
-    ctx.fillStyle="#dce7f8";
+    ctx.fillStyle="#dbe7f7";
 
     ctx.beginPath();
 
@@ -3415,11 +3077,7 @@ function drawPlayer(p){
 
     ctx.fill();
 
-    /*
-       visor
-    */
-
-    ctx.fillStyle="#0a1422";
+    ctx.fillStyle="#091321";
 
     ctx.beginPath();
 
@@ -3433,11 +3091,9 @@ function drawPlayer(p){
 
     ctx.fill();
 
-    /*
-       visor shine
-    */
+    ctx.fillStyle="#e8f7ff";
 
-    ctx.fillStyle="rgba(120,210,255,.4)";
+    ctx.globalAlpha=.3;
 
     ctx.fillRect(
         x+9,
@@ -3446,9 +3102,7 @@ function drawPlayer(p){
         2
     );
 
-    /*
-       name
-    */
+    ctx.globalAlpha=1;
 
     ctx.fillStyle="#eaf2ff";
 
@@ -3459,61 +3113,7 @@ function drawPlayer(p){
     ctx.fillText(
         p.name,
         x+p.width/2,
-        y-11
-    );
-
-    ctx.textAlign="left";
-
-}
-
-/* =========================================================
-   EXTRACTION
-========================================================= */
-
-function drawExtraction(){
-
-    const x=sx(extraction.x);
-    const y=sy(extraction.y);
-
-    ctx.fillStyle="rgba(54,190,137,.12)";
-
-    ctx.fillRect(
-        x,
-        y,
-        extraction.w,
-        extraction.h
-    );
-
-    ctx.strokeStyle="#54dca8";
-    ctx.lineWidth=2;
-
-    ctx.strokeRect(
-        x,
-        y,
-        extraction.w,
-        extraction.h
-    );
-
-    ctx.fillStyle="#64e6ae";
-
-    ctx.font="bold 18px Arial";
-
-    ctx.textAlign="center";
-
-    ctx.fillText(
-        "EXTRACTION",
-        x+extraction.w/2,
-        y+35
-    );
-
-    ctx.font="10px Arial";
-
-    ctx.fillStyle="#65947f";
-
-    ctx.fillText(
-        "BRING SALVAGE HERE",
-        x+extraction.w/2,
-        y+55
+        y-10
     );
 
     ctx.textAlign="left";
@@ -3529,28 +3129,26 @@ function drawLighting(){
     if(!me)
         return;
 
-    /*
-       Darkness overlay
-    */
+    const difficulty =
+        selectedShip
+            ? selectedShip.difficulty
+            : 1;
 
-    const px =
+    const px=
         sx(
             me.x+
             me.width/2
         );
 
-    const py =
-        sy(
-            me.y+
-            me.height/2
-        );
+    const py=
+        me.y+
+        me.height/2;
 
-    const radius =
-        me.x>2450
-            ? 300
-            : 430;
+    const radius=
+        440-
+        difficulty*45;
 
-    const g =
+    const g=
         ctx.createRadialGradient(
             px,
             py,
@@ -3566,13 +3164,13 @@ function drawLighting(){
     );
 
     g.addColorStop(
-        .55,
+        .5,
         "rgba(0,0,0,.25)"
     );
 
     g.addColorStop(
         1,
-        "rgba(0,0,0,.74)"
+        "rgba(0,0,0,.82)"
     );
 
     ctx.fillStyle=g;
@@ -3583,54 +3181,6 @@ function drawLighting(){
         W,
         H
     );
-
-    /*
-       Flashlight beam
-    */
-
-    const direction =
-        me.facing || 1;
-
-    const beam =
-        ctx.createLinearGradient(
-            px,
-            py,
-            px+direction*350,
-            py
-        );
-
-    beam.addColorStop(
-        0,
-        "rgba(120,180,255,.06)"
-    );
-
-    beam.addColorStop(
-        1,
-        "rgba(120,180,255,0)"
-    );
-
-    ctx.fillStyle=beam;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        px,
-        py
-    );
-
-    ctx.lineTo(
-        px+direction*360,
-        py-130
-    );
-
-    ctx.lineTo(
-        px+direction*360,
-        py+130
-    );
-
-    ctx.closePath();
-
-    ctx.fill();
 
 }
 
@@ -3643,80 +3193,35 @@ function updateHUD(){
     if(!me)
         return;
 
-    document.getElementById("money")
-        .textContent =
+    document.getElementById(
+        "money"
+    ).textContent=
         "$"+me.salvage;
 
-    document.getElementById("oxygen")
-        .textContent =
+    document.getElementById(
+        "hubMoney"
+    ).textContent=
+        me.salvage;
+
+    document.getElementById(
+        "oxygen"
+    ).textContent=
         Math.ceil(me.oxygen)+"%";
 
-    document.getElementById("health")
-        .textContent =
+    document.getElementById(
+        "health"
+    ).textContent=
         Math.ceil(me.health)+"%";
 
-    document.getElementById("oxygenFill")
-        .style.width =
+    document.getElementById(
+        "oxygenFill"
+    ).style.width=
         me.oxygen+"%";
 
-    document.getElementById("healthFill")
-        .style.width =
+    document.getElementById(
+        "healthFill"
+    ).style.width=
         me.health+"%";
-
-}
-
-function updateMoney(){
-    updateHUD();
-}
-
-/* =========================================================
-   INTERACTION UI
-========================================================= */
-
-function updateInteraction(){
-
-    const el =
-        document.getElementById(
-            "interaction"
-        );
-
-    if(!me || me.dead){
-
-        el.classList.remove("show");
-        return;
-
-    }
-
-    if(me.holding){
-
-        el.textContent =
-            "E — DROP " +
-            me.holding.name;
-
-        el.classList.add("show");
-
-        return;
-
-    }
-
-    const item =
-        nearestSalvage();
-
-    if(item){
-
-        el.textContent =
-            "E — PICK UP " +
-            item.name +
-            "  ·  $" +
-            item.value;
-
-        el.classList.add("show");
-
-        return;
-
-    }
-
-    el.classList.remove("show");
 
 }
 
@@ -3724,104 +3229,95 @@ function updateInteraction(){
    INVENTORY
 ========================================================= */
 
-const inventory =
-    document.getElementById(
-        "inventory"
-    );
-
 function toggleInventory(){
 
+    const inv=
+        document.getElementById(
+            "inventory"
+        );
+
     if(
-        inventory.style.display ===
-        "grid"
+        inv.style.display==="grid"
     ){
 
-        inventory.style.display =
-            "none";
+        inv.style.display="none";
 
-        return;
+    }else{
 
-    }
+        inv.style.display="grid";
 
-    inventory.style.display =
-        "grid";
-
-    rebuildInventory();
-
-}
-
-function rebuildInventory(){
-
-    const grid =
-        document.getElementById(
-            "inventoryGrid"
-        );
-
-    grid.innerHTML="";
-
-    const collected =
-        salvageObjects.filter(
-            item =>
-                item.extracted ||
-                (
-                    item.carried &&
-                    item.holder===myId
-                )
-        );
-
-    if(collected.length===0){
-
-        grid.innerHTML =
-            "<div class='item'>No salvage collected yet.</div>";
-
-        return;
-
-    }
-
-    for(const item of collected){
-
-        const div =
-            document.createElement(
-                "div"
+        const grid=
+            document.getElementById(
+                "inventoryGrid"
             );
 
-        div.className="item";
+        grid.innerHTML="";
 
-        div.innerHTML = `
-            <div class="item-icon">
-                ${item.icon}
-            </div>
-            <div class="item-name">
-                ${item.name}
-            </div>
-            <div class="item-name">
-                VALUE: $${item.value}
-            </div>
-        `;
+        const items=
+            salvageObjects.filter(
+                x=>
+                    x.extracted ||
+                    (
+                        x.carried &&
+                        x.holder===myId
+                    )
+            );
 
-        grid.appendChild(div);
+        if(!items.length){
+
+            grid.innerHTML=
+                "<div class='item'>Nothing collected.</div>";
+
+        }
+
+        for(const item of items){
+
+            const div=
+                document.createElement(
+                    "div"
+                );
+
+            div.className="item";
+
+            div.innerHTML=`
+                <div class="item-icon">
+                    ${item.icon}
+                </div>
+                <div class="item-name">
+                    ${item.name}
+                </div>
+                <div class="item-name">
+                    VALUE $${item.value}
+                </div>
+            `;
+
+            grid.appendChild(div);
+
+        }
 
     }
 
 }
 
-document
-    .getElementById("closeInventory")
-    .onclick=()=>{
+document.getElementById(
+    "closeInventory"
+).onclick=()=>{
 
-        inventory.style.display="none";
+    document.getElementById(
+        "inventory"
+    ).style.display="none";
 
-    };
+};
 
 /* =========================================================
-   MESSAGE
+   MESSAGES
 ========================================================= */
 
-let messageTimer = null;
+let messageTimer;
 
 function showMessage(text){
 
-    const el =
+    const el=
         document.getElementById(
             "message"
         );
@@ -3830,12 +3326,16 @@ function showMessage(text){
 
     el.classList.add("show");
 
-    clearTimeout(messageTimer);
+    clearTimeout(
+        messageTimer
+    );
 
-    messageTimer =
+    messageTimer=
         setTimeout(
             ()=>{
-                el.classList.remove("show");
+                el.classList.remove(
+                    "show"
+                );
             },
             2200
         );
@@ -3843,52 +3343,401 @@ function showMessage(text){
 }
 
 /* =========================================================
-   NETWORK CONNECT
+   ORPHEUS HUB DRAWING
+========================================================= */
+
+const hubCanvas=
+    document.getElementById(
+        "hubCanvas"
+    );
+
+const hubCtx=
+    hubCanvas.getContext("2d");
+
+function resizeHub(){
+
+    hubCanvas.width=innerWidth;
+    hubCanvas.height=innerHeight;
+
+}
+
+addEventListener(
+    "resize",
+    resizeHub
+);
+
+resizeHub();
+
+function drawOrpheus(){
+
+    const w=
+        hubCanvas.width;
+
+    const h=
+        hubCanvas.height;
+
+    hubCtx.fillStyle="#02050b";
+
+    hubCtx.fillRect(
+        0,
+        0,
+        w,
+        h
+    );
+
+    /*
+       stars
+    */
+
+    for(
+        let i=0;
+        i<130;
+        i++
+    ){
+
+        hubCtx.fillStyle=
+            "rgba(180,210,255,.5)";
+
+        hubCtx.fillRect(
+            (i*317)%w,
+            (i*179)%h,
+            1,
+            1
+        );
+
+    }
+
+    /*
+       giant Orpheus silhouette
+    */
+
+    const cx=w/2;
+    const cy=h/2;
+
+    hubCtx.fillStyle="#111b2a";
+
+    hubCtx.beginPath();
+
+    hubCtx.moveTo(
+        cx-430,
+        cy-100
+    );
+
+    hubCtx.lineTo(
+        cx-250,
+        cy-190
+    );
+
+    hubCtx.lineTo(
+        cx+280,
+        cy-160
+    );
+
+    hubCtx.lineTo(
+        cx+450,
+        cy
+    );
+
+    hubCtx.lineTo(
+        cx+260,
+        cy+150
+    );
+
+    hubCtx.lineTo(
+        cx-280,
+        cy+170
+    );
+
+    hubCtx.lineTo(
+        cx-450,
+        cy+80
+    );
+
+    hubCtx.closePath();
+
+    hubCtx.fill();
+
+    hubCtx.strokeStyle="#435977";
+    hubCtx.lineWidth=4;
+
+    hubCtx.stroke();
+
+    /*
+       cockpit
+    */
+
+    hubCtx.fillStyle="#1b4d70";
+
+    hubCtx.beginPath();
+
+    hubCtx.moveTo(
+        cx+300,
+        cy-65
+    );
+
+    hubCtx.lineTo(
+        cx+405,
+        cy
+    );
+
+    hubCtx.lineTo(
+        cx+300,
+        cy+65
+    );
+
+    hubCtx.closePath();
+
+    hubCtx.fill();
+
+    /*
+       engines
+    */
+
+    for(
+        let i=-1;
+        i<=1;
+        i++
+    ){
+
+        hubCtx.fillStyle="#61d9ff";
+
+        hubCtx.beginPath();
+
+        hubCtx.arc(
+            cx-400,
+            cy+i*60,
+            14,
+            0,
+            Math.PI*2
+        );
+
+        hubCtx.fill();
+
+    }
+
+    /*
+       hull lights
+    */
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        hubCtx.fillStyle=
+            i%3===0
+                ? "#f0b85b"
+                : "#6dbdff";
+
+        hubCtx.fillRect(
+            cx-250+i*42,
+            cy-15,
+            8,
+            5
+        );
+
+    }
+
+    /*
+       hangar floor
+    */
+
+    hubCtx.fillStyle="#08101c";
+
+    hubCtx.fillRect(
+        0,
+        h*.73,
+        w,
+        h*.27
+    );
+
+    hubCtx.strokeStyle="#1f344d";
+
+    for(
+        let x=0;
+        x<w;
+        x+=90
+    ){
+
+        hubCtx.beginPath();
+
+        hubCtx.moveTo(
+            x,
+            h*.73
+        );
+
+        hubCtx.lineTo(
+            x+70,
+            h
+        );
+
+        hubCtx.stroke();
+
+    }
+
+}
+
+function hubLoop(){
+
+    if(
+        !document
+            .getElementById("hub")
+            .classList
+            .contains("hidden")
+    ){
+
+        drawOrpheus();
+
+    }
+
+    requestAnimationFrame(
+        hubLoop
+    );
+
+}
+
+hubLoop();
+
+/* =========================================================
+   OPEN SHIP SELECT
+========================================================= */
+
+document.getElementById(
+    "selectRaidBtn"
+).onclick=()=>{
+
+    document.getElementById(
+        "hub"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "shipSelect"
+    ).classList.remove("hidden");
+
+};
+
+document.getElementById(
+    "shipBack"
+).onclick=()=>{
+
+    document.getElementById(
+        "shipSelect"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "hub"
+    ).classList.remove("hidden");
+
+};
+
+/* =========================================================
+   LAUNCH RAID
+========================================================= */
+
+function launchRaid(){
+
+    if(!selectedShip)
+        return;
+
+    document.getElementById(
+        "shipSelect"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "hub"
+    ).classList.add("hidden");
+
+    resetRaidWorld();
+
+    gameStarted=true;
+
+    document.getElementById(
+        "gameUI"
+    ).classList.remove("hidden");
+
+    document.getElementById(
+        "shipNameHud"
+    ).textContent=
+        selectedShip.name+
+        " · "+
+        selectedShip.type;
+
+    if(!me){
+
+        me=
+            makePlayer(
+                myId||"local",
+                practiceMode
+                    ? "You"
+                    : "Crew",
+                isHost
+                    ? 250
+                    : 350,
+                820,
+                isHost
+                    ? "#ff526c"
+                    : "#648cff"
+            );
+
+        players[
+            me.id
+        ]=me;
+
+    }
+
+    me.dead=false;
+    me.health=100;
+    me.oxygen=100;
+    me.salvage=0;
+
+    showMessage(
+        "BOARDING "+selectedShip.name
+    );
+
+}
+
+/* =========================================================
+   NETWORK
 ========================================================= */
 
 function connect(){
 
     try{
 
-        socket =
+        socket=
             new WebSocket(
                 SERVER
             );
 
         socket.onopen=()=>{
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .textContent =
-                "● Salvage network online";
+            document.getElementById(
+                "connectionStatus"
+            ).textContent=
+                "● SERVER ONLINE";
 
         };
 
         socket.onclose=()=>{
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .textContent =
-                "○ Salvage server offline";
+            document.getElementById(
+                "connectionStatus"
+            ).textContent=
+                "○ SERVER OFFLINE · PRACTICE STILL WORKS";
 
         };
 
         socket.onerror=()=>{
 
-            document
-                .getElementById(
-                    "connectionStatus"
-                )
-                .textContent =
-                "Network error";
+            document.getElementById(
+                "connectionStatus"
+            ).textContent=
+                "NETWORK ERROR";
 
         };
 
-        socket.onmessage =
+        socket.onmessage=
             handleServerMessage;
 
     }catch(err){
@@ -3903,7 +3752,7 @@ function send(data){
 
     if(
         socket &&
-        socket.readyState ===
+        socket.readyState===
         WebSocket.OPEN
     ){
 
@@ -3916,7 +3765,7 @@ function send(data){
 }
 
 /* =========================================================
-   SERVER MESSAGE
+   SERVER MESSAGES
 ========================================================= */
 
 function handleServerMessage(event){
@@ -3925,7 +3774,7 @@ function handleServerMessage(event){
 
     try{
 
-        data =
+        data=
             JSON.parse(
                 event.data
             );
@@ -3936,428 +3785,120 @@ function handleServerMessage(event){
 
     }
 
-    switch(data.type){
+    if(data.type==="connected"){
 
-        case "connected":
-
-            myId =
-                data.id;
-
-            break;
-
-        case "roomCreated":
-
-            room =
-                data.room;
-
-            isHost = true;
-
-            showRoom();
-
-            break;
-
-        case "roomJoined":
-
-            room =
-                data.room;
-
-            isHost = false;
-
-            showRoom();
-
-            break;
-
-        case "joined":
-
-            room =
-                data.room;
-
-            isHost = false;
-
-            showRoom();
-
-            break;
-
-        case "roomState":
-
-            updateRoom(
-                data
-            );
-
-            break;
-
-        case "playerJoined":
-
-            receivePlayer(
-                data
-            );
-
-            updateRoom(
-                data
-            );
-
-            break;
-
-        case "playerUpdate":
-
-            receivePlayer(
-                data
-            );
-
-            break;
-
-        case "playerMoved":
-
-            receivePlayer(
-                data
-            );
-
-            break;
-
-        case "gameStart":
-
-            beginGame();
-
-            break;
-
-        case "playerLeft":
-
-            delete players[
-                data.id
-            ];
-
-            break;
-
-        case "respawn":
-
-            if(
-                players[data.id]
-            ){
-
-                respawnRemote(
-                    players[data.id]
-                );
-
-            }
-
-            break;
-
-        case "error":
-
-            showMessage(
-                data.message ||
-                "NETWORK ERROR"
-            );
-
-            break;
+        myId=data.id;
 
     }
-
-}
-
-/* =========================================================
-   REMOTE PLAYER
-========================================================= */
-
-function receivePlayer(data){
-
-    if(!data || !data.id)
-        return;
-
-    if(data.id===myId){
-
-        if(me){
-
-            /*
-               Do not overwrite our local movement.
-            */
-
-            if(
-                typeof data.salvage ===
-                "number"
-            ){
-
-                me.salvage =
-                    data.salvage;
-
-            }
-
-        }
-
-        return;
-
-    }
-
-    let p =
-        players[data.id];
-
-    if(!p){
-
-        p =
-            makePlayer(
-                data.id,
-                data.name ||
-                    "CREW",
-                data.x ||
-                    300,
-                data.y ||
-                    820,
-                data.color ||
-                    "#ff5c72"
-            );
-
-        players[data.id]=p;
-
-    }
-
-    p.targetX =
-        typeof data.x==="number"
-            ? data.x
-            : p.x;
-
-    p.targetY =
-        typeof data.y==="number"
-            ? data.y
-            : p.y;
-
-    p.vx =
-        data.vx || 0;
-
-    p.vy =
-        data.vy || 0;
-
-    p.dead =
-        !!data.dead;
-
-    if(data.name)
-        p.name=data.name;
-
-}
-
-function updateRemotePlayers(){
-
-    for(const id in players){
-
-        if(id===myId)
-            continue;
-
-        const p =
-            players[id];
-
-        if(!p)
-            continue;
-
-        p.x +=
-            (
-                p.targetX-p.x
-            ) *
-            Math.min(
-                1,
-                dt*12
-            );
-
-        p.y +=
-            (
-                p.targetY-p.y
-            ) *
-            Math.min(
-                1,
-                dt*12
-            );
-
-    }
-
-}
-
-function respawnRemote(p){
-
-    p.dead=false;
-
-    p.x =
-        p.targetX;
-
-    p.y =
-        p.targetY;
-
-}
-
-/* =========================================================
-   NETWORK UPDATE
-========================================================= */
-
-let networkTimer=0;
-
-function updateNetwork(){
 
     if(
-        !me ||
-        practiceMode
-    )
-        return;
+        data.type==="roomCreated" ||
+        data.type==="roomJoined" ||
+        data.type==="joined"
+    ){
 
-    networkTimer += dt;
+        room=data.room;
 
-    if(networkTimer<.05)
-        return;
+        isHost=
+            data.type==="roomCreated";
 
-    networkTimer=0;
+        showRoom();
 
-    send({
+    }
 
-        type:"playerUpdate",
+    if(
+        data.type==="playerJoined" ||
+        data.type==="playerMoved" ||
+        data.type==="playerUpdate"
+    ){
 
-        id:me.id,
+        receiveRemote(data);
 
-        name:me.name,
+    }
 
-        x:me.x,
+    if(data.type==="gameStart"){
 
-        y:me.y,
+        /*
+           Multiplayer crew gets the Orpheus
+           first instead of immediately raiding.
+        */
 
-        vx:me.vx,
+        showOrpheus();
 
-        vy:me.vy,
+    }
 
-        grounded:me.grounded,
+    if(data.type==="playerLeft"){
 
-        dead:me.dead,
+        delete players[
+            data.id
+        ];
 
-        salvage:me.salvage
+    }
 
-    });
+    if(data.type==="error"){
+
+        showMessage(
+            data.message||
+            "SERVER ERROR"
+        );
+
+    }
 
 }
 
 /* =========================================================
-   LOBBY
+   ROOM
 ========================================================= */
-
-const lobby =
-    document.getElementById(
-        "lobby"
-    );
-
-const mainLobby =
-    document.getElementById(
-        "mainLobby"
-    );
-
-const joinLobby =
-    document.getElementById(
-        "joinLobby"
-    );
-
-const roomLobby =
-    document.getElementById(
-        "roomLobby"
-    );
-
-const gameUI =
-    document.getElementById(
-        "gameUI"
-    );
 
 function showRoom(){
 
-    lobby.classList.add("hidden");
+    document.getElementById(
+        "lobby"
+    ).classList.add("hidden");
 
-    roomLobby.classList.remove(
-        "hidden"
-    );
+    document.getElementById(
+        "joinLobby"
+    ).classList.add("hidden");
 
-    document
-        .getElementById(
-            "roomCode"
-        )
-        .textContent =
-        room || "----";
+    document.getElementById(
+        "roomLobby"
+    ).classList.remove("hidden");
 
-    document
-        .getElementById(
-            "roomStatus"
-        )
-        .textContent =
+    document.getElementById(
+        "roomCode"
+    ).textContent=
+        room||"----";
+
+    document.getElementById(
+        "roomStatus"
+    ).textContent=
         isHost
-            ? "You are the crew leader."
-            : "Waiting for the host to launch.";
+            ? "Crew leader · waiting for launch"
+            : "Waiting for crew leader";
 
 }
 
-function updateRoom(data){
+function showOrpheus(){
 
-    if(data.room)
-        room=data.room;
+    document.getElementById(
+        "roomLobby"
+    ).classList.add("hidden");
 
-    const list =
-        document.getElementById(
-            "playerList"
-        );
-
-    list.innerHTML="";
-
-    const roomPlayers =
-        data.players || [];
-
-    for(const p of roomPlayers){
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.className="player";
-
-        div.textContent =
-            (
-                p.host
-                    ? "⭐ "
-                    : "👤 "
-            ) +
-            (
-                p.name ||
-                "Crew"
-            );
-
-        list.appendChild(div);
-
-    }
-
-}
-
-/* =========================================================
-   BEGIN GAME
-========================================================= */
-
-function beginGame(){
-
-    gameStarted=true;
-    gameOver=false;
-
-    roomLobby.classList.add(
-        "hidden"
-    );
-
-    lobby.classList.add(
-        "hidden"
-    );
-
-    gameUI.classList.remove(
-        "hidden"
-    );
+    document.getElementById(
+        "hub"
+    ).classList.remove("hidden");
 
     if(!me){
 
-        me =
+        me=
             makePlayer(
-                myId || "local",
-                "You",
-                isHost
-                    ? 250
-                    : 340,
+                myId||"local",
+                "Crew",
+                isHost?250:350,
                 820,
                 isHost
-                    ? "#ff536b"
-                    : "#648bff"
+                    ? "#ff526c"
+                    : "#648cff"
             );
 
         players[
@@ -4366,14 +3907,139 @@ function beginGame(){
 
     }
 
-    me.dead=false;
-
-    me.health=100;
-    me.oxygen=100;
-
     showMessage(
-        "BOARDING ORPHEUS-7"
+        "WELCOME ABOARD ORPHEUS"
     );
+
+}
+
+/* =========================================================
+   REMOTE PLAYERS
+========================================================= */
+
+function receiveRemote(data){
+
+    if(
+        !data.id ||
+        data.id===myId
+    )
+        return;
+
+    let p=
+        players[data.id];
+
+    if(!p){
+
+        p=
+            makePlayer(
+                data.id,
+                data.name||"CREW",
+                data.x||350,
+                data.y||820,
+                data.color||"#648cff"
+            );
+
+        players[
+            data.id
+        ]=p;
+
+    }
+
+    p.targetX=
+        data.x??p.x;
+
+    p.targetY=
+        data.y??p.y;
+
+    p.dead=
+        !!data.dead;
+
+}
+
+/* =========================================================
+   REMOTE INTERPOLATION
+========================================================= */
+
+function updateRemote(){
+
+    for(const id in players){
+
+        if(id===myId)
+            continue;
+
+        const p=
+            players[id];
+
+        p.x+=
+            (
+                p.targetX-
+                p.x
+            )*
+            Math.min(
+                1,
+                dt*12
+            );
+
+        p.y+=
+            (
+                p.targetY-
+                p.y
+            )*
+            Math.min(
+                1,
+                dt*12
+            );
+
+    }
+
+}
+
+/* =========================================================
+   NETWORK SEND
+========================================================= */
+
+let networkTimer=0;
+
+function updateNetwork(){
+
+    if(
+        practiceMode ||
+        !me
+    )
+        return;
+
+    networkTimer+=dt;
+
+    if(
+        networkTimer<.05
+    )
+        return;
+
+    networkTimer=0;
+
+    /*
+       Compatible with the existing server's
+       movement protocol.
+    */
+
+    send({
+
+        type:"move",
+
+        x:me.x,
+        y:me.y,
+
+        vx:me.vx,
+        vy:me.vy,
+
+        grounded:me.grounded,
+
+        running:
+            Math.abs(me.vx)>300,
+
+        dead:me.dead
+
+    });
 
 }
 
@@ -4381,163 +4047,179 @@ function beginGame(){
    LOBBY BUTTONS
 ========================================================= */
 
-document
-    .getElementById("hostBtn")
-    .onclick=()=>{
+document.getElementById(
+    "hostBtn"
+).onclick=()=>{
 
-        const name =
-            document
-                .getElementById(
-                    "nameInput"
-                )
-                .value
-                .trim();
+    const name=
+        document.getElementById(
+            "nameInput"
+        ).value.trim();
 
-        if(!name){
+    if(!name){
 
-            showMessage(
-                "ENTER A CREW NAME"
-            );
+        alert(
+            "Enter a crew name."
+        );
 
-            return;
+        return;
 
-        }
+    }
 
-        send({
+    send({
 
-            type:"createRoom",
+        type:"host",
 
-            name
+        name
 
-        });
+    });
 
-    };
+};
 
-document
-    .getElementById("joinBtn")
-    .onclick=()=>{
+document.getElementById(
+    "joinBtn"
+).onclick=()=>{
 
-        mainLobby
-            .classList
-            .add("hidden");
+    document.getElementById(
+        "lobby"
+    ).classList.add("hidden");
 
-        joinLobby
-            .classList
-            .remove("hidden");
+    document.getElementById(
+        "joinLobby"
+    ).classList.remove("hidden");
 
-    };
+};
 
-document
-    .getElementById("joinBack")
-    .onclick=()=>{
+document.getElementById(
+    "joinBack"
+).onclick=()=>{
 
-        joinLobby
-            .classList
-            .add("hidden");
+    document.getElementById(
+        "joinLobby"
+    ).classList.add("hidden");
 
-        mainLobby
-            .classList
-            .remove("hidden");
+    document.getElementById(
+        "lobby"
+    ).classList.remove("hidden");
 
-    };
+};
 
-document
-    .getElementById("joinConfirm")
-    .onclick=()=>{
+document.getElementById(
+    "joinConfirm"
+).onclick=()=>{
 
-        const name =
-            document
-                .getElementById(
-                    "joinName"
-                )
-                .value
-                .trim();
+    const name=
+        document.getElementById(
+            "joinName"
+        ).value.trim();
 
-        const code =
-            document
-                .getElementById(
-                    "roomInput"
-                )
-                .value
-                .trim()
-                .toUpperCase();
+    const code=
+        document.getElementById(
+            "roomInput"
+        ).value
+        .trim()
+        .toUpperCase();
 
-        if(
-            !name ||
-            code.length!==4
-        ){
+    if(
+        !name ||
+        code.length!==4
+    ){
 
-            showMessage(
-                "ENTER A NAME AND 4-LETTER CODE"
-            );
+        alert(
+            "Enter your name and the 4-character room code."
+        );
 
-            return;
+        return;
 
-        }
+    }
 
-        send({
+    send({
 
-            type:"joinRoom",
+        type:"join",
 
-            room:code,
+        name,
 
-            name
+        room:code
 
-        });
+    });
 
-    };
+};
 
-document
-    .getElementById("practiceBtn")
-    .onclick=()=>{
+document.getElementById(
+    "practiceBtn"
+).onclick=()=>{
 
-        practiceMode=true;
+    practiceMode=true;
 
-        myId="practice";
+    isHost=true;
 
-        isHost=true;
+    myId="practice";
 
-        beginGame();
+    /*
+       Solo players also get the Orpheus.
+    */
 
-    };
+    me=
+        makePlayer(
+            "practice",
+            "You",
+            250,
+            820,
+            "#648cff"
+        );
 
-document
-    .getElementById("startBtn")
-    .onclick=()=>{
+    players.practice=me;
 
-        if(!isHost)
-            return;
+    showOrpheus();
 
-        send({
+};
 
-            type:"startGame"
+document.getElementById(
+    "launchBtn"
+).onclick=()=>{
 
-        });
+    if(!isHost){
 
-    };
+        showMessage(
+            "ONLY THE CREW LEADER CAN LAUNCH"
+        );
+
+        return;
+
+    }
+
+    /*
+       Server starts the crew session.
+       The actual raid is selected from the Orpheus.
+    */
+
+    send({
+        type:"startGame"
+    });
+
+};
 
 /* =========================================================
-   RENDER
+   MAIN LOOP
 ========================================================= */
 
 function render(){
 
     drawSpace();
 
+    if(!gameStarted)
+        return;
+
     updateCamera();
 
-    /*
-       Tiny camera shake
-    */
-
-    const shakeX =
+    const shakeX=
         camera.shake
             ? (
                 Math.random()-.5
             )*camera.shake
             : 0;
 
-    const shakeY =
+    const shakeY=
         camera.shake
             ? (
                 Math.random()-.5
@@ -4552,12 +4234,9 @@ function render(){
     );
 
     drawShip();
-    drawSectionSigns();
     drawProps();
-    drawBulkheads();
     drawSolids();
     drawLoot();
-    drawExtraction();
     drawEnemies();
 
     for(const id in players){
@@ -4574,13 +4253,9 @@ function render(){
 
 }
 
-/* =========================================================
-   MAIN LOOP
-========================================================= */
-
 function loop(now){
 
-    dt =
+    dt=
         Math.min(
             .033,
             (now-lastTime)/1000
@@ -4593,21 +4268,55 @@ function loop(now){
         me
     ){
 
-        updatePlayer(me);
-
-        updateRemotePlayers();
-
+        updatePlayer();
+        updateRemote();
         updateEnemies();
-
         updateOxygen();
-
         checkExtraction();
-
         updateNetwork();
-
-        updateInteraction();
-
         updateHUD();
+
+        const interaction=
+            document.getElementById(
+                "interaction"
+            );
+
+        if(me.holding){
+
+            interaction.textContent=
+                "E — DROP "+
+                me.holding.name;
+
+            interaction.classList.add(
+                "show"
+            );
+
+        }else{
+
+            const item=
+                nearestLoot();
+
+            if(item){
+
+                interaction.textContent=
+                    "E — PICK UP "+
+                    item.name+
+                    " · $"+
+                    item.value;
+
+                interaction.classList.add(
+                    "show"
+                );
+
+            }else{
+
+                interaction.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
 
     }
 
@@ -4619,17 +4328,10 @@ function loop(now){
 
 }
 
-/* =========================================================
-   START
-========================================================= */
-
+buildShipCards();
 connect();
-
-requestAnimationFrame(
-    loop
-);
+requestAnimationFrame(loop);
 
 </script>
-
 </body>
 </html>

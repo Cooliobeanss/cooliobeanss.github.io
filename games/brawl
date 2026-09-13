@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Coolio Brawl</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #09090f;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#menu {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at 50% 30%, #25204a 0%, #0b0b13 55%, #050509 100%);
+}
+
+.panel {
+    width: min(390px, 90vw);
+    padding: 32px;
+    border: 1px solid #ffffff20;
+    border-radius: 24px;
+    background: #ffffff0b;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 80px #0008;
+    text-align: center;
+}
+
+.logo {
+    font-size: 42px;
+    font-weight: 900;
+    margin-bottom: 5px;
+    background: linear-gradient(90deg, #ff3030, #fff, #3185ff);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: #aaa;
+    margin-bottom: 28px;
+}
+
+button,
+input {
+    width: 100%;
+    height: 52px;
+    margin-top: 10px;
+    border-radius: 13px;
+    border: 1px solid #ffffff18;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+button {
+    cursor: pointer;
+    color: white;
+    background: #ffffff12;
+    transition: .15s;
+}
+
+button:hover {
+    background: #ffffff20;
+    transform: translateY(-2px);
+}
+
+.host {
+    background: #d92735;
+}
+
+.join {
+    background: #286be8;
+}
+
+input {
+    padding: 0 15px;
+    background: #0006;
+    color: white;
+    outline: none;
+    text-align: center;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+#roomDisplay {
+    display: none;
+    margin-top: 20px;
+}
+
+.roomCode {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    margin: 8px;
+}
+
+#status {
+    margin-top: 18px;
+    color: #aaa;
+    min-height: 20px;
+}
+
+#gameUI {
+    display: none;
+}
+
+#topbar {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    padding: 10px 18px;
+    border-radius: 15px;
+    background: #0008;
+    backdrop-filter: blur(12px);
+    border: 1px solid #ffffff18;
+
+    font-weight: bold;
+}
+
+#players {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 5;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #0008;
+    border: 1px solid #ffffff15;
+}
+
+.red {
+    color: #ff3b3b;
+}
+
+.blue {
+    color: #438aff;
+}
+
+/* PHONE CONTROLS */
+
+#joystick {
+    display: none;
+    position: fixed;
+    left: 30px;
+    bottom: 30px;
+
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+
+    background: #ffffff12;
+    border: 2px solid #ffffff20;
+    z-index: 20;
+}
+
+#stick {
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+
+    background: #ffffff30;
+    border: 2px solid #ffffff30;
+
+    left: 34px;
+    top: 34px;
+}
+
+@media (pointer: coarse) {
+    #joystick {
+        display: block;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="menu">
+
+    <div class="panel">
+
+        <div class="logo">COOLIO BRAWL</div>
+        <div class="subtitle">Tiny multiplayer test 🔴🔵</div>
+
+        <button class="host" onclick="hostGame()">
+            🔴 HOST GAME
+        </button>
+
+        <input
+            id="roomInput"
+            maxlength="4"
+            placeholder="ROOM CODE"
+        >
+
+        <button class="join" onclick="joinGame()">
+            🔵 JOIN GAME
+        </button>
+
+        <div id="roomDisplay">
+            <div>Give this code to Player 2:</div>
+            <div class="roomCode" id="roomCode"></div>
+        </div>
+
+        <div id="status">
+            Connecting...
+        </div>
+
+    </div>
+
+</div>
+
+<div id="gameUI">
+
+    <div id="topbar">
+        🔴 YOU ARE <span id="myColor">RED</span>
+    </div>
+
+    <div id="players">
+        Players: <span id="playerCount">1</span>/2
+    </div>
+
+</div>
+
+<div id="joystick">
+    <div id="stick"></div>
+</div>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const socket = new WebSocket(
+    "wss://cooliobeans-multiplayer.onrender.com"
+);
+
+let connected = false;
+let started = false;
+
+let myId = null;
+let myColor = null;
+let roomCode = null;
+
+const players = {};
+
+const keys = {};
+
+let mouseX = 0;
+let mouseY = 0;
+
+let joystickX = 0;
+let joystickY = 0;
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+
+// =========================
+// SERVER CONNECTION
+// =========================
+
+socket.onopen = () => {
+
+    connected = true;
+
+    document.getElementById("status").textContent =
+        "Server connected ✅";
+};
+
+socket.onerror = () => {
+
+    document.getElementById("status").textContent =
+        "Connection error ❌";
+};
+
+socket.onclose = () => {
+
+    document.getElementById("status").textContent =
+        "Disconnected ❌";
+};
+
+socket.onmessage = event => {
+
+    const data = JSON.parse(event.data);
+
+    // HOST CREATED ROOM
+    if (data.type === "roomCreated") {
+
+        myId = data.id;
+        myColor = data.color;
+        roomCode = data.room;
+
+        players[myId] = {
+            x: 0,
+            y: 0,
+            rotation: 0,
+            color: "red"
+        };
+
+        document.getElementById("roomDisplay").style.display = "block";
+        document.getElementById("roomCode").textContent = roomCode;
+
+        document.getElementById("status").textContent =
+            "Waiting for Player 2...";
+    }
+
+
+    // JOINED ROOM
+    if (data.type === "joined") {
+
+        myId = data.id;
+        myColor = data.color;
+        roomCode = data.room;
+
+        players[myId] = {
+            x: 0,
+            y: 0,
+            rotation: 0,
+            color: "blue"
+        };
+
+        startGame();
+    }
+
+
+    // OTHER PLAYER JOINED
+    if (data.type === "playerJoined") {
+
+        players[data.id] = {
+            x: data.x || 0,
+            y: data.y || 0,
+            rotation: data.rotation || 0,
+            color: data.color
+        };
+
+        startGame();
+    }
+
+
+    // OTHER PLAYER MOVED
+    if (data.type === "playerMoved") {
+
+        if (!players[data.id]) {
+
+            players[data.id] = {
+                x: data.x,
+                y: data.y,
+                rotation: data.rotation,
+                color: data.id === myId ? myColor : "blue"
+            };
+
+        } else {
+
+            players[data.id].targetX = data.x;
+            players[data.id].targetY = data.y;
+            players[data.id].targetRotation = data.rotation;
+        }
+    }
+
+
+    // OTHER PLAYER LEFT
+    if (data.type === "playerLeft") {
+
+        delete players[data.id];
+
+        updatePlayerCount();
+    }
+
+
+    // ERROR
+    if (data.type === "error") {
+
+        document.getElementById("status").textContent =
+            "❌ " + data.message;
+    }
+};
+
+
+// =========================
+// HOST / JOIN
+// =========================
+
+function hostGame() {
+
+    if (!connected) return;
+
+    socket.send(JSON.stringify({
+        type: "host"
+    }));
+}
+
+
+function joinGame() {
+
+    if (!connected) return;
+
+    const code =
+        document.getElementById("roomInput").value
+        .trim()
+        .toUpperCase();
+
+    if (code.length !== 4) {
+
+        document.getElementById("status").textContent =
+            "Enter a 4-character room code.";
+        return;
+    }
+
+    socket.send(JSON.stringify({
+        type: "join",
+        room: code
+    }));
+}
+
+
+// =========================
+// START GAME
+// =========================
+
+function startGame() {
+
+    started = true;
+
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("gameUI").style.display = "block";
+
+    document.getElementById("myColor").textContent =
+        myColor.toUpperCase();
+
+    updatePlayerCount();
+}
+
+
+// =========================
+// KEYBOARD
+// =========================
+
+window.addEventListener("keydown", e => {
+
+    keys[e.key.toLowerCase()] = true;
+
+});
+
+window.addEventListener("keyup", e => {
+
+    keys[e.key.toLowerCase()] = false;
+
+});
+
+
+// =========================
+// MOUSE
+// =========================
+
+window.addEventListener("mousemove", e => {
+
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+});
+
+
+// =========================
+// MOBILE JOYSTICK
+// =========================
+
+const joystick =
+    document.getElementById("joystick");
+
+const stick =
+    document.getElementById("stick");
+
+let joystickActive = false;
+
+function joystickMove(clientX, clientY) {
+
+    const rect = joystick.getBoundingClientRect();
+
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+
+    const max = 45;
+
+    const distance =
+        Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > max) {
+
+        dx = dx / distance * max;
+        dy = dy / distance * max;
+    }
+
+    joystickX = dx / max;
+    joystickY = dy / max;
+
+    stick.style.left =
+        (34 + dx) + "px";
+
+    stick.style.top =
+        (34 + dy) + "px";
+}
+
+function joystickReset() {
+
+    joystickActive = false;
+
+    joystickX = 0;
+    joystickY = 0;
+
+    stick.style.left = "34px";
+    stick.style.top = "34px";
+}
+
+joystick.addEventListener("touchstart", e => {
+
+    joystickActive = true;
+
+    const t = e.touches[0];
+
+    joystickMove(t.clientX, t.clientY);
+
+    e.preventDefault();
+
+}, { passive: false });
+
+joystick.addEventListener("touchmove", e => {
+
+    if (!joystickActive) return;
+
+    const t = e.touches[0];
+
+    joystickMove(t.clientX, t.clientY);
+
+    e.preventDefault();
+
+}, { passive: false });
+
+joystick.addEventListener("touchend", joystickReset);
+
+
+// =========================
+// MOVEMENT
+// =========================
+
+let lastSend = 0;
+
+function updateMovement() {
+
+    if (!started || !players[myId]) return;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (keys["w"] || keys["arrowup"]) dy -= 1;
+    if (keys["s"] || keys["arrowdown"]) dy += 1;
+    if (keys["a"] || keys["arrowleft"]) dx -= 1;
+    if (keys["d"] || keys["arrowright"]) dx += 1;
+
+    dx += joystickX;
+    dy += joystickY;
+
+    const length =
+        Math.sqrt(dx * dx + dy * dy);
+
+    if (length > 1) {
+
+        dx /= length;
+        dy /= length;
+    }
+
+    const speed = 4;
+
+    const p = players[myId];
+
+    p.x += dx * speed;
+    p.y += dy * speed;
+
+    const now = Date.now();
+
+    if (now - lastSend > 40) {
+
+        lastSend = now;
+
+        socket.send(JSON.stringify({
+            type: "move",
+            x: p.x,
+            y: p.y,
+            z: 0,
+            rotation: 0
+        }));
+    }
+}
+
+
+// =========================
+// PLAYER COUNT
+// =========================
+
+function updatePlayerCount() {
+
+    document.getElementById("playerCount").textContent =
+        Object.keys(players).length;
+}
+
+
+// =========================
+// DRAW
+// =========================
+
+function drawArena() {
+
+    ctx.fillStyle = "#101018";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const grid = 50;
+
+    ctx.strokeStyle = "#ffffff08";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x < canvas.width; x += grid) {
+
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+
+    for (let y = 0; y < canvas.height; y += grid) {
+
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+}
+
+
+function drawPlayer(p, isMe) {
+
+    const screenX =
+        canvas.width / 2 + p.x;
+
+    const screenY =
+        canvas.height / 2 + p.y;
+
+    const radius = 25;
+
+    // shadow
+    ctx.beginPath();
+
+    ctx.arc(
+        screenX + 3,
+        screenY + 5,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "#0008";
+    ctx.fill();
+
+
+    // player
+    ctx.beginPath();
+
+    ctx.arc(
+        screenX,
+        screenY,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        p.color === "red"
+        ? "#ff3030"
+        : "#347dff";
+
+    ctx.fill();
+
+
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#fff";
+
+    ctx.stroke();
+
+
+    // direction indicator
+    ctx.beginPath();
+
+    ctx.moveTo(screenX, screenY - 8);
+    ctx.lineTo(screenX, screenY - 32);
+
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 5;
+
+    ctx.stroke();
+
+
+    // name
+    ctx.font = "bold 14px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "white";
+
+    ctx.fillText(
+        isMe ? "YOU" : p.color.toUpperCase(),
+        screenX,
+        screenY - 40
+    );
+}
+
+
+function draw() {
+
+    drawArena();
+
+    for (const id in players) {
+
+        const p = players[id];
+
+        // smooth remote movement
+        if (p.targetX !== undefined) {
+
+            p.x +=
+                (p.targetX - p.x) * 0.25;
+
+            p.y +=
+                (p.targetY - p.y) * 0.25;
+        }
+
+        drawPlayer(
+            p,
+            id === myId
+        );
+    }
+}
+
+
+// =========================
+// GAME LOOP
+// =========================
+
+function loop() {
+
+    updateMovement();
+    draw();
+
+    requestAnimationFrame(loop);
+}
+
+loop();
+
+</script>
+
+</body>
+</html>
